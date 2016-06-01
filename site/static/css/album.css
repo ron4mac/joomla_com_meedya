@@ -1,0 +1,122 @@
+.anitem {
+	display: inline-block;
+	margin: 1px;
+/*	width: 60px;
+	height: 60px;
+	border: 1px solid #BBB;
+	margin-left:3px;*/
+}
+.noitem {
+	display: inline-block;
+	width: 30px;
+	height: 130px;
+	border: 1px dotted #CCC;
+/*	margin-left:3px;*/
+}
+.over {
+	background-color: #FF6;
+}
+
+.itm-thumb {
+	display: inline-block;
+}
+.itm-thm-ttl {
+	text-align: center;
+}
+
+.falbum {
+	width: 120px;
+	height: 120px;
+	background-image: url(../img/album4.png);
+	vertical-align: top;
+	position: relative;
+}
+.falbum a div {
+	width: 100%;
+	height: 100%;
+}
+.falbumi {
+	width: 90px;
+	height: 98px;
+	top: 11px;
+	left: 19px;
+	position: absolute;
+}
+
+/* bootstrap tooltip */
+.tooltip {
+	position: absolute;
+	z-index: 1030;
+	display: block;
+	visibility: visible;
+	font-size: 11px;
+	line-height: 1.4;
+	opacity: 0;
+	filter: alpha(opacity=0);
+}
+.tooltip.in {
+	opacity: 0.8;
+	filter: alpha(opacity=80);
+}
+.tooltip.top {
+	margin-top: -3px;
+	padding: 5px 0;
+}
+.tooltip.right {
+	margin-left: 3px;
+	padding: 0 5px;
+}
+.tooltip.bottom {
+	margin-top: 3px;
+	padding: 5px 0;
+}
+.tooltip.left {
+	margin-left: -3px;
+	padding: 0 5px;
+}
+.tooltip-inner {
+	max-width: 200px;
+	padding: 8px;
+	color: #000;
+	text-align: center;
+	text-decoration: none;
+	background-color: #FD9;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+}
+.tooltip-arrow {
+	position: absolute;
+	width: 0;
+	height: 0;
+	border-color: transparent;
+	border-style: solid;
+}
+.tooltip.top .tooltip-arrow {
+	bottom: 0;
+	left: 50%;
+	margin-left: -5px;
+	border-width: 5px 5px 0;
+	border-top-color: #FD9;
+}
+.tooltip.right .tooltip-arrow {
+	top: 50%;
+	left: 0;
+	margin-top: -5px;
+	border-width: 5px 5px 5px 0;
+	border-right-color: #FD9;
+}
+.tooltip.left .tooltip-arrow {
+	top: 50%;
+	right: 0;
+	margin-top: -5px;
+	border-width: 5px 0 5px 5px;
+	border-left-color: #FD9;
+}
+.tooltip.bottom .tooltip-arrow {
+	top: 0;
+	left: 50%;
+	margin-left: -5px;
+	border-width: 0 5px 5px;
+	border-bottom-color: #FD9;
+}

@@ -1,0 +1,21 @@
+.meedya-gallery {
+	position: relative;
+}
+.btn-group.mgmenu {
+	position: absolute;
+	right: 0;
+	top: 0;
+}
+.mgmenup {
+	cursor: pointer;
+}
+#mgmenu {
+	display: none;
+	background-color: lavender;
+}
+.alb-thumb {
+	display: inline-block;
+}
+.alb-thm-ttl {
+	text-align: center;
+}

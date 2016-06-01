@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="component" version="3.0" method="upgrade">
+	<name>com_meedya</name>
+	<author>Ron Crans</author>
+	<creationDate>April 2015</creationDate>
+	<copyright>(C) 2015 Ron Crans. All rights reserved.</copyright>
+	<license>GNU General Public License version 3 or later; see LICENSE.txt</license>
+	<authorEmail>ron@rjconline.net</authorEmail>
+	<authorUrl>rjconline.net</authorUrl>
+	<version>0.1.0</version>
+	<description>COM_MEEDYA_XML_DESCRIPTION</description>
+	<scriptfile>script.php</scriptfile>
+	<files folder="site">
+		<filename>index.html</filename>
+		<filename>meedya.php</filename>
+		<filename>controller.php</filename>
+		<!-- <filename>router.php</filename> -->
+		<folder>views</folder>
+		<folder>models</folder>
+		<folder>controllers</folder>
+		<folder>helpers</folder>
+		<folder>language</folder>
+		<folder>static</folder>
+	</files>
+	<administration>
+		<menu img="class:meedya">COM_MEEDYA_MENU</menu>
+		<submenu>
+			<!--Note that all & must be escaped to &amp; -->
+			<menu link="index.php?option=com_meedya" view="links" img="class:meedya" alt="Meedya/Links">Links</menu>
+			<menu link="index.php?option=com_categories&amp;extension=com_meedya" view="categories" img="class:meedya-cat" alt="Meedya/Categories">Categories</menu>
+		</submenu>
+		<files folder="admin">
+			<filename>access.xml</filename>
+			<filename>config.xml</filename>
+			<filename>controller.php</filename>
+			<filename>index.html</filename>
+			<filename>meedya.php</filename>
+			<folder>controllers</folder>
+			<folder>helpers</folder>
+			<folder>models</folder>
+			<folder>tables</folder>
+			<folder>views</folder>
+			<folder>language</folder>
+		</files>
+	</administration>
+	<updateservers>
+		<server type="extension" priority="1" name="Meedya Updates">http://rjcrans.net/jupdates/com_meedya/updates.xml</server>
+	</updateservers>
+</extension>

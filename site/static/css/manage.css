@@ -1,0 +1,119 @@
+.meedya-gallery {
+	position: relative;
+}
+
+.albdsp {
+	display: inline-block;
+	margin: 0 1em 5px 0;
+	width: 20em;
+	background-color: #EEE;
+	/*position: relative;*/
+	float: left;
+}
+.albthm, .albprp {
+	display: inline-block;
+	vertical-align: top;
+}
+.albthm {
+	margin: 0 5px 0 0;
+}
+.albbar {
+	width: 100%;
+	background-color: #DDD;
+	/*position: absolute;
+	bottom: 0;*/
+	/*padding-left: 3px;
+	padding-right: 3px;*/
+	padding: 3px;
+	box-sizing: border-box;
+	white-space: nowrap;
+	position: relative;
+}
+.aselect {
+	background-color: #CCF;
+}
+.albact {
+	/*float: right;*/
+	position: absolute;
+	top: 3px;
+	right: 3px;
+	width: 16px;
+	height:16px;
+	margin-left: 3px;
+	cursor: pointer;
+}
+.albdelb {
+	background-image: url(16/deletet.png);
+}
+.albedtb {
+	background-image: url(16/edit.png);
+}
+
+/* album view*/
+.anitem {
+	display: inline-block;
+	width: 100px;
+	height: 100px;
+	border: 2px solid transparent;
+	margin: 1px;
+}
+.iselect {
+	border: 2px solid blue;
+}
+.noitem {
+	display: inline-block;
+	vertical-align: bottom;
+	width: 30px;
+	height: 102px;
+	margin: 1px;
+	border: 1px dotted #CCC;
+}
+.over {
+	background-color: #FF6;
+}
+
+.itm-thumb {
+	display: inline-block;
+}
+.itm-thm-ttl {
+	text-align: center;
+}
+
+.btn {
+	margin-left: 0.5em;
+}
+
+/* tab styling */
+dl.tabs {
+	margin-left: 8px;
+}
+dt.tabs {
+	border-top-left-radius: 4px;
+	border-top-right-radius: 4px;
+}
+dd.tabs {
+	border-radius: 4px;
+}
+
+/* images editing */
+.subbuts {
+/*	float: right;*/
+	margin-bottom: 8px;
+}
+.ied-img {
+	display: inline-block;
+	vertical-align: top;
+}
+.ied-attr {
+	display: inline-block;
+}
+
+/* new album modal */
+#crealbm .nualbtop {
+	float:left;
+	margin-right:2em;
+}
+#crealbm .nualbdsc {
+	width:100%;
+	box-sizing:border-box;
+}
