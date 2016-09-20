@@ -10,17 +10,17 @@ JHtml::stylesheet('components/com_meedya/static/css/manage.css');
 <?php foreach ($this->iids as $iid): ?>
 <hr style="clear:both" />
 <?php
-	$namx = $iid['id'];
-	$idx = '_'.$iid['id'];
+	$namx = $iid->id;
+	$idx = '_'.$iid->id;
 ?>
 <div>
 	<div class="ied-img">
-		<img src="<?= $this->gallpath.'/thm/'.$iid['file'] ?>" />
+		<img src="<?= $this->gallpath.'/thm/'.$iid->file ?>" />
 	</div>
 	<div class="ied-attr">
-		<label for="title<?=$idx?>">Title</label><input type="text" name="attr[<?=$namx?>][title]" id="title<?=$idx?>" value="<?=$iid['title']?>" />
-		<label for="desc<?=$idx?>">Description</label><input type="text" name="attr[<?=$namx?>][desc]" id="desc<?=$idx?>" value="<?=$iid['desc']?>" />
-		<label for="kywrd<?=$idx?>">Key words</label><input type="text" name="attr[<?=$namx?>][kywrd]" id="kywrd<?=$idx?>" value="<?=$iid['kywrd']?>" />
+		<label for="title<?=$idx?>">Title</label><input type="text" name="attr[<?=$namx?>][title]" id="title<?=$idx?>" value="<?=$iid->title?>" />
+		<label for="desc<?=$idx?>">Description</label><input type="text" name="attr[<?=$namx?>][desc]" id="desc<?=$idx?>" value="<?=$iid->desc?>" />
+		<label for="kywrd<?=$idx?>">Key words</label><input type="text" name="attr[<?=$namx?>][kywrd]" id="kywrd<?=$idx?>" value="<?=$iid->kywrd?>" />
 	</div>
 </div>
 <?php endforeach; ?>

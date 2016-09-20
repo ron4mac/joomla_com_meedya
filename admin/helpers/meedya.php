@@ -24,10 +24,19 @@ abstract class MeedyaHelper
 			'iS'=>'cb1' //iconset
 		);
 
+	public static function getStorageBase ()
+	{
+		$dispatcher = JDispatcher::getInstance();
+		$results = $dispatcher->trigger('onRjuserDatapath', null);
+		$sdp = isset($results[0]) ? trim($results[0]) : '';
+		return $sdp ? $sdp : 'userstor';
+	}
+
 	public static function userDataPath ()
 	{
 		if (self::$udp) return self::$udp;
 		self::getTypeOwner();
+		if (self::$ownerID < 0 && self::$instanceType < 2) return '';	//throw new Exception('ACCESS NOT ALLOWED');
 		$cmp = JApplicationHelper::getComponentName();
 		switch (self::$instanceType) {
 			case 0:
@@ -50,6 +59,46 @@ abstract class MeedyaHelper
 		return self::$udp;
 	}
 
+	public static function getDbPaths ($which, $dbname, $full=false, $cmp='')
+	{
+		$paths = array();
+		if (!$cmp) $cmp = JApplicationHelper::getComponentName();
+		switch ($which) {
+			case 'u':
+				$char1 = '@';
+				break;
+			case 'g':
+				$char1 = '_';
+				break;
+			default:
+				$char1 = '';
+				break;
+		}
+		$dpath = JPATH_SITE.'/'.self::getStorageBase().'/';
+		if (is_dir($dpath) && ($dh = opendir($dpath))) {
+			while (($file = readdir($dh)) !== false) {
+				if ($file[0]==$char1) {
+					$ptf = $dpath.$file.'/'.$cmp.'/'.$dbname.'.sql3';
+					if (file_exists($ptf))
+						if ($full) {
+							$paths[$file] = $ptf;
+						} else {
+							$paths[] = $file;
+						}
+					$ptf = $dpath.$file.'/'.$cmp.'/'.$dbname.'.db3';
+					if (file_exists($ptf))
+						if ($full) {
+							$paths[$file] = $ptf;
+						} else {
+							$paths[] = $file;
+						}
+				}
+			}
+			closedir($dh);
+		}
+		return $paths;
+	}
+
 	public static function userAuth ($uid)
 	{
 		self::getTypeOwner();
@@ -65,6 +114,21 @@ abstract class MeedyaHelper
 				return in_array(self::$ownerID, $ugrps) ? 2 : 1;
 				break;
 		}
+	}
+
+	public static function getActions ()
+	{
+		$user = JFactory::getUser();
+		$result = new JObject;
+		$assetName = 'com_meedya';
+
+		$actions = JAccess::getActions($assetName);
+
+		foreach ($actions as $action) {
+			$result->set($action->name,	$user->authorise($action->name, $assetName));
+		}
+
+		return $result;
 	}
 
 	public static function getInstanceID ()

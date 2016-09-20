@@ -9,19 +9,32 @@ class MeedyaModelMeedya extends JModelList
 	public function __construct ($config = array())
 	{
 		$dbFile = '/meedya.db3';
-		$udbPath = MeedyaHelper::userDataPath().$dbFile;
-		$doInit = !file_exists($udbPath);
-		
-		$db = JDatabaseDriver::getInstance(array('driver'=>'sqlite','database'=>$udbPath));
-		$db->connect();
-		$db->getConnection()->sqliteCreateFunction('strtotime', 'strtotime', 1);
-
-		if ($doInit) {
-			require_once JPATH_COMPONENT.'/helpers/db.php';
-			MeedyaHelperDb::buildDb($db);
+		$udbDir = MeedyaHelper::userDataPath();
+		if (!$udbDir) {
+			throw new Exception('ACCESS NOT ALLOWED', 403);
+			//parent::__construct($config);
+			//$this->setError('ACCESS NOT ALLOWED');
+			//return;
 		}
+		$udbPath = $udbDir.$dbFile;
+		$doInit = !file_exists($udbPath);
 
-		$config['dbo'] = $db;
+		try {
+			$db = JDatabaseDriver::getInstance(array('driver'=>'sqlite','database'=>$udbPath));
+			$db->connect();
+			$db->getConnection()->sqliteCreateFunction('strtotime', 'strtotime', 1);
+
+			if ($doInit) {
+				require_once JPATH_COMPONENT.'/helpers/db.php';
+				MeedyaHelperDb::buildDb($db);
+			}
+
+			$config['dbo'] = $db;
+		}
+		catch (JDatabaseExceptionConnecting $e) {
+			echo'<xmp>';var_dump($e);echo'</xmp>';
+			jexit();
+		}
 		parent::__construct($config);
 	}
 
@@ -41,7 +54,6 @@ class MeedyaModelMeedya extends JModelList
 
 	public function getCfg ($which)
 	{
-	//	$db = parent::getDBO();
 		$db = $this->getDbo();
 		$db->setQuery('SELECT `vals` FROM `config` WHERE `type`='.$db->quote($which));
 		$r = $db->loadResult();
@@ -50,7 +62,6 @@ class MeedyaModelMeedya extends JModelList
 
 	public function getItemThumbFile ($iid)
 	{
-	//	$db = parent::getDBO();
 		$db = $this->getDbo();
 		$db->setQuery('SELECT `file`,`thumb` FROM `meedyaitems` WHERE `id`='.$iid);
 		$r = $db->loadAssoc();
@@ -60,7 +71,6 @@ class MeedyaModelMeedya extends JModelList
 
 	public function getItemThumbFilePlus ($iid)
 	{
-	//	$db = parent::getDBO();
 		$db = $this->getDbo();
 		$db->setQuery('SELECT `file`,`thumb`,`title`,`desc` FROM `meedyaitems` WHERE `id`='.$iid);
 		$r = $db->loadAssoc();
@@ -70,7 +80,6 @@ class MeedyaModelMeedya extends JModelList
 
 	public function getAlbumsList ()
 	{
-	//	$db = parent::getDBO();
 		$db = $this->getDbo();
 		$db->setQuery('SELECT `aid`,`title`,`hord` FROM `albums`');
 		$r = $db->loadAssocList();
@@ -80,7 +89,6 @@ class MeedyaModelMeedya extends JModelList
 
 	protected function getListQuery ()
 	{
-	//	$db = parent::getDBO();
 		$db = $this->getDbo();
 		$query = $db->getQuery(true);
 		$query->select('*');

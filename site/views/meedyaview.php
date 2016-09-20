@@ -33,9 +33,10 @@ class MeedyaView extends JViewLegacy
 //		$this->params = JFactory::getApplication()->getParams();
 //		$this->state = $this->get('State');
 //		$this->items = $this->get('Items');
-		if (is_null($this->items)) $this->items = $this->get('Items');
+		if (is_null($this->items)) $this->items = $this->getModel()->getItems();
 		$this->pagination = $this->get('Pagination');
 
+	//	echo'GOt here';var_dump($this->pagination,$this->items);jexit();
 		parent::display($tpl);
 	}
 

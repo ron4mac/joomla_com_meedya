@@ -9,7 +9,6 @@ class MeedyaModelGallery extends MeedyaModelMeedya
 {
 	protected function getListQuery ()
 	{
-	//	$db = parent::getDBO();
 		$db = $this->getDbo();
 		$query = $db->getQuery(true);
 		$query->select('*');

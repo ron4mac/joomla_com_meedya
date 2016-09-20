@@ -1,39 +1,23 @@
 <?php
 /**
- * @version		$Id: controller.php 20196 2011-01-09 02:40:25Z ian $
- * @package		Joomla.Administrator
- * @subpackage	com_meedya
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @package		com_meedya
+ * @copyright	Copyright (C) 2016 Ron Crans. All rights reserved.
  * @license		GNU General Public License version 3 or later; see LICENSE.txt
  */
 
-// No direct access
 defined('_JEXEC') or die;
 
-/**
- * Meedya MeedyaItem Controller
- *
- * @package		Joomla.Administrator
- * @subpackage	com_meedya
- * @since		3.0
- */
+JLoader::register('MeedyaHelperDb', JPATH_COMPONENT_ADMINISTRATOR.'/helpers/db.php');
+
+require_once JPATH_COMPONENT.'/helpers/meedya.php';
+
 class MeedyaController extends JControllerLegacy
 {
-	/**
-	 * Method to display a view.
-	 *
-	 * @param	boolean			$cachable	If true, the view output will be cached
-	 * @param	array			$urlparams	An array of safe url parameters and their variable types, for valid values see {@link JFilterInput::clean()}.
-	 *
-	 * @return	JController		This object to support chaining.
-	 * @since	1.5
-	 */
+
 	public function display ($cachable = false, $urlparams = false)
 	{
-		require_once JPATH_COMPONENT.'/helpers/meedya.php';
-
 		// Load the submenu.
-		MeedyaHelper::addSubmenu($this->input->getCmd('view', 'meedya'));
+	//	MeedyaHelper::addSubmenu($this->input->getCmd('view', 'meedya'));
 
 		$view = $this->input->getCmd('view', 'meedya');
 		$layout = $this->input->getCmd('layout', 'default');
@@ -53,4 +37,17 @@ class MeedyaController extends JControllerLegacy
 
 		return $this;
 	}
+
+	public function rebuildExpodt ()
+	{
+		$sdp = MeedyaHelper::getStorageBase();
+		$cids = $this->input->get('cid',array(),'array');
+		$view = $this->input->get('view');
+		$tc = $view == 'meedya' ? '@' : '_';
+		foreach ($cids as $cid) {
+			MeedyaHelperDb::rebuildExpodt(JPATH_ROOT.'/'.$sdp.'/'.$tc.$cid.'/'.JApplicationHelper::getComponentName());
+		}
+		$this->setRedirect('index.php?option=com_meedya&view='.$view, JText::_('COM_MEEDYA_MSG_COMPLETE'));
+	}
+
 }

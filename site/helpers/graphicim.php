@@ -1,4 +1,10 @@
 <?php
+/**
+ * @package		com_meedya
+ * @copyright	Copyright (C) 2016 Ron Crans. All rights reserved.
+ * @license		GNU General Public License version 3 or later; see LICENSE.txt
+ */
+
 defined('_JEXEC') or die;
 
 abstract class MeedyaHelperGraphics
@@ -86,6 +92,7 @@ abstract class MeedyaHelperGraphics
 
 class ImageProcessor
 {
+	protected $errs = array();
 	protected $src;
 	protected $imgk;
 
@@ -97,8 +104,14 @@ class ImageProcessor
 		//	$this->imgk->readImage($src);
 		}
 		catch(Exception $e) {
-			die('Error getting image: ' . $e->getMessage());
+		//	die('Error getting image: ' . $e->getMessage());
+			$this->errs[] = 'Error getting image: ' . $e->getMessage();
 		}
+	}
+
+	public function getErrors ()
+	{
+		return $this->errs;
 	}
 
 	public function createThumb ($dest, $ext, $maxW=0, $maxH=100, $sqr=true)
@@ -110,7 +123,8 @@ class ImageProcessor
 			return filesize($dest.$ext);
 		}
 		catch(Exception $e) {
-			die('Error when creating a thumbnail: ' . $e->getMessage());
+		//	die('Error when creating a thumbnail: ' . $e->getMessage());
+			$this->errs[] = 'Error when creating a thumbnail: ' . $e->getMessage();
 		}
 	}
 
@@ -122,7 +136,8 @@ class ImageProcessor
 			return filesize($dest.$ext);
 		}
 		catch(Exception $e) {
-			die('Error when creating medium image: ' . $e->getMessage());
+		//	die('Error when creating medium image: ' . $e->getMessage());
+			$this->errs[] = 'Error when creating medium image: ' . $e->getMessage();
 		}
 	}
 
@@ -170,7 +185,8 @@ class ImageProcessor
 				return filesize(realpath($dest)) - $osize;
 			}
 			catch(Exception $e) {
-				die('Error when orienting image: ' . $e->getMessage());
+			//	die('Error when orienting image: ' . $e->getMessage());
+				$this->errs[] = 'Error when orienting image: ' . $e->getMessage();
 			}
 		}
 		return 0;

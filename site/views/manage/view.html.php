@@ -25,6 +25,8 @@ class MeedyaViewManage extends MeedyaView
 				break;
 
 			case 'imgedit':
+			//	$this->iids = $this->getModel('manage')->get('Items');
+			//	var_dump($this->iids);
 				break;
 
 			case 'config':
@@ -47,6 +49,7 @@ class MeedyaViewManage extends MeedyaView
 				break;
 
 			default:
+				$this->albums = $this->getModel()->getAlbumsList();
 				$this->totStore = (int)$this->get('StorageTotal');
 				break;
 

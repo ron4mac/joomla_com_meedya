@@ -5,19 +5,32 @@ defined('_JEXEC') or die;
 
 JHtml::addIncludePath(JPATH_COMPONENT.'/helpers');
 JHtml::stylesheet('components/com_meedya/static/css/manage.css');
-JHtml::stylesheet('components/com_meedya/static/css/jqModal.css');
-JHtml::stylesheet('components/com_meedya/static/css/ui.css');
+//JHtml::stylesheet('components/com_meedya/static/css/jqModal.css');
+//JHtml::stylesheet('components/com_meedya/static/css/ui.css');
 //JHtml::_('jquery.ui');
-JHtml::_('jquery.framework', false);
-JHtml::_('behavior.modal');
+JHtml::_('jquery.framework');
+JHtml::_('bootstrap.modal');
 $jdoc = JFactory::getDocument();
 //$jdoc->addScriptDeclaration(JEditor::getInstance(JFactory::getConfig()->get('editor')));
-$jdoc->addScript('components/com_meedya/static/js/jqModal.js');
-$jdoc->addScript('components/com_meedya/static/js/ui.js');
+//$jdoc->addScript('components/com_meedya/static/js/jqModal.js');
+//$jdoc->addScript('components/com_meedya/static/js/ui.js');
 	//create an unused editor and get its content in order to force the editor javascript to load
 	//$fedit = JEditor::getInstance(JFactory::getConfig()->get('editor'));
 	//$fedit->getContent($fedit);
+function myModalButtons ($verb, $script)
+{
+	return '
+	<button type="button" class="btn" data-dismiss="modal">'.JText::_('JCANCEL').'</button>
+	<button type="button" id="creab" class="btn btn-disabled" onclick="'.$script.';" disabled>'.$verb.'</button>
+';
+}
 ?>
+<style>
+.modal-body {padding:1em;width:100%;box-sizing:border-box}
+.modal-backdrop.fade.in {opacity:0.4}
+#trashall {margin:0 6px 0 0;position:relative;bottom:1px}
+#trashall + label {display:inline}
+</style>
 <div class="meedya-gallery">
 <?php if ($this->params->def('show_page_heading', 1)) : ?>
 <h1>
@@ -27,7 +40,7 @@ $jdoc->addScript('components/com_meedya/static/js/ui.js');
 <div id="toolbar">
 	<a href="<?php echo JRoute::_('index.php?option=com_meedya&task=manage.doUpload&aid=0', false); ?>">Upload Images</a>
 	<a href="#" onclick="return doDelAct(event, 0)">Delete Selected</a>
-	<a href="<?php echo JRoute::_('index.php?option=com_meedya&view=manage&layout=newalb&tmpl=component', false); ?>" class="modal" rel="{size:{x:550,y:260},classWindow:'newalb'}">New Album</a>
+	<a href="#newalbdlg" data-toggle="modal">New Album</a>
 </div>
 <div>Total storage: <?=MeedyaHelper::formatBytes($this->totStore)?></div>
 <?php
@@ -45,31 +58,51 @@ $jdoc->addScript('components/com_meedya/static/js/ui.js');
 		echo '</div></div>';
 	}
 ?>
+<!--
 <div id="element_to_pop_up" class="jqmWindow">
 	<div class="bpDlgHdr"><span class="bpDlgTtl">TITLE</span><span class="button jqmClose"><img src="components/com_meedya/static/css/closex.png" alt="close" /></span></div>
 	<div class="bpDlgCtn"><form class="bp-dctnt" name="myUIform" onsubmit="return false"></form></div>
 	<div class="bpDlgFtr"><div class="bp-bttns"></div></div>
 </div>
+-->
 </div>
 <div class="page-footer">
 	<?php echo $this->pagination->getListFooter(); ?>
 </div>
-<div id="delact" class="jqmWindow" title="Delete Album">
-	Deleting an album, by default, does not delete the images in the album. Are you sure you want to delete the album(s)?<br /><br />
-	<input type="checkbox" name="trashall" id="trashall" value="true" /> Delete all its images, as well.
+<div id="delact" tabindex="-1" class="modal hide fade">
+	<div class="modal-body">
+		<?php echo JText::_('COM_MEEDYA_CREATE_DELETE_ALBUM_BLURB'); ?><br /><br />
+		<input type="checkbox" name="trashall" id="trashall" value="true" /><label for="trashall"><?php echo JText::_('COM_MEEDYA_CREATE_DELETE_ALL_IMAGES'); ?></label>
+	</div>
+	<div class="modal-footer">
+		<?php echo 'no creab here!!'/*myModalButtons(JText::_('COM_MEEDYA_CREATE_DELETE_ALBUM'),'createAlbum(this)')*/; ?>
+	</div>
 </div>
+<?php
+echo JHtml::_(
+	'bootstrap.renderModal',
+	'newalbdlg',
+	array(
+		'title' => JText::_('COM_MEEDYA_CREATE_NEW_ALBUM'),
+		'footer' => myModalButtons(JText::_('COM_MEEDYA_H5U_CREALBM'),'createAlbum(this)'),
+		'modalWidth' => '80'
+	),
+	$this->loadTemplate('newalb')
+	);
+?>
 <script>
 	function selAlbum (evt, elm) {
-		$(elm).toggleClass('aselect');
+		jQuery(elm).toggleClass('aselect');
 	}
 //	function doNewAlb (evt, aid) {
 //		evt.preventDefault();
 //	}
 	function doDelAct (evt, aid) {
 		evt.preventDefault();
-		var albs = $('.meedya-gallery .aselect');
+		var albs = jQuery('.meedya-gallery .aselect');
 		if (albs.length) {
-			myOpenDlg(evt,delDlg,{'old':'AAA','new':'BBB'});
+			jQuery("#delact").modal();
+			//myOpenDlg(evt,delDlg,{'old':'AAA','new':'BBB'});
 		} else {
 			alert('No albums are selected.');
 		}
@@ -91,7 +124,7 @@ $jdoc->addScript('components/com_meedya/static/js/ui.js');
 				var albs = $('.meedya-gallery .aselect');
 				var aray = [];
 				for (var i=0; i < albs.length; i++) {
-					aray.push($(albs[i]).data('aid'));
+					aray.push(jQuery(albs[i]).data('aid'));
 				}
 				var frm = document.myUIform;
 				var nurl = 'index.php?option=com_meedya&view=manage&task=manage.delAlbums&albs=' + aray.join("|") + (frm.trashall.checked ? '&wipe=true' : '');

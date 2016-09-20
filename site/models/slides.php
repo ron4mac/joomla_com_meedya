@@ -12,7 +12,6 @@ class MeedyaModelSlides extends MeedyaModelMeedya
 	public function getTitle ()
 	{
 		$aid = $this->getState('album.id') ? : 0;
-	//	$db = parent::getDBO();
 		$db = $this->getDbo();
 		$db->setQuery('SELECT `title` FROM `albums` WHERE `aid`='.$aid);
 		$r = $db->loadResult();
@@ -35,7 +34,6 @@ class MeedyaModelSlides extends MeedyaModelMeedya
 	{
 		if ($this->_album) return $this->_album;
 		$aid = $aid ?: ($this->state->get('album.id') ?: 0);
-	//	$db = parent::getDBO();
 		$db = $this->getDbo();
 		$db->setQuery('SELECT * FROM `albums` WHERE `aid`='.$aid);
 		$this->_album = $db->loadObject();
@@ -45,7 +43,6 @@ class MeedyaModelSlides extends MeedyaModelMeedya
 	public function getItemFile ($iid)
 	{
 		if (!$iid) return false;
-	//	$db = parent::getDBO();
 		$db = $this->getDbo();
 		$db->setQuery('SELECT * FROM `meedyaitems` WHERE `id`='.$iid);
 		$r = $db->loadAssoc();
@@ -61,7 +58,6 @@ class MeedyaModelSlides extends MeedyaModelMeedya
 	protected function getListQuery ()
 	{	//echo'<xmp>';var_dump($this);echo'</xmp>';
 		$aid = $this->getState('album.id') ? : 0;
-	//	$db = parent::getDBO();
 		$db = $this->getDbo();
 		$query = $db->getQuery(true);
 		$query->select('*');

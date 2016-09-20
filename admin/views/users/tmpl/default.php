@@ -1,6 +1,7 @@
 <?php
 /**
- * @package    com_meedya
+ * @package    com_usernotes
+ *
  * @copyright  Copyright (C) 2016 RJCreations - All rights reserved.
  * @license    GNU General Public License version 3 or later; see LICENSE.txt
  */
@@ -15,9 +16,9 @@ JHtml::_('behavior.multiselect');
 
 $listOrder	= $this->state('list.ordering');
 $listDirn	= $this->state('list.direction');
-$canDo		= MeedyaHelper::getActions();
+$canDo		= UserNotesHelper::getActions();
 ?>
-<form action="<?php echo JRoute::_('index.php?option=com_meedya&view=meedya'); ?>" method="post" name="adminForm" id="adminForm">
+<form action="<?php echo JRoute::_('index.php?option=com_usernotes&view=usernotes'); ?>" method="post" name="adminForm" id="adminForm">
 	<div id="j-sidebar-container" class="span2">
 		<?php echo $this->sidebar; ?>
 	</div>
@@ -28,16 +29,13 @@ $canDo		= MeedyaHelper::getActions();
 					<th width="1%"></th>
 					<th width="1%"><?php echo JHtml::_('myGrid.checkall'); ?></th>
 					<th width="15%">
-						<?php echo JHtml::_('grid.sort', 'COM_MEEDYA_USERNAME', 'username', $listDirn, $listOrder); ?>
+						<?php echo JHtml::_('grid.sort', 'COM_USERNOTES_USERNAME', 'username', $listDirn, $listOrder); ?>
 					</th>
 					<th width="15%">
-						<?php echo JHtml::_('grid.sort', 'COM_MEEDYA_FULLNAME', 'fullname', $listDirn, $listOrder); ?>
+						<?php echo JHtml::_('grid.sort', 'COM_USERNOTES_FULLNAME', 'fullname', $listDirn, $listOrder); ?>
 					</th>
 					<th width="15%">
-						<?php echo JHtml::_('grid.sort', 'COM_MEEDYA_FCOUNT', 'fcount', $listDirn, $listOrder); ?>
-					</th>
-					<th width="15%">
-						<?php echo JHtml::_('grid.sort', 'COM_MEEDYA_USERID', 'userid', $listDirn, $listOrder); ?>
+						<?php echo JHtml::_('grid.sort', 'COM_USERNOTES_USERID', 'userid', $listDirn, $listOrder); ?>
 					</th>
 					<th width="30%">
 						&#160;
@@ -62,13 +60,10 @@ $canDo		= MeedyaHelper::getActions();
 					</td>
 					<td>
 						<?php echo $item['uname']; ?>
-						<a href="<?php echo JRoute::_('index.php?option=com_meedya&view=events&uid=').$item['uid']; ?>">view</a>
+						<a href="<?php echo JRoute::_('index.php?option=com_usernotes&view=events&uid=').$item['uid']; ?>">view</a>
 					</td>
 					<td>
 						<?php echo $item['name']; ?>
-					</td>
-					<td>
-						<?php echo $item['fcount'] ?>
 					</td>
 					<td>
 						<?php echo $item['uid'] ?>

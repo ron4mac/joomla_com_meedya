@@ -1,4 +1,10 @@
 <?php
+/**
+ * @package		com_meedya
+ * @copyright	Copyright (C) 2016 Ron Crans. All rights reserved.
+ * @license		GNU General Public License version 3 or later; see LICENSE.txt
+ */
+
 defined('_JEXEC') or die;
 
 JLoader::register('MeedyaHelper', JPATH_COMPONENT_ADMINISTRATOR.'/helpers/meedya.php');
@@ -18,7 +24,7 @@ class MeedyaController extends JControllerLegacy
 	public function display ($cachable = false, $urlparams = false)
 	{
 		if ($this->uid && !file_exists(MeedyaHelper::userDataPath())) {
-			$this->input->set('view', 'startup');
+			$this->input->set('layout', 'startup');
 		}
 		return parent::display($cachable, $urlparams);
 	}

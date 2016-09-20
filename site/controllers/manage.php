@@ -1,4 +1,10 @@
 <?php
+/**
+ * @package		com_meedya
+ * @copyright	Copyright (C) 2016 Ron Crans. All rights reserved.
+ * @license		GNU General Public License version 3 or later; see LICENSE.txt
+ */
+
 defined('_JEXEC') or die;
 
 //require_once JPATH_COMPONENT.'/helpers/meedya.php';
@@ -24,6 +30,7 @@ class MeedyaControllerManage extends JControllerLegacy
 		$itms = explode('|',$this->input->post->get('items','','string'));
 		if (!$itms[0]) $itms = $this->input->get('after','','string');
 		$view->iids = $m->getImages($itms);
+	//	$view->setModel('manage');
 		$view->display();
 	}
 
@@ -62,6 +69,19 @@ class MeedyaControllerManage extends JControllerLegacy
 		$view->albums = $m->getAlbumsList();
 		$view->dbTime = $m->getDbTime();
 		$view->setLayout('upload');
+		$view->display();
+	}
+
+	public function editImgs ()
+	{
+		$view = $this->createView('Images', 'MeedyaView', 'html');	//$this->getView('manage','html');
+		$view->setLayout('imgedit');
+		$m = $this->createModel('Images','MeedyaModel');		//$this->getModel('manage');
+		$view->setModel($m, true);
+	//	$itms = explode('|',$this->input->post->get('items','','string'));
+	//	if (!$itms[0]) $itms = $this->input->get('after','','string');
+	//	$view->iids = $m->getItems();
+		$view->itemId = $this->input->getInt('Itemid');
 		$view->display();
 	}
 

@@ -1,4 +1,10 @@
 <?php
+/**
+ * @package		com_meedya
+ * @copyright	Copyright (C) 2016 Ron Crans. All rights reserved.
+ * @license		GNU General Public License version 3 or later; see LICENSE.txt
+ */
+
 defined('_JEXEC') or die;
 
 require_once __DIR__ . '/meedya.php';
@@ -23,7 +29,7 @@ class MeedyaModelManage extends MeedyaModelMeedya
 			$q = 'INSERT INTO `config` (`type`,`vals`) VALUES ('.$typ.','.$qvals.')';
 		}
 		$db->setQuery($q);
-		$db->execute();		
+		$db->execute();
 	}
 
 	public function getDbTime ()
@@ -155,11 +161,13 @@ class MeedyaModelManage extends MeedyaModelMeedya
 			jexit();
 		}
 		$fsize = filesize($ffpnam);
-		require_once JPATH_COMPONENT.'/helpers/graphicim.php';
+		$imp = class_exists('Imagick') ? 'im' : 'gd';
+		require_once JPATH_COMPONENT.'/helpers/graphic'.$imp.'.php';
 	//	$xsize = MeedyaHelperGraphics::orientImage($ffpnam, $ffpnam);
 	//	$xsize += MeedyaHelperGraphics::createThumb($ffpnam, $mdydir.'/thm/'.$base_name.$uniq, $ext);
 	//	$xsize += MeedyaHelperGraphics::createMedium($ffpnam, $mdydir.'/med/'.$base_name.$uniq, $ext);
 		$imgP = new ImageProcessor($ffpnam);
+		if (JDEBUG && $imgP->getErrors()) { JLog::add(implode("\n",$imgP->getErrors()), JLog::INFO, 'com_meedya'); }
 		$xsize = $imgP->orientImage($ffpnam);
 		$xsize += $imgP->createMedium($mdydir.'/med/'.$base_name.$uniq, $ext);
 		$xsize += $imgP->createThumb($mdydir.'/thm/'.$base_name.$uniq, $ext);
@@ -301,7 +309,9 @@ class MeedyaModelManage extends MeedyaModelMeedya
 		$db = $this->getDbo();
 		$query = $db->getQuery(true);
 		$query->select('*');
-		$query->from('albums');
+	//	$query->from('albums');
+		$query->from('meedyaitems');
+		$query->order('expodt');
 		return $query;
 	}
 

@@ -109,6 +109,10 @@ dd.tabs {
 }
 
 /* new album modal */
+#newalbdlg {
+	width:50%;
+	margin-left:-25%;
+}
 #crealbm .nualbtop {
 	float:left;
 	margin-right:2em;
@@ -116,4 +120,9 @@ dd.tabs {
 #crealbm .nualbdsc {
 	width:100%;
 	box-sizing:border-box;
+}
+
+#delact {
+	width:500px;
+	margin-left:-250px;
 }

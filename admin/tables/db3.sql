@@ -8,7 +8,10 @@ CREATE TABLE `meedyaitems` (
 	`kywrd` TEXT DEFAULT NULL,
 	`album` TEXT DEFAULT NULL,
 	`timed` DATETIME DEFAULT CURRENT_TIMESTAMP,
+	`expodt` DATETIME DEFAULT NULL,
 	`thumb` TEXT DEFAULT NULL);
+CREATE INDEX item_expodt_idx ON meedyaitems (expodt);
+CREATE VIEW 'usage' AS SELECT SUM(tsize) as totuse FROM `meedyaitems`;
 CREATE TABLE `albums` (
 	`aid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
 	`paid` INTEGER DEFAULT 0,
