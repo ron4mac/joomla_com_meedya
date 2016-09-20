@@ -15,6 +15,7 @@ CREATE VIEW 'usage' AS SELECT SUM(tsize) as totuse FROM `meedyaitems`;
 CREATE TABLE `albums` (
 	`aid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
 	`paid` INTEGER DEFAULT 0,
+	`tstamp` INTEGER DEFAULT 0,
 	`thumb` INTEGER DEFAULT 0,
 	`visib` INTEGER DEFAULT 0,
 	`hord` TEXT DEFAULT NULL,
