@@ -24,7 +24,7 @@ abstract class JHtmlMeedya
 		usort($albs, function ($a, $b) { return strnatcmp($a['hord'],$b['hord']); });
 		foreach ($albs as $alb) {
 			$d = count(explode('.',$alb['hord']));
-			$html .= '<option value="'.$alb['aid'].'"'.($alb['aid']==$sel? ' selected' : '').'>'.str_repeat('&nbsp;&nbsp;',$d-1).$alb['title'].'</option>';
+			$html .= '<option value="'.$alb['aid'].'"'.($alb['aid']==$sel ? ' selected' : '').'>'.str_repeat('&nbsp;&nbsp;',$d-1).$alb['title'].'</option>';
 		}
 		return $html;
 	}

@@ -13,7 +13,7 @@ function slctImg (evt, elm) {	//console.log(evt);
 	//return false;
 	if (jQuery(elm).hasClass('islct')) {
 		jQuery("#imgVue").prop('src', jQuery(elm).data('img'));
-		jQuery("#imgMdl").modal({keyboard:true});
+		jQuery("#imgModl").modal({keyboard:true});
 	} else {
 		if (!evt.metaKey) {
 			for (var i = 0, len = slctImgs.length; i < len; i++) {
@@ -33,7 +33,7 @@ function slctImg (evt, elm) {	//console.log(evt);
 .islct {border-color:blue;}
 .modal-body {max-height:initial;}
 .modal-backdrop.fade.in {opacity:0.4;}
-#imgVue {max-height:80%;}
+#imgMdl {max-height:90%;}
 </style>
 <div class="meedya-gallery">
 	<?php if ($this->params->def('show_page_heading', 1)) : ?>
@@ -47,7 +47,9 @@ function slctImg (evt, elm) {	//console.log(evt);
 		<?php
 			foreach ($this->iids as $item) {
 			//	echo '<a href="'.$this->gallpath.'/img/'.$item->file.'" onclick="return slctImg(event, this)"><img src="'.$this->gallpath.'/thm/'.$item->file.'" class="mitem" width="120" height="120" /></a>';
-				echo '<img src="'.$this->gallpath.'/thm/'.$item->file.'" data-img="'.$this->gallpath.'/med/'.$item->file.'" class="mitem" width="120" height="120" onclick="return slctImg(event, this)" />';
+				echo '<img src="" data-echo="'.$this->gallpath.'/thm/'.$item->file
+					.'" data-img="'.$this->gallpath.'/img/'.$item->file
+					.'" class="mitem" width="120" height="120" onclick="return slctImg(event, this)" />';
 			}
 			//JUri::base().
 		?>
@@ -57,14 +59,14 @@ function slctImg (evt, elm) {	//console.log(evt);
 <div class="page-footer">
 	<?php echo $this->pagination->getListFooter(); ?>
 </div>
-<div id="imgMdl" class="modal fade" role="dialog">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal">&times;</button>
-				<h4>Image</h4>
-			</div>
-			<div class="modal-body"><img id="imgVue" src="" /></div>
-		</div>
-	</div>
-</div>
+<?php
+	$modal_params = array();
+	$modal_params['title'] = 'Image:';
+	$modal_body = '<img id="imgVue" src="" />';
+	echo JHTML::_('bootstrap.renderModal', 'imgModl', $modal_params, $modal_body);
+?>
+<script>
+	echo.init({
+		offset: 200
+	});
+</script>

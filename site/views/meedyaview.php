@@ -37,6 +37,8 @@ class MeedyaView extends JViewLegacy
 		$this->pagination = $this->get('Pagination');
 
 	//	echo'GOt here';var_dump($this->pagination,$this->items);jexit();
+		$jdoc = JFactory::getDocument();
+		$jdoc->addScript('components/com_meedya/static/js/'.MeedyaHelper::scriptVersion('echo'));
 		parent::display($tpl);
 	}
 

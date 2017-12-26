@@ -20,9 +20,27 @@ abstract class MeedyaHelper
 			'aP'=>1,	//autoplay
 			'lS'=>0,	//loop slideshow
 			'sD'=>5,	//slide duration
-			'dC'=>'#666,#CCC,#333,#FFF,#000',	//control background, control text, text background, text text, pic background
+			'dC'=>array('#666','#CCC','rgba(51,51,51,0.5)','#FFF','#000'),	//control background, control text, text background, text text, pic background
 			'iS'=>'cb1' //iconset
 		);
+
+	public static function scriptVersion ($scr)
+	{
+		$bg = array(
+			'echo'=>'echo.js',
+			'slides'=>'slides.js',
+			'upload'=>'upload.js',
+			'each'=>'each.js'
+			);
+		$nb = array(
+			'echo'=>'echo.min.js',
+			'slides'=>'slides.min.js',
+			'upload'=>'upload.min.js',
+			'each'=>'each.js'
+			);
+		if (JDEBUG) return $bg[$scr];
+		else return $nb[$scr];
+	}
 
 	public static function getStorageBase ()
 	{

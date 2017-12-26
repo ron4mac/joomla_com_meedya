@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata>
+	<layout title="com_meedya_albums_view_default_title" option="com_meedya_albums_view_default_option">
+		<help
+			key="JHELP_MENUS_MENU_ITEM_MEEDYA_MEEDYA"
+		/>
+		<message>
+			<![CDATA[com_meedya_albums_view_default_desc]]>
+		</message>
+	</layout>
+
+	<!-- Add fields to the request variables for the layout. -->
+	<fields name="params">
+		<fieldset name="request">
+
+			<field 
+				name="instance_type" 
+				type="list"
+				label="COM_MEEDYA_FIELD_OWNER_LABEL"
+				description="COM_MEEDYA_FIELD_OWNER_DESC"
+				required="true"
+			>
+				<option value="">JSELECT</option>
+				<option value="0">COM_MEEDYA_OWNER_USER</option>
+				<option value="1">COM_MEEDYA_OWNER_GRP</option>
+				<option value="2">COM_MEEDYA_OWNER_SITE</option>
+			</field>
+
+			<field
+				name="owner_group"
+				type="usergrouplist"
+				label="COM_MEEDYA_FIELD_GROUP_LABEL"
+				description="COM_MEEDYA_FIELD_GROUP_DESC"
+				default="0"
+				required="true"
+				showon="instance_type:1" />
+
+		</fieldset>
+	</fields>
+</metadata>

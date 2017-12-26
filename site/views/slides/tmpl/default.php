@@ -6,7 +6,7 @@ ini_set('display_errors', '1');
 
 JHtml::stylesheet('components/com_meedya/static/css/slides.css');
 $jdoc = JFactory::getDocument();
-$jdoc->addScript('components/com_meedya/static/js/slides.js');
+$jdoc->addScript('components/com_meedya/static/js/'.MeedyaHelper::scriptVersion('slides'));
 
 $H5ss_cfg = $this->html5slideshowCfg;
 
@@ -38,7 +38,7 @@ if ($this->slides) {
 if ($H5ss_cfg['sI']) shuffle($filelist);
 $popdwin = false;	//($superCage->get->getInt('h5sspu') == 1);
 $icons = $H5ss_cfg['iS'];
-$dcolors = explode(',', $H5ss_cfg['dC']);
+$dcolors = $H5ss_cfg['dC'];		//explode(',', $H5ss_cfg['dC']);
 ?>
 <style type="text/css">
 	html { height:100%; overflow:hidden }

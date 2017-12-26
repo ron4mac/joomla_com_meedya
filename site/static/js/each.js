@@ -3,81 +3,27 @@
 		vendorQuirk = {
 			vendorID: 'w3',
 			browserPrefix: '',
-//			tranEnd: 'transitionEnd',
 			reqFull: 'requestFullScreen',
 			canFull: 'cancelFullScreen'
 		};
-	if (navigator.appName == 'Microsoft Internet Explorer') {
+	if (navigator.userAgent.indexOf('MSIE')!==-1 || navigator.appVersion.indexOf('Trident/') > 0) {
 		vendorQuirk.vendorID = 'ie';
 		vendorQuirk.browserPrefix = 'ms';
-//		vendorQuirk.tranEnd = '';
 	} else if (navigator.userAgent.indexOf('WebKit') > -1) {
 		vendorQuirk.vendorID = 'wk';
 		vendorQuirk.browserPrefix = 'webkit';
-//		vendorQuirk.tranEnd = 'webkitTransitionEnd';
 	} else if (navigator.userAgent.indexOf('Gecko') > -1) {
 		vendorQuirk.vendorID = 'ff';
 		vendorQuirk.browserPrefix = 'moz';
-//		vendorQuirk.tranEnd = 'transitionend';
 	} else if (navigator.userAgent.indexOf('Opera') > -1) {
 		vendorQuirk.vendorID = 'op';
 		vendorQuirk.browserPrefix = 'o';
-//		vendorQuirk.tranEnd = 'oTransitionEnd';
 	} else if (navigator.userAgent.indexOf('KHTML') > -1) {
 		vendorQuirk.vendorID = 'kd';
 		vendorQuirk.browserPrefix = 'khtml';
-//		vendorQuirk.tranEnd = 'khtmlTransitionEnd';
 	}
 	// export quirks
 	window.vendorQuirk = vendorQuirk;
-}());
-
-
-(function() {
-	var
-		fullScreenApi = {
-			supportsFullScreen: false,
-			isFullScreen: function() { return false; },
-			requestFullScreen: function() {},
-			cancelFullScreen: function() {},
-			fullScreenEventName: '',
-			prefix: ''
-		};
- 
-	// check for native support
-	if (typeof document.cancelFullScreen != 'undefined') {
-		fullScreenApi.supportsFullScreen = true;
-	} else {
-		// check for fullscreen support by vendor prefix
-		if (typeof document[vendorQuirk.browserPrefix + 'CancelFullScreen'] != 'undefined') {
-			fullScreenApi.supportsFullScreen = true;
-			fullScreenApi.prefix = vendorQuirk.browserPrefix;
-		}
-	}
-
-	// update methods to do something useful
-	if (fullScreenApi.supportsFullScreen) {
-		fullScreenApi.fullScreenEventName = fullScreenApi.prefix + 'fullscreenchange';
-		fullScreenApi.isFullScreen = function() {
-			switch (this.prefix) {
-				case '':
-					return document.fullScreen;
-				case 'webkit':
-					return document.webkitIsFullScreen;
-				default:
-					return document[this.prefix + 'FullScreen'];
-			}
-		};
-		fullScreenApi.requestFullScreen = function(el) {
-			return (this.prefix === '') ? el.requestFullScreen() : el[this.prefix + 'RequestFullScreen']();
-		};
-		fullScreenApi.cancelFullScreen = function() {
-			return (this.prefix === '') ? document.cancelFullScreen() : document[this.prefix + 'CancelFullScreen']();
-		};
-	}
-
-	// export api
-	window.fullScreenApi = fullScreenApi;
 }());
 
 // getElementById
@@ -92,13 +38,13 @@ var	ssCtl = (function() {
 		_ffv = 2,			// frame focus view - generally the middle view of the frame
 		_fle = 0,			// left edge of view frame relative to imagelist
 		_ielms = Array(),	// elements associated with the view frame
+		_iarea = null,		// image area
 		_iniClass,
 		_onClass,
 		_trzn,
 		_slideDur = 7000,	// display duration for eash image
 		_sTimer = null,
 		_running = false,
-		_fullScreenApi = null,
 		_topMargin = 22,
 		_sldnumelm = null,
 		_titlelm = null,
@@ -194,6 +140,7 @@ var	ssCtl = (function() {
 	function loadElm (elm, lix, lft) {
 		elm.eMsg = null;
 		if (vendorQuirk.vendorID == "ff") { elm.src = ''; elm.completed = false; }	//for FF to full load image
+	//	elm.src = null;
 		elm.src = imagelist[lix].fpath;
 		elm.slidnum = lix;
 		elm.isSized = false;
@@ -261,19 +208,6 @@ if (LR !== 0) { _titlelm.innerHTML = ""; }
 		_running = false;
 	}
 
-	function slideshowRun () {
-		_pauseRunDiv.style.backgroundPosition = '-54px 0';
-		slideshowPause();
-//		positionImage(_ielms[_ffv], null);
-//		_sTimer = setTimeout(function(){nextSlide()}, _slideDur);
-		_running = true;
-		nextFrame(0);
-	}
-	function slideshowStop () {
-		_pauseRunDiv.style.backgroundPosition = '-72px 0';
-		slideshowPause();
-	}
-
 	function preSizeImages () {
 		var i, icnt = _ielms.length;
 		for (i=0; i<icnt; i++) {
@@ -283,12 +217,12 @@ if (LR !== 0) { _titlelm.innerHTML = ""; }
 
 	function preSizeImage (img, cb) {
 		if (!img.complete) { setTimeout(function(){preSizeImage(img, cb)},100); return; }
-		var bH = window.innerHeight - _titlelm.offsetTop,	//// - _titlelm.offsetHeight - 2,
-			bW = window.innerWidth,
+		var bH = window.innerHeight/* - _titlelm.offsetTop*/,	//// - _titlelm.offsetHeight - 2,
+			bW = _iarea.innerWidth,
 			pW = img.naturalWidth,
 			pH = img.naturalHeight,
 			fW, fH;
-//		if (imagelist[img.slidnum].title) { bH -= 26; }
+		if (imagelist[img.slidnum].title) { bH -= 26; }
 		if (pW>0 && pH>0) {
 			fH = pH>bH ? bH : pH;
 			fW = Math.round(pW*fH/pH);
@@ -307,7 +241,7 @@ if (LR !== 0) { _titlelm.innerHTML = ""; }
 	function positionImage (img, cb) {
 		if (!img.isSized) { _loading.style.display = "block"; setTimeout(function(){positionImage(img, cb)},100); return; }
 		_loading.style.display = "none";
-		var bW = window.innerWidth,
+		var bW = _iarea.innerWidth,
 			fW = img.width;
 			if (fW<bW) {
 				img.style.left = Math.floor((bW-fW)/2)+"px";
@@ -335,65 +269,32 @@ if (LR !== 0) { _titlelm.innerHTML = ""; }
 
 //===============================================================
 
-	function runToggle () {
-		if (_sTimer) {
-			slideshowStop();
-		} else {
-			slideshowRun();
-		}
-	}
-
 	function rewindShow () {
-		slideshowStop();
 		goToSlide(0);
 		nextFrame(0);
 	}
 
 	function lastSlide () {
-		slideshowStop();
 		goToSlide(_ill-1);
 		nextFrame(0);
-	}
-
-	function toggleFully () {
-		var tfsdiv = $id("cb_full");
-		if (_fullScreenApi.isFullScreen()) {
-			_fullScreenApi.cancelFullScreen();
-			tfsdiv.style.backgroundPosition = '-126px 0';
-		}
-		else {
-			if (_fullScreenApi.supportsFullScreen) {
-				_fullScreenApi.requestFullScreen(document.body);
-				tfsdiv.style.backgroundPosition = '-144px 0';
-			}
-		}
 	}
 
 	mySC.doMnu = function(cmd) {
 		switch(cmd) {
 			case _stop:
-				if (popdwin) { window.close(); }
-				else { window.history.back(); }
+				window.history.back();
 				break;
 			case _rwnd:
 				rewindShow();
 				break;
 			case _prev:
-				slideshowStop();
 				prevSlide();
 				break;
-			case _paus:
-				runToggle();
-				break;
 			case _next:
-				slideshowStop();
 				nextSlide();
 				break;
 			case _last:
 				lastSlide();
-				break;
-			case _fuls:
-				toggleFully();
 				break;
 		}
 	};
@@ -402,9 +303,6 @@ if (LR !== 0) { _titlelm.innerHTML = ""; }
 		if (e.preventDefault) e.preventDefault();
 		if (e.stopPropagation) e.stopPropagation();
 		switch (code) {
-			case 32:
-				mySC.doMnu(_paus);
-				break;
 			case 37:
 				mySC.doMnu(_prev);
 				break;
@@ -419,10 +317,6 @@ if (LR !== 0) { _titlelm.innerHTML = ""; }
 				break;
 			case 93:
 				mySC.doMnu(_last);
-				break;
-			case 9:
-			case 13:
-				mySC.doMnu(_fuls);
 				break;
 		}
 	}
@@ -490,24 +384,20 @@ if (LR !== 0) { _titlelm.innerHTML = ""; }
 		_resizeTime=setTimeout(function(){_resizing=true;trzn.resz();nextFrame(0);_resizing=false}, 200);
 	}
 
-	function showSeconds () {
-		var sspan = $id("seconds");
-		sspan.innerHTML = Math.round(_slideDur/1000);
-	}
-
 	function imgError () {
 		this.eMsg = '<p class="errMsg">'+imgerror+this.src+'</p>';
-		this.src = "components/com_meedya/static/css/broken.png";
+		this.src = "plugins/html5slideshow/css/broken.png";
 	}
 
 	mySC.sdur = function(up) {
 		if (up) {_slideDur += 1000}
 		else { if (_slideDur > 3000) {_slideDur -= 1000} }
-		showSeconds();
 	};
 
-	mySC.init = function(fsapi) {
-		var i, ielm, iarea = $id("screen");
+	mySC.init = function() {
+		var i, ielm;
+
+		_iarea = $id("iarea");
 
 		trzn = t_none;	//use no transition by default
 		_onClass = 'islide img_show';
@@ -534,29 +424,23 @@ if (LR !== 0) { _titlelm.innerHTML = ""; }
 			ielm.style.left = (window.innerWidth+2)+"px";
 			ielm.className = _iniClass;
 			_ielms.push(ielm);
-			iarea.appendChild(ielm);
+			_iarea.appendChild(ielm);
 		}
 		// get the middle element of the image frame
 		_ffv = Math.floor(_iecnt/2);
 
 		// watch for swipes
-		iarea.addEventListener('touchstart', touch, false);
-		iarea.addEventListener('touchmove', function(e){e.preventDefault();}, false);
-		iarea.addEventListener('touchend', swipe, false);
+		_iarea.addEventListener('touchstart', touch, false);
+		_iarea.addEventListener('touchmove', function(e){e.preventDefault();}, false);
+		_iarea.addEventListener('touchend', swipe, false);
 
-		_fullScreenApi = fsapi;
 		_sldnumelm = $id("slidnum");
 		_titlelm = $id("ptext");
 		_pauseRunDiv = $id("cb_paus");
 		_loading = $id("loading");
 		_slideDur = this.slideDur;
-		showSeconds();
-		goToSlide(0);
-		if (this.autoPlay) {
-			slideshowRun();
-		} else {
-			nextFrame(0);
-		}
+		goToSlide(startx);
+		nextFrame(0);
 		window.onresize = winResized;
 	};
 
@@ -566,4 +450,4 @@ if (LR !== 0) { _titlelm.innerHTML = ""; }
 	return mySC;
 }());
 
-window.onload = function(){ssCtl.init(fullScreenApi);};
+window.onload = function(){ssCtl.init();};

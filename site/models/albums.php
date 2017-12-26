@@ -3,19 +3,20 @@ defined('_JEXEC') or die;
 
 require_once __DIR__ . '/meedya.php';
 
-class MeedyaModelAlbum extends MeedyaModelMeedya
+class MeedyaModelAlbums extends MeedyaModelMeedya
 {
-	protected $_album = null;
+//	protected $_album = null;
 	protected $_itms = null;
 	protected $_total = null;
 	protected $_pagination = null;
 
-	public function getTitle ()
-	{
-		$this->getAlbum();
-		return $this->_album->title;
-	}
+//	public function getTitle ()
+//	{
+//		$this->getAlbum();
+//		return $this->_album->title;
+//	}
 
+/*
 	public function getItems ()
 	{
 		$this->getAlbum();
@@ -29,6 +30,7 @@ class MeedyaModelAlbum extends MeedyaModelMeedya
 			return array_slice($this->_itms, $this->state->get('list.start'.$aid));
 		}
 	}
+*/
 
 	public function getAlbums ()
 	{
@@ -40,11 +42,6 @@ class MeedyaModelAlbum extends MeedyaModelMeedya
 		return $albs;
 	}
 
-	public function getImageUrl ()
-	{
-		
-	}
-
 	public function getTotal ()
 	{
 		return $this->_total;
@@ -53,9 +50,9 @@ class MeedyaModelAlbum extends MeedyaModelMeedya
 	public function getPagination ()
 	{
 		if (empty($this->_pagination)) {
-			$aid = $this->getState('album.id') ? : 0;
-			$limitstart = $this->state->get('list.start'.$aid);
-			$limit = $this->state->get('list.limit'.$aid);
+//			$aid = $this->getState('album.id') ? : 0;
+			$limitstart = $this->state->get('list.start'/*.$aid*/);
+			$limit = $this->state->get('list.limit'/*.$aid*/);
 			$total = $this->getTotal();
 
 			$this->_pagination = new JPagination($total, $limitstart, $limit);
@@ -66,13 +63,14 @@ class MeedyaModelAlbum extends MeedyaModelMeedya
 
 	protected function getListQuery ()
 	{	//echo'<xmp>';var_dump($this);echo'</xmp>';
-		$aid = $this->getState('album.id') ? : 0;
+//		$aid = $this->getState('album.id') ? : 0;
 	//	$db = parent::getDBO();
 		$db = $this->getDbo();
 		$query = $db->getQuery(true);
 		$query->select('*');
 		$query->from('albums');
-		$query->where('aid='.$aid);
+		$query->order('catid');
+//		$query->where('aid='.$aid);
 		return $query;
 	}
 
@@ -84,26 +82,26 @@ class MeedyaModelAlbum extends MeedyaModelMeedya
 		$input = $app->input;
 
 		// album ID
-		$aid = $input->get('aid', 0, 'INT');
-		$this->state->set('album.id', $aid);	//echo'<xmp>';var_dump($this->state);echo'</xmp>';
+//		$aid = $input->get('aid', 0, 'INT');
+//		$this->state->set('album.id', $aid);	//echo'<xmp>';var_dump($this->state);echo'</xmp>';
 
 		// List state information
 		$limit = $app->getUserStateFromRequest('global.list.limit', 'limit', $app->getCfg('list_limit'));
-		$this->setState('list.limit'.$aid, $limit);
+		$this->setState('list.limit'/*.$aid*/, $limit);
 
 		$limitstart = $input->getInt('limitstart', 0);
-		$this->setState('list.start'.$aid, $limitstart);
+		$this->setState('list.start'/*.$aid*/, $limitstart);
 
 		// Load the parameters.
 		$this->setState('params', $params);
 	}
 
-	private function getAlbum ()
-	{
-		if (!$this->_album) {
-			$items = parent::getItems();
-			$this->_album = $items[0];
-		}
-	}
+//	private function getAlbum ()
+//	{
+//		if (!$this->_album) {
+//			$items = parent::getItems();
+//			$this->_album = $items[0];
+//		}
+//	}
 
 }

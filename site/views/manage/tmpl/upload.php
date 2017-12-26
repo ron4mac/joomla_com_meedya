@@ -30,7 +30,7 @@ $jdoc = JFactory::getDocument();
 $jdoc->addScriptDeclaration($script);
 //$jdoc->addScript('components/com_meedya/static/dynamic.js');
 //$jdoc->addScript('components/com_meedya/static/upload.js');
-$jdoc->addCustomTag('<script src="'.JUri::base(true).'/components/com_meedya/static/js/upload.js" type="text/javascript"></script>');
+$jdoc->addCustomTag('<script src="'.JUri::base(true).'/components/com_meedya/static/js/'.MeedyaHelper::scriptVersion('upload').'" type="text/javascript"></script>');
 ?>
 <div class="meedya-gallery">
 <?php if ($this->params->def('show_page_heading', 1)) : ?>

@@ -12,9 +12,13 @@ CREATE TABLE `meedyaitems` (
 	`thumb` TEXT DEFAULT NULL);
 CREATE INDEX item_expodt_idx ON meedyaitems (expodt);
 CREATE VIEW 'usage' AS SELECT SUM(tsize) as totuse FROM `meedyaitems`;
+CREATE TABLE `cats` (
+	`cid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+	`title` TEXT DEFAULT NULL);
 CREATE TABLE `albums` (
 	`aid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
 	`paid` INTEGER DEFAULT 0,
+	`catid` INTEGER DEFAULT 0,
 	`tstamp` INTEGER DEFAULT 0,
 	`thumb` INTEGER DEFAULT 0,
 	`visib` INTEGER DEFAULT 0,

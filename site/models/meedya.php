@@ -97,6 +97,26 @@ class MeedyaModelMeedya extends JModelList
 		return $query;
 	}
 
+/*	public function getAlbum ($aid=0)
+	{
+		if ($this->_album) return $this->_album;
+		$aid = $aid ?: ($this->state->get('album.id') ?: 0);
+		$db = $this->getDbo();
+		$db->setQuery('SELECT * FROM `albums` WHERE `aid`='.$aid);
+		$this->_album = $db->loadObject();
+		return $this->_album;
+	}*/
+
+	public function getItemFile ($iid)
+	{
+		if (!$iid) return false;
+		$db = $this->getDbo();
+		$db->setQuery('SELECT * FROM `meedyaitems` WHERE `id`='.$iid);
+		$r = $db->loadAssoc();
+		//var_dump($r);
+		return $r;
+	}
+
 	private function getAlbum ()
 	{
 		if (!$this->_album) {

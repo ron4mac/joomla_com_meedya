@@ -1,0 +1,54 @@
+#iarea {
+	position: relative;
+	text-align: center;
+}
+
+.controls {
+	font-size: large;
+	color: orange;
+	float: right;
+}
+
+#ptext {
+	position:absolute;
+	background-color: rgba(51,51,51,0.4);
+	color: #FFFFFF;
+	font-size: larger;
+	line-height: 1.7em;
+	right: 0;
+	left: 0;
+	z-index: 9;
+}
+
+/** NEW SLIDE SHOW **/
+.islide {
+	position:absolute;
+}
+.initial {
+	opacity:0;
+	top:-9999px;
+	left:-9999px;
+}
+.img_show {
+	opacity:1;
+}
+.img_hide {
+	opacity:0;
+}
+.img_off {
+	opacity:0;
+	transition: 0.75s opacity;
+	transition-timing-function: ease;
+}
+.img_on {
+	opacity:1;
+	transition: 0.75s opacity;
+	transition-delay: 0.25s;
+	transition-timing-function: ease;
+}
+
+/* slide left/right */
+.img_slin {
+	transition: 0.75s left;
+	transition-timing-function: ease-out;
+}

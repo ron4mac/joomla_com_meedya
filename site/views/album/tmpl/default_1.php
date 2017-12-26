@@ -3,9 +3,9 @@ defined('_JEXEC') or die;
 
 JHtml::addIncludePath(JPATH_COMPONENT.'/helpers');
 
-JHtml::_('bootstrap.tooltip','.hasTip',array('fixed'=>true));
+JHtml::stylesheet('components/com_meedya/static/css/album.css');
+//JHtml::_('behavior.tooltip','.hasTip',array('fixed'=>true));
 $jdoc = JFactory::getDocument();
-//$jdoc->addScript('components/com_meedya/static/js/echo.min.js');
 
 $ttscript = '
     jQuery(document).ready(function() {
@@ -14,7 +14,6 @@ $ttscript = '
 ';
 
 $jdoc->addScriptDeclaration($ttscript);
-JHtml::stylesheet('components/com_meedya/static/css/album.css');
 
 ///<form>
 ///<div class="display-limit">
@@ -49,12 +48,16 @@ JHtml::stylesheet('components/com_meedya/static/css/album.css');
 }
 </style>
 <div class="meedya-gallery">
-	<h3>
-		<?php if ($this->params->def('show_page_heading', 1)) echo $this->escape($this->title); ?>
+<?php if ($this->params->def('show_page_heading', 1)) : ?>
+	<h1>
+		<?php echo $this->escape($this->title); ?>
+	</h1>
+<?php endif; ?>
+	<div class="actions">
 		<a href="<?=JRoute::_('index.php?option=com_meedya&view=slides&tmpl=component&aid='.$this->aid) ?>" title="<?=JText::_('COM_MEEDYA_SLIDESHOW')?>">
 			<img src="components/com_meedya/static/img/slideshow.png" alt="" />
 		</a>
-	</h3>
+	</div>
 <div id="area">
 <?php foreach ($this->albums as $alb): ?>
 	<div class="anitem falbum">
@@ -68,13 +71,7 @@ JHtml::stylesheet('components/com_meedya/static/css/album.css');
 		//$thumb = $this->getItemThumb($item);
 		list($thumb, $ititle, $idesc) = $this->getItemThumbPlus($item);
 		$ttip = ($ititle && $idesc) ? $ititle.'<br />'.$idesc : $ititle.$idesc;
-		echo '<div class="anitem">'
-		//	.'<a href="'.JRoute::_('index.php?option=com_meedya&view=item&iid='.$item).'" class="itm-thumb">'
-			.'<a href="'.JRoute::_('index.php?option=com_meedya&view=album&layout=each&aid='.$this->aid.'&iid='.$item).'" class="itm-thumb">'
-				.'<div data-toggle="tooltip" data-placement="bottom" title="'.$ttip.'"><img src="" data-echo="'.$this->gallpath.'/thm/'.$thumb.'" /></div>'
-				.'<div class="itm-thm-ttl">'.$item.'</div>'
-			.'</a>'
-		.'</div>';
+?><div class="anitem"><a href="<?=JRoute::_('index.php?option=com_meedya&view=item&iid='.$item) ?>" class="itm-thumb"><div data-toggle="tooltip" data-placement="bottom" title="<?=$ttip?>"><img src="<?= $this->gallpath.'/thm/'.$thumb ?>" /></div><div class="itm-thm-ttl"><?= $item ?></div></a></div><?php
 	}
 ?>
 <!-- <div id="itmend" class="noitem"></div> -->
@@ -85,12 +82,4 @@ JHtml::stylesheet('components/com_meedya/static/css/album.css');
 </div>
 <script>
 //initArrange();
-	echo.init({
-		offset: 100,
-		throttle: 250,
-		unload: false,
-		callback: function (element, op) {
-			console.log(element, 'has been', op + 'ed')
-		}
-	});
 </script>
