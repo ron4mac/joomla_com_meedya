@@ -32,7 +32,7 @@ function $id(id) {
 }
 
 var	ssCtl = (function() {
-	var mySC = {autoPlay:true, slideDur:7000, trnType:"d", repeat:false},
+	var mySC = {autoPlay:true, slideDur:7000, trnType:"x", repeat:false},
 		_ill = 0,			// imagelist length
 		_iecnt = 5,			// max number of elements in the view frame
 		_ffv = 2,			// frame focus view - generally the middle view of the frame

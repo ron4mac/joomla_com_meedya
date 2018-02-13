@@ -22,7 +22,7 @@ js_vars.site_url = "'.JUri::base().'index.php?option=com_meedya";
 js_vars.H5uPath = "'.JUri::base(true).'/components/com_meedya/static/";
 js_vars.upLink = "'.JUri::base().'index.php?option=com_meedya&format=raw";
 js_vars.fup_payload = {task: "manage.upfile", galid: "'.$this->galid.'"};
-js_vars.maxfilesize = '.($this->params->get('max_upload')+(8*1024*1024)).';';
+js_vars.maxfilesize = '.((int)$this->params->get('max_upload')+(8*1024*1024)).';';
 
 JHtml::stylesheet('components/com_meedya/static/css/upload.css');
 JHtml::_('jquery.framework');

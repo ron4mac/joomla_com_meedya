@@ -1,4 +1,9 @@
 <?php
+/**
+ * @package		com_meedya
+ * @copyright	Copyright (C) 2017 Ron Crans. All rights reserved.
+ * @license		GNU General Public License version 3 or later; see LICENSE.txt
+ */
 defined('_JEXEC') or die;
 
 require_once __DIR__ . '/meedya.php';
@@ -9,6 +14,14 @@ class MeedyaModelAlbums extends MeedyaModelMeedya
 	protected $_itms = null;
 	protected $_total = null;
 	protected $_pagination = null;
+
+	public function __construct ($config = array())
+	{
+		if (JDEBUG) {
+			JLog::add('MeedyaModelAlbums', JLog::DEBUG, 'com_meedya');
+		}
+		parent::__construct($config);
+	}
 
 //	public function getTitle ()
 //	{
@@ -35,7 +48,6 @@ class MeedyaModelAlbums extends MeedyaModelMeedya
 	public function getAlbums ()
 	{
 		$aid = $this->getState('album.id') ? : 0;
-	//	$db = parent::getDBO();
 		$db = $this->getDbo();
 		$db->setQuery('SELECT * FROM `albums` WHERE `paid`='.$aid);
 		$albs = $db->loadObjectList();
@@ -64,7 +76,6 @@ class MeedyaModelAlbums extends MeedyaModelMeedya
 	protected function getListQuery ()
 	{	//echo'<xmp>';var_dump($this);echo'</xmp>';
 //		$aid = $this->getState('album.id') ? : 0;
-	//	$db = parent::getDBO();
 		$db = $this->getDbo();
 		$query = $db->getQuery(true);
 		$query->select('*');
@@ -94,6 +105,8 @@ class MeedyaModelAlbums extends MeedyaModelMeedya
 
 		// Load the parameters.
 		$this->setState('params', $params);
+
+		parent::populateState($ordering, $direction);
 	}
 
 //	private function getAlbum ()

@@ -62,7 +62,7 @@ class ImageProcessor
 		}
 		catch(Exception $e) {
 		//	die('Error when creating a thumbnail: ' . $e->getMessage());
-			$this->errs[] = 'Error when creating a thumbnail: ' . $e->getMessage();
+			$this->errs[] = 'Error when creating thumbnail: ' . $e->getMessage();
 		}
 	}
 

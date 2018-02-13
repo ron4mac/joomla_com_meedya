@@ -10,7 +10,7 @@ class MeedyaViewMeedya extends MeedyaView
 	function display ($tpl = null)
 	{
 		$this->state = $this->get('State');
-//		$this->items = $this->get('Items');
+		$this->items = $this->get('Items');
 
 		parent::display($tpl);
 	}

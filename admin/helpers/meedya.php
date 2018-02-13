@@ -1,4 +1,9 @@
 <?php
+/**
+ * @package		com_meedya
+ * @copyright	Copyright (C) 2017 Ron Crans. All rights reserved.
+ * @license		GNU General Public License version 3 or later; see LICENSE.txt
+ */
 defined('_JEXEC') or die;
 
 abstract class MeedyaHelper
@@ -172,6 +177,7 @@ abstract class MeedyaHelper
 	public static function to_KMG ($val=0)
 	{
 		$sizm = 'K';
+		$val = (int)$val;
 		if ($val) {
 			if (($val % 0x40000000) == 0) {
 				$sizm = 'G';

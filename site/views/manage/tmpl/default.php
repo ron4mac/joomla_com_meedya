@@ -44,7 +44,8 @@ function myModalButtons ($verb, $script)
 </div>
 <div>Total storage: <?=MeedyaHelper::formatBytes($this->totStore)?></div>
 <?php
-	foreach ($this->items as $item) {
+	//echo'<xmp>';var_dump($this->albums);echo'</xmp>';
+	foreach ($this->albums as $item) {
 		echo '<div class="albdsp"><div class="albbar" data-aid="'.$item->aid.'" onclick="selAlbum(event,this)"><b>'.$item->title.'</b><!-- <div class="albact albdelb" title="Delete album" onclick="doDelAct(event,'.$item->aid.');"></div> --><div class="albact albedtb" title="Edit album" onclick="doEdtAct(event,'.$item->aid.');"></div></div><div class="albthm">';
 		$pics = $item->items ? explode('|', $item->items) : array();
 		$thum = $this->getAlbumThumb($item);
@@ -110,7 +111,7 @@ echo JHtml::_(
 	}
 	function doEdtAct (evt, aid) {
 	//	window.location = 'index.php?option=com_meedya&view=amanage&aid=' + aid;
-		window.location = 'index.php?option=com_meedya&view=manage&aid=' + aid;
+		window.location = 'index.php?option=com_meedya&view=manage&layout=albedit&aid=' + aid;
 	}
 	var delDlg = {
 		cselect: '#delact',

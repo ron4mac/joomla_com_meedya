@@ -2,14 +2,24 @@
 defined('_JEXEC') or die;
 
 jimport('joomla.filesystem.folder');
-//JHtml::stylesheet('components/com_meedya/static/js/rscp/colorPicker.css');
 
 JHtml::_('jquery.framework', false);
-JHtml::_('behavior.colorpicker');
+//JHtml::_('behavior.colorpicker');
 
 $jdoc = JFactory::getDocument();
 $jdoc->addScript('components/com_meedya/static/js/slide_config.js');
+//$jdoc->addScript('components/com_meedya/static/js/jqColorPicker.min.js');
+$jdoc->addScript('components/com_meedya/static/js/spectrum.min.js');
 //$jdoc->addScript('components/com_meedya/static/js/rscp/jquery.colorPicker.min.js');
+
+JHtml::stylesheet('components/com_meedya/static/css/spectrum.css');
+//JHtml::stylesheet('components/com_meedya/static/js/rscp/colorPicker.css');
+
+$jdoc->addScriptDeclaration('jQuery.fn.spectrum.defaults.showAlpha = true;
+	jQuery.fn.spectrum.defaults.showInput = true;
+	jQuery.fn.spectrum.defaults.preferredFormat = "rgb";');
+
+//$jdoc->addScriptDeclaration('jQuery.fn.colorPicker.options.doRender = false;');
 
 if ($this->album) {
 //	$thead = '<img src="plugins/html5slideshow/css/slideshow.png" style="vertical-align:text-bottom" alt="" /> '.$JText::_('cfgtitle'). helpButton('usr');
@@ -30,7 +40,7 @@ echo <<<EOT
 		atAlbum
 	</td>
 	<td class="tableb">
-		<input type="checkbox" name="ss[atAlbum]" {$atAlbum_checked} />
+		<input type="checkbox" value="1" name="ss[aA]" {$atAlbum_checked} />
 		<img src="components/com_meedya/static/img/slideshow.png" style="margin-left:12px;vertical-align:text-bottom" />
 	</td>
 </tr>
@@ -39,7 +49,7 @@ echo <<<EOT
 		atThumbs
 	</td>
 	<td class="tableb">
-		<input type="checkbox" name="ss[atThumbs]" {$atThumbs_checked} />
+		<input type="checkbox" value="1" name="ss[aT]" {$atThumbs_checked} />
 	</td>
 </tr>
 <tr>
@@ -47,7 +57,7 @@ echo <<<EOT
 		uAllow
 	</td>
 	<td class="tableb">
-		<input type="checkbox" name="ss[uAllow]" {$uAllow_checked} />
+		<input type="checkbox" value="1" name="ss[uA]" {$uAllow_checked} />
 	</td>
 </tr>
 EOT;
@@ -88,7 +98,19 @@ for ($value=3; $value<11; $value++) {
 	$choices .= "<option value=\"$value\" $selected>$value</option>";
 }
 
-$dcolors = explode(',', $cfg['dC']);
+$ctrlSet =	'<span class="icon-stop"> </span>'.
+			'<span class="icon-arrow-first"> </span>'.
+			'<span class="icon-arrow-left"> </span>'.
+			'<span class="icon-pause"> </span>'.
+			'<span class="icon-play"> </span>'.
+			'<span class="icon-arrow-right"> </span>'.
+			'<span class="icon-arrow-last"> </span>'.
+			'<span class="icon-expand-2"> </span>'.
+			'<span class="icon-contract-2"> </span>'.
+			'<span class="icon-minus"> </span>'.
+			'<span class="icon-plus"> </span>';
+
+$dcolors = $cfg['dC'];	//explode(',', $cfg['dC']);
 
 $action_sel = '';
 if ($this->album) {
@@ -109,7 +131,7 @@ echo <<<EOT
 		newWin
 	</td>
 	<td class="tableb">
-		<input type="checkbox" name="ss[newWin]" {$newWin_checked} />
+		<input type="checkbox" value="1" name="ss[nW]" {$newWin_checked} />
 	</td>
 </tr>
 <tr>
@@ -117,7 +139,7 @@ echo <<<EOT
 		imgSize
 	</td>
 	<td class="tableb">
-		<select class="listbox" name="ss[imgSize]">
+		<select class="listbox" name="ss[pS]">
 			<option value="1"{$sizeSel[1]}>sizIntr</option>
 			<option value="2"{$sizeSel[2]}>sizFull</option>
 		</select>
@@ -128,7 +150,7 @@ echo <<<EOT
 		trnType
 	</td>
 	<td class="tableb">
-		<select class="listbox" name="ss[trnType]">
+		<select class="listbox" name="ss[tT]">
 			<option value="n"{$tranSel['n']}>imgNotr</option>
 			<option value="d"{$tranSel['d']}>imgDzlv</option>
 			<option value="s"{$tranSel['s']}>imgSlid</option>
@@ -140,7 +162,7 @@ echo <<<EOT
 		shuffle
 	</td>
 	<td class="tableb">
-		<input type="checkbox" name="ss[shuffle]" {$shuffle_checked} />
+		<input type="checkbox" value="1" name="ss[sI]" {$shuffle_checked} />
 	</td>
 </tr>
 <tr>
@@ -148,7 +170,7 @@ echo <<<EOT
 		autoPlay
 	</td>
 	<td class="tableb">
-		<input type="checkbox" name="ss[autoPlay]" {$autoPlay_checked} />
+		<input type="checkbox" value="1" name="ss[aP]" {$autoPlay_checked} />
 	</td>
 </tr>
 <tr>
@@ -156,7 +178,7 @@ echo <<<EOT
 		seconds
 	</td>
 	<td class="tableb">
-		<select class="listbox" name="ss[seconds]">{$choices}</select>
+		<select class="listbox" name="ss[sD]">{$choices}</select>
 	</td>
 </tr>
 <tr>
@@ -164,7 +186,7 @@ echo <<<EOT
 		loopShow
 	</td>
 	<td class="tableb">
-		<input type="checkbox" name="ss[loopShow]" {$loopShow_checked} />
+		<input type="checkbox" value="1" name="ss[lS]" {$loopShow_checked} />
 	</td>
 </tr>
 <tr>
@@ -172,8 +194,8 @@ echo <<<EOT
 		txt2show
 	</td>
 	<td class="tableb">
-		<input type="checkbox" name="ss[dispTitl]" id="dispTitl" {$dispTitl_checked} onchange="setText()" /> <label for="dispTitl">title</label>
-		<input type="checkbox" name="ss[dispDesc]" id="dispDesc" {$dispDesc_checked} onchange="setText()" style="margin-left:3em" /> <label for="dispDesc">caption</label>
+		<input type="checkbox" value="1" name="ss[vT]" id="dispTitl" {$dispTitl_checked} onchange="setText()" /> <label for="dispTitl">title</label>
+		<input type="checkbox" value="1" name="ss[vD]" id="dispDesc" {$dispDesc_checked} onchange="setText()" style="margin-left:3em" /> <label for="dispDesc">caption</label>
 	</td>
 </tr>
 <tr>
@@ -181,7 +203,7 @@ echo <<<EOT
 		iconset
 	</td>
 	<td class="tableb">
-		<select id="h5iconsel" class="listbox" name="ss[iconset]" onchange="H5applyis(this)">{$ichoices}</select>
+		<select id="h5iconsel" class="listbox" name="ss[iS]" onchange="H5applyis(this)">{$ichoices}</select>
 	</td>
 </tr>
 <tr>
@@ -189,16 +211,28 @@ echo <<<EOT
 		colors
 	</td>
 	<td class="tableb">
-		<div id="smpl" style="width:25em;float:left;text-align:center;margin-right:20px">
-			<div id="smpl_c">controls<img id="h5ssicons" src="components/com_meedya/static/img/sldctl/{$iconset}.png" style="margin-left:10px;padding:2px;vertical-align:middle;" alt="iconset"/></div>
-			<div id="smpl_t" style="padding-top:1px">{$ptext}</div>
-			<div id="smpl_p" style="height:160px"><img src="components/com_meedya/static/img/smplpic.jpg" alt="" /></div>
+		<div id="smpl">
+			<div>{$ctrlSet}</div>
+			<div id="smpl_c">controls<img id="h5ssicons" src="components/com_meedya/static/img/sldctl/{$iconset}.png" alt="iconset"/></div>
+			<div id="smpl_t">{$ptext}</div>
+			<div id="smpl_p"><img src="components/com_meedya/static/img/smplpic.jpg" alt="" /></div>
 		</div>
 		<table class="dspcolr" style="margin-top:1em">
 			<tr><th></th><th>background</th><th>foreground</th></tr>
-			<tr><td>ctlarea</td><td class="tac"><input id="h5ctrl_b" type="text" class="minicolors" onchange="setCtrlB(this.value)" name="ss[ctrl_b]" value="{$dcolors[0]}" /></td><td class="tac"><input id="h5ctrl_t" type="text" class="minicolors" name="ss[ctrl_t]" value="{$dcolors[1]}" /></td></tr>
-			<tr><td>txtarea</td><td class="tac"><input id="h5text_b" type="text" class="minicolors" name="ss[text_b]" value="{$dcolors[2]}" /></td><td class="tac"><input id="h5text_t" type="text" class="minicolors" name="ss[text_t]" value="{$dcolors[3]}" /></td></tr>
-			<tr><td>picarea</td><td class="tac"><input id="h5pica_b" type="text" class="minicolors" name="ss[backgrnd]" value="{$dcolors[4]}" /></td><td></td></tr>
+			<tr>
+				<td>ctlarea</td>
+				<td class="tac"><input id="h5ctrl_b" type="text" name="ss[dC][]" value="{$dcolors[0]}" /></td>
+				<td class="tac"><input id="h5ctrl_t" type="text" name="ss[dC][]" value="{$dcolors[1]}" /></td>
+			</tr>
+			<tr>
+				<td>txtarea</td>
+				<td class="tac"><input id="h5text_b" type="text" name="ss[dC][]" value="{$dcolors[2]}" /></td>
+				<td class="tac"><input id="h5text_t" type="text" name="ss[dC][]" value="{$dcolors[3]}" /></td>
+			</tr>
+			<tr>
+				<td>picarea</td><td class="tac"><input id="h5pica_b" type="text" name="ss[dC][]" value="{$dcolors[4]}" /></td>
+				<td></td>
+			</tr>
 		</table>
 	</td>
 </tr>
@@ -213,11 +247,16 @@ if ($this->album) echo "<input type=\"hidden\" name=\"album\" value=\"{$album}\"
 //echo "<input type=\"hidden\" name=\"timestamp\" value=\"{$timestamp}\" />";
 ?>
 <script>
-$(document).ready(function() {
-	$('#h5ctrl_b').data().minicolorsSettings.change = setCtrlB;
-	$('#h5ctrl_t').data().minicolorsSettings.change = setCtrlT;
-	$('#h5text_b').data().minicolorsSettings.change = setTextB;
-	$('#h5text_t').data().minicolorsSettings.change = setTextT;
-	$('#h5pica_b').data().minicolorsSettings.change = setPicaB;
+jQuery(document).ready(function() {
+//	jQuery('#h5ctrl_b').colorPicker(PickerSkin);
+//	jQuery('#h5ctrl_t').colorPicker({move:function(c){setCtrlT(c.toRgbString())}});
+//	jQuery('#h5text_b').colorPicker({move:function(c){setTextB(c.toRgbString())}});
+//	jQuery('#h5text_t').colorPicker({move:function(c){setTextT(c.toRgbString())}});
+//	jQuery('#h5pica_b').colorPicker({move:function(c){setPicaB(c.toRgbString())}});
+	jQuery('#h5ctrl_b').spectrum({move:function(c){setCtrlB(c.toRgbString())}});
+	jQuery('#h5ctrl_t').spectrum({move:function(c){setCtrlT(c.toRgbString())}});
+	jQuery('#h5text_b').spectrum({move:function(c){setTextB(c.toRgbString())}});
+	jQuery('#h5text_t').spectrum({move:function(c){setTextT(c.toRgbString())}});
+	jQuery('#h5pica_b').spectrum({move:function(c){setPicaB(c.toRgbString())}});
 });
 </script>

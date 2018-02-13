@@ -25,7 +25,7 @@ if ($this->slides) {
 		if ($H5ss_cfg['vT']) $txtinfo = trim($slide['title']);
 		if ($H5ss_cfg['vD'] && trim($slide['desc'])) $txtinfo .= ($txtinfo ? ' ... ' : '') . trim($slide['desc']);
 		$fileentry = array(
-				'fpath' => $this->gallpath .'/med/'. $slide['file'],
+				'fpath' => $slide['file'],
 				'title' => $txtinfo
 				);
 		$filelist[] = $fileentry;
@@ -46,11 +46,12 @@ $dcolors = $H5ss_cfg['dC'];		//explode(',', $H5ss_cfg['dC']);
 	div#controls { background-color:<?=$dcolors[0]?>; color:<?=$dcolors[1]?>; }
 	div#ptext { background-color:<?=$dcolors[2]?>; color:<?=$dcolors[3]?>; }
 	div#screen { background-color:<?=$dcolors[4]?>;}
-	div.spribut { background: url('components/com_meedya/static/css/icons/<?=$icons?>.png') no-repeat; }
+	div.spribut { background: url('<?=JUri::root(true)?>/components/com_meedya/static/css/icons/<?=$icons?>.png') no-repeat; }
 </style>
 <script type="text/javascript">
 	var albumID = '<?=$this->aid?>';
 	var popdwin = <?=$popdwin?'true':'false'?>;
+	var baseUrl = "<?=JUri::root(true).'/'.$this->gallpath?>/med/";
 	var imagelist = <?=json_encode($filelist)?>;
 	var imgerror = "<?=JText::_('COM_MEEDYA_SS_IMGERROR')?>";
 	ssCtl.autoPlay = <?=$H5ss_cfg['aP']*1?>;

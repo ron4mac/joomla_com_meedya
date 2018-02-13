@@ -12,6 +12,7 @@
 }
 .albthm, .albprp {
 	display: inline-block;
+	margin-right: 30px;
 	vertical-align: top;
 }
 .albthm {
@@ -49,6 +50,20 @@
 	background-image: url(16/edit.png);
 }
 
+#imggrid {
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.lstItem {
+	display: flex;
+	margin: 2px 0;
+}
+.lstItem > div {
+	margin-left:1em;
+	margin-right:3em;
+}
+
 /* album view*/
 .anitem {
 	display: inline-block;
@@ -57,6 +72,10 @@
 	border: 2px solid transparent;
 	margin: 1px;
 }
+.anitem img.over {
+	border: 2px solid #CCC;
+}
+
 .iselect {
 	border: 2px solid blue;
 }
@@ -100,12 +119,31 @@ dd.tabs {
 /*	float: right;*/
 	margin-bottom: 8px;
 }
-.ied-img {
+
+.eitem {
+	position: absolute;
 	display: inline-block;
-	vertical-align: top;
+}
+.eitem:hover .item-overlay.top {
+	top: 100px;
+}
+.ied-img {
+	position: relative;
 }
 .ied-attr {
 	display: inline-block;
+	position: relative;
+	left: 150px;
+}
+.iSlct {
+	display: none;
+	position: absolute;
+	top: 1px;
+	right: 1px;
+	color: lightgreen;
+	font-size: 20px;
+	padding: 4px;
+	background-color: rgba(51, 51, 51, 0.8);
 }
 
 /* new album modal */
@@ -126,3 +164,180 @@ dd.tabs {
 	width:500px;
 	margin-left:-250px;
 }
+
+/* slideshow config */
+td.tac {
+	text-align:center;
+}
+#smpl {
+	width:25em;
+	float:left;
+	text-align:center;
+	margin-right:20px;
+	position:relative;
+}
+#smpl_c {
+}
+#smpl_t {
+	padding-top:1px;
+	position:absolute;
+	width:100%;
+}
+#smpl_p {
+	height:160px;
+}
+#h5ssicons {
+	margin-left:10px;
+	padding:2px;
+	vertical-align:middle;
+}
+
+.item {
+	position: relative;
+	margin:0 2px 2px 0;
+/*	height: 120px;*/
+}
+.item:hover .item-overlay.top {
+	top: 100px;
+}
+.item-overlay {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+
+	background: rgba(0,0,0,0.5);
+	color: #fff;
+	/*overflow: hidden;*/
+	text-align: center;
+	width: 100%;
+
+	-moz-transition: top 0.3s;
+	-webkit-transition: top 0.3s;
+	transition: top 0.3s;
+}
+.item-overlay i {
+	margin: 4px;
+	cursor: pointer;
+}
+.item-overlay.top {
+	top: 100%;
+}
+.item label {
+	margin: 0;
+}
+.item input {
+	display: none;
+}
+.item input:checked + div {
+	display: block;
+}
+
+
+
+/* tiny color picker */
+/*
+.cp-patch {
+	float:left;
+	margin:9px 0 0;
+	height:24px;
+	width:24px;
+	border:1px solid #aaa;
+}
+.cp-patch {
+	background-image: url('data:image/gif;base64,R0lGODlhDAAMAIABAMzMzP///yH5BAEAAAEALAAAAAAMAAwAAAIWhB+ph5ps3IMyQFBvzVRq3zmfGC5QAQA7');
+}
+.cp-patch div {
+	height:24px;
+	width:24px;
+}
+.cp-disp {
+	padding:4px 0 4px 4px;
+	margin-top:10px;
+	font-size:12px;
+	height:16px;
+	line-height:16px;
+	color:#333;
+}
+.cp-color-picker {
+	border:1px solid #999;
+	padding: 8px 8px 12px 8px;
+	box-shadow:5px 5px 16px rgba(0,0,0,0.4);
+	background:#eee;
+	overflow:visible;
+	border-radius:3px;
+}
+.cp-color-picker:after {
+	content:"";
+	display:block;
+	position:absolute;
+	top:-8px;
+	left:8px;
+	border:8px solid #eee;
+	border-width:0 8px 8px;
+	border-color:transparent transparent #eee;
+}
+.cp-color-picker:before {
+	content:"";
+	display:block;
+	position:absolute;
+	top:-9px;
+	left:8px;
+	border:8px solid #eee;
+	border-width:0 8px 8px;
+	border-color:transparent transparent #999;
+}
+.cp-xy-slider {
+	border:1px solid #aaa;
+	margin-bottom:10px;
+	width:150px;
+	height:150px;
+}
+.cp-xy-slider:active {
+	cursor:none;
+}
+.cp-xy-cursor {
+	width:12px;
+	height:12px;
+	margin:-6px;
+}
+.cp-z-slider {
+	margin-left:8px;
+	border:1px solid #aaa;
+	height:150px;
+	width:24px;
+}
+.cp-z-cursor {
+	border-width:5px;
+	margin-top:-5px;
+}
+.cp-color-picker .cp-alpha {
+	width:152px;
+	margin:10px 0 0;
+	height:6px;
+	border-radius:6px;
+	overflow:visible;
+	border:1px solid #aaa;
+	box-sizing:border-box;
+	background:linear-gradient(to right, rgba(238,238,238,1) 0%,rgba(238,238,238,0) 100%);
+}
+.cp-alpha-cursor {
+	background:#eee; border-radius: 100%;
+	width:14px;
+	height:14px;
+	margin:-5px -7px;
+	border:1px solid #999 !important;
+	box-shadow:inset -2px -4px 3px #ccc;
+}
+.cp-alpha:after {
+	position: absolute;
+	content: "X";
+	color: #FFF;
+	font-size: 24px;
+	font-family: monospace;
+	right: -32px;
+	top: -8px;
+	border: 1px solid #333;
+	padding: 1px 2px;
+	background-color: red;
+}
+*/

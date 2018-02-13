@@ -1,4 +1,9 @@
 <?php
+/**
+ * @package		com_meedya
+ * @copyright	Copyright (C) 2017 Ron Crans. All rights reserved.
+ * @license		GNU General Public License version 3 or later; see LICENSE.txt
+ */
 defined('_JEXEC') or die;
 
 /*
@@ -20,6 +25,9 @@ class MeedyaView extends JViewLegacy
 
 	public function __construct ($config = array())
 	{
+		if (JDEBUG) {
+			JLog::add('MeedyaView', JLog::DEBUG, 'com_meedya');
+		}
 		parent::__construct($config);
 		$this->params = JFactory::getApplication()->getParams();
 //		$this->state = $this->get('State');
@@ -30,10 +38,11 @@ class MeedyaView extends JViewLegacy
 
 	public function display ($tpl = null)
 	{
+		if (JDEBUG) { JLog::add('MeedyaView - display', JLog::DEBUG, 'com_meedya'); }
 //		$this->params = JFactory::getApplication()->getParams();
 //		$this->state = $this->get('State');
 //		$this->items = $this->get('Items');
-		if (is_null($this->items)) $this->items = $this->getModel()->getItems();
+	//	if (is_null($this->items)) $this->items = $this->getModel()->getItems();
 		$this->pagination = $this->get('Pagination');
 
 	//	echo'GOt here';var_dump($this->pagination,$this->items);jexit();
@@ -66,6 +75,12 @@ class MeedyaView extends JViewLegacy
 	{
 		$m = $this->getModel();
 		return $m->getItemThumbFilePlus($iid);
+	}
+
+	protected function getItemFile ($iid)
+	{
+		$m = $this->getModel();
+		return $m->getItemFile($iid);
 	}
 
 }

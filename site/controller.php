@@ -1,10 +1,9 @@
 <?php
 /**
  * @package		com_meedya
- * @copyright	Copyright (C) 2016 Ron Crans. All rights reserved.
+ * @copyright	Copyright (C) 2017 Ron Crans. All rights reserved.
  * @license		GNU General Public License version 3 or later; see LICENSE.txt
  */
-
 defined('_JEXEC') or die;
 
 JLoader::register('MeedyaHelper', JPATH_COMPONENT_ADMINISTRATOR.'/helpers/meedya.php');
@@ -16,9 +15,11 @@ class MeedyaController extends JControllerLegacy
 
 	public function __construct ($config = array())
 	{
+		if (JDEBUG) {
+			JLog::add('MeedyaController', JLog::DEBUG, 'com_meedya');
+		}
 		parent::__construct($config);
 		$this->uid = JFactory::getUser()->get('id');
-		if (JDEBUG) { JLog::addLogger(array('text_file'=>'com_meedya.log.php'), JLog::ALL, array('com_meedya')); }
 	}
 
 	public function display ($cachable = false, $urlparams = false)

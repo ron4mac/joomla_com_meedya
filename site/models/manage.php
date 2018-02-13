@@ -1,10 +1,9 @@
 <?php
 /**
  * @package		com_meedya
- * @copyright	Copyright (C) 2016 Ron Crans. All rights reserved.
+ * @copyright	Copyright (C) 2017 Ron Crans. All rights reserved.
  * @license		GNU General Public License version 3 or later; see LICENSE.txt
  */
-
 defined('_JEXEC') or die;
 
 require_once __DIR__ . '/meedya.php';
@@ -13,13 +12,28 @@ JLoader::register('MeedyaHelper', JPATH_COMPONENT_ADMINISTRATOR.'/helpers/meedya
 
 class MeedyaModelManage extends MeedyaModelMeedya
 {
+	//protected $context = 'manage';
 	protected $album = null;
+
+	public function __construct ($config = array())
+	{
+		// set filter fields for Search Tools purposes
+		if (empty($config['filter_fields'])) {
+			$config['filter_fields'] = array(
+				'level',
+				'tag'
+			);
+		}
+		if (JDEBUG) {
+			JLog::add('MeedyaModelManage', JLog::DEBUG, 'com_meedya');
+		}
+		parent::__construct($config);
+	}
 
 	public function updateConfig ($type, $vals)
 	{
-	//	$db = parent::getDBO();
 		$db = $this->getDbo();
-		$qvals = $db->quote(serialize($vals));
+		$qvals = $db->quote(json_encode($vals));
 		$typ = $db->quote($type);
 		$db->setQuery('SELECT `vals` FROM `config` WHERE `type`='.$typ);
 		$r = $db->loadResult();
@@ -34,7 +48,6 @@ class MeedyaModelManage extends MeedyaModelMeedya
 
 	public function getDbTime ()
 	{
-	//	$db = parent::getDBO();
 		$db = $this->getDbo();
 		$db->setQuery('SELECT CURRENT_TIMESTAMP');
 		$r = $db->loadResult();
@@ -44,12 +57,19 @@ class MeedyaModelManage extends MeedyaModelMeedya
 	public function getAlbum ($aid=0)
 	{
 		$aid = $aid ?: ($this->state->get('album.id') ?: 0);
-	//	$db = parent::getDBO();
 		$db = $this->getDbo();
 		$db->setQuery('SELECT * FROM `albums` WHERE `aid`='.$aid);
 		$r = $db->loadAssoc();
 
 		return $r;
+	}
+
+	public function getAllAlbums ()
+	{
+		$db = $this->getDbo();
+		$db->setQuery('SELECT aid,paid,hord,title FROM `albums` ORDER BY albhier(aid,paid)');
+		$albs = $db->loadAssocList();
+		return $albs;
 	}
 
 	public function removeItems ($aid, $list)
@@ -64,7 +84,6 @@ class MeedyaModelManage extends MeedyaModelMeedya
 	public function addItems2Album ($items, $album)
 	{
 		if (JDEBUG) { JLog::add('addItems ... album: '.$album.' items: '.print_r($items,true), JLog::INFO, 'com_meedya'); }
-	//	$db = parent::getDBO();
 		$db = $this->getDbo();
 		$db->transactionStart();
 		$db->setQuery('SELECT `items` FROM `albums` WHERE `aid`='.$album);
@@ -96,7 +115,6 @@ class MeedyaModelManage extends MeedyaModelMeedya
 
 	public function addAlbum ($anam, $parid, $desc='')
 	{
-	//	$db = parent::getDBO();
 		$db = $this->getDbo();
 		if ($parid) {
 			$hord = $this->getParentNextHord($parid);
@@ -115,22 +133,20 @@ class MeedyaModelManage extends MeedyaModelMeedya
 	}
 
 	public function getImages ($parm)
-	{	//var_dump($parm);
+	{
 		if (is_array($parm)) {
 			$where = '`id` IN ('.implode(',',$parm).')';
 		} else {
 			$where = '`timed` > "'.$parm.'"';
 		}
-	//	$db = parent::getDBO();
 		$db = $this->getDbo();
 		$db->setQuery('SELECT * FROM `meedyaitems` WHERE ' . $where);
-		$itms = $db->loadAssocList();
+		$itms = $db->loadObjectList();
 		return $itms;
 	}
 
 	public function updImage ($iid, $vals)
 	{
-	//	$db = parent::getDBO();
 		$db = $this->getDbo();
 		$sets = array();
 		foreach ($vals as $k=>$v) {
@@ -176,7 +192,6 @@ class MeedyaModelManage extends MeedyaModelMeedya
 
 	public function getStorageTotal ()
 	{
-	//	$db = parent::getDBO();
 		$db = $this->getDbo();
 		$db->setQuery('SELECT SUM(`tsize`) FROM `meedyaitems`');
 		$r = $db->loadResult();
@@ -190,8 +205,6 @@ class MeedyaModelManage extends MeedyaModelMeedya
 	{
 //		require_once JPATH_COMPONENT.'/helpers/meedya.php';
 		$mdydir = MeedyaHelper::userDataPath();
-
-	//	$db = parent::getDBO();
 		$db = $this->getDbo();
 		foreach ($itms as $itm) {
 			//remove files
@@ -211,7 +224,6 @@ class MeedyaModelManage extends MeedyaModelMeedya
 	// $wipe - also remove all items in the album
 	public function removeAlbums ($albs, $wipe=false)
 	{
-	//	$db = parent::getDBO();
 		$db = $this->getDbo();
 		if ($wipe) {
 			foreach ($albs as $alb) {
@@ -231,7 +243,6 @@ class MeedyaModelManage extends MeedyaModelMeedya
 	// $igna - album id number to ignore because it will be removed anyway
 	private function removeItemFromAlbums ($itm, $astr, $igna)
 	{
-	//	$db = parent::getDBO();
 		$db = $this->getDbo();
 		$albs = explode('|',$astr);
 		foreach ($albs as $alb) {
@@ -255,7 +266,6 @@ class MeedyaModelManage extends MeedyaModelMeedya
 			if ($sets) $sets .= ', ';
 			$sets .= $k.' = '.$v;
 		}
-	//	$db = parent::getDBO();
 		$db = $this->getDbo();
 		$db->setQuery('UPDATE `albums` SET '.$sets.' WHERE `aid`='.$this->album['aid']);
 		//echo $db->getQuery();
@@ -264,7 +274,6 @@ class MeedyaModelManage extends MeedyaModelMeedya
 
 	private function getParentNextHord ($parid)
 	{
-	//	$db = parent::getDBO();
 		$db = $this->getDbo();
 		$db->setQuery('SELECT `hord` FROM `albums` WHERE `aid`='.$parid);
 		$phord = $db->loadResult();
@@ -289,28 +298,98 @@ class MeedyaModelManage extends MeedyaModelMeedya
 		$input = $app->input;
 
 		// album ID
-		$aid = $input->get('aid', 0, 'INT');
+		$aid = $input->get('album', 0, 'INT');
+		if (!$aid) { $aid = $input->get('aid', 0, 'INT'); }
 		$this->state->set('album.id', $aid);	//echo'<xmp>';var_dump($this->state);echo'</xmp>';
 
 		// List state information
-		$limit = $app->getUserStateFromRequest('global.list.limit', 'limit', $app->getCfg('list_limit'));
-		$this->setState('list.limit'.$aid, $limit);
+	//	$limit = $app->getUserStateFromRequest('global.list.limit', 'limit', $app->getCfg('list_limit'));
+	//	$this->setState('list.limit'.$aid, $limit);
 
-		$limitstart = $input->getInt('limitstart', 0);
-		$this->setState('list.start'.$aid, $limitstart);
+	//	$limitstart = $input->getInt('limitstart', 0);
+	//	$this->setState('list.start'.$aid, $limitstart);
+
+		$search = $this->getUserStateFromRequest($this->context . '.filter.search', 'filter_search');
+		$this->setState('filter.search', $search);
+
+		$tag = $this->getUserStateFromRequest($this->context . '.filter.tag', 'filter_tag', '');
+		$this->setState('filter.tag', $tag);
 
 		// Load the parameters.
 		$this->setState('params', $params);
+
+		parent::populateState($ordering, $direction);
 	}
 
 	protected function getListQuery ()
 	{
-	//	$db = parent::getDBO();
+		if ($this->state->get('album.id', 0) || $this->filterFormName == 'filter_images') {
+			return $this->itemsListQuery();
+		} else {
+			return $this->albumsListQuery();
+		}
+		echo $this->context;
+		$db = $this->getDbo();
+		$query = $db->getQuery(true);
+		$query->select('*');
+		$query->from('albums');
+	//	$query->from('meedyaitems');
+	//	$aid = $this->state->get('filter.album', 0);
+	//	if ($aid) {
+	//		$query->where('album='.$aid);
+	//	}
+	//	$query->order('expodt');
+	//	echo $query,'<xmp>';var_dump($this->state);echo'</xmp>';
+		return $query;
+	}
+
+	protected function __getListQuery ()
+	{
 		$db = $this->getDbo();
 		$query = $db->getQuery(true);
 		$query->select('*');
 	//	$query->from('albums');
 		$query->from('meedyaitems');
+		$aid = $this->state->get('filter.album', 0);
+		if ($aid) {
+			$query->where('album='.$aid);
+		}
+		$query->order('expodt');
+	//	echo $query,'<xmp>';var_dump($this->state);echo'</xmp>';
+		return $query;
+	}
+
+	private function albumsListQuery ()
+	{
+		$db = $this->getDbo();
+		$query = $db->getQuery(true);
+		$query->select('*');
+		$query->from('albums');
+		return $query;
+	}
+
+	private function itemsListQuery ()
+	{
+		if ($this->filterFormName !== 'filter_images') {
+			$db = $this->getDbo();
+			$query = $db->getQuery(true);
+			$query->select('*');
+			$query->from('albums');
+			$aid = $this->state->get('album.id', 0);
+			if ($aid) {
+				$query->where('aid='.$aid);
+			}
+			return $query;
+		}
+
+		$db = $this->getDbo();
+		$query = $db->getQuery(true);
+		$query->select('*');
+		$query->from('meedyaitems');
+		$aid = $this->state->get('filter.album', 0);
+		if ($aid) {
+			$query->where('inpsv('.$aid.',`album`)');
+		}
 		$query->order('expodt');
 		return $query;
 	}

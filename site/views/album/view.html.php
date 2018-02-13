@@ -1,4 +1,9 @@
 <?php
+/**
+ * @package		com_meedya
+ * @copyright	Copyright (C) 2017 Ron Crans. All rights reserved.
+ * @license		GNU General Public License version 3 or later; see LICENSE.txt
+ */
 defined('_JEXEC') or die;
 
 include_once JPATH_COMPONENT.'/views/meedyaview.php';
@@ -6,6 +11,14 @@ include_once JPATH_COMPONENT.'/views/meedyaview.php';
 class MeedyaViewAlbum extends MeedyaView
 {
 	protected $aid;
+
+	public function __construct ($config = array())
+	{
+		if (JDEBUG) {
+			JLog::add('MeedyaViewAlbum', JLog::DEBUG, 'com_meedya');
+		}
+		parent::__construct($config);
+	}
 
 	function display ($tpl = null)
 	{

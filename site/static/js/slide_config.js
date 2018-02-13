@@ -31,18 +31,18 @@ function setText() {
 }
 
 function H5applybg() {
-	setCtrlB($('#h5ctrl_b').val());
-	setCtrlT($('#h5ctrl_t').val());
-	setTextB($('#h5text_b').val());
-	setTextT($('#h5text_t').val());
-	setPicaB($('#h5pica_b').val());
+	setCtrlB(jQuery('#h5ctrl_b').val());
+	setCtrlT(jQuery('#h5ctrl_t').val());
+	setTextB(jQuery('#h5text_b').val());
+	setTextT(jQuery('#h5text_t').val());
+	setPicaB(jQuery('#h5pica_b').val());
 }
 
 function H5applyis(elem) {
-	H5ss_icons.src = "components/com_meedya/static/img/sldctl/"+elem.value+".png"
+	H5ss_icons.src = "components/com_meedya/static/img/sldctl/"+elem.value+".png";
 }
 
-$(document).ready(function() {
+jQuery(document).ready(function() {
 	H5ss_ctrl = document.getElementById("smpl_c");
 	H5ss_text = document.getElementById("smpl_t");
 	H5ss_pica = document.getElementById("smpl_p");
@@ -66,3 +66,34 @@ $(document).ready(function() {
 //	$('#h5text_t').colorPicker({prevCB: setTextT});
 //	$('#h5pica_b').colorPicker({prevCB: setPicaB});
 });
+
+/*
+var PickerSkin = {
+	customBG: '#222',
+	margin: '5px 0 0',
+	doRender: 'div div',
+//	cssPrepend: true,
+
+	buildCallback: function($elm) {
+	//	$elm.append('<div class="cp-patch"><div></div></div><div class="cp-disp"></div>');
+	},
+
+	css: '.nuttin{}',
+
+	renderCallback: function($elm, toggled) {
+		var colors = this.color.colors,
+			rgb = colors.RND.rgb;
+
+		$('.cp-patch div').css({'background-color': $elm[0].style.backgroundColor});
+	//	$('.cp-disp').text(this.color.options.colorNames[colors.HEX] || $elm.val());
+		if (toggled === true) {
+			// here you can recalculate position after showing the color picker
+			// in case it doesn't fit into view.
+			$('.trigger').removeClass('active');
+			$elm.closest('.trigger').addClass('active');
+		} else if (toggled === false) {
+			$elm.closest('.trigger').removeClass('active');
+		}
+	}
+};
+*/

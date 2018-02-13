@@ -1,4 +1,9 @@
 <?php
+/**
+ * @package		com_meedya
+ * @copyright	Copyright (C) 2017 Ron Crans. All rights reserved.
+ * @license		GNU General Public License version 3 or later; see LICENSE.txt
+ */
 defined('_JEXEC') or die;
 
 JHtml::addIncludePath(JPATH_COMPONENT.'/helpers');
@@ -8,13 +13,14 @@ $jdoc = JFactory::getDocument();
 //$jdoc->addScript('components/com_meedya/static/js/echo.min.js');
 
 $ttscript = '
-    jQuery(document).ready(function() {
-        jQuery(\'[data-toggle="tooltip"]\').tooltip();
-    });
+	jQuery(document).ready(function() {
+		jQuery(\'[data-toggle="tooltip"]\').tooltip();
+	});
 ';
 
 $jdoc->addScriptDeclaration($ttscript);
 JHtml::stylesheet('components/com_meedya/static/css/album.css');
+JHtml::stylesheet('components/com_meedya/static/vendor/blb/basicLightbox.min.css');
 
 ///<form>
 ///<div class="display-limit">
@@ -71,8 +77,8 @@ JHtml::stylesheet('components/com_meedya/static/css/album.css');
 		echo '<div class="anitem">'
 		//	.'<a href="'.JRoute::_('index.php?option=com_meedya&view=item&iid='.$item).'" class="itm-thumb">'
 			.'<a href="'.JRoute::_('index.php?option=com_meedya&view=album&layout=each&aid='.$this->aid.'&iid='.$item).'" class="itm-thumb">'
-				.'<div data-toggle="tooltip" data-placement="bottom" title="'.$ttip.'"><img src="" data-echo="'.$this->gallpath.'/thm/'.$thumb.'" /></div>'
-				.'<div class="itm-thm-ttl">'.$item.'</div>'
+				.'<div data-toggle="tooltip" data-placement="bottom" title="'.$ttip.'"><img src="" data-echo="thm/'.$thumb.'" /></div>'
+				.'<div class="itm-thm-ttl" data-src="'.$thumb.'">'.$item.'</div>'
 			.'</a>'
 		.'</div>';
 	}
@@ -83,9 +89,22 @@ JHtml::stylesheet('components/com_meedya/static/css/album.css');
 <div class="page-footer">
 	<?php echo $this->pagination->getListFooter(); ?>
 </div>
+
+<script src="components/com_meedya/static/vendor/blb/basicLightbox.min.js"></script>
 <script>
-//initArrange();
+	var blb_path = "<?=JUri::root(true).'/'.$this->gallpath?>/med/";
+	document.querySelectorAll('.itm-thm-ttl').forEach(function(elem) {
+		elem.onclick = function(e) {
+			const src = blb_path + elem.getAttribute('data-src');
+			const html = '<img src="' + src + '">';
+			basicLightbox.create(html).show();
+			return false;
+		}
+	});
+
+	//initArrange();
 	echo.init({
+		baseUrl: "<?=JUri::root(true).'/'.$this->gallpath?>/",
 		offset: 100,
 		throttle: 250,
 		unload: false,
