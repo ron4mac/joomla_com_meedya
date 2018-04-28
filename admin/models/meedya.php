@@ -31,7 +31,7 @@ class MeedyaModelMeedya extends JModelList
 		}
 
 		$unotes = array();
-		$folds = MeedyaHelper::getDbPaths($this->relm, 'meedya', true);
+		$folds = MeedyaAdminHelper::getDbPaths($this->relm, 'meedya', true);
 		foreach ($folds as $dir => $path) {
 			$userid = (int)substr($dir,1);
 			$files = count(glob(dirname($path).'/img/[!\.]*')) -1;

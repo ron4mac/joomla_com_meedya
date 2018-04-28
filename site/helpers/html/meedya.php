@@ -3,15 +3,40 @@ defined('_JEXEC') or die;
 
 abstract class JHtmlMeedya
 {
+	public static function pageHeader ($params, $sub='')
+	{
+		$html = '';
+		if ($params->def('show_page_heading', 1)) {
+			$html .= '<h1>';
+			$html .= $params->get('page_title');
+			switch ($params->get('instance_type')) {
+				case 0:
+					$user = JFactory::getUser();
+					$html .= ' <small>- '.$user->name.'</small>';
+					break;
+				case 1:
+					break;
+				case 2:
+					break;
+			}
+			$html .= '</h1>';
+		}
+		if ($sub) {
+			$html .= '<h3>'.$sub.'</h3>';
+		}
+		return $html;
+	}
+
 	public static function manageMenu ($aid)
 	{
+		//JFactory::getUser()->authorise('core.edit', 'com_meedya');
 		$html = '<div class="btn-group mgmenu">
 	<a class="btn btn-small dropdown-toggle" data-toggle="dropdown" href="#"><i class="icon-pencil"></i>'.JText::_('COM_MEEDYA_MENU_MANAGE').' <span class="caret"></span></a>
 	<ul class="dropdown-menu">
 		<li><a href="' . JRoute::_('index.php?option=com_meedya&task=manage.doUpload&aid='.$aid, false) . '"><i class="icon-upload"></i>'.JText::_('COM_MEEDYA_MENU_UPLOAD').'</a></li>
-		<li><a href="' . JRoute::_('index.php?option=com_meedya&view=manage') . '"><i class="icon-grid"></i>'.JText::_('COM_MEEDYA_MENU_EDALBS').'</a></li>
-		<li><a href="' . JRoute::_('index.php?option=com_meedya&task=manage.editImgs') . '"><i class="icon-images"></i>'.JText::_('COM_MEEDYA_MENU_EDIMGS').'</a></li>
-		<li><a href="' . JRoute::_('index.php?option=com_meedya&task=manage.doConfig') . '"><i class="icon-options"></i>'.JText::_('COM_MEEDYA_MENU_CONFIG').'</a></li>
+		<li><a href="' . JRoute::_('index.php?option=com_meedya&view=manage', false) . '"><i class="icon-grid"></i>'.JText::_('COM_MEEDYA_MENU_EDALBS').'</a></li>
+		<li><a href="' . JRoute::_('index.php?option=com_meedya&task=manage.editImgs', false) . '"><i class="icon-images"></i>'.JText::_('COM_MEEDYA_MENU_EDIMGS').'</a></li>
+		<li><a href="' . JRoute::_('index.php?option=com_meedya&task=manage.doConfig', false) . '"><i class="icon-options"></i>'.JText::_('COM_MEEDYA_MENU_CONFIG').'</a></li>
 	</ul>
 </div>
 ';
@@ -38,6 +63,46 @@ abstract class JHtmlMeedya
 		return $html;
 	}
 
+	public static function actionButtons ($whch)
+	{
+		$html = [];
+		foreach ($whch as $but) {
+			switch ($but) {
+			case 'sela':
+				$html[] = '<button class="btn btn-mini" title="select all images" onclick="selAllImg(event, true)">'
+					.'Select All</button>';
+				break;
+			case 'seln':
+				$html[] = '<button class="btn btn-mini" title="un-select all images" onclick="selAllImg(event, false)">'
+					.'Select None</button>';
+				break;
+			case 'edts':
+				$html[] = '<button class="btn btn-mini" title="edit selected images" onclick="editSelected(event)">'
+					.'<i class="icon-pencil"></i> Edit selected items'
+					.'</button>';
+				break;
+			case 'adds':
+				$html[] = '<button class="btn btn-mini" title="new album with selected items" onclick="addSelected(event)">'
+					.'<i class="icon-plus-circle"></i> Create new album with selected items'
+					.'</button>';
+				break;
+			case 'rems':
+				$html[] = '<button class="btn btn-mini" title="remove selected from album" onclick="removeSelected(event)">'
+					.'<i class="icon-minus-circle"></i> Remove selected images from album'
+					.'</button>';
+				break;
+			case 'dels':
+				$html[] = '<button class="btn btn-mini" title="totally remove selected items" onclick="removeSelected(event)">'
+					.'<i class="icon-minus-circle"></i> Totally remove selected items'
+					.'</button>';
+				break;
+			default:
+				$html[] = 'NOACTION';
+			}
+		}
+		return implode("\n\t",$html);
+	}
+
 	public static function imageThumbElement ($item, $edt=false, $iclss='item')
 	{	//var_dump($item);
 	$id = $item->id;
@@ -51,7 +116,7 @@ abstract class JHtmlMeedya
 			<i class="icon-expand pull-right" onclick="lboxPimg(\''.$item->file.'\')"></i>';
 	}
 	return '
-	<div class="'.$iclss.'">
+	<div class="'.$iclss.'" data-id="'.$id.'">
 		<label for="slctimg'.$id.'">
 		<img src="components/com_meedya/static/img/img.png" '.$iDat.' class="mitem" />
 		</label>
@@ -69,7 +134,7 @@ abstract class JHtmlMeedya
 	$id = $item->id;
 	$iDat = 'data-iid="'.$item->id.'" data-echo="thm/'.$item->file.'" data-img="'.$item->file.'"';
 	return '
-	<div class="item">
+	<div class="item" data-id="'.$id.'">
 		<label for="slctimg'.$id.'">
 		<img src="components/com_meedya/static/img/img.png" '.$iDat.' class="mitem" onclick="//return slctImg(event, this)" />
 		</label>
@@ -82,5 +147,37 @@ abstract class JHtmlMeedya
 		<div class="iSlct"><i class="icon-checkmark"></i></div>
 	</div>';
 	}
+
+	public static function modalButtons ($verb, $script, $id, $disab=true)
+	{
+		$html = '<button type="button" class="btn" data-dismiss="modal">'.JText::_('JCANCEL').'</button>';
+		$html .= '<button type="button" id="'.$id.'" class="btn';
+		$html .= $disab ? ' btn-disabled' : ' btn-primary';
+		$html .= '" onclick="'.$script.';"';
+		if ($disab) $html .= ' disabled';
+		$html .= '>'.JText::_($verb).'</button>';
+		return $html;
+	}
+
+	public static function buildTree (array $albums, &$html, $paid = 0) {
+		$branch = array();
+		foreach ($albums as $alb) {
+			if ($alb['paid'] == $paid) {
+			//	$itms = $alb['items'] ? count(explode('|',$alb['items'])) : 'no';
+			//	$html[] = '<div data-aid="'.$alb['aid'].'" class="album" draggable="true"><big><b>'.$alb['title'].'</b></big> ( '.$itms.' items )';
+				$html[] = '<div data-aid="'.$alb['aid'].'" class="album" draggable="true">';
+				$html[] = '<span class="icon-delete"> </span><span class="icon-edit"> </span>';
+				$html[] = '<big><b>'.$alb['title'].'</b></big> ( '.$alb['items'].' items )';
+				$children = self::buildTree($albums, $html, $alb['aid']);
+				if ($children) {
+					$alb['children'] = $children;
+				}
+				$branch[] = $alb;
+				$html[] = '</div>';
+			}
+		}
+		return $branch;
+	}
+
 
 }

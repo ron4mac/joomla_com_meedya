@@ -15,7 +15,7 @@ JHtml::_('behavior.multiselect');
 
 $listOrder	= $this->state('list.ordering');
 $listDirn	= $this->state('list.direction');
-$canDo		= MeedyaHelper::getActions();
+$canDo		= MeedyaAdminHelper::getActions();
 ?>
 <form action="<?php echo JRoute::_('index.php?option=com_meedya&view=meedya'); ?>" method="post" name="adminForm" id="adminForm">
 	<div id="j-sidebar-container" class="span2">

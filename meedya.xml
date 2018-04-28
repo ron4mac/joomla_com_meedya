@@ -7,7 +7,7 @@
 	<license>GNU General Public License version 3 or later; see LICENSE.txt</license>
 	<authorEmail>ron@rjconline.net</authorEmail>
 	<authorUrl>rjconline.net</authorUrl>
-	<version>0.3.0</version>
+	<version>0.4.0</version>
 	<description>COM_MEEDYA_XML_DESCRIPTION</description>
 	<scriptfile>script.php</scriptfile>
 	<files folder="site">
@@ -45,6 +45,6 @@
 		</files>
 	</administration>
 	<updateservers>
-		<server type="extension" priority="1" name="Meedya Updates">http://rjcrans.net/jupdates/com_meedya/updates.xml</server>
+		<server type="extension" priority="1" name="Meedya Updates">http://rjcrans.net/jupdates/com_meedya/updates.php</server>
 	</updateservers>
 </extension>

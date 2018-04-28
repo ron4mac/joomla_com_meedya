@@ -6,7 +6,12 @@
  */
 defined('_JEXEC') or die;
 
-if (JDEBUG) {
+define('RJC_DBUG', JDEBUG && file_exists(JPATH_ROOT.'/rjcdev.php'));
+
+// provide a general helper class for the rest of the component
+JLoader::register('MeedyaHelper', JPATH_COMPONENT.'/helpers/meedya.php');
+
+if (RJC_DBUG) {
 	$cml = array(
 		'text_file'=>'com_meedya.log.php',
 		'text_entry_format'=>'{DATETIME}			{PRIORITY}			{MESSAGE}'

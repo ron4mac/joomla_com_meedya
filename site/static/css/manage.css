@@ -1,4 +1,4 @@
-.meedya-gallery {
+.meedya-config {
 	position: relative;
 }
 
@@ -17,6 +17,7 @@
 }
 .albthm {
 	margin: 0 5px 0 0;
+	border: 1px solid #DDD;
 }
 .albbar {
 	width: 100%;
@@ -48,6 +49,10 @@
 }
 .albedtb {
 	background-image: url(16/edit.png);
+}
+
+.actbuts {
+	padding: 6px 2px;
 }
 
 #imggrid {
@@ -82,13 +87,14 @@
 .noitem {
 	display: inline-block;
 	vertical-align: bottom;
-	width: 30px;
-	height: 102px;
+	width: 60px;
+	height: 120px;
 	margin: 1px;
 	border: 1px dotted #CCC;
 }
 .over {
-	background-color: #FF6;
+/*	background: #FF6;
+	background: linear-gradient(to right, white, darkgray); */
 }
 
 .itm-thumb {
@@ -147,10 +153,12 @@ dd.tabs {
 }
 
 /* new album modal */
+/*
 #newalbdlg {
 	width:50%;
 	margin-left:-25%;
 }
+*/
 #crealbm .nualbtop {
 	float:left;
 	margin-right:2em;
@@ -159,10 +167,23 @@ dd.tabs {
 	width:100%;
 	box-sizing:border-box;
 }
-
+/*
 #delact {
 	width:500px;
 	margin-left:-250px;
+}
+*/
+
+/* import modal */
+.impfld {
+	margin-bottom: .5em;
+}
+.impfld input {
+	vertical-align: text-bottom;
+}
+.impfld label {
+	display:inline-block ;
+	margin:0 0 0 .5em;
 }
 
 /* slideshow config */

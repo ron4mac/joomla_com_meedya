@@ -3,6 +3,7 @@ CREATE TABLE `meedyaitems` (
 	`file` TEXT NOT NULL,
 	`fsize` INTEGER DEFAULT 0,
 	`tsize` INTEGER DEFAULT 0,
+	`mtype` TEXT DEFAULT NULL,
 	`title` TEXT DEFAULT NULL,
 	`desc` TEXT DEFAULT NULL,
 	`kywrd` TEXT DEFAULT NULL,

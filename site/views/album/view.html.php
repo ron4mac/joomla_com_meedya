@@ -14,9 +14,7 @@ class MeedyaViewAlbum extends MeedyaView
 
 	public function __construct ($config = array())
 	{
-		if (JDEBUG) {
-			JLog::add('MeedyaViewAlbum', JLog::DEBUG, 'com_meedya');
-		}
+		if (RJC_DBUG) { MeedyaHelper::log('MeedyaViewAlbum'); }
 		parent::__construct($config);
 	}
 
@@ -28,12 +26,12 @@ class MeedyaViewAlbum extends MeedyaView
 		$this->items = $this->get('Items');
 		$this->title = $this->get('Title');
 		$this->albums = $this->get('Albums');
+		$m = $this->getModel();
 
 		if ($this->getLayout() == 'each') {
 			$iid = $app->input->get->get('iid');
 			$this->six = 0;
 			$this->files = array();
-			$m = $this->getModel();
 			
 //			$this->album = $m->getAlbum($this->aid);
 			if ($this->items)
@@ -42,7 +40,18 @@ class MeedyaViewAlbum extends MeedyaView
 					$this->files[] = $m->getItemFile($item);
 				}
 		} else {
-//			$app->getPathWay()->addItem($this->get('Title'),'RRRRRR'/*.$aid*/);
+			$pw = $app->getPathWay();
+			$pw->setItemName(0, '<i class="icon-home-2" title="Gallery Home"></i>');
+			$apw = $m->getAlbumPath($this->aid);
+			foreach ($apw as $ap) {
+				foreach ($ap as $k => $v) {
+					if ($k != $this->aid) {
+						$pw->addItem($v, JRoute::_('index.php?option=com_meedya&view=album&aid='.$k, false));
+					}
+				}
+			}
+		//	$app->getPathWay()->addItem($this->get('Title'),'RRRRRR'.$this->aid);
+			$this->pathWay = $pw->getPathway();
 			$this->pagination = $this->get('Pagination');
 		}
 

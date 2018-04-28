@@ -11,18 +11,18 @@ include_once JPATH_COMPONENT.'/views/meedyaview.php';
 class MeedyaViewManage extends MeedyaView
 {
 	protected $_defaultModel = 'manage';
+	protected $manage = 1;
 
 	public function __construct ($config = array())
 	{
-		if (JDEBUG) {
-			JLog::add('MeedyaViewManage', JLog::DEBUG, 'com_meedya');
-		}
+		if (RJC_DBUG) { MeedyaHelper::log('MeedyaViewManage'); }
 		parent::__construct($config);
 	}
 
 	public function display ($tpl=null)
 	{
 		$this->state = $this->get('State');
+//		$this->user = JFactory::getUser();
 //		$this->items = $this->get('Items');
 
 //echo'<xmp>';var_dump($this->state);echo'</xmp>';
@@ -33,7 +33,7 @@ class MeedyaViewManage extends MeedyaView
 			$this->setLayout('albedit');
 		}
 
-		if (JDEBUG) {JLog::add('layout='.$this->getLayout(), JLog::DEBUG, 'com_meedya');}
+		if (RJC_DBUG) { MeedyaHelper::log('layout='.$this->getLayout()); }
 
 		switch ($this->getLayout()) {
 
@@ -42,6 +42,7 @@ class MeedyaViewManage extends MeedyaView
 				break;
 
 			case 'images':
+				$this->action = 'Edit Images';
 				$this->iids = $this->get('Items');
 				$this->total = count($this->iids);
 		//		$this->items = $this->get('Items');
@@ -59,7 +60,7 @@ class MeedyaViewManage extends MeedyaView
 			case 'albedit':
 				//echo'<xmp>';var_dump($this->state);echo'</xmp>';
 				//echo'<xmp>';var_dump($this->album);echo'</xmp>';
-				$this->aThum = $this->getAlbumThumb((object)$this->album);
+				$this->aThum = $this->album['thumb'] ? $this->getAlbumThumb((object)$this->album) : 'components/com_meedya/static/img/img.png';
 				break;
 			case 'imgedit':
 			//	$this->iids = $this->getModel('manage')->get('Items');
@@ -67,29 +68,39 @@ class MeedyaViewManage extends MeedyaView
 				break;
 
 			case 'config':
+				$this->action = 'Configure Gallery';
+				$this->items = array();		// keep parent view from loading items
 				if (!$this->html5slideshowCfg) {
 					$this->html5slideshowCfg = MeedyaHelper::$ssDefault;
 				}
-				$this->items = array();		// keep parent view from loading items
+				$this->galStruct = MeedyaHelper::getGalStruct($this->getModel()->getAllAlbums());
 				break;
 
 			case 'upload':
+				$this->action = 'Upload Images';
+			//echo'<pre>';var_dump(JComponentHelper::getParams('com_meedya'));
+			//var_dump($this->params);
+	//			$this->totStore = (int)$this->get('StorageTotal');
 				$user = JFactory::getUser();
 				$uid = $user->get('id');
-				$this->params = JFactory::getApplication()->getParams();
+				$this->params = JFactory::getApplication()->getParams();		//echo'<pre>';var_dump($this->params);echo'</pre>';
 				$this->galid = base64_encode($this->params->get('instance_type').':'.$this->params->get('owner_group').':'.$uid);
 			//	$this->state = $this->get('State');
 				$this->curalb = 0;
-				$this->acptmime = 'accept="image/*" ';
+// @+@+@+@+@+@+@+@+@ get media types from config
+				$this->acptmime = 'accept="image/*,video/*" ';
 			//	$this->albums = $this->get('AlbumsList');
-				$this->maxupld = MeedyaHelper::to_KMG($this->params->get('max_upload'));
+				$this->maxUploadFS = MeedyaHelper::maxUpload($this->params->get('maxUpload'));
+				$this->maxupld = MeedyaHelper::formatBytes($this->maxUploadFS);
 			//	$this->dbTime = $this->get('DbTime');
 				$this->items = array();		// keep parent view from loading items
 				break;
 
 			default:
+				$this->action = 'Edit Albums';
 				$this->albums = $this->getModel()->getAlbumsList();
 				$this->totStore = (int)$this->get('StorageTotal');
+				$this->galStruct = MeedyaHelper::getGalStruct($this->getModel()->getAllAlbums());
 				break;
 
 		}

@@ -35,16 +35,80 @@
 				required="true"
 				showon="instance_type:1" />
 
+			<field
+				name="admin_group"
+				type="optgrouplist"
+				label="COM_MEEDYA_FIELD_AGROUP_LABEL"
+				description="COM_MEEDYA_FIELD_AGROUP_DESC"
+				default=""
+				showon="instance_type:1" />
+
 		</fieldset>
-		<fieldset name="basic">
+		<fieldset name="basic" addfieldpath="/administrator/components/com_meedya/models/fields">
+
+			<field name="maxUpload" type="gmkbvalue"
+				label="COM_MEEDYA_CONFIG_MAXUPLD_LABEL"
+				description="COM_MEEDYA_CONFIG_MAXUPLD_DESC"
+				default="0"
+				compdef="4194304/maxUpload" />
+
+			<field name="storQuota" type="gmkbvalue"
+				label="COM_MEEDYA_CONFIG_QUOTA_LABEL"
+				description="COM_MEEDYA_CONFIG_QUOTA_DESC"
+				default="0"
+				compdef="268435456/storQuota" />
 
 			<field
-				name="max_upload"
-				type="text"
-				label="COM_MEEDYA_FIELD_MAXUP_LABEL"
-				description="COM_MEEDYA_FIELD_MAXUP_DESC"
-				default="4M"
-				required="true" />
+				name="keep_orig"
+				type="radio"
+				class="btn-group btn-group-yesno"
+				default="0"
+				label="COM_MEEDYA_CONFIG_KEEPO_LABEL"
+				description="COM_MEEDYA_CONFIG_KEEPO_DESC"
+			>
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+
+			<field
+				name="max_width"
+				type="defnumber"
+				step="100"
+				label="COM_MEEDYA_CONFIG_MAXW_LABEL"
+				description="COM_MEEDYA_CONFIG_MAXW_DESC"
+				default="0"
+				compdef="1200/max_width" />
+
+			<field
+				name="max_height"
+				type="defnumber"
+				step="100"
+				label="COM_MEEDYA_CONFIG_MAXH_LABEL"
+				description="COM_MEEDYA_CONFIG_MAXH_DESC"
+				default="0"
+				compdef="1200/max_height" />
+
+			<field
+				name="thm_width"
+				type="defnumber"
+				step="10"
+				min="60"
+				max="200"
+				label="COM_MEEDYA_CONFIG_THMW_LABEL"
+				description="COM_MEEDYA_CONFIG_THMW_DESC"
+				default="0"
+				compdef="120/thm_width" />
+
+			<field
+				name="thm_height"
+				type="defnumber"
+				step="10"
+				min="60"
+				max="200"
+				label="COM_MEEDYA_CONFIG_THMH_LABEL"
+				description="COM_MEEDYA_CONFIG_THMH_DESC"
+				default="0"
+				compdef="120/thm_height" />
 
 		</fieldset>
 	</fields>

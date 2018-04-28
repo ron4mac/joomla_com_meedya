@@ -1,0 +1,226 @@
+<?php
+/**
+ * @package		com_meedya
+ * @copyright	Copyright (C) 2017 Ron Crans. All rights reserved.
+ * @license		GNU General Public License version 3 or later; see LICENSE.txt
+ */
+defined('_JEXEC') or die;
+
+abstract class MeedyaHelper
+{
+	protected static $instanceType = null;
+	protected static $ownerID = null;
+	protected static $udp = null;
+
+	public static function scriptVersion ($scr, $path='js/')
+	{
+		$dbg = RJC_DBUG;
+		$sfx = $dbg ? ('?'.time()) : '';
+		$vray = array(
+			'manage' => array('manage.js', 'manage.js'),
+			'echo' => array('echo.js', 'echo.min.js'),
+			'slides' => array('slides.js', 'slides.min.js'),
+			'upload' => array('upload.js', 'upload.min.js'),
+			'each' => array('each.js', 'each.js'),
+			'basicLightbox' => array('basicLightbox.min.js', 'basicLightbox.min.js')
+			);
+		return 'components/com_meedya/static/' . $path . $vray[$scr][$dbg ? 0 : 1] . $sfx;
+	}
+
+	public static function addScript ($scr, $path='js/')
+	{
+		static $jdoc = null;
+
+		if ($jdoc === null) $jdoc = JFactory::getDocument();
+		$jdoc->addScript(self::scriptVersion($scr, $path));
+	}
+
+	public static function getInstanceID ()
+	{
+		if (is_null(self::$instanceType)) self::getTypeOwner();
+		return base64_encode(self::$instanceType.':'.self::$ownerID);
+	}
+
+	public static function userDataPath ()
+	{
+		if (self::$udp) return self::$udp;
+		self::getTypeOwner();
+		if (self::$ownerID < 0 && self::$instanceType < 2) return '';	//throw new Exception('ACCESS NOT ALLOWED');
+		$cmp = JApplicationHelper::getComponentName();
+		switch (self::$instanceType) {
+			case 0:
+				$ndir = '@'. self::$ownerID;
+				break;
+			case 1:
+				$ndir = '_'. self::$ownerID;
+				break;
+			case 2:
+				$ndir = '_0';
+				break;
+		}
+
+		$dispatcher = JDispatcher::getInstance();
+		$results = $dispatcher->trigger('onRjuserDatapath', null);
+		$sdp = isset($results[0]) ? trim($results[0]) : '';
+		if (!$sdp) $sdp = 'userstor';
+
+		self::$udp = $sdp.'/'.$ndir.'/'.$cmp;
+		return self::$udp;
+	}
+
+	public static function getUserPermissions ()
+	{
+		static $perms = [];
+
+		if (!$perms) {
+			$user = JFactory::getUser();
+			$params = JFactory::getApplication()->getParams();
+			$admgrp = $params->get('admin_group', null);
+			if ($params->get('instance_type', 3) > 0) {
+				if ($admgrp) {
+					$perms['canAdmin'] = in_array($admgrp, $user->groups);
+				} else {
+					$perms['canAdmin'] = in_array($params->get('owner_group', null), $user->groups);
+				}
+			} else {
+				$perms['canAdmin'] = $user->id > 0;
+			}
+			if (!$perms['canAdmin']) $perms['canAdmin'] = JFactory::getUser()->authorise('core.edit', 'com_meedya');
+			$perms['canUpload'] = $perms['canAdmin'] || in_array($params->get('owner_group', null), $user->groups);
+		}
+		return (object)$perms;
+	}
+
+	public static function getGalStruct ($list)
+	{
+		foreach ($list as &$alb) {
+			$alb['items'] = $alb['items'] ? count(explode('|',$alb['items'])) : 'no';
+		}
+		return $list;
+	}
+
+	// return the instance max file upload size
+	public static function maxUpload ($op)
+	{
+		//echo'<pre>';var_dump(JComponentHelper::getParams('com_meedya'));echo'</pre>';
+		$cupmax = $op ? $op : JComponentHelper::getParams('com_meedya')->get('maxUpload', 4194304);
+		$cupmax = $cupmax ?: 4194304;
+		return min($cupmax, JFilesystemHelper::fileUploadMaxSize(false));
+	}
+
+	// return the instance storage quota
+	public static function getStoreQuota ($prms)
+	{
+		$isq = $prms->get('storQuota');
+		if (!$isq) $isq = self::componentOption('storQuota', 268435456);
+		return $isq;
+	}
+
+	public static function getImgProc ($imgf)
+	{
+	//	if (JDEBUG) { JLog::add('@@ENV@@'.print_r(getenv(), true), JLog::DEBUG, 'com_meedya'); }
+
+		$imp = 'gd';	// default to GD
+		if (class_exists('Imagick')) {
+			$imp = 'imx';
+		} else {
+			$sps = explode(':', getenv('PATH'));
+			foreach ($sps as $sp) {
+				if (file_exists($sp.'/convert')) $imp = 'im';
+			}
+		}
+		require_once JPATH_COMPONENT.'/helpers/graphic'.$imp.'.php';
+		return new ImageProcessor($imgf);
+	}
+
+	public static $ssDefault = array(
+			'aA'=>1,	//slideshow action icon at album header
+			'aT'=>1,	//shoehorn in this slideshow action at thumbs page
+			'uA'=>1,	//user allow album settings (and their default)
+			'nW'=>0,	//new (pop) window
+			'pS'=>2,	//picture size (intermediate/full)
+			'tT'=>'d',	//image transition = dissolve
+			'vT'=>1,	//show Title in text area
+			'vD'=>1,	//show Desc in title area
+			'sI'=>0,	//shuffle slides for show
+			'aP'=>1,	//autoplay
+			'lS'=>0,	//loop slideshow
+			'sD'=>5,	//slide duration
+			'dC'=>array('#666','#CCC','rgba(51,51,51,0.5)','#FFF','#000'),	//control background, control text, text background, text text, pic background
+			'iS'=>'cb1' //iconset
+		);
+
+	// convert string in form n(K|M|G) to an integer value
+	public static function to_bytes ($val)
+	{
+		$val = trim($val);
+		$last = strtolower($val[strlen($val)-1]);
+		$val = (int)$val;
+		switch($last) {
+			case 't': $val *= 1024;
+			case 'g': $val *= 1024;
+			case 'm': $val *= 1024;
+			case 'k': $val *= 1024;
+		}
+		return $val;
+	}
+
+	// convert integer value to n(K|M|G) string
+	public static function formatBytes ($bytes, $precision=2)
+	{
+		$units = array('B', 'KB', 'MB', 'GB', 'TB');
+		$bytes = max($bytes, 0);
+		$pow = floor(($bytes ? log($bytes) : 0) / log(1024));
+		$pow = min($pow, count($units) - 1); 
+		$bytes /= pow(1024, $pow);
+		return round($bytes, $precision) . $units[$pow];
+	}
+
+	public static function log ($msg)
+	{
+		JLog::add($msg, JLog::DEBUG, 'com_meedya');
+	}
+
+
+// PRIVATE METHODS
+	private static function getTypeOwner ()
+	{
+		if (is_null(self::$instanceType)) {
+			$app = JFactory::getApplication();
+			$id = $app->input->getBase64('mID', false);
+			if ($id) {
+				$ids = explode(':',base64_decode($id));
+				self::$instanceType = $ids[0];
+				self::$ownerID = $ids[1];
+			} else {
+				$params = $app->getParams();
+				self::$instanceType = $params->get('instance_type');
+				switch (self::$instanceType) {
+					case 0:
+						self::$ownerID = JFactory::getUser()->get('id');
+						if (!self::$ownerID) self::$ownerID = -1;
+						break;
+					case 1:
+						self::$ownerID = $params->get('group_auth');
+						break;
+					case 2:
+						self::$ownerID = $params->get('site_auth');
+						break;
+				}
+			}
+		//var_dump(self::$instanceType,self::$ownerID);
+		}
+	}
+
+	private static function componentOption ($key, $dflt)
+	{
+		static $co;
+	
+		if (empty($co)) {
+			$co = JComponentHelper::getParams('com_meedya');
+		}
+
+		return $co->get($key) ?: $dflt;
+	}
+
+}

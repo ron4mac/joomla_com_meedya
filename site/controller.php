@@ -6,26 +6,26 @@
  */
 defined('_JEXEC') or die;
 
-JLoader::register('MeedyaHelper', JPATH_COMPONENT_ADMINISTRATOR.'/helpers/meedya.php');
-//JLoader::register('JHtmlMeedya', JPATH_COMPONENT . '/helpers/html/meedya.php');
-
 class MeedyaController extends JControllerLegacy
 {
 	protected $uid = 0;
 
 	public function __construct ($config = array())
 	{
-		if (JDEBUG) {
-			JLog::add('MeedyaController', JLog::DEBUG, 'com_meedya');
-		}
+		if (RJC_DBUG) { MeedyaHelper::log('MeedyaController'); }
 		parent::__construct($config);
 		$this->uid = JFactory::getUser()->get('id');
 	}
 
 	public function display ($cachable = false, $urlparams = false)
 	{
-		if ($this->uid && !file_exists(MeedyaHelper::userDataPath())) {
-			$this->input->set('layout', 'startup');
+	//	if (!$this->uid) {
+	//		JFactory::getApplication()->enqueueMessage(JText::_('JERROR_ALERTNOAUTHOR'), 'error');
+	//		return;
+	//	}
+		if (!file_exists(MeedyaHelper::userDataPath())) {
+			//set to a view that has no model
+			$this->input->set('view', 'startup');
 		}
 		return parent::display($cachable, $urlparams);
 	}

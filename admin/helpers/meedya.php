@@ -6,7 +6,7 @@
  */
 defined('_JEXEC') or die;
 
-abstract class MeedyaHelper
+abstract class MeedyaAdminHelper
 {
 	protected static $instanceType = null;
 	protected static $ownerID = null;
@@ -31,20 +31,14 @@ abstract class MeedyaHelper
 
 	public static function scriptVersion ($scr)
 	{
-		$bg = array(
-			'echo'=>'echo.js',
-			'slides'=>'slides.js',
-			'upload'=>'upload.js',
-			'each'=>'each.js'
+		$sfx = JDEBUG ? ('?'.time()) : '';
+		$vray = array(
+			'echo' => array('echo.js', 'echo.min.js'),
+			'slides' => array('slides.js', 'slides.min.js'),
+			'upload' => array('upload.js', 'upload.min.js'),
+			'each' => array('each.js', 'each.js')
 			);
-		$nb = array(
-			'echo'=>'echo.min.js',
-			'slides'=>'slides.min.js',
-			'upload'=>'upload.min.js',
-			'each'=>'each.js'
-			);
-		if (JDEBUG) return $bg[$scr];
-		else return $nb[$scr];
+		return $vray[$scr][JDEBUG ? 0 : 1].$sfx;
 	}
 
 	public static function getStorageBase ()
@@ -53,6 +47,14 @@ abstract class MeedyaHelper
 		$results = $dispatcher->trigger('onRjuserDatapath', null);
 		$sdp = isset($results[0]) ? trim($results[0]) : '';
 		return $sdp ? $sdp : 'userstor';
+	}
+
+	public static function getGalStruct ($list)
+	{
+		foreach ($list as &$alb) {
+			$alb['items'] = $alb['items'] ? count(explode('|',$alb['items'])) : 'no';
+		}
+		return $list;
 	}
 
 	public static function userDataPath ()
@@ -160,36 +162,52 @@ abstract class MeedyaHelper
 		return base64_encode(self::$instanceType.':'.self::$ownerID);
 	}
 
+	public static function getImgProc ($imgf)
+	{
+	//	if (JDEBUG) { JLog::add('@@ENV@@'.print_r(getenv(), true), JLog::DEBUG, 'com_meedya'); }
+
+		$imp = 'gd';	// default to GD
+		if (class_exists('Imagick')) {
+			$imp = 'imx';
+		} else {
+			$sps = explode(':', getenv('PATH'));
+			foreach ($sps as $sp) {
+				if (file_exists($sp.'/convert')) $imp = 'im';
+			}
+		}
+		require_once JPATH_COMPONENT.'/helpers/graphic'.$imp.'.php';
+		return new ImageProcessor($imgf);
+	}
+
+	// return the max file upload size as set by the php config
+	public static function phpMaxUp ()
+	{
+		$u = self::to_bytes(ini_get('upload_max_filesize'));
+		$p = self::to_bytes(ini_get('post_max_size'));
+		return min($p,$u);
+	}
+
+	// return the instance storage quota
+	public static function getStoreQuota ($prms)
+	{
+		$isq = $prms->get('storQuota', null);
+		if (!$isq) $isq = self::componentOption('storQuota', 268435456);
+		return $isq;
+	}
+
 	// convert string in form n(K|M|G) to an integer value
 	public static function to_bytes ($val)
 	{
 		$val = trim($val);
 		$last = strtolower($val[strlen($val)-1]);
+		$val = (int)$val;
 		switch($last) {
+			case 't': $val *= 1024;
 			case 'g': $val *= 1024;
 			case 'm': $val *= 1024;
 			case 'k': $val *= 1024;
 		}
 		return $val;
-	}
-
-	// convert integer value to n(K|M|G) string
-	public static function to_KMG ($val=0)
-	{
-		$sizm = 'K';
-		$val = (int)$val;
-		if ($val) {
-			if (($val % 0x40000000) == 0) {
-				$sizm = 'G';
-				$val >>= 30;
-			} elseif (($val % 0x100000) == 0) {
-				$sizm = 'M';
-				$val >>= 20;
-			} else {
-			//	$val >>= 10;
-			}
-		}
-		return $val.$sizm;
 	}
 
 	public static function formatBytes ($bytes, $precision=2)
@@ -229,6 +247,17 @@ abstract class MeedyaHelper
 			}
 		//var_dump(self::$instanceType,self::$ownerID);
 		}
+	}
+
+	private static function componentOption ($key, $dflt)
+	{
+		static $co;
+	
+		if (empty($co)) {
+			$co = JComponentHelper::getParams('com_meedya');
+		}
+
+		return $co->get($key, $dflt);
 	}
 
 }

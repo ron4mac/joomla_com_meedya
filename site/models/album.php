@@ -17,9 +17,7 @@ class MeedyaModelAlbum extends MeedyaModelMeedya
 
 	public function __construct ($config = array())
 	{
-		if (JDEBUG) {
-			JLog::add('MeedyaModelAlbum', JLog::DEBUG, 'com_meedya');
-		}
+		if (RJC_DBUG) { MeedyaHelper::log('MeedyaModelAlbum'); }
 		parent::__construct($config);
 	}
 
@@ -49,6 +47,20 @@ class MeedyaModelAlbum extends MeedyaModelMeedya
 		$db = $this->getDbo();
 		$db->setQuery('SELECT * FROM `albums` WHERE `paid`='.$aid);
 		$albs = $db->loadObjectList();
+		return $albs;
+	}
+
+	// returns an array of aid=>title to the specified album
+	public function getAlbumPath ($to)
+	{
+		$db = $this->getDbo();
+		$albs = array();
+		while ($to) {
+			$db->setQuery('SELECT paid,title FROM albums WHERE aid='.$to);
+			$r = $db->loadAssoc();
+			array_unshift($albs, array($to =>$r['title']));
+			$to = $r['paid'];
+		}
 		return $albs;
 	}
 

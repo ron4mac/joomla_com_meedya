@@ -71,7 +71,7 @@ class MeedyaView extends JViewLegacy
 	 */
 	protected function addToolbar()
 	{
-		$canDo	= MeedyaHelper::getActions();
+		$canDo	= MeedyaAdminHelper::getActions();
 
 		JToolBarHelper::title(JText::_('COM_MEEDYA_MENU').': '.JText::_('COM_MEEDYA_MANAGER_'.strtoupper($this->relm)), 'stack meedya');
 
@@ -83,6 +83,7 @@ class MeedyaView extends JViewLegacy
 	//	}
 
 		JToolBarHelper::custom('rebuildExpodt', 'wrench', '', 'Rebuild exposure dates');
+		JToolBarHelper::custom('cleanOrphans', 'scissors', '', 'Clean orphan files');
 
 		JToolBarHelper::divider();
 		if ($canDo->get('core.admin')) {

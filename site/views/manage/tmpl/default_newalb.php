@@ -3,7 +3,7 @@ defined('_JEXEC') or die;
 
 //jimport( 'joomla.html.editor' );
 
-JHtml::addIncludePath(JPATH_COMPONENT.'/helpers');
+//JHtml::addIncludePath(JPATH_COMPONENT.'/helpers');
 
 //JHtml::_('jquery.framework');
 $jdoc = JFactory::getDocument();
@@ -78,15 +78,20 @@ function createAlbum (elm) {
 	var albDscFld = $id('albdesc');
 	var nualbnam = albNamFld.value.trim();
 //	elm.nextElementSibling.style.visibility = 'visible';
-	var ajd = {task: 'manage.newAlbum', albnam: nualbnam, paralb: (albParFld ? albParFld.value : 0), albdesc: albDscFld.value};
-	jQuery.post('index.php?option=com_meedya&format=raw', ajd, 
+	var ajd = {format: 'raw', task: 'manage.newAlbum', albnam: nualbnam, paralb: (albParFld ? albParFld.value : 0), albdesc: albDscFld.value};
+	ajd[formTokn] = 1;
+	jQuery.post(myBaseURL, ajd, 
 		function (response, status, xhr) {
 			console.log(response, status, xhr);
 //			elm.nextElementSibling.style.visibility = 'hidden';
 			if (status=="success") {
+				if (response) {
+					alert(response);
 //				var crea = $id("crealbm");
 //				crea.style.display = "none";
-				window.location.reload(true);
+				} else {
+					window.location.reload(true);
+				}
 			} else {
 				alert(xhr.statusText);
 			}

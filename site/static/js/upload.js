@@ -13,7 +13,7 @@ function $ae(elem, evnt, func) {
 }
 
 /* action to be taken when all files are uploaded */
-function H5up_done(errcnt) {
+function H5up_done (errcnt) {
 	var albact = '.php?album=' + h5u_albSel.value;
 	if (js_vars.user_id > 0 || js_vars.guest_edit == 1) {
 		redirURL = js_vars.site_url + '&task=manage.imgEdit&after=' + js_vars.timestamp;
@@ -27,7 +27,7 @@ function H5up_done(errcnt) {
 	$id('gotoedit').style.display = 'table-row';
 }
 
-function watchAlbNam(elm) {
+function watchAlbNam (elm) {
 	var creab = $id('creab');
 	if (elm.value.trim()) {
 		creab.disabled = false;
@@ -35,13 +35,13 @@ function watchAlbNam(elm) {
 		creab.disabled = true;
 	}
 }
-function createAlbum(elm) {
+function createAlbum (elm) {
 	elm.disabled = true;
 	var albNamFld = $id('nualbnam');
 	var albParFld = $id('h5u_palbum');
 	var nualbnam = albNamFld.value.trim();
 	elm.nextElementSibling.style.visibility = 'visible';
-	var ajd = {task: 'manage.newAlbum', albnam: nualbnam, paralb: (albParFld ? albParFld.value : 0)};
+	var ajd = {task: 'manage.newAlbum', albnam: nualbnam, paralb: (albParFld ? albParFld.value : 0), [js_vars.frmtkn]: 1, 'o': 1};
 	jQuery(h5u_albSel).load(js_vars.upLink, ajd, 
 		function (response, status, xhr) {
 			console.log(response, status, xhr);
@@ -49,6 +49,7 @@ function createAlbum(elm) {
 			if (status=="success") {
 				var crea = $id("crealbm");
 				crea.style.display = "none";
+				album_select($id("h5u_album"));
 			} else {
 				alert(xhr.statusText);
 			}
@@ -57,7 +58,7 @@ function createAlbum(elm) {
 	);
 }
 
-function o_createAlbum(elm) {
+function o_createAlbum (elm) {
 	elm.disabled = true;
 	var albNamFld = $id('nualbnam');
 	var albParFld = $id('h5u_palbum');
@@ -538,6 +539,9 @@ function album_select(elm) {
 	var asel = elm.options[elm.selectedIndex].value;
 	var crea = $id("crealbm");
 	crea.style.display = asel==-1 ? "inline-block" : "none";
-	var nam = $id("nualbnam");
-	nam.focus();
+	if (asel==-1) {
+		var nam = $id("nualbnam");
+		nam.focus();
+	}
+	$id("dzupui").style.display = asel<1 ? "none" : "block";
 }

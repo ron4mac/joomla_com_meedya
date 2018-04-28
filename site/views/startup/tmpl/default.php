@@ -1,8 +1,10 @@
 <?php
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
+
 ?>
 <h1>Meedya Startup Screen</h1>
+<?php if($this->userPerms->canAdmin): ?>
 <div>
 	<p>Great!!! So you want to try this out, do you...</p>
 	<p>Please be patient and give me a few weeks to figure out what to do here.</p>
@@ -13,3 +15,6 @@ defined('_JEXEC') or die('Restricted access');
 		<input type="hidden" name="task" value="begin" />
 	</form>
 </div>
+<?php else: ?>
+<h3>This gallery has not yet been initiated</h3>
+<?php endif; ?>

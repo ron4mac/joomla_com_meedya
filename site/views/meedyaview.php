@@ -10,9 +10,8 @@ defined('_JEXEC') or die;
  * This is a base view class to (hopefully) avoid duplication of code needed by all views
  */
 
-//require_once JPATH_COMPONENT.'/helpers/meedya.php';
-JLoader::register('MeedyaHelper', JPATH_COMPONENT_ADMINISTRATOR.'/helpers/meedya.php');
-JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
+// provide all views with a JHtml helper class
+JLoader::register('JHtmlMeedya', JPATH_COMPONENT . '/helpers/html/meedya.php');
 
 class MeedyaView extends JViewLegacy
 {
@@ -22,11 +21,14 @@ class MeedyaView extends JViewLegacy
 	protected $meedyaID;
 	protected $gallpath;
 	protected $pagination;
+	protected $btmscript = [];	// accumulate here any scripts that will render at the bottom of content
+	protected $bgt = '';	// set to time if debug; added to js/css urls to prevent caching
 
 	public function __construct ($config = array())
 	{
-		if (JDEBUG) {
-			JLog::add('MeedyaView', JLog::DEBUG, 'com_meedya');
+		if (RJC_DBUG) {
+			MeedyaHelper::log('MeedyaView');
+			$this->bgt = '?'.time();
 		}
 		parent::__construct($config);
 		$this->params = JFactory::getApplication()->getParams();
@@ -38,7 +40,7 @@ class MeedyaView extends JViewLegacy
 
 	public function display ($tpl = null)
 	{
-		if (JDEBUG) { JLog::add('MeedyaView - display', JLog::DEBUG, 'com_meedya'); }
+		if (RJC_DBUG) { MeedyaHelper::log('MeedyaView - display'); }
 //		$this->params = JFactory::getApplication()->getParams();
 //		$this->state = $this->get('State');
 //		$this->items = $this->get('Items');
@@ -46,9 +48,13 @@ class MeedyaView extends JViewLegacy
 		$this->pagination = $this->get('Pagination');
 
 	//	echo'GOt here';var_dump($this->pagination,$this->items);jexit();
-		$jdoc = JFactory::getDocument();
-		$jdoc->addScript('components/com_meedya/static/js/'.MeedyaHelper::scriptVersion('echo'));
+//		$jdoc = JFactory::getDocument();
+//		$jdoc->addScript('components/com_meedya/static/js/'.MeedyaHelper::scriptVersion('echo'));
+		MeedyaHelper::addScript('echo');
+	//	JHtml::_('jquery.framework', false);
+	//	$jdoc->addScript('components/com_meedya/static/js/jqUnveil.js');
 		parent::display($tpl);
+		if ($this->btmscript) echo "<script type=\"text/javascript\">\n".implode("\n", $this->btmscript)."\n</script>";
 	}
 
 	protected function getAlbumThumb ($albrec)

@@ -7,106 +7,17 @@
 
 defined('_JEXEC') or die;
 
-abstract class MeedyaHelperGraphics
-{
-	public static function createThumb ($src, $dest, $ext, $maxW=0, $maxH=100, $sqr=true)
-	{
-		try {
-			$imgk = new Imagick(realpath($src));
-			$imgk->readImage($src);
-			$imgk->cropThumbnailImage(120, 120);
-			$imgk->setImageFormat('JPG');
-			$imgk->writeImage($dest.$ext);
-			return filesize($dest.$ext);
-		}
-		catch(Exception $e) {
-			die('Error when creating thumbnail: ' . $e->getMessage());
-		}
-	}
+include_once 'imgproc.php';
 
-	public static function createMedium ($src, $dest, $ext, $maxW=0, $maxH=1200)
-	{
-		try {
-			$imgk = new Imagick(realpath($src));
-			$imgk->readImage($src);
-			$imgk->scaleImage($maxW, $maxH);
-			$imgk->writeImage($dest.$ext);
-			return filesize($dest.$ext);
-		}
-		catch(Exception $e) {
-			die('Error when creating medium image: ' . $e->getMessage());
-		}
-	}
-
-	public static function orientImage ($src, $dest)
-	{
-		$flp = 0; $rot = 0;
-		$osize = filesize(realpath($src));
-		$exif = @exif_read_data(realpath($src));		//file_put_contents('exif.txt', print_r($exif,true), FILE_APPEND);
-		if (!$exif) return;
-		$ort = $exif['Orientation'];
-		switch ($ort) {
-			case 1: // nothing
-				break;
-			case 2: // horizontal flip
-				$flp = 1;
-				break;
-			case 3: // 180 rotate left
-				$rot = 180;
-				break;
-			case 4: // vertical flip
-				$flp = 2;
-				break;
-			case 5: // vertical flip + 90 rotate right
-				$flp = 2;
-				$rot = 90;
-				break;
-			case 6: // 90 rotate right
-				$rot = 90;
-				break;
-			case 7: // horizontal flip + 90 rotate right
-				$flp = 1;
-				$rot = 90;
-				break;
-			case 8: // 90 rotate left
-				$rot = -90;
-				break;
-		}
-		if (($flp + $rot) !== 0) {
-			try {
-				$imgk = new Imagick(realpath($src));
-				if ($flp==1) { $imgk->flipImage(); }
-				else if ($flp==2) { $imgk->flopImage(); }
-				if ($rot!==0) { $imgk->rotateImage(new ImagickPixel('#00000000'), $rot); }
-				$imgk->setImageOrientation(imagick::ORIENTATION_TOPLEFT);
-				$imgk->writeImage(realpath($dest));
-				return filesize(realpath($dest)) - $osize;
-			}
-			catch(Exception $e) {
-				die('Error when orienting image: ' . $e->getMessage());
-			}
-		}
-		return 0;
-	}
-}
-
-class ImageProcessor
+class ImageProcessor extends ImageProc
 {
 	protected $errs = array();
-	protected $src;
-	protected $imgk;
 
 	public function __construct ($src)
 	{
-		try {
-			$this->src = $src;
-			$this->imgk = new Imagick(realpath($src));
-		//	$this->imgk->readImage($src);
-		}
-		catch(Exception $e) {
-		//	die('Error getting image: ' . $e->getMessage());
-			$this->errs[] = 'Error getting image: ' . $e->getMessage();
-		}
+		parent::__construct($src);
+
+		if (RJC_DBUG) { MeedyaHelper::log('ImagemagickProc'); }
 	}
 
 	public function getErrors ()
@@ -114,82 +25,69 @@ class ImageProcessor
 		return $this->errs;
 	}
 
-	public function createThumb ($dest, $ext, $maxW=0, $maxH=100, $sqr=true)
+	public function createThumb ($dest, $ext, $maxW=120, $maxH=120, $sqr=true)
 	{
-		try {
-			$this->imgk->cropThumbnailImage(120, 120);
-			$this->imgk->setImageFormat('JPG');
-			$this->imgk->writeImage($dest.$ext);
-			return filesize($dest.$ext);
+		if (RJC_DBUG) { MeedyaHelper::log(print_r(array('createThumb',$this->src,getimagesize($this->src)),true)); }
+		if (!isset($this->img_width)) return 0;
+		$dfil = $dest.$ext;
+		$w = $this->img_width;
+		$h = $this->img_height;
+		if ($maxH) {
+			$r = $w/$h;
+			$h = $maxH;
+			$w = $r * $maxH;
+		} else {
+			$r = $h/$w;
+			$w = $maxW;
+			$h = round($r * $maxW);
 		}
-		catch(Exception $e) {
-		//	die('Error when creating a thumbnail: ' . $e->getMessage());
-			$this->errs[] = 'Error when creating thumbnail: ' . $e->getMessage();
-		}
+		if (RJC_DBUG) { MeedyaHelper::log($dfil.':'.$w.':'.$h); }
+		// convert -define jpeg:size=200x200 {src} -thumbnail 100x100^ -gravity center -extent 100x100 {dest}
+	//	$cmd = "convert {$this->src} -thumbnail {$w}x{$h} -quality 90 {$dfil}  2>&1";
+		$_s = escapeshellarg($this->src);
+		$_d = escapeshellarg($dfil);
+		$cmd = "convert {$_s} -thumbnail {$maxW}x{$maxH}^ -gravity center -extent 120x120 -sharpen 0x1 -quality 90 {$_d}  2>&1";
+		if (RJC_DBUG) { MeedyaHelper::log($cmd); }
+		exec($cmd, $output, $retval);
+		if (RJC_DBUG) { MeedyaHelper::log(print_r(array($output, $retval),true)); }
+		return filesize($dfil);
 	}
 
-	public function createMedium ($dest, $ext, $maxW=0, $maxH=1200)
+	public function createMedium ($dest, $ext, $maxW=1200, $maxH=0)
 	{
-		try {
-			$this->imgk->scaleImage($maxW, $maxH);
-			$this->imgk->writeImage($dest.$ext);
-			return filesize($dest.$ext);
+		if (RJC_DBUG) { MeedyaHelper::log(print_r(array('createMedium',$this->src,getimagesize($this->src)),true)); }
+		if (!isset($this->img_width)) return 0;
+		$dfil = $dest.$ext;
+		$w = $this->img_width;
+		$h = $this->img_height;
+		if ($maxH) {
+			$r = $w/$h;
+			$h = $maxH;
+			$w = $r * $maxH;
+		} else {
+			$r = $h/$w;
+			$w = $maxW;
+			$h = round($r * $maxW);
 		}
-		catch(Exception $e) {
-		//	die('Error when creating medium image: ' . $e->getMessage());
-			$this->errs[] = 'Error when creating medium image: ' . $e->getMessage();
-		}
+		if (RJC_DBUG) { MeedyaHelper::log($dfil.':'.$w.':'.$h); }
+		$_s = escapeshellarg($this->src);
+		$_d = escapeshellarg($dfil);
+		$cmd = "convert {$_s} -resize {$w}x{$h}\> -quality 90 {$_d}  2>&1";
+		if (RJC_DBUG) { MeedyaHelper::log($cmd); }
+		exec($cmd, $output, $retval);
+		if (RJC_DBUG) { MeedyaHelper::log(print_r(array($output, $retval), true)); }
+		return filesize($dfil);
 	}
 
 	public function orientImage ($dest)
 	{
-		$flp = 0; $rot = 0;
-		$osize = filesize(realpath($this->src));
-		$exif = @exif_read_data(realpath($this->src));		//file_put_contents('exif.txt', print_r($exif,true), FILE_APPEND);
-		if (!$exif) return;
-		$ort = $exif['Orientation'];
-		switch ($ort) {
-			case 1: // nothing
-				break;
-			case 2: // horizontal flip
-				$flp = 1;
-				break;
-			case 3: // 180 rotate left
-				$rot = 180;
-				break;
-			case 4: // vertical flip
-				$flp = 2;
-				break;
-			case 5: // vertical flip + 90 rotate right
-				$flp = 2;
-				$rot = 90;
-				break;
-			case 6: // 90 rotate right
-				$rot = 90;
-				break;
-			case 7: // horizontal flip + 90 rotate right
-				$flp = 1;
-				$rot = 90;
-				break;
-			case 8: // 90 rotate left
-				$rot = -90;
-				break;
-		}
-		if (($flp + $rot) !== 0) {
-			try {
-				if ($flp==1) { $this->imgk->flipImage(); }
-				else if ($flp==2) { $this->imgk->flopImage(); }
-				if ($rot!==0) { $this->imgk->rotateImage(new ImagickPixel('#00000000'), $rot); }
-				$this->imgk->setImageOrientation(imagick::ORIENTATION_TOPLEFT);
-				$this->imgk->writeImage(realpath($dest));
-				return filesize(realpath($dest)) - $osize;
-			}
-			catch(Exception $e) {
-			//	die('Error when orienting image: ' . $e->getMessage());
-				$this->errs[] = 'Error when orienting image: ' . $e->getMessage();
-			}
-		}
-		return 0;
+		$_s = escapeshellarg($this->src);
+		$_d = escapeshellarg($dest);
+	    $cmd = "convert {$_s} -auto-orient {$_d}  2>&1";
+        exec($cmd, $output, $retval);
+		if (RJC_DBUG) { MeedyaHelper::log(print_r(array($output, $retval), true)); }
+		$this->src = $dest;
+		return filesize($this->src);
 	}
 
 }

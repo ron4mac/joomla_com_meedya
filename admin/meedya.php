@@ -7,6 +7,8 @@
 
 defined('_JEXEC') or die;
 
+JLoader::register('MeedyaAdminHelper', JPATH_COMPONENT.'/helpers/meedya.php');
+
 // Access check.
 if (!JFactory::getUser()->authorise('core.manage', 'com_meedya')) {
 	return JError::raiseWarning(404, JText::_('JERROR_ALERTNOAUTHOR'));

@@ -24,7 +24,7 @@ class JHtmlIcon
 	{
 		$uri = JFactory::getURI();
 
-		$url = JRoute::_(MeedyaHelperRoute::getFormRoute(0, base64_encode($uri)));
+		$url = JRoute::_(MeedyaHelperRoute::getFormRoute(0, base64_encode($uri)), false);
 		$text = JHtml::_('image','system/new.png', JText::_('JNEW'), NULL, true);
 		$button = JHtml::_('link',$url, $text);
 		$output = '<span class="hasTip" title="'.JText::_('COM_MEEDYA_FORM_CREATE_MEEDYAITEM').'">'.$button.'</span>';
@@ -64,7 +64,7 @@ class JHtmlIcon
 		$overlib .= '&lt;br /&gt;';
 		$overlib .= htmlspecialchars($author, ENT_COMPAT, 'UTF-8');
 
-		$button = JHtml::_('link',JRoute::_($url), $text);
+		$button = JHtml::_('link',JRoute::_($url, false), $text);
 
 		$output = '<span class="hasTip" title="'.JText::_('COM_MEEDYA_EDIT').' :: '.$overlib.'">'.$button.'</span>';
 

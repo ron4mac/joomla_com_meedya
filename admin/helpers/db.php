@@ -37,4 +37,50 @@ abstract class MeedyaHelperDb
 		}
 	}
 
+	public static function cleanOrphans ($udbPath)
+	{
+		if (!file_exists($udbPath)) return;
+	//	$imgFils = self::storedFiles($udbPath.'/img/');
+	//	$medFils = self::storedFiles($udbPath.'/med/');
+	//	$thmFils = self::storedFiles($udbPath.'/thm/');
+
+		$db = JDatabaseDriver::getInstance(array('driver'=>'sqlite', 'database'=>$udbPath.'/meedya.db3'));
+
+		// get files listed in the database
+		$db->setQuery('SELECT file FROM meedyaitems');
+		$files = $db->loadColumn();
+
+		$imgFils = self::storedFiles($udbPath.'/img/', $files);
+		$medFils = self::storedFiles($udbPath.'/med/', $files);
+		$thmFils = self::storedFiles($udbPath.'/thm/', $files);
+
+		$dcnt = 0;
+		$imgFils = array_diff($imgFils, $files);
+//		foreach 
+		$medFils = array_diff($medFils, $files);
+		$thmFils = array_diff($thmFils, $files);
+
+	//	echo'<pre>';var_dump($imgFils,$medFils,$thmFils);echo'</pre>';jexit();
+	}
+
+	private static function storedFiles ($dir, &$indb)
+	{
+		$files = [];
+		if ($h = opendir($dir)) {
+			while (false !== ($entry = readdir($h))) {
+				if ($entry[0] != '.' && $entry != 'index.html') {
+					$files[] = $entry;
+				}
+			}
+			closedir($h);
+		}
+
+		$orfs = array_diff($files, $indb);
+		foreach ($orfs as $orf) {
+			unlink($dir.$orf);
+		}
+
+		return $files;
+	}
+
 }

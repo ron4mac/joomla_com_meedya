@@ -5,8 +5,7 @@ error_reporting(E_ALL);
 ini_set('display_errors', '1');
 
 JHtml::stylesheet('components/com_meedya/static/css/slides.css');
-$jdoc = JFactory::getDocument();
-$jdoc->addScript('components/com_meedya/static/js/'.MeedyaHelper::scriptVersion('slides'));
+MeedyaHelper::addScript('slides');
 
 $H5ss_cfg = $this->html5slideshowCfg;
 

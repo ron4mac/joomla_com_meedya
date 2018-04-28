@@ -3,8 +3,7 @@ defined('_JEXEC') or die;
 
 JHtml::addIncludePath(JPATH_COMPONENT.'/helpers');
 
-$jdoc = JFactory::getDocument();
-$jdoc->addScript('components/com_meedya/static/js/'.MeedyaHelper::scriptVersion('each'));
+MeedyaHelper::addScript('each');
 
 JHtml::stylesheet('components/com_meedya/static/css/each.css');
 

@@ -7,12 +7,12 @@ JHtml::_('jquery.framework', false);
 //JHtml::_('behavior.colorpicker');
 
 $jdoc = JFactory::getDocument();
-$jdoc->addScript('components/com_meedya/static/js/slide_config.js');
+$jdoc->addScript('components/com_meedya/static/js/slide_config.js'.$this->bgt);
 //$jdoc->addScript('components/com_meedya/static/js/jqColorPicker.min.js');
-$jdoc->addScript('components/com_meedya/static/js/spectrum.min.js');
+$jdoc->addScript('components/com_meedya/static/js/spectrum.min.js'.$this->bgt);
 //$jdoc->addScript('components/com_meedya/static/js/rscp/jquery.colorPicker.min.js');
 
-JHtml::stylesheet('components/com_meedya/static/css/spectrum.css');
+$jdoc->addStyleSheet('components/com_meedya/static/css/spectrum.css'.$this->bgt);
 //JHtml::stylesheet('components/com_meedya/static/js/rscp/colorPicker.css');
 
 $jdoc->addScriptDeclaration('jQuery.fn.spectrum.defaults.showAlpha = true;
@@ -28,6 +28,10 @@ if ($this->album) {
 //	$thead = $JText::_('html5slide')." - ".$lang_gallery_admin_menu['admin_lnk']. helpButton('adm|usr');
 }
 $cfg = $this->html5slideshowCfg;
+echo <<<EOT
+<form action="" method="post">
+	<button type="submit" name="save" value="1" class="btn btn-primary pull-right">Save Slideshow Settings</button>
+EOT;
 echo '<table style="width:100%">';
 
 if (!$this->album && $this->isAdmin) {
@@ -246,6 +250,10 @@ if ($this->album) echo "<input type=\"hidden\" name=\"album\" value=\"{$album}\"
 //echo "<input type=\"hidden\" name=\"form_token\" value=\"{$form_token}\" />";
 //echo "<input type=\"hidden\" name=\"timestamp\" value=\"{$timestamp}\" />";
 ?>
+	<input type="hidden" name="task" value="manage.saveConfig" />
+	<input type="hidden" name="return" value="<?=base64_encode($_SERVER['REQUEST_URI'])?>" />
+	<?=JHtml::_('form.token')?>
+</form>
 <script>
 jQuery(document).ready(function() {
 //	jQuery('#h5ctrl_b').colorPicker(PickerSkin);

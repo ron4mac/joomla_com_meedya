@@ -63,11 +63,13 @@
 		callback = opts.callback || callback;
 		echo.render();
 		if (document.addEventListener) {
-			root.addEventListener('scroll', debounceOrThrottle, false);
-			root.addEventListener('load', debounceOrThrottle, false);
+			root.addEventListener('scroll', debounceOrThrottle);
+			root.addEventListener('load', debounceOrThrottle);
+			window.addEventListener('resize', debounceOrThrottle/*function(){ echo.render() }*/);
 		} else {
 			root.attachEvent('onscroll', debounceOrThrottle);
 			root.attachEvent('onload', debounceOrThrottle);
+			window.attachEvent('resize', debounceOrThrottle/*function(){ echo.render() }*/);
 		}
 	};
 

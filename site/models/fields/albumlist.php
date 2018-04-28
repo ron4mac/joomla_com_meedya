@@ -6,8 +6,6 @@
  */
 defined('JPATH_BASE') or die;
 
-//jimport('joomla.html.html');
-//jimport('joomla.form.formfield');
 jimport('joomla.form.helper');
 JFormHelper::loadFieldClass('list');
 
@@ -15,6 +13,7 @@ class JFormFieldAlbumList extends JFormFieldList
 {
 	protected $type = 'AlbumList';
 
+	// Gets list of albums options from the form field
 	protected function getOptions()
 	{
 		$albs = json_decode($this->element['albums']);

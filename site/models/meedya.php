@@ -109,10 +109,10 @@ class MeedyaModelMeedya extends JModelList
 	public function getItemThumbFilePlus ($iid)
 	{
 		$db = $this->getDbo();
-		$db->setQuery('SELECT `file`,`thumb`,`title`,`desc` FROM `meedyaitems` WHERE `id`='.$iid);
+		$db->setQuery('SELECT `file`,`mtype`,`thumb`,`title`,`desc` FROM `meedyaitems` WHERE `id`='.$iid);
 		$r = $db->loadAssoc();
 		$thm = $r['thumb'] ? $r['thumb'] : $r['file'];
-		return array($thm, $r['title'], $r['desc']);
+		return array($thm, $r['title'], $r['desc'], $r['mtype']);
 	}
 
 	public function getAlbumsList ()

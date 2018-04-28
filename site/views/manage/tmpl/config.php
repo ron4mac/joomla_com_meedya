@@ -3,40 +3,36 @@ defined('_JEXEC') or die;
 
 JHtml::addIncludePath(JPATH_COMPONENT.'/helpers');
 
-JHtml::stylesheet('components/com_meedya/static/css/manage.css');
+$jdoc = JFactory::getDocument();
+$jdoc->addStyleSheet('components/com_meedya/static/css/gallery.css'.$this->bgt);
+$jdoc->addStyleSheet('components/com_meedya/static/css/manage.css'.$this->bgt);
 JHtml::_('jquery.framework', false);
-//JHtml::_('behavior.framework');
+$jdoc->addScript('components/com_meedya/static/js/manage.js'.$this->bgt);
+$jdoc->addScriptDeclaration('var baseURL = "'.JUri::base().'";
+//var aBaseURL = "'.JUri::base().'index.php?option=com_meedya&format=raw&mID='.urlencode($this->meedyaID).'&task=";
+var formTokn = "'.JSession::getFormToken().'";
+');
 
-//Note that the options argument is optional so JHtmlTabs::start() can be called without it
-$options = array(
-	'onActive' => 'function(title, description){
-		description.setStyle("display", "block");
-		title.addClass("open").removeClass("closed");
-	}',
-	'onBackground' => 'function(title, description){
-		description.setStyle("display", "none");
-		title.addClass("closed").removeClass("open");
-	}',
-	'startOffset' => 0,  // 0 starts on the first tab, 1 starts the second, etc...
-	'useCookie' => true, // this must not be a string. Don't use quotes.
-);
+echo '<div class="meedya-config">';
+
+if ($this->manage) echo JHtml::_('meedya.manageMenu', 1);
+echo JHtml::_('meedya.pageHeader', $this->params, $this->action.'XXXX');
+
+echo JHtml::_('bootstrap.startTabSet', 'mdya_tabs', array('active'=>'cfg-ah'))
+	,JHtml::_('bootstrap.addTab', 'mdya_tabs', 'cfg-ah', JText::_('Panel Title 1'))
+	,$this->loadTemplate('gallery')
+	,JHtml::_('bootstrap.endTab')
+	,JHtml::_('bootstrap.addTab', 'mdya_tabs', 'cfg-ss', JText::_('CUSTOM_PANEL_TITLE'))
+	,$this->loadTemplate('slides')
+	,JHtml::_('bootstrap.endTab')
+	,JHtml::_('bootstrap.addTab', 'mdya_tabs', 'cfg-up', JText::_('CUSTOM_PANEL_TITLE2'))
+	,$this->loadTemplate('upload')
+	,JHtml::_('bootstrap.endTab')
+	,JHtml::_('bootstrap.endTabSet')
+	;
+
 ?>
-
-<form action="" method="post">
-	<button type="submit" name="save" value="1" class="btn btn-primary pull-right">Save</button>
-	<button type="button" class="btn pull-right" onclick="window.location='<?=$_SERVER['HTTP_REFERER']?>'">Cancel</button>
-	<?php echo JHtml::_('bootstrap.startTabSet', 'tabs_id', array('active'=>'panel-id-1')); ?>
-	<?php echo JHtml::_('bootstrap.addTab', 'tabs_id', 'panel-id-1', JText::_('Panel Title 1')); ?>
-		<?=$this->loadTemplate('gallery')?>
-	<?php echo JHtml::_('bootstrap.endTab'); ?>
-	<?php echo JHtml::_('bootstrap.addTab', 'tabs_id', 'panel-id-2', JText::_('CUSTOM_PANEL_TITLE')); ?>
-		<?=$this->loadTemplate('slides')?>
-	<?php echo JHtml::_('bootstrap.endTab'); ?>
-	<?php echo JHtml::_('bootstrap.addTab', 'tabs_id', 'panel-id-3', JText::_('CUSTOM_PANEL_TITLE2')); ?>
-		<?=$this->loadTemplate('upload')?>
-	<?php echo JHtml::_('bootstrap.endTab'); ?>
-	<?php echo JHtml::_('bootstrap.endTabSet'); ?>
-	<input type="hidden" name="task" value="manage.saveConfig" />
-	<input type="hidden" name="return" value="<?=base64_encode($_SERVER['HTTP_REFERER'])?>" />
-	<?=JHtml::_('form.token')?>
-</form>
+</div>
+<!-- <script type="text/javascript">
+	AArrange.init('gstruct','album');
+</script> -->
