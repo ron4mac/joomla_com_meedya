@@ -1,7 +1,7 @@
 <?php
 /**
  * @package		com_meedya
- * @copyright	Copyright (C) 2017 Ron Crans. All rights reserved.
+ * @copyright	Copyright (C) 2018 Ron Crans. All rights reserved.
  * @license		GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('JPATH_BASE') or die;
@@ -21,7 +21,7 @@ class JFormFieldAlbumList extends JFormFieldList
 
 		// Build the options array.
 		foreach ($albs as $alb) {
-			$d = count(explode('.',$alb->hord));
+			$d = count(explode('.', $alb->hord));
 			$options[] = JHtml::_('select.option', $alb->aid, str_repeat('&nbsp;&nbsp;',$d-1).$alb->title);
 		}
 

@@ -1,7 +1,7 @@
 <?php
 /**
  * @package		com_meedya
- * @copyright	Copyright (C) 2017 Ron Crans. All rights reserved.
+ * @copyright	Copyright (C) 2018 Ron Crans. All rights reserved.
  * @license		GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
@@ -11,6 +11,7 @@ abstract class MeedyaHelper
 	protected static $instanceType = null;
 	protected static $ownerID = null;
 	protected static $udp = null;
+	protected static $jdoc = null;
 
 	public static function scriptVersion ($scr, $path='js/')
 	{
@@ -24,15 +25,44 @@ abstract class MeedyaHelper
 			'each' => array('each.js', 'each.js'),
 			'basicLightbox' => array('basicLightbox.min.js', 'basicLightbox.min.js')
 			);
-		return 'components/com_meedya/static/' . $path . $vray[$scr][$dbg ? 0 : 1] . $sfx;
+		if (isset($vray[$scr])) {
+			$s = $vray[$scr][$dbg ? 0 : 1];
+		} else {
+			$s = $scr.'.js';
+		}
+		return 'components/com_meedya/static/' . $path . $s . $sfx;
 	}
 
 	public static function addScript ($scr, $path='js/')
 	{
-		static $jdoc = null;
+		if (self::$jdoc === null) self::$jdoc = JFactory::getDocument();
+		self::$jdoc->addScript(self::scriptVersion($scr, $path));
+	}
 
-		if ($jdoc === null) $jdoc = JFactory::getDocument();
-		$jdoc->addScript(self::scriptVersion($scr, $path));
+	public static function styleVersion ($css, $path='css/')
+	{
+		$dbg = RJC_DBUG;
+		$sfx = $dbg ? ('?'.time()) : '';
+		$vray = array(
+			'manage' => array('manage.css', 'manage.css'),
+			'echo' => array('echo.css', 'echo.min.css'),
+			'slides' => array('slides.css', 'slides.min.css'),
+			'upload' => array('upload.css', 'upload.min.css'),
+			'each' => array('each.css', 'each.css'),
+			'basicLightbox' => array('basicLightbox.min.css', 'basicLightbox.min.css')
+			);
+		if (isset($vray[$css])) {
+			$s = $vray[$css][$dbg ? 0 : 1];
+		} else {
+			$s = $css.'.css';
+		}
+		return 'components/com_meedya/static/' . $path . $s . $sfx;
+	}
+
+	public static function addStyle ($css, $path='css/')
+	{
+		if (self::$jdoc === null) self::$jdoc = JFactory::getDocument();
+		self::$jdoc->addStyleSheet(self::styleVersion($css, $path));
 	}
 
 	public static function getInstanceID ()
@@ -102,8 +132,7 @@ abstract class MeedyaHelper
 	// return the instance max file upload size
 	public static function maxUpload ($op)
 	{
-		//echo'<pre>';var_dump(JComponentHelper::getParams('com_meedya'));echo'</pre>';
-		$cupmax = $op ? $op : JComponentHelper::getParams('com_meedya')->get('maxUpload', 4194304);
+		$cupmax = $op ?: self::componentOption('maxUpload', 4194304);
 		$cupmax = $cupmax ?: 4194304;
 		return min($cupmax, JFilesystemHelper::fileUploadMaxSize(false));
 	}
@@ -176,9 +205,17 @@ abstract class MeedyaHelper
 		return round($bytes, $precision) . $units[$pow];
 	}
 
-	public static function log ($msg)
+	public static function log ($msg, $data=null)
 	{
-		JLog::add($msg, JLog::DEBUG, 'com_meedya');
+		if ($msg) JLog::add($msg, JLog::INFO, 'com_meedya');
+		if ($data) {
+			$msg = '';
+			if (!is_array($data)) $data = array($data);
+			foreach ($data as $dat) {
+				$msg .= print_r($dat, true);
+			}
+			JLog::add($msg, JLog::DEBUG, 'com_meedya');
+		}
 	}
 
 
@@ -214,13 +251,13 @@ abstract class MeedyaHelper
 
 	private static function componentOption ($key, $dflt)
 	{
-		static $co;
+		static $cp;
 	
-		if (empty($co)) {
-			$co = JComponentHelper::getParams('com_meedya');
+		if (empty($cp)) {
+			$cp = JComponentHelper::getParams('com_meedya');
 		}
 
-		return $co->get($key) ?: $dflt;
+		return $cp->get($key) ?: $dflt;
 	}
 
 }

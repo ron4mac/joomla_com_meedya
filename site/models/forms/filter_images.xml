@@ -4,8 +4,8 @@
 		<field
 			name="search"
 			type="text"
-			label="COM_CONTENT_FILTER_SEARCH_LABEL"
-			description="COM_CONTENT_FILTER_SEARCH_DESC"
+			label="COM_MEEDYA_FILTER_SEARCH_LABEL"
+			description="COM_MEEDYA_FILTER_SEARCH_DESC"
 			noresults="COM_MEEDYA_FILTER_NORESULTS"
 			hint="JSEARCH_FILTER"
 		/>
@@ -50,8 +50,17 @@
 			description="COM_MEEDYA_FILTER_ALBUM_DESC"
 			onchange="this.form.submit();"
 			>
+			<option value="-1">COM_MEEDYA_NO_ALBUM</option>
 			<option value="">COM_MEEDYA_SELECT_ALBUM</option>
 		</field>
+		<field
+			name="tag"
+			type="text"
+			label="COM_MEEDYA_FILTER_TAG"
+			description="COM_MEEDYA_FILTER_TAG_DESC"
+			onchange="this.form.submit();"
+			hint="keyword(s)"
+		/>
 		<!-- <field
 			name="published"
 			type="status"

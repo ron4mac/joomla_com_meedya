@@ -10,11 +10,12 @@ function _ae (elem, evnt, func, capt=false) {
 }
 
 
-var Arrange = (function () {
+var Arrange = (function ($) {
 	var dragSrcEl = null,
 		iSlctd = null,
 		stop = true,
 		ctnr = '',
+		clas = '',
 		meeid = 'meeid',
 		items;
 
@@ -133,6 +134,7 @@ var Arrange = (function () {
 	return {
 		init: function (iCtnr, iClass) {
 			ctnr = iCtnr;
+			clas = iClass;
 			items = document.querySelectorAll('#'+iCtnr+' .'+iClass);
 			[].forEach.call(items, function(itm) {
 			//		itm.setAttribute('draggable', 'true');
@@ -145,29 +147,23 @@ var Arrange = (function () {
 					_ae(itm, 'dragend', handleDragEnd);
 					_ae(itm, 'touchmove', tMove);
 				});
+		},
+		iord: function () {
+			items = document.querySelectorAll('#'+ctnr+' .'+clas);
+			var imord = [];
+			[].forEach.call(items, function (itm) {
+				var iid = itm.getAttribute('data-id');
+				if (iid) imord.push(iid);
+			});
+			return imord.join("|");
 		}
 	};
-}());
+}(jQuery));
 
 
 // Need to have a separate Drag and Drop arranger for the gallery album hierarchy
-function setAlbPaid (aid, paid, func) {
 
-//	func(''); alert("Actual album move is disabled"); return;
-
-//	var prms = {'aid': aid, 'paid': paid};
-	var prms = {'format':'raw','task':'manage.adjustAlbPaid','aid': aid, 'paid': paid};
-	prms[formTokn] = 1;
-//	$.post(aBaseURL+'manage.adjustAlbPaid', prms, function (d) {
-	$.post(myBaseURL, prms, function (d) {
-		if (d) {
-			console.log(d);
-		}
-		func(d);
-	});
-}
-
-var AArrange = (function () {
+var AArrange = (function ($) {
 	var dragSrcEl = null,
 		deTarg = null,
 		iSlctd = null,
@@ -177,6 +173,22 @@ var AArrange = (function () {
 		items;
 
 	// Private functions
+
+	function setAlbPaid (aid, paid, func) {
+
+	//	func(''); alert("Actual album move is disabled"); return;
+
+	//	var prms = {'aid': aid, 'paid': paid};
+		var prms = {'format':'raw','task':'manage.adjustAlbPaid','aid': aid, 'paid': paid};
+		prms[Joomla.getOptions('csrf.token', '')] = 1;
+	//	$.post(aBaseURL+'manage.adjustAlbPaid', prms, function (d) {
+		$.post(myBaseURL, prms, function (d) {
+			if (d) {
+				console.log(d);
+			}
+			func(d);
+		});
+	}
 
 	function hasItem (e) {
 		var typs = e.dataTransfer.types;
@@ -310,7 +322,7 @@ var AArrange = (function () {
 				});
 		}
 	};
-}());
+}(jQuery));
 
 
 
@@ -356,8 +368,7 @@ function handleAlbthmDragOver (e) {
 	return false;
 }
 
-function handleAlbthmDrop (e)
-{
+function handleAlbthmDrop (e) {
 	_pd(e);		// stops the browser from redirecting.
 	var src = e.dataTransfer.getData('imgsrc');
 	if (src) {
@@ -368,20 +379,71 @@ function handleAlbthmDrop (e)
 	this.style.opacity = '1.0';
 }
 
+function removeAlbThm() {
+	document.getElementById('albthmimg').src = 'components/com_meedya/static/img/img.png';
+	document.getElementById('albthmid').value = 0;
+}
+
 function hasSelections (sel, alrt=false) {
 	if (document.querySelectorAll(sel).length) {
 		return true;
 	} else {
-		if (alrt) alert("Please select some items first.");
+	//	if (alrt) alert("Please select some items first.");
+		if (alrt) bootbox.alert("Please select some items first.");
 		return false;
+	}
+}
+
+function deleteSelected (e) {
+	e.preventDefault();
+	if (hasSelections("[name='slctimg[]']:checked", true)) {
+		bootbox.confirm({
+			message: "The selection(s) will be totally and permanently deleted! Delete them?",
+			buttons: {
+					confirm: {
+						label: 'JACTION_DELETE',
+						className: 'btn-danger'
+					},
+					cancel: {
+						label: 'JCANCEL'	//,
+					//	className: 'btn-standard'
+					}
+				},
+				callback: function(c){
+				if (c) {
+					document.adminForm.task.value = 'manage.deleteItems';
+					document.adminForm.submit();
+				}
+			}
+		});
 	}
 }
 
 function removeSelected (e) {
 	e.preventDefault();
-	if (hasSelections("[name='slctimg[]']:checked",true)) {
-		document.adminForm.task.value = 'manage.removeItems';
-		document.adminForm.submit();
+	if (hasSelections("[name='slctimg[]']:checked", true)) {
+		bootbox.confirm({
+			message: "The selection(s) will be removed from the album but still exist in the gallery. Remove them?",
+			buttons: {
+					confirm: {
+						label: 'JACTION_REMOVE',
+						className: 'btn-primary'
+					},
+					cancel: {
+						label: 'JCANCEL'	//,
+					//	className: 'btn-standard'
+					}
+				},
+				callback: function(c){
+				if (c) {
+					var items = document.querySelectorAll("[name='slctimg[]']:checked");
+					var pnode = items[0].parentNode.parentNode;
+					for (var i=0; i<items.length; i++) {
+						pnode.removeChild(items[i].parentNode);
+					}
+				}
+			}
+		});
 	}
 }
 
@@ -426,4 +488,9 @@ function lboxPimg (iFile) {
 	blbI = basicLightbox.create(html);
 	blbI.show();
 	document.addEventListener("keydown", blbEscape);
+}
+
+function saveAlbum () {
+	document.albForm.thmord.value = Arrange.iord();
+	document.albForm.submit();
 }

@@ -6,6 +6,8 @@
  */
 defined('_JEXEC') or die;
 
+JLoader::register('JHtmlMeedya', JPATH_COMPONENT . '/helpers/html/meedya.php');
+
 class MeedyaControllerManage extends JControllerLegacy
 {
 	protected $default_view = 'manage';
@@ -16,6 +18,7 @@ class MeedyaControllerManage extends JControllerLegacy
 		if (RJC_DBUG) { MeedyaHelper::log('MeedyaControllerManage'); }
 		parent::__construct($config);
 	}
+
 
 /*	public function display ($cachable = false, $urlparams = false)
 	{
@@ -28,10 +31,12 @@ class MeedyaControllerManage extends JControllerLegacy
 		return parent::display($cachable, $urlparams);
 	}
 */
+
 	public function upload ()
 	{
 		$this->input->set('view', 'upload');
 	}
+
 
 	public function imgsEdit ()
 	{
@@ -44,6 +49,7 @@ class MeedyaControllerManage extends JControllerLegacy
 		$view->referer = $this->input->server->getRaw('HTTP_REFERER');
 		$view->display();
 	}
+
 
 	public function imgEdit ()
 	{
@@ -59,6 +65,7 @@ class MeedyaControllerManage extends JControllerLegacy
 		$view->display();
 	}
 
+
 	public function iedSave ()
 	{
 		$m = $this->getModel('manage');
@@ -70,8 +77,9 @@ class MeedyaControllerManage extends JControllerLegacy
 			}
 			JFactory::getApplication()->enqueueMessage('Image properties sucessfully saved');
 		}
-		$this->setRedirect(base64_decode($this->input->post->get('referer','','string')));
+		$this->setRedirect(base64_decode($this->input->post->get('referer','','base64')));
 	}
+
 
 	public function delAlbum ()
 	{
@@ -86,6 +94,7 @@ class MeedyaControllerManage extends JControllerLegacy
 		$this->setRedirect(JRoute::_('index.php?option=com_meedya&view=manage&limitstart=0', false));
 	}
 
+
 //	public function delAlbums ()
 //	{
 //		$a = $this->input->get('albs', '', 'string');
@@ -98,9 +107,41 @@ class MeedyaControllerManage extends JControllerLegacy
 //		$this->setRedirect(JRoute::_('index.php?option=com_meedya&view=manage&limitstart=0', false));
 //	}
 
-	public function delItems ()
+
+	public function imgsAddAlbum ()
 	{
+		$this->setRedirect($_SERVER['HTTP_REFERER']);
+
+		if (!JSession::checkToken()) {
+			JFactory::getApplication()->enqueueMessage('Invalid token ... try again','error');
+			return;
+		}
+
+		$itms = $this->input->post->get('slctimg',[],'array');
+		if (!$itms) return;
+
+		//var_dump($itms);
+		$m = $this->getModel('manage');
+		$aid = $m->addAlbum('New Album');
+		$m->addItems2Album($itms, $aid);
+
+		$this->setRedirect(JRoute::_('index.php?option=com_meedya&view=manage&layout=albedit&aid='.$aid, false));
 	}
+
+	public function deleteItems ()
+	{
+		$this->setRedirect($_SERVER['HTTP_REFERER']);
+		if (!JSession::checkToken()) {
+			JFactory::getApplication()->enqueueMessage('Invalid token ... try again','error');
+			return;
+		}
+		//echo'<xmp>';var_dump($this->input->post);echo'</xmp>';jexit();
+		$itms = $this->input->post->get('slctimg',[],'array');
+		//echo'<xmp>';var_dump($itms);echo'</xmp>';jexit();
+		$m = $this->getModel('manage');
+		$m->deleteItems($itms);
+	}
+
 
 	public function doUpload ()
 	{
@@ -112,6 +153,7 @@ class MeedyaControllerManage extends JControllerLegacy
 		$view->setLayout('upload');
 		$view->display();
 	}
+
 
 	public function __editImgs ()
 	{
@@ -127,6 +169,7 @@ class MeedyaControllerManage extends JControllerLegacy
 		$view->display();
 	}
 
+
 	public function editImgs ()
 	{
 		$view = $this->getView('manage','html');
@@ -139,13 +182,14 @@ class MeedyaControllerManage extends JControllerLegacy
 	//	$view->iids = $m->getItems();
 		$view->itemId = $this->input->getInt('Itemid');
 
-		$mode = $this->input->get('mode', null);
+		$mode = $this->input->get('mode', null, 'word');
 		if (!$mode) $mode = $this->input->cookie->get('meedya_eig', 'L');
 		$this->input->cookie->set('meedya_eig', $mode);
 		$view->mode = $mode;
 
 		$view->display();
 	}
+
 
 	public function doConfig ()
 	{
@@ -158,6 +202,7 @@ class MeedyaControllerManage extends JControllerLegacy
 		$view->album = null;
 		$view->display();
 	}
+
 
 	public function saveConfig ()
 	{
@@ -178,11 +223,13 @@ class MeedyaControllerManage extends JControllerLegacy
 		$this->setRedirect(base64_decode($this->input->post->get('return','','base64')));
 	}
 
+
 	public function importMeedya ()
 	{
 		$bpath = realpath(MeedyaHelper::userDataPath()).'/import/';
 		$this->importDir($bpath, 0, $this->getModel('manage'));
 	}
+
 
 	private function importDir ($base, $paid, $mdl)
 	{
@@ -207,5 +254,124 @@ class MeedyaControllerManage extends JControllerLegacy
 			closedir($h);
 		}
 	}
+
+
+	// save changes made to an album
+	public function editAlbum ()
+	{
+		$view = $this->getView('manage','html');
+		$view->setLayout('albedit');
+		$view->setModel($this->getModel('manage'), true);
+//		$m = $this->getModel('manage');
+//		$itms = $this->input->post->get('slctimg',[],'array');
+//		if (!$itms[0]) $itms = $this->input->get('after','','string');
+//		$view->iids = $m->getImages($itms);
+		$view->referer = $this->input->server->getRaw('HTTP_REFERER');
+		$view->display();
+	}
+
+
+	// save changes made to an album
+	public function saveAlbum ()
+	{
+		$aid = $this->input->post->get('aid',0,'int');
+		$flds = [];
+		$flds['thumb'] = $this->input->post->get('albthmid',0,'int');
+		$flds['title'] = $this->input->post->get('albttl','','string');
+		$flds['desc'] = $this->input->post->get('albdsc','','string');
+		$flds['items'] = $this->input->post->get('thmord','','string');
+
+		$m = $this->getModel('manage');
+		$m->saveAlbum($aid, $flds);
+
+	//	echo'<xmp>';var_dump($this->input);echo'</xmp>';
+		JFactory::getApplication()->enqueueMessage('Album properties sucessfully saved');
+		$this->setRedirect(base64_decode($this->input->post->get('referer','','base64')));
+	}
+
+
+
+
+	/* * * * * * * * * * functions for format=raw calls * * * * * * * * * */
+	/*--------------------------------------------------------------------*/
+
+	// task to receive and store uploaded files
+	public function upfile ()
+	{
+		if (JDEBUG) { JLog::add('upfile: '.print_r($this->input, true), JLog::INFO, 'com_meedya'); }
+	//	$galid = base64_decode($this->input->get('galid', '', 'base64'));
+		$file = $this->input->files->get('userpicture');
+
+		try {
+			if (!$file) throw new Exception('Parameters error.');
+			switch ($file['error']) {
+				case UPLOAD_ERR_OK:
+					break;
+				case UPLOAD_ERR_NO_FILE:
+					throw new Exception('No file sent.');
+				case UPLOAD_ERR_INI_SIZE:
+				case UPLOAD_ERR_FORM_SIZE:
+					throw new Exception('Exceeded filesize limit.');
+				default:
+					throw new Exception('Unknown error.');
+			}
+			$m = $this->getModel('manage');
+			$m->storeFile($file, $this->input->post->get('album', 0, 'int'));
+		}
+		catch (Exception $e) {
+			header("HTTP/1.1 400 Failed to store file");
+			echo 'Error storing file: ' . $e->getMessage();
+		}
+	}
+
+
+	// task to create a new album
+	public function newAlbum ()
+	{
+		if (JSession::checkToken()) {
+			$a = $this->input->post->get('albnam', 'A NEW ALBUM', 'string');
+			$p = $this->input->post->get('paralb', 0, 'int');
+			$d = $this->input->post->get('albdesc', null, 'string');
+			$m = $this->getModel('manage');
+			$aid = $m->addAlbum($a, $p, $d);
+			if (!$aid) {
+				header("HTTP/1.0 400 Could not create album: {$a}");
+			} elseif ($this->input->post->get('o', 0, 'int')) {
+				$albs = $m->getAlbumsList();
+				echo JHtml::_('meedya.albumsHierOptions', $albs, $aid);
+			}
+		} else {
+			echo 'Bad request (token)';
+		}
+	}
+
+
+	// task to remove items from an album
+	public function removeItems ()
+	{
+		if (JSession::checkToken()) {
+			$aid = $this->input->post->get('aid','','int');
+			$parm = $this->input->post->get('items','','string');
+			$items = explode('|',$parm);
+			$m = $this->getModel('manage');
+			$m->removeItems($aid, $items);
+		} else {
+			echo 'Bad request (token)';
+		}
+	}
+
+
+	public function adjustAlbPaid ()
+	{
+		if (JSession::checkToken()) {
+			$aid = $this->input->post->get('aid','','int');
+			$paid = $this->input->post->get('paid','','int');
+			$m = $this->getModel('manage');
+			$m->setAlbumPaid($aid, $paid);
+		} else {
+			echo 'Bad request (token)';
+		}
+	}
+
 
 }

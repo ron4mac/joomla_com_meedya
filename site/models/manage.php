@@ -20,6 +20,7 @@ class MeedyaModelManage extends MeedyaModelMeedya
 		// set filter fields for Search Tools purposes
 		if (empty($config['filter_fields'])) {
 			$config['filter_fields'] = array(
+				'album',
 				'level',
 				'tag'
 			);
@@ -73,7 +74,7 @@ class MeedyaModelManage extends MeedyaModelMeedya
 	public function getAllAlbums ()
 	{
 		$db = $this->getDbo();
-		$db->setQuery('SELECT aid,paid,title,desc,items FROM `albums` ORDER BY albhier(aid,paid)');
+		$db->setQuery('SELECT aid,paid,hord,title,desc,items FROM `albums` ORDER BY albhier(aid,paid)');
 		$albs = $db->loadAssocList();
 		return $albs;
 	}
@@ -94,7 +95,7 @@ class MeedyaModelManage extends MeedyaModelMeedya
 		$db->transactionStart();
 		$db->setQuery('SELECT `items` FROM `albums` WHERE `aid`='.$album);
 		$r = $db->loadResult();
-		if ($r || is_null($r)) {
+		if ($r!==false || is_null($r)) {
 			$cur = $r ? explode('|', $r) : array();
 			$diff = array_diff($items, $cur);
 			$items = array_merge($cur, $diff);
@@ -125,7 +126,7 @@ class MeedyaModelManage extends MeedyaModelMeedya
 		}
 	}
 
-	public function addAlbum ($anam, $parid, $desc='')
+	public function addAlbum ($anam, $parid=0, $desc='')
 	{
 		$db = $this->getDbo();
 		if ($parid) {
@@ -171,6 +172,11 @@ class MeedyaModelManage extends MeedyaModelMeedya
 	public function storeFile ($file, $alb, $impath='')
 	{
 		if (RJC_DBUG) { MeedyaHelper::log("store ... album: {$alb} file: {$file['name']}"); }
+
+		$quota = MeedyaHelper::getStoreQuota(JFactory::getApplication()->getParams());
+		if ($quota) {
+			if ($this->getStorageTotal() > $quota) throw new Exception('Quota exceeded');
+		}
 		$mtype = '';
 		if (function_exists('finfo_open') && ($finf = finfo_open(FILEINFO_MIME_TYPE))) {
 			$mtype = finfo_file($finf, $file['tmp_name']);
@@ -180,11 +186,18 @@ class MeedyaModelManage extends MeedyaModelMeedya
 		$mdydir = realpath(MeedyaHelper::userDataPath());
 		$fPath = $mdydir.'/img/';
 
-		preg_match('/(.+)\.(.*?)\Z/', $file['name'], $matches);
-		$nr = 0;
-		$base_name = $matches[1];
+		//preg_match('/(.+)\.(.*?)\Z/', $file['name'], $matches);
+		//$nr = 0;
+		//$base_name = $matches[1];
+		//$uniq = '';
+		//$ext = '.' . $matches[2];
+
+		$fnp = pathinfo($file['name']);
+		$base_name = $fnp['filename'];
+		$ext = isset($fnp['extension']) ? ('.'.$fnp['extension']) : '';
 		$uniq = '';
-		$ext = '.' . $matches[2];
+		$nr = 0;
+
 		while (file_exists($fPath.$base_name.$uniq.$ext)) {
 			$uniq = '~'.$nr++;
 		}
@@ -196,8 +209,7 @@ class MeedyaModelManage extends MeedyaModelMeedya
 			}
 		} else {
 			if (!(move_uploaded_file($file['tmp_name'], $ffpnam))) {
-				header("HTTP/1.0 403 Could not place file ".$ffpnam);
-				jexit();
+				throw new Exception('Could not place file');
 			}
 		}
 
@@ -298,17 +310,39 @@ class MeedyaModelManage extends MeedyaModelMeedya
 		}
 	}
 
+	public function saveAlbum ($aid, $flds)
+	{
+		if (is_null($this->album) || $this->album['aid']!=$aid) $this->album = $this->getAlbum($aid);
+	//	$this->album = array('aid'=>$aid);
+	// @@need to remove album id from removed items
+		$rmvd = array_diff(explode('|', $this->album['items']), explode('|', $flds['items']));
+		foreach ($rmvd as $itm) {
+			$this->removeItemAlbum($itm, $aid);
+		}
+		$this->updateAlbum($flds);
+	}
+
 	private function updateAlbum ($fields)
 	{
 		if (is_null($this->album)) $this->album = $this->getAlbum();
+		$db = $this->getDbo();
 		$sets = '';
 		foreach ($fields as $k=>$v) {
 			if ($sets) $sets .= ', ';
-			$sets .= $k.' = '.$v;
+			$sets .= $k.' = '.$db->quote($v);
 		}
-		$db = $this->getDbo();
 		$db->setQuery('UPDATE `albums` SET '.$sets.' WHERE `aid`='.$this->album['aid']);
-		//echo $db->getQuery();
+	//	echo $db->getQuery();
+		$db->execute();
+	}
+
+	private function removeItemAlbum ($itm, $alb)
+	{
+		$db = $this->getDbo();
+		$db->setQuery('SELECT `album` FROM `meedyaitems` WHERE `id`='.$itm);
+		$albs = explode('|', $db->loadResult());
+		$albs = array_diff($albs, array($alb));
+		$db->setQuery('UPDATE `meedyaitems` SET `album`=\''.implode('|', $albs).'\' WHERE `id`=' . $itm);
 		$db->execute();
 	}
 
@@ -337,10 +371,27 @@ class MeedyaModelManage extends MeedyaModelMeedya
 		$params = JComponentHelper::getParams('com_meedya');
 		$input = $app->input;
 
+		if (RJC_DBUG) { MeedyaHelper::log('populateState', $input); }
+
 		// album ID
 		$aid = $input->get('album', 0, 'INT');
 		if (!$aid) { $aid = $input->get('aid', 0, 'INT'); }
 		$this->state->set('album.id', $aid);	//echo'<xmp>';var_dump($this->state);echo'</xmp>';
+
+
+		// List state information
+//		$limit = $app->getUserStateFromRequest('global.list.limit', 'limit', $app->getCfg('list_limit'), 'uint');
+//		$this->setState('list.limit', $limit);
+
+//		$limitstart = JRequest::getUInt('limitstart', 0);
+//		$this->setState('list.start', $limitstart);
+
+		// List state information
+//		$value = $app->input->get('limit', $app->get('list_limit', 0), 'uint');
+//		$this->setState('list.limit', $value);
+
+//		$value = $app->input->get('start', 0, 'uint');
+//		$this->setState('list.start', $value);
 
 		// List state information
 	//	$limit = $app->getUserStateFromRequest('global.list.limit', 'limit', $app->getCfg('list_limit'));
@@ -392,7 +443,11 @@ class MeedyaModelManage extends MeedyaModelMeedya
 		$query->from('meedyaitems');
 		$aid = $this->state->get('filter.album', 0);
 		if ($aid) {
-			$query->where('album='.$aid);
+			if ($aid < 0) {
+				$query->where('album IS NULL OR album=\'\'');
+			} else {
+				$query->where('album='.$aid);
+			}
 		}
 		$query->order('expodt');
 	//	echo $query,'<xmp>';var_dump($this->state);echo'</xmp>';
@@ -405,11 +460,13 @@ class MeedyaModelManage extends MeedyaModelMeedya
 		$query = $db->getQuery(true);
 		$query->select('*');
 		$query->from('albums');
+		if (RJC_DBUG) { MeedyaHelper::log('ModelManage getListQuery(albums)', $query); }
 		return $query;
 	}
 
 	private function itemsListQuery ()
 	{
+		//echo '<xmp>';var_dump($this->state);echo'</xmp>';
 		if ($this->filterFormName !== 'filter_images') {
 			$db = $this->getDbo();
 			$query = $db->getQuery(true);
@@ -417,8 +474,14 @@ class MeedyaModelManage extends MeedyaModelMeedya
 			$query->from('albums');
 			$aid = $this->state->get('album.id', 0);
 			if ($aid) {
-				$query->where('aid='.$aid);
+//				$query->where('aid='.$aid);
+			if ($aid < 0) {
+				$query->where('album IS NULL OR album=\'\'');
+			} else {
+				$query->where('album='.$aid);
 			}
+			}
+			if (RJC_DBUG) { MeedyaHelper::log('ModelManage getListQuery(items)', $query); }
 			return $query;
 		}
 
@@ -428,9 +491,25 @@ class MeedyaModelManage extends MeedyaModelMeedya
 		$query->from('meedyaitems');
 		$aid = $this->state->get('filter.album', 0);
 		if ($aid) {
-			$query->where('inpsv('.$aid.',`album`)');
+			if ($aid < 0) {
+				$query->where('album IS NULL OR album=\'\'');
+			} else {
+				$query->where('inpsv('.$aid.',`album`)');
+			}
+		}
+		$tag = $this->state->get('filter.tag', '');
+		if ($tag) {
+			$tag = $db->escape($tag);
+			$query->where('`kywrd` LIKE \'%'.$tag.'%\'');
+		}
+		$search = $this->state->get('filter.search', '');
+		if ($search) {
+			$search = $db->escape($search);
+			$query->where('`title`||\' \'||`desc` LIKE \'%'.$search.'%\'');
 		}
 		$query->order('expodt');
+		//echo '<xmp>';var_dump($query);echo'</xmp>';
+
 		return $query;
 	}
 

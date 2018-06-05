@@ -66,7 +66,7 @@
 }
 .lstItem > div {
 	margin-left:1em;
-	margin-right:3em;
+/*	margin-right:3em; */
 }
 
 /* album view*/
@@ -225,10 +225,10 @@ td.tac {
 	position: absolute;
 	top: 0;
 	bottom: 0;
+	overflow-y: hidden;
 
 	background: rgba(0,0,0,0.5);
 	color: #fff;
-	/*overflow: hidden;*/
 	text-align: center;
 	width: 100%;
 
@@ -253,7 +253,15 @@ td.tac {
 	display: block;
 }
 
-
+/** image edit **/
+.ied-div2 {
+	display: inline-block;
+	margin-right: 2em;
+}
+.ied-div3 {
+	display: inline-block;
+	vertical-align: top;
+}
 
 /* tiny color picker */
 /*

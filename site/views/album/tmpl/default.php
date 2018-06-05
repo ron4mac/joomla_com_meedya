@@ -1,16 +1,14 @@
 <?php
 /**
  * @package		com_meedya
- * @copyright	Copyright (C) 2017 Ron Crans. All rights reserved.
+ * @copyright	Copyright (C) 2018 Ron Crans. All rights reserved.
  * @license		GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
 
-JHtml::addIncludePath(JPATH_COMPONENT.'/helpers');
-$jdoc = JFactory::getDocument();
-
-$jdoc->addStyleSheet('components/com_meedya/static/css/album.css'.$this->bgt);
-$jdoc->addStyleSheet('components/com_meedya/static/vendor/blb/basicLightbox.min.css');
+MeedyaHelper::addStyle('album');
+MeedyaHelper::addStyle('basicLightbox', 'vendor/blb/');
+MeedyaHelper::addStyle('manage');
 
 JHtml::_('bootstrap.tooltip','.hasTip',array('fixed'=>true));
 //$jdoc->addScript('components/com_meedya/static/js/echo.min.js');
@@ -21,6 +19,7 @@ $ttscript = '
 	});
 ';
 
+$jdoc = JFactory::getDocument();
 $jdoc->addScriptDeclaration($ttscript);
 
 ///<form>

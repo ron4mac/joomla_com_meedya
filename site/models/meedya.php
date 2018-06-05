@@ -77,7 +77,9 @@ class MeedyaModelMeedya extends JModelList
 
 	public function getAlbumItems ()
 	{
+		$this->curAlbID = $this->getState('album.id') ? : 0;
 		$this->getAlbum();
+		if (RJC_DBUG) { MeedyaHelper::log('ModelMeedya getAlbumItems', debug_backtrace(2)); }
 		$this->_itms = explode('|', $this->_album->items);
 		$this->_total = count($this->_itms);
 		$aid = $this->getState('album.id') ? : 0;
@@ -131,6 +133,7 @@ class MeedyaModelMeedya extends JModelList
 		$query->select('*');
 		$query->from('albums');
 		$query->where('paid='.$this->curAlbID);
+		if (RJC_DBUG) { MeedyaHelper::log('ModelMeedya getListQuery', $query); }
 		return $query;
 	}
 
@@ -156,8 +159,11 @@ class MeedyaModelMeedya extends JModelList
 
 	private function getAlbum ()
 	{
-		if (!$this->_album) {
-			$items = parent::getItems();
+		if (RJC_DBUG) { MeedyaHelper::log('ModelMeedya getAlbum', $this->_album); }
+		if (true || !$this->_album) {
+//			$items = parent::getItems();
+			$items = $this->getItems();
+			if (RJC_DBUG) { MeedyaHelper::log('ModelMeedya getAlbum items', $items); }
 			$this->_album = $items[0];
 		}
 	}

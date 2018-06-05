@@ -1,19 +1,21 @@
 <?php
 /**
  * @package		com_meedya
- * @copyright	Copyright (C) 2017 Ron Crans. All rights reserved.
+ * @copyright	Copyright (C) 2018 Ron Crans. All rights reserved.
  * @license		GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
 
-JHtml::addIncludePath(JPATH_COMPONENT.'/helpers');
 JHtml::_('bootstrap.framework');
-$jdoc = JFactory::getDocument();
-$jdoc->addStyleSheet('components/com_meedya/static/vendor/blb/basicLightbox.min.css');
-$jdoc->addStyleSheet('components/com_meedya/static/css/gallery.css'.$this->bgt);
-$jdoc->addStyleSheet('components/com_meedya/static/css/manage.css'.$this->bgt);
-$jdoc->addScript('components/com_meedya/static/js/manage.js'.$this->bgt);
-$jdoc->addScript('components/com_meedya/static/vendor/blb/basicLightbox.min.js');
+MeedyaHelper::addStyle('basicLightbox', 'vendor/blb/');
+MeedyaHelper::addStyle('gallery');
+MeedyaHelper::addStyle('manage');
+MeedyaHelper::addScript('manage');
+MeedyaHelper::addScript('basicLightbox', 'vendor/blb/');
+MeedyaHelper::addScript('bootbox');
+
+JText::script('JCANCEL');
+JText::script('JACTION_DELETE');
 
 function dateF ($dt)
 {
@@ -38,17 +40,22 @@ function editImg (iid) {
 	margin-right: 0.5em;
 }
 .action-icon.acticon {
-	color: rgba(51,51,51,1);
+	/*color: rgba(51,51,51,1);*/
 }
 .action-icon.inaicon {
-	color: rgba(51,51,51,0.5);
+	/*color: rgba(51,51,51,0.5);*/
+	opacity: 0.3;
 /*	cursor: pointer;*/
 }
+.modal-backdrop.fade.in {opacity:0.4}
+/*div.modal.bootbox-confirm {left: 50%; width: 400px; margin-left: -200px;}*/
+.bootbox-body {padding: 12px; font-size: larger;}
+.modal-footer {padding: 8px 10px}
 </style>
 <div class="meedya-gallery">
 	<?php if ($this->manage) echo JHtml::_('meedya.manageMenu', 1); ?>
 	<?php echo JHtml::_('meedya.pageHeader', $this->params, $this->action.'XXXX'); ?>
-	<form action="index.php?option=com_meedya&Itemid=<?php echo $this->itemId; ?>" method="post" name="adminForm" id="adminForm">
+	<form action="index.php?option=com_meedya&task=manage.editImgs&Itemid=<?php echo $this->itemId; ?>" method="post" name="adminForm" id="adminForm">
 		<?php
 			if ($this->mode == 'G') {
 				echo '<a href="'.$this->linkUrl.'&mode=L"><span class="icon-list-2 action-icon inaicon" title="List View"> </span></a>';
@@ -61,6 +68,7 @@ function editImg (iid) {
 		<?php //echo JLayoutHelper::render('joomla.searchtools.default', array('view' => $this)); ?>
 		<?php $fOpts = array('filterButton' => true); ?>
 		<?php echo JLayoutHelper::render('search', array('view' => $this, 'options' => $fOpts), JPATH_ROOT.'/components/com_meedya/layouts'); ?>
+		<?php if ($this->iids): ?>
 		<div class="actbuts">
 		<!--	<button class="btn btn-mini" title="select all images" onclick="selAllImg(event, true)">Select All</button>
 			<button class="btn btn-mini" title="un-select all images" onclick="selAllImg(event, false)">Select None</button>
@@ -69,9 +77,11 @@ function editImg (iid) {
 			<button class="btn btn-mini" title="totally remove selected items" onclick="removeSelected(event)"><i class="icon-minus-circle"></i> Totally remove selected items</button> -->
 			<?php echo JHtml::_('meedya.actionButtons', array('sela','seln','edts','adds','dels')); ?>
 		</div>
+		<?php endif; ?>
 		<?php echo $this->loadTemplate($this->mode == 'G' ? 'grid' : 'list'); ?>
 		<input type="hidden" name="task" value="manage.editImgs" />
 		<input type="hidden" name="mode" value="<?=$this->mode?>" />
+		<?php echo JHtml::_('form.token'); ?>
 	</form>
 </div>
 <div class="page-footer">

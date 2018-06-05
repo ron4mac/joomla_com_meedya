@@ -21,15 +21,16 @@ class MeedyaViewManage extends MeedyaView
 
 	public function display ($tpl=null)
 	{
-		$this->state = $this->get('State');
+		$this->state = $this->get('State');	//var_dump($this->state);
 //		$this->user = JFactory::getUser();
 //		$this->items = $this->get('Items');
 
-//echo'<xmp>';var_dump($this->state);echo'</xmp>';
-		if ($this->state && $this->state->get('album.id') ?: 0) {
+		if (RJC_DBUG) { MeedyaHelper::log('ViewManage state', $this->state); }
+
+		if ($this->state && $this->state->get('album.id')/* ?: 0*/) {
 			$this->album = $this->get('Album');
 			$this->aid = $this->state->get('album.id');
-			$this->items = $this->get('AlbumItems');
+	//		$this->items = $this->get('AlbumItems');
 			$this->setLayout('albedit');
 		}
 
@@ -38,7 +39,7 @@ class MeedyaViewManage extends MeedyaView
 		switch ($this->getLayout()) {
 
 			case 'newalb':
-				$this->albums = $this->getModel()->getAlbumsList();
+				$this->albums = $this->get('AlbumsList');
 				break;
 
 			case 'images':
@@ -46,11 +47,9 @@ class MeedyaViewManage extends MeedyaView
 				$this->iids = $this->get('Items');
 				$this->total = count($this->iids);
 		//		$this->items = $this->get('Items');
-		//		$this->getModel()->set('filterFormName', 'filter_images');
 				$this->filterForm = $this->get('FilterForm');	//var_dump('FilterForm',$this->filterForm);jexit();
-				$albs = json_encode($this->getModel()->getAllAlbums());
+				$albs = json_encode($this->get('AllAlbums'));
 				$r = $this->filterForm->setFieldAttribute('album', 'albums', $albs, 'filter');	//echo'<xmp>';var_dump('FilterForm',$r,$this->filterForm);jexit();
-		//		$this->filterForm = $this->getModel()->loadForm($this->context . '.filter', 'filter_images', array('control' => '', 'load_data' => true, '_DB' => 'XXYYZZ'));
 				$this->activeFilters = $this->get('ActiveFilters');
 
 				$this->pagination = $this->get('Pagination');
@@ -58,8 +57,11 @@ class MeedyaViewManage extends MeedyaView
 				$this->linkUrl = 'index.php?option=com_meedya&task=manage.editImgs';
 				break;
 			case 'albedit':
+				$this->action = 'Edit Album';
 				//echo'<xmp>';var_dump($this->state);echo'</xmp>';
 				//echo'<xmp>';var_dump($this->album);echo'</xmp>';
+			//	$this->pagination = $this->get('Pagination');
+				$this->items = explode('|', $this->album['items']);
 				$this->aThum = $this->album['thumb'] ? $this->getAlbumThumb((object)$this->album) : 'components/com_meedya/static/img/img.png';
 				break;
 			case 'imgedit':
@@ -73,7 +75,7 @@ class MeedyaViewManage extends MeedyaView
 				if (!$this->html5slideshowCfg) {
 					$this->html5slideshowCfg = MeedyaHelper::$ssDefault;
 				}
-				$this->galStruct = MeedyaHelper::getGalStruct($this->getModel()->getAllAlbums());
+				$this->galStruct = MeedyaHelper::getGalStruct($this->get('AllAlbums'));
 				break;
 
 			case 'upload':
@@ -98,9 +100,9 @@ class MeedyaViewManage extends MeedyaView
 
 			default:
 				$this->action = 'Edit Albums';
-				$this->albums = $this->getModel()->getAlbumsList();
+				$this->albums = $this->get('AlbumsList');
 				$this->totStore = (int)$this->get('StorageTotal');
-				$this->galStruct = MeedyaHelper::getGalStruct($this->getModel()->getAllAlbums());
+				$this->galStruct = MeedyaHelper::getGalStruct($this->get('AllAlbums'));
 				break;
 
 		}

@@ -1,7 +1,7 @@
 <?php
 /**
  * @package		com_meedya
- * @copyright	Copyright (C) 2017 Ron Crans. All rights reserved.
+ * @copyright	Copyright (C) 2018 Ron Crans. All rights reserved.
  * @license		GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
@@ -22,13 +22,11 @@ class MeedyaView extends JViewLegacy
 	protected $gallpath;
 	protected $pagination;
 	protected $btmscript = [];	// accumulate here any scripts that will render at the bottom of content
-	protected $bgt = '';	// set to time if debug; added to js/css urls to prevent caching
 
 	public function __construct ($config = array())
 	{
 		if (RJC_DBUG) {
 			MeedyaHelper::log('MeedyaView');
-			$this->bgt = '?'.time();
 		}
 		parent::__construct($config);
 		$this->params = JFactory::getApplication()->getParams();
@@ -61,10 +59,12 @@ class MeedyaView extends JViewLegacy
 	{
 		$pics = $albrec->items ? explode('|', $albrec->items) : array();
 		if (!$albrec->thumb) {
-			$albrec->thumb = $pics ? $this->getItemThumb($pics[0]) : false;
+		//	$albrec->thumb = $pics ? $this->getItemThumb($pics[0]) : false;
+			$albrec->thumb = $pics ? $pics[0] : false;
 		}
 		if ($albrec->thumb) {
-			$thum = $this->gallpath.'/thm/'.$albrec->thumb;
+		//	$thum = $this->gallpath.'/thm/'.$albrec->thumb;
+			$thum = $this->gallpath.'/thm/'.$this->getItemThumb($albrec->thumb);
 		} else {
 			$thum = 'components/com_meedya/static/img/noimages.jpg';
 		}

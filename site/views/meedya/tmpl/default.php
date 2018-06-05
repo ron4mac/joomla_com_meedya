@@ -1,9 +1,12 @@
 <?php
+/**
+ * @package		com_meedya
+ * @copyright	Copyright (C) 2018 Ron Crans. All rights reserved.
+ * @license		GNU General Public License version 3 or later; see LICENSE.txt
+ */
 defined('_JEXEC') or die;
 
-//JHtml::addIncludePath(JPATH_COMPONENT.'/helpers');
-$jdoc = JFactory::getDocument();
-$jdoc->addStyleSheet('components/com_meedya/static/css/gallery.css'.$this->bgt);
+MeedyaHelper::addStyle('gallery');
 
 //echo'<xmp>';var_dump($this->params);echo'</xmp>';
 ?>

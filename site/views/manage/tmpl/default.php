@@ -1,14 +1,18 @@
 <?php
+/**
+ * @package		com_meedya
+ * @copyright	Copyright (C) 2018 Ron Crans. All rights reserved.
+ * @license		GNU General Public License version 3 or later; see LICENSE.txt
+ */
 defined('_JEXEC') or die;
 
-$jdoc = JFactory::getDocument();
-$jdoc->addStyleSheet('components/com_meedya/static/css/gallery.css'.$this->bgt);
-$jdoc->addStyleSheet('components/com_meedya/static/css/manage.css'.$this->bgt);
-JHtml::_('jquery.framework', false);
+MeedyaHelper::addStyle('gallery');
+MeedyaHelper::addStyle('manage');
+JHtml::_('jquery.framework');
+//JHtml::_('jquery.framework', false);
 JHtml::_('bootstrap.modal');
-
-//$jdoc->addScript('components/com_meedya/static/js/manage.js'.$this->bgt);
 MeedyaHelper::addScript('manage');
+$jdoc = JFactory::getDocument();
 $jdoc->addScriptDeclaration('var baseURL = "'.JUri::base().'";
 //var aBaseURL = "'.JUri::base().'index.php?option=com_meedya&format=raw&mID='.urlencode($this->meedyaID).'&task=";
 var myBaseURL = "'.JRoute::_('index.php?option=com_meedya', false).'";
@@ -47,8 +51,8 @@ $html = [];
 buildTree($this->galStruct, $html);
 //JHtml::_('meedya.buildTree', $this->galStruct, $html);	echo'<xmp>';var_dump($html);echo'</xmp>';
 $this->btmscript[] = 'var albStruct = '. json_encode($this->galStruct).';';
-$this->btmscript[] = '$("#gstruct .icon-edit").on("click", function () { albEdtAction(this); });';
-$this->btmscript[] = '$("#gstruct .icon-delete").on("click", function () { albDelAction(this); });';
+$this->btmscript[] = 'jQuery("#gstruct .icon-edit").on("click", function () { albEdtAction(this); });';
+$this->btmscript[] = 'jQuery("#gstruct .icon-delete").on("click", function () { albDelAction(this); });';
 $this->btmscript[] = 'AArrange.init("gstruct","album");';
 
 $hasImport = JFolder::exists($this->gallpath.'/import');
@@ -102,7 +106,7 @@ $hasImport = JFolder::exists($this->gallpath.'/import');
 <div class="page-footer">
 	<?php echo $this->pagination->getListFooter(); ?>
 </div>
-<div id="delact" tabindex="-1" class="modal hide fade">
+<div id="delact" tabindex="-1" class="modal hide fade jviewport-width30">
 	<div class="modal-body">
 		<?php echo JText::_('COM_MEEDYA_CREATE_DELETE_ALBUM_BLURB'); ?><br /><br />
 		<input type="checkbox" name="trashall" id="trashall" value="true" /><label for="trashall"><?php echo JText::_('COM_MEEDYA_CREATE_DELETE_ALL_IMAGES'); ?></label>
@@ -143,17 +147,18 @@ endif;
 		jQuery(elm).toggleClass('aselect');
 	}
 	function deleteAlbum (elm) {
-		//alert($(elm).parent().attr('data-aid'));
+		//alert(jQuery(elm).parent().attr('data-aid'));
 		var wipe = document.getElementById('trashall').checked ? '&wipe=1' : '';
 		window.location = '<?=JRoute::_('index.php?option=com_meedya&task=manage.delAlbum&aid=', false)?>' + alb2delete + wipe;
 	}
 	function albEdtAction (elm) {
-		var alb2edit = $(elm).parent().attr('data-aid');
-		window.location = '<?=JRoute::_('index.php?option=com_meedya&view=manage&layout=albedit&aid=', false)?>' + alb2edit;
+		var alb2edit = jQuery(elm).parent().attr('data-aid');
+		//window.location = '<?=JRoute::_('index.php?option=com_meedya&view=manage&layout=albedit&aid=', false)?>' + alb2edit;
+		window.location = '<?=JRoute::_('index.php?option=com_meedya&task=manage.editAlbum&aid=', false)?>' + alb2edit;
 	}
 	function albDelAction (elm) {
-		//alert($(elm).parent().attr('data-aid'));
-		alb2delete = $(elm).parent().attr('data-aid');
+		//alert(jQuery(elm).parent().attr('data-aid'));
+		alb2delete = jQuery(elm).parent().attr('data-aid');
 		jQuery("#delact").modal();
 	}
 </script>

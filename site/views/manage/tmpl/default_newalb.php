@@ -1,12 +1,10 @@
 <?php
+/**
+ * @package		com_meedya
+ * @copyright	Copyright (C) 2018 Ron Crans. All rights reserved.
+ * @license		GNU General Public License version 3 or later; see LICENSE.txt
+ */
 defined('_JEXEC') or die;
-
-//jimport( 'joomla.html.editor' );
-
-//JHtml::addIncludePath(JPATH_COMPONENT.'/helpers');
-
-//JHtml::_('jquery.framework');
-$jdoc = JFactory::getDocument();
 
 $ajaxlink = JUri::base().'index.php?option=com_meedya&format=raw';
 ?>

@@ -1,25 +1,24 @@
 <?php
+/**
+ * @package		com_meedya
+ * @copyright	Copyright (C) 2018 Ron Crans. All rights reserved.
+ * @license		GNU General Public License version 3 or later; see LICENSE.txt
+ */
 defined('_JEXEC') or die;
 
 jimport('joomla.filesystem.folder');
 
 JHtml::_('jquery.framework', false);
-//JHtml::_('behavior.colorpicker');
+
+MeedyaHelper::addScript('slide_config');
+MeedyaHelper::addScript('spectrum.min');
+
+MeedyaHelper::addStyle('spectrum');
 
 $jdoc = JFactory::getDocument();
-$jdoc->addScript('components/com_meedya/static/js/slide_config.js'.$this->bgt);
-//$jdoc->addScript('components/com_meedya/static/js/jqColorPicker.min.js');
-$jdoc->addScript('components/com_meedya/static/js/spectrum.min.js'.$this->bgt);
-//$jdoc->addScript('components/com_meedya/static/js/rscp/jquery.colorPicker.min.js');
-
-$jdoc->addStyleSheet('components/com_meedya/static/css/spectrum.css'.$this->bgt);
-//JHtml::stylesheet('components/com_meedya/static/js/rscp/colorPicker.css');
-
 $jdoc->addScriptDeclaration('jQuery.fn.spectrum.defaults.showAlpha = true;
 	jQuery.fn.spectrum.defaults.showInput = true;
 	jQuery.fn.spectrum.defaults.preferredFormat = "rgb";');
-
-//$jdoc->addScriptDeclaration('jQuery.fn.colorPicker.options.doRender = false;');
 
 if ($this->album) {
 //	$thead = '<img src="plugins/html5slideshow/css/slideshow.png" style="vertical-align:text-bottom" alt="" /> '.$JText::_('cfgtitle'). helpButton('usr');

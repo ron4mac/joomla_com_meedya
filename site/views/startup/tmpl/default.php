@@ -2,8 +2,9 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+//echo'<xmp>';var_dump($this->params);echo'</xmp>';
 ?>
-<h1>Meedya Startup Screen</h1>
+<h1><?php echo $this->params->get('page_title'); ?> Startup Screen</h1>
 <?php if($this->userPerms->canAdmin): ?>
 <div>
 	<p>Great!!! So you want to try this out, do you...</p>

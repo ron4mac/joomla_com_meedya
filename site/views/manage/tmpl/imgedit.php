@@ -37,9 +37,11 @@ function lboxPimg (evt, elm) {
 		</div>
 	</div>
 	<div class="ied-attr">
-		<label for="title<?=$idx?>">Title</label><input type="text" name="attr[<?=$namx?>][title]" id="title<?=$idx?>" value="<?=$iid->title?>" />
-		<label for="desc<?=$idx?>">Description</label><input type="text" name="attr[<?=$namx?>][desc]" id="desc<?=$idx?>" value="<?=$iid->desc?>" />
-		<label for="kywrd<?=$idx?>">Key words</label><input type="text" name="attr[<?=$namx?>][kywrd]" id="kywrd<?=$idx?>" value="<?=$iid->kywrd?>" />
+		<div class="ied-div2">
+		<div><label for="title<?=$idx?>">Title</label><input type="text" name="attr[<?=$namx?>][title]" id="title<?=$idx?>" value="<?=$iid->title?>" /></div>
+		<div><label for="kywrd<?=$idx?>">Key words</label><input type="text" name="attr[<?=$namx?>][kywrd]" id="kywrd<?=$idx?>" value="<?=$iid->kywrd?>" /></div>
+		</div>
+		<div class="ied-div3"><label for="desc<?=$idx?>">Description</label><textarea name="attr[<?=$namx?>][desc]" id="desc<?=$idx?>" cols="60" rows="5"><?=$iid->desc?></textarea></div>
 	</div>
 </div>
 <?php endforeach; ?>

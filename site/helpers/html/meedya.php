@@ -1,4 +1,9 @@
 <?php
+/**
+ * @package		com_meedya
+ * @copyright	Copyright (C) 2018 Ron Crans. All rights reserved.
+ * @license		GNU General Public License version 3 or later; see LICENSE.txt
+ */
 defined('_JEXEC') or die;
 
 abstract class JHtmlMeedya
@@ -92,8 +97,8 @@ abstract class JHtmlMeedya
 					.'</button>';
 				break;
 			case 'dels':
-				$html[] = '<button class="btn btn-mini" title="totally remove selected items" onclick="removeSelected(event)">'
-					.'<i class="icon-minus-circle"></i> Totally remove selected items'
+				$html[] = '<button class="btn btn-mini" title="totally delete selected items" onclick="deleteSelected(event)">'
+					.'<i class="icon-minus-circle"></i> Totally delete selected items'
 					.'</button>';
 				break;
 			default:
@@ -106,42 +111,24 @@ abstract class JHtmlMeedya
 	public static function imageThumbElement ($item, $edt=false, $iclss='item')
 	{	//var_dump($item);
 	$id = $item->id;
+	$escfn = str_replace('\'','\\\'',$item->file);
 	$iDat = 'data-echo="thm/'.$item->file.'"';
 	if ($edt) {
-		$acts = '<i class="icon-expand" onclick="lboxPimg(\''.$item->file.'\')"></i>
+		$acts = '<i class="icon-expand" onclick="lboxPimg(\''.$escfn.'\')"></i>
 			<i class="icon-info-2 pull-left"></i>
 			<i class="icon-edit pull-right" onclick="editImg('.$id.')"></i>';
 	} else {
 		$acts = '<i class="icon-info-2 pull-left"></i>
-			<i class="icon-expand pull-right" onclick="lboxPimg(\''.$item->file.'\')"></i>';
+			<i class="icon-expand pull-right" onclick="lboxPimg(\''.$escfn.'\')"></i>';
 	}
+	$nah = $item->album ? '' : ' style="opacity:0.2"';
 	return '
 	<div class="'.$iclss.'" data-id="'.$id.'">
 		<label for="slctimg'.$id.'">
-		<img src="components/com_meedya/static/img/img.png" '.$iDat.' class="mitem" />
+		<img src="components/com_meedya/static/img/img.png" '.$iDat.' class="mitem"'.$nah.' />
 		</label>
 		<div class="item-overlay top">
 			'.$acts.'
-		</div>
-		<input type="checkbox" name="slctimg[]" id="slctimg'.$id.'" value="'.$id.'" />
-		<div class="iSlct"><i class="icon-checkmark"></i></div>
-	</div>';
-	}
-
-	public static function __imageThumbElement ($item, $edt=false)
-	{
-	$html = [];
-	$id = $item->id;
-	$iDat = 'data-iid="'.$item->id.'" data-echo="thm/'.$item->file.'" data-img="'.$item->file.'"';
-	return '
-	<div class="item" data-id="'.$id.'">
-		<label for="slctimg'.$id.'">
-		<img src="components/com_meedya/static/img/img.png" '.$iDat.' class="mitem" onclick="//return slctImg(event, this)" />
-		</label>
-		<div class="item-overlay top">
-			<i class="icon-expand" onclick="lboxPimg(event, this)"></i>
-			<i class="icon-info-2 pull-left"></i>
-			<i class="icon-edit pull-right" onclick="editImg(event, this)"></i>
 		</div>
 		<input type="checkbox" name="slctimg[]" id="slctimg'.$id.'" value="'.$id.'" />
 		<div class="iSlct"><i class="icon-checkmark"></i></div>

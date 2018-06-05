@@ -1,13 +1,16 @@
 <?php
+/**
+ * @package		com_meedya
+ * @copyright	Copyright (C) 2018 Ron Crans. All rights reserved.
+ * @license		GNU General Public License version 3 or later; see LICENSE.txt
+ */
 defined('_JEXEC') or die;
 
-JHtml::addIncludePath(JPATH_COMPONENT.'/helpers');
-
-$jdoc = JFactory::getDocument();
-$jdoc->addStyleSheet('components/com_meedya/static/css/gallery.css'.$this->bgt);
-$jdoc->addStyleSheet('components/com_meedya/static/css/manage.css'.$this->bgt);
+MeedyaHelper::addStyle('gallery');
+MeedyaHelper::addStyle('manage');
 JHtml::_('jquery.framework', false);
-$jdoc->addScript('components/com_meedya/static/js/manage.js'.$this->bgt);
+MeedyaHelper::addScript('manage');
+$jdoc = JFactory::getDocument();
 $jdoc->addScriptDeclaration('var baseURL = "'.JUri::base().'";
 //var aBaseURL = "'.JUri::base().'index.php?option=com_meedya&format=raw&mID='.urlencode($this->meedyaID).'&task=";
 var formTokn = "'.JSession::getFormToken().'";

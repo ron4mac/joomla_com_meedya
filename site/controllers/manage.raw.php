@@ -4,8 +4,11 @@
  * @copyright	Copyright (C) 2016 Ron Crans. All rights reserved.
  * @license		GNU General Public License version 3 or later; see LICENSE.txt
  */
-
 defined('_JEXEC') or die;
+
+require_once 'manage.php';
+
+/*
 
 JLoader::register('JHtmlMeedya', JPATH_COMPONENT . '/helpers/html/meedya.php');
 
@@ -27,9 +30,10 @@ class MeedyaControllerManage extends JControllerLegacy
 
 		try {
 			$m = $this->getModel('manage');
-			$m->storeFile($file, $this->input->get('album', 0, 'int'));
+			$m->storeFile($file, $this->input->post->get('album', 0, 'int'));
 		}
 		catch (Exception $e) {
+			header("HTTP/1.1 400 Failed to store file");
 			echo 'Error storing file: ' . $e->getMessage();
 		}
 	}
@@ -85,3 +89,4 @@ class MeedyaControllerManage extends JControllerLegacy
 
 
 }
+*/

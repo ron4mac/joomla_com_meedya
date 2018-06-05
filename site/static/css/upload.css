@@ -11,3 +11,5 @@ img.abortX { float: right; margin-top: -2px; cursor: pointer; }
 img.infog { margin-bottom: -2px; cursor: pointer; }
 div.acti {display: none; margin-left: 5px; vertical-align: text-bottom; }
 div.acti img { cursor: pointer; }
+
+.dropzone .dz-preview:hover .dz-error-mark { opacity: 0; }
