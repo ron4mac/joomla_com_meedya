@@ -6,6 +6,9 @@
  */
 defined('_JEXEC') or die;
 
+JText::script('COM_MEEDYA_MOVE_FAIL');
+JText::script('COM_MEEDYA_IMPORT');
+
 MeedyaHelper::addStyle('gallery');
 MeedyaHelper::addStyle('manage');
 JHtml::_('jquery.framework');
@@ -18,6 +21,7 @@ $jdoc->addScriptDeclaration('var baseURL = "'.JUri::base().'";
 var myBaseURL = "'.JRoute::_('index.php?option=com_meedya', false).'";
 var formTokn = "'.JSession::getFormToken().'";
 ');
+
 function myModalButtons ($verb, $script)
 {
 	return '
@@ -25,13 +29,14 @@ function myModalButtons ($verb, $script)
 	<button type="button" id="creab" class="btn btn-disabled" onclick="'.$script.';" disabled>'.$verb.'</button>
 ';
 }
+
 function buildTree(array $albums, &$html, $paid = 0) {
 	$branch = array();
 	foreach ($albums as $alb) {
 		if ($alb['paid'] == $paid) {
 			$html[] = '<div data-aid="'.$alb['aid'].'" class="album" draggable="true">';
-			$html[] = '<span class="icon-delete"> </span>';
-			$html[] = '<span class="icon-edit"> </span>';
+			$html[] = '<span class="icon-delete" title="Delete Album"> </span>';
+			$html[] = '<span class="icon-edit" title="Edit Album"> </span>';
 			$html[] = '<big><b>'.$alb['title'].'</b></big> ( '.$alb['items'].' items )';
 			if ($alb['desc']) {
 				$html[] = '<br />'.$alb['desc'];
@@ -51,8 +56,8 @@ $html = [];
 buildTree($this->galStruct, $html);
 //JHtml::_('meedya.buildTree', $this->galStruct, $html);	echo'<xmp>';var_dump($html);echo'</xmp>';
 $this->btmscript[] = 'var albStruct = '. json_encode($this->galStruct).';';
-$this->btmscript[] = 'jQuery("#gstruct .icon-edit").on("click", function () { albEdtAction(this); });';
-$this->btmscript[] = 'jQuery("#gstruct .icon-delete").on("click", function () { albDelAction(this); });';
+$this->btmscript[] = 'jQuery("#gstruct .icon-edit").on("click", function (e) { albEdtAction(e,this); });';
+$this->btmscript[] = 'jQuery("#gstruct .icon-delete").on("click", function (e) { albDelAction(e,this); });';
 $this->btmscript[] = 'AArrange.init("gstruct","album");';
 
 $hasImport = JFolder::exists($this->gallpath.'/import');
@@ -73,7 +78,7 @@ $hasImport = JFolder::exists($this->gallpath.'/import');
 	background-color: #EF6;
 }
 #gstruct .icon-edit {
-	color: #FD0;
+	color: #0BD;
 	cursor: pointer;
 }
 #gstruct .icon-edit:hover {
@@ -87,18 +92,25 @@ $hasImport = JFolder::exists($this->gallpath.'/import');
 #gstruct .icon-delete:hover {
 	color: #F33;
 }
+#gstruct .slctd {
+	background-color: #E0E8FF;
+}
+#myProgress { width:100%; background-color:#ddd; display:none; }
+#myBar { width:0; background-color:#4CAF50; font-size:larger; padding:3px 0; }
 </style>
 <div class="meedya-gallery">
 	<?php if ($this->manage) echo JHtml::_('meedya.manageMenu', 1); ?>
 	<?php echo JHtml::_('meedya.pageHeader', $this->params, $this->action.'XXXX'); ?>
 	<div id="toolbar">
+		<a href="#" onclick="goUpload(event)" title="Upload Files">Upload</a>
 		<a href="<?php echo JRoute::_('index.php?option=com_meedya&task=manage.doUpload&aid=0', false); ?>">Upload Items</a>
-		<a href="#newalbdlg" data-toggle="modal">New Album</a>
+		<a href="#newalbdlg" data-toggle="modal" onclick="setDlgParAlb();">New Album</a>
 	<?php if ($hasImport): ?>
 		<a href="#importdlg" data-toggle="modal">Import Items</a>
 	<?php endif; ?>
 	</div>
 	<div>Total storage: <?=MeedyaHelper::formatBytes($this->totStore)?></div>
+	<div id="myProgress"><div id="myBar"> <span>&nbsp;Importing...</span></div></div>
 	<div id="gstruct"><div data-aid="0" class="album">
 	<?php echo implode("\n",$html); ?>
 	</div></div>
@@ -134,7 +146,7 @@ echo JHtml::_(
 	'importdlg',
 	array(
 		'title' => JText::_('COM_MEEDYA_IMPORT_ITEMS'),
-		'footer' => JHtml::_('meedya.modalButtons', 'COM_MEEDYA_IMPORT','importItems(this)', 'imporb'),
+		'footer' => JHtml::_('meedya.modalButtons', JText::_('COM_MEEDYA_IMPORT'),'importItems(this)', 'imporb'),
 		'modalWidth' => '30'
 	),
 	$this->loadTemplate('import')
@@ -151,14 +163,88 @@ endif;
 		var wipe = document.getElementById('trashall').checked ? '&wipe=1' : '';
 		window.location = '<?=JRoute::_('index.php?option=com_meedya&task=manage.delAlbum&aid=', false)?>' + alb2delete + wipe;
 	}
-	function albEdtAction (elm) {
+	function albEdtAction (e, elm) {
+		_pd(e);
 		var alb2edit = jQuery(elm).parent().attr('data-aid');
 		//window.location = '<?=JRoute::_('index.php?option=com_meedya&view=manage&layout=albedit&aid=', false)?>' + alb2edit;
 		window.location = '<?=JRoute::_('index.php?option=com_meedya&task=manage.editAlbum&aid=', false)?>' + alb2edit;
 	}
-	function albDelAction (elm) {
+	function albDelAction (e, elm) {
+		_pd(e);
 		//alert(jQuery(elm).parent().attr('data-aid'));
 		alb2delete = jQuery(elm).parent().attr('data-aid');
 		jQuery("#delact").modal();
 	}
+	function goUpload (e) {
+		_pd(e);
+		window.location = '<?=JRoute::_('index.php?option=com_meedya&task=manage.doUpload&aid=', false)?>' + AArrange.selalb();
+	}
+<?php if ($hasImport): ?>
+	function importItems (dlg) {
+		jQuery("#importdlg input:checked").each(function(){console.log(jQuery(this).val())});
+		var prms = {'format':'raw','task':'manage.impstps'};
+	//	jQuery.get(myBaseURL+"/?format=raw&task=manage.impstps", function(data) {
+		jQuery.post(myBaseURL, prms, function(data) {
+			console.log(data);
+			meedya_importer.init(data, AArrange.selalb());
+		},'json');
+	//	jQuery("#importdlg").modal("hide");
+	}
+
+	var meedya_importer = (function($) {
+
+		var steps = [],
+			sct = 0,
+			sx = 0,
+			pb = null,
+			aid = [];
+
+		// post and get response
+		function pagr (dat, cb) {
+			dat.task = 'manage.impact';
+			dat.format = 'raw';	console.log(dat);
+			$.post(myBaseURL, dat, function(d,t){ cb(d); }, 'json');
+		}
+
+		function _L (v)
+		{
+			console.log(v);
+		}
+
+		function process (stp) {
+			var wp = sx/sct;
+			if (wp>1.0) wp = 1;
+			pb.style.width = wp*100 + '%';
+			if (stp)
+			switch (stp.act) {
+				case 'na':
+					stp.pid = aid[0];
+					pagr(stp, function(r){ _L(r); aid.unshift(r.r); process(steps[sx++]); });
+					break;
+				case 'ii':
+					stp.aid = aid[0];
+					pagr(stp, function(r){ _L(r); if (!r.r) alert("Error:"+r.r); process(steps[sx++]); });
+					break;
+				case 'pa':
+					aid.shift();
+					process(steps[sx++]);
+					break;
+			}
+			else window.location.reload(true);
+		}
+
+		return {
+			init: function (stps, baid) {
+				$('#importdlg').modal('hide');
+				steps = stps;
+				aid.unshift(baid);
+				sct = steps.length;
+				pb = document.getElementById("myBar");
+				$('#myProgress').show();
+				process(steps[sx++]);
+			}
+		};
+	})(jQuery);
+
+<?php endif; ?>
 </script>

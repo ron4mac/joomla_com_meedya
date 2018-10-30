@@ -28,18 +28,18 @@ class MeedyaViewAlbum extends MeedyaView
 		$this->albums = $this->get('Albums');
 		$m = $this->getModel();
 
-		if ($this->getLayout() == 'each') {
+//		if ($this->getLayout() == 'each') {
 			$iid = $app->input->get->get('iid');
 			$this->six = 0;
 			$this->files = array();
-			
+
 //			$this->album = $m->getAlbum($this->aid);
 			if ($this->items)
 				foreach ($this->items as $item) {
 					if ($item == $iid) $this->six = count($this->files);
 					$this->files[] = $m->getItemFile($item);
 				}
-		} else {
+//		} else {
 			$pw = $app->getPathWay();
 			$pw->setItemName(0, '<i class="icon-home-2" title="Gallery Home"></i>');
 			$apw = $m->getAlbumPath($this->aid);
@@ -53,7 +53,7 @@ class MeedyaViewAlbum extends MeedyaView
 		//	$app->getPathWay()->addItem($this->get('Title'),'RRRRRR'.$this->aid);
 			$this->pathWay = $pw->getPathway();
 			$this->pagination = $this->get('Pagination');
-		}
+//		}
 
 		parent::display($tpl);
 	}

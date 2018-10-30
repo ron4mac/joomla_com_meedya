@@ -22,6 +22,10 @@ $jdoc->addScriptDeclaration('var baseURL = "'.JUri::base().'";
 var albumID = '.$this->aid.';
 var blb_path = "'.JUri::root(true).'/'.$this->gallpath.'/med/";
 ');
+
+JText::script('COM_MEEDYA_REMOVE');
+JText::script('COM_MEEDYA_VRB_REMOVE');
+
 //var_dump($this->album);
 ?>
 <style>

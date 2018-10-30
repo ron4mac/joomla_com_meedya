@@ -28,20 +28,24 @@ js_vars.H5uPath = "'.JUri::base(true).'/components/com_meedya/static/";
 //js_vars.upLink = "'.JUri::base().'index.php?option=com_meedya&format=raw";
 js_vars.upLink = "'.JRoute::_('index.php?option=com_meedya&format=raw', false).'";
 js_vars.fup_payload = {task: "manage.upfile", galid: "'.$this->galid.'"};
-js_vars.maxfilesize = '.($this->maxUploadFS/1048576).';';
+js_vars.maxfilesize = '.($this->maxUploadFS/1048576*2).';';
 
+//JHtml::_('bootstrap.loadCss', true);
 JHtml::_('jquery.framework');
+
 $jdoc = JFactory::getDocument();
 $jdoc->addScriptDeclaration($script);
 $jdoc->addCustomTag('<script src="'.JUri::base(true).'/'.MeedyaHelper::scriptVersion('upload').'" type="text/javascript"></script>');
 
 $jdoc->addStyleSheet('components/com_meedya/static/css/gallery.css');
 
-$jdoc->addStyleSheet('//cdnjs.cloudflare.com/ajax/libs/dropzone/5.4.0/min/dropzone.min.css');
-$jdoc->addScript('//cdnjs.cloudflare.com/ajax/libs/dropzone/5.4.0/min/dropzone.min.js');
+$jdoc->addStyleSheet('//cdnjs.cloudflare.com/ajax/libs/dropzone/5.5.0/min/dropzone.min.css');
+$jdoc->addScript('//cdnjs.cloudflare.com/ajax/libs/dropzone/5.5.0/min/dropzone.min.js');
 $jdoc->addScript('//cdnjs.cloudflare.com/ajax/libs/exif-js/2.3.0/exif.min.js');
 
 $jdoc->addStyleSheet('components/com_meedya/static/css/upload.css');
+
+JText::script('COM_MEEDYA_Q_STOPPED');
 
 $qcolors = array('#eeeeee','#fff888','#ff8888');
 $quota = MeedyaHelper::getStoreQuota($this->params);	//echo'<pre>';var_dump($this->params);echo'</pre>';
@@ -54,10 +58,13 @@ if ($quota) {
 //	}
 	if ($qper > 90) {
 		$bcolr = $qcolors[2];
+		$bclas = 'danger';
 	} elseif ($qper > 80) {
 		$bcolr = $qcolors[1];
+		$bclas = 'warning';
 	} else {
 		$bcolr = $qcolors[0];
+		$bclas = 'success';
 	}
 }
 ?>
@@ -73,17 +80,25 @@ if ($quota) {
 	/*color: white;*/
 	width: <?=$qper>100 ? 100 : $qper?>%;
 }
+.progress { height:22px; }
+.progress .bar { font-size:16px; }
 </style>
 <?php endif; ?>
 <div class="meedya-gallery">
 <?php if ($this->manage) echo JHtml::_('meedya.manageMenu', 1); ?>
 <?php echo JHtml::_('meedya.pageHeader', $this->params, $this->action.'XXXX'); ?>
 <?php if ($quota): ?>
+<h3>Storage Quota</h3>
+<div class="progress progress-<?=$bclas?>">
+	<div class="bar" role="progressbar" aria-valuenow="<?=$qper?>" aria-valuemin="0" aria-valuemax="100" style="width:<?=$qper?>%">
+		<?=$qper?>%
+	</div>
+</div>
 <div id="quotaBar"><div id="qBar"><?=$qper?>%</div></div>
 <?php endif; ?>
-<p><big>UPLOADS HERE</big></p>
-<p>STORAGE QUOTA: <?=MeedyaHelper::formatBytes($quota)?></p>
-<p>STORAGE USED: <?=MeedyaHelper::formatBytes($this->totStore)?></p>
+<p><big>== UPLOADS HERE ==</big></p>
+<p>--@@-- STORAGE QUOTA: <?=MeedyaHelper::formatBytes($quota)?></p>
+<p>--@@-- STORAGE USED: <?=MeedyaHelper::formatBytes($this->totStore)?></p>
 <?php if ($this->totStore < $quota): ?>
 <p>MAX UPLOAD FILE SIZE: <?=$this->maxupld?></p>
 <p>
@@ -94,8 +109,8 @@ if ($quota) {
 	<td colspan="1">
 		<select id="h5u_album" name="h5u_album" onchange="album_select(this)">
 			<option value="-1"><?=JText::_('COM_MEEDYA_H5U_NEWALBUM')?></option>
-			<option value=""<?=($this->curalb?'':' selected')?>><?=JText::_('COM_MEEDYA_H5U_SELECT')?></option>
-			<?=JHtml::_('meedya.albumsHierOptions', $this->albums, $this->curalb)?>
+			<option value=""<?=($this->aid?'':' selected')?>><?=JText::_('COM_MEEDYA_H5U_SELECT')?></option>
+			<?=JHtml::_('meedya.albumsHierOptions', $this->albums, $this->aid)?>
 		</select>
 		<div id="crealbm" style="display:none;">
 			<input type="text" name="nualbnam" id="nualbnam" value="" style="margin-left:2em" onkeyup="watchAlbNam(this)" />
@@ -113,9 +128,9 @@ if ($quota) {
 	</tr>
 </table>
 <div class="row-fluid">
-	<div id="dzupui" class="span12" style="display:none">
+	<div id="dzupui" class="span12"<?= $this->aid ? '' : 'style="display:none"' ?>>
 		<form action="<?php echo JRoute::_('index.php?option=com_meedya', false); ?>" class="dropzone" id="fileuploader" enctype="multipart/form-data">
-			<p class="dz-message">Drop files here to upload<br />(or click to select)</p>
+			<p class="dz-message" style="font-size:18px">Drop files here to upload<br />(or click to select)</p>
 			<input type="hidden" name="task" value="manage.upfile">
 			<input type="hidden" name="galid" value="<?php echo $this->galid; ?>">
 			<input type="hidden" name="format" value="raw">
@@ -139,13 +154,19 @@ Dropzone.options.fileuploader = {
 		this.on('sending', function(file, xhr, formData) {
 			formData.append('album', jQuery('#h5u_album').val());
 		});
-		this.on('complete', function(file) {
-		//	console.log(file);
-			if (file.accepted && (file.status=='success')) {
-				setTimeout(function(){ self.removeFile(file); }, 5000);
-			//	self.removeFile(file);
+		this.on('success', function(file, resp) {
+			setTimeout(function(){ self.removeFile(file); }, 5000);
+		});
+		this.on('error', function(file, emsg, xhr) {
+			if (xhr && xhr.status==403) {
+				if (self.options.autoProcessQueue) {
+					var emsg = file.xhr.responseText;
+					self.options.autoProcessQueue = false;
+					alert(emsg+"\n"+Joomla.JText._('COM_MEEDYA_Q_STOPPED'));
+				}
 			}
 		});
+		//	console.log(file);
 	},
 	maxFilesize: js_vars.maxfilesize
 };

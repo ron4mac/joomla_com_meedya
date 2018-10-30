@@ -175,13 +175,13 @@ class MeedyaModelManage extends MeedyaModelMeedya
 
 		$quota = MeedyaHelper::getStoreQuota(JFactory::getApplication()->getParams());
 		if ($quota) {
-			if ($this->getStorageTotal() > $quota) throw new Exception('Quota exceeded');
+			if ($this->getStorageTotal() > $quota) throw new Exception('Quota exceeded', 3);
 		}
-		$mtype = '';
-		if (function_exists('finfo_open') && ($finf = finfo_open(FILEINFO_MIME_TYPE))) {
-			$mtype = finfo_file($finf, $file['tmp_name']);
-			finfo_close($finf);
-		}
+//		$mtype = '';
+//		if (function_exists('finfo_open') && ($finf = finfo_open(FILEINFO_MIME_TYPE))) {
+//			$mtype = finfo_file($finf, $file['tmp_name']);
+//			finfo_close($finf);
+//		}
 
 		$mdydir = realpath(MeedyaHelper::userDataPath());
 		$fPath = $mdydir.'/img/';
@@ -213,7 +213,7 @@ class MeedyaModelManage extends MeedyaModelMeedya
 			}
 		}
 
-		$fsize = filesize($ffpnam);
+/*		$fsize = filesize($ffpnam);
 		$xpdt = null;
 		$xf = @exif_read_data($ffpnam, 'IFD0,EXIF', true);
 		if (RJC_DBUG) { MeedyaHelper::log('exif: '.print_r($xf,true)); }
@@ -230,9 +230,42 @@ class MeedyaModelManage extends MeedyaModelMeedya
 		if (RJC_DBUG && $imgP->getErrors()) { MeedyaHelper::log(implode("\n",$imgP->getErrors())); }
 		$xsize = $imgP->orientImage($ffpnam);
 		$xsize += $imgP->createMedium($mdydir.'/med/'.$base_name.$uniq, $ext);
-		$xsize += $imgP->createThumb($mdydir.'/thm/'.$base_name.$uniq, $ext);
+		$xsize += $imgP->createThumb($mdydir.'/thm/'.$base_name.$uniq, $ext);	*/
 		$ittl = isset($file['title']) ? $file['title'] : null;
-		$this->addItem($base_name.$uniq.$ext, $mtype, $ittl, $alb, $fsize, $fsize+$xsize, $xpdt);
+	//	$this->addItem($base_name.$uniq.$ext, $mtype, $ittl, $alb, $fsize, $fsize+$xsize, $xpdt);
+		$this->processFile($ffpnam, $base_name.$uniq.$ext, $alb, $ittl);
+	}
+
+	public function processFile ($fpath, $fname, $alb, $ittl)
+	{
+		$mtype = '';
+		if (function_exists('finfo_open') && ($finf = finfo_open(FILEINFO_MIME_TYPE))) {
+			$mtype = finfo_file($finf, $fpath);
+			finfo_close($finf);
+		}
+		$fsize = filesize($fpath);
+		$xpdt = null;
+		$xf = @exif_read_data($fpath, 'IFD0,EXIF', true);
+		if (RJC_DBUG) { MeedyaHelper::log('exif: '.print_r($xf,true)); }
+		if (isset($xf['EXIF']['DateTimeOriginal'])) {
+			if ($xf['EXIF']['DateTimeOriginal'] != '0000:00:00 00:00:00') {
+				$xpdt = $xf['EXIF']['DateTimeOriginal'];
+			}
+		} elseif (isset($xf['IFD0']['DateTime'])) {
+			if ($xf['IFD0']['DateTime'] != '0000:00:00 00:00:00') {
+				$xpdt = $xf['IFD0']['DateTime'];
+			}
+		}
+		$imgP = MeedyaHelper::getImgProc($fpath);
+		if (RJC_DBUG && $imgP->getErrors()) { MeedyaHelper::log(implode("\n",$imgP->getErrors())); }
+		$mdydir = realpath(MeedyaHelper::userDataPath());
+		$fnp = pathinfo($fname);
+		$base_name = $fnp['filename'];
+		$ext = isset($fnp['extension']) ? ('.'.$fnp['extension']) : '';
+		$xsize = $imgP->orientImage($fpath);
+		$xsize += $imgP->createMedium($mdydir.'/med/'.$base_name, $ext);
+		$xsize += $imgP->createThumb($mdydir.'/thm/'.$base_name, $ext);
+		$this->addItem($fname, $mtype, $ittl, $alb, $fsize, $fsize+$xsize, $xpdt);
 	}
 
 	public function getStorageTotal ()

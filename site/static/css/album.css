@@ -36,8 +36,8 @@
 .falbum {
 	width: 120px;
 	height: 120px;
-	background-image: url(../img/album4.png);
-	background-repeat: no-repeat;
+/*	background-image: url(../img/album4.png);
+	background-repeat: no-repeat; */
 	vertical-align: top;
 	position: relative;
 }
@@ -48,8 +48,8 @@
 .falbumi {
 	width: 100px;
 	height: 108px;
-	top: 6px;
-	left: 14px;
+/*	top: 6px;
+	left: 14px; */
 	position: absolute;
 }
 

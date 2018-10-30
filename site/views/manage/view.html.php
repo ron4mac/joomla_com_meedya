@@ -8,8 +8,11 @@ defined('_JEXEC') or die;
 
 include_once JPATH_COMPONENT.'/views/meedyaview.php';
 
+jimport('joomla.filesystem.folder');
+
 class MeedyaViewManage extends MeedyaView
 {
+	public $aid = 0;
 	protected $_defaultModel = 'manage';
 	protected $manage = 1;
 
@@ -35,6 +38,10 @@ class MeedyaViewManage extends MeedyaView
 		}
 
 		if (RJC_DBUG) { MeedyaHelper::log('layout='.$this->getLayout()); }
+
+		JText::script('JACTION_DELETE');
+		JText::script('JCANCEL');
+		JText::script('COM_MEEDYA_SELECT_SOME');
 
 		switch ($this->getLayout()) {
 
@@ -88,7 +95,7 @@ class MeedyaViewManage extends MeedyaView
 				$this->params = JFactory::getApplication()->getParams();		//echo'<pre>';var_dump($this->params);echo'</pre>';
 				$this->galid = base64_encode($this->params->get('instance_type').':'.$this->params->get('owner_group').':'.$uid);
 			//	$this->state = $this->get('State');
-				$this->curalb = 0;
+//				$this->curalb = 0;
 // @+@+@+@+@+@+@+@+@ get media types from config
 				$this->acptmime = 'accept="image/*,video/*" ';
 			//	$this->albums = $this->get('AlbumsList');

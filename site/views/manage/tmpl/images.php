@@ -14,6 +14,7 @@ MeedyaHelper::addScript('manage');
 MeedyaHelper::addScript('basicLightbox', 'vendor/blb/');
 MeedyaHelper::addScript('bootbox');
 
+JText::script('COM_MEEDYA_PERM_DELETE');
 JText::script('JCANCEL');
 JText::script('JACTION_DELETE');
 

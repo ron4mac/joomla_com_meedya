@@ -9,14 +9,39 @@ defined('_JEXEC') or die;
 MeedyaHelper::addStyle('album');
 MeedyaHelper::addStyle('basicLightbox', 'vendor/blb/');
 MeedyaHelper::addStyle('manage');
+MeedyaHelper::addStyle('each');
+MeedyaHelper::addScript('vuesld');
 
 JHtml::_('bootstrap.tooltip','.hasTip',array('fixed'=>true));
 //$jdoc->addScript('components/com_meedya/static/js/echo.min.js');
 
+if ($this->files) {
+	foreach ($this->files as $file) {
+		//$ftyp = cpg_get_type($row['filename']);
+		//if ($ftyp['content'] != 'image') continue;
+		$txtinfo = '';
+		$txtinfo .= trim($file['title']);
+		$txtinfo .= ($txtinfo ? ' ... ' : '') . trim($file['desc']);
+		$fileentry = array(
+				'fpath' => $this->gallpath .'/med/'. $file['file'],
+				'title' => $txtinfo
+				);
+		$filelist[] = $fileentry;
+	}
+}
+
 $ttscript = '
+	var imagelist = '.json_encode($filelist).';
+	var startx = '.$this->six.';
 	jQuery(document).ready(function() {
 		jQuery(\'[data-toggle="tooltip"]\').tooltip();
 	});
+	function showSlides (e, iid) {
+		e.preventDefault();
+	//	jQuery(\'<div class="slideback"></div>\').appendTo(\'body\');
+		jQuery(\'#sstage\').appendTo(\'body\').show();
+		ssCtl.init();
+	}
 ';
 
 $jdoc = JFactory::getDocument();
@@ -63,14 +88,43 @@ $jdoc->addScriptDeclaration($ttscript);
 	height: 120px;
 }
 .falbum img {
-	width: 100px;
-	height: 108px;
+	width: 104px;
+	height: 104px;
+	background: #fff;
+	margin-right: 15px;
+	box-shadow:
+		/* The top layer shadow */
+		0 0 1px rgba(0,0,0,0.65),
+		/* The second layer */
+		5px 5px 0 0 #f4f4f4,
+		/* The second layer shadow */
+		5px 5px 1px 0 rgba(0,0,0,0.45),
+		 /* The third layer */
+		10px 10px 0 0 #f4f4f4,
+		/* The third layer shadow */
+		10px 10px 1px 0 rgba(0,0,0,0.15);
+	/* Padding for demo purposes */
+	padding: 8px;
 }
 .itm-alb-ttl {
 	position: relative;
 	min-width: 120px;
 	top: 120px;
 	text-align: center;
+}
+.slideback {
+	position: absolute;
+	background-color: rgba(0, 0, 0, 0.9);
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	padding: 8px;
+	box-sizing: border-box;
+}
+#iarea {
+	width: 100%;
+	height: 100%;
 }
 </style>
 <?php echo JHtml::_('meedya.pageHeader', $this->params); ?>
@@ -113,7 +167,7 @@ $jdoc->addScriptDeclaration($ttscript);
 			}
 			echo '<div class="anitem">'
 			//	.'<a href="'.JRoute::_('index.php?option=com_meedya&view=item&iid='.$item, false).'" class="itm-thumb">'
-				.'<a href="'.JRoute::_('index.php?option=com_meedya&view=album&layout=each&aid='.$this->aid.'&iid='.$item, false).'" class="itm-thumb">'
+				.'<a href="'.JRoute::_('index.php?option=com_meedya&view=album&layout=each&aid='.$this->aid.'&iid='.$item, false).'" class="itm-thumb" onclick="showSlides(event,'.$item.')">'
 					.'<div data-toggle="tooltip" data-placement="bottom" title="'.$ttip.'"><img src="'.$thmsrc.'" /></div>'
 					.'<div class="itm-thm-ttl" data-src="'.$thumb.'">'./*$item*/$ititle.'</div>'
 				.'</a>'
@@ -149,3 +203,9 @@ $jdoc->addScriptDeclaration($ttscript);
 		debounce: false
 	});
 </script>
+<div id="sstage" class="slideback" style="display:none">
+	<div id="iarea">
+		<div id="ptext"></div>
+		<p id="loading" style="display:none">∙∙∙LOADING∙∙∙</p>
+	</div>
+</div>

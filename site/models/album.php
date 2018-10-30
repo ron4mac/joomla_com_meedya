@@ -66,7 +66,7 @@ class MeedyaModelAlbum extends MeedyaModelMeedya
 
 	public function getImageUrl ()
 	{
-		
+
 	}
 
 	public function getTotal ()
@@ -111,7 +111,7 @@ class MeedyaModelAlbum extends MeedyaModelMeedya
 		$this->state->set('album.id', $aid);	//echo'<xmp>';var_dump($this->state);echo'</xmp>';
 
 		// List state information
-		$limit = $app->getUserStateFromRequest('global.list.limit', 'limit', $app->getCfg('list_limit'));
+		$limit = 0;	//$app->getUserStateFromRequest('global.list.limit', 'limit', $app->getCfg('list_limit'));
 		$this->setState('list.limit'.$aid, $limit);
 
 		$limitstart = $input->getInt('limitstart', 0);

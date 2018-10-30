@@ -245,7 +245,7 @@ var AArrange = (function ($) {
 		da = e.target.getAttribute('data-aid');
 		setAlbPaid(sa, da, function(r){
 			if (r) {
-				alert("Failed to move album");
+				alert(Joomla.JText._('COM_MEEDYA_MOVE_FAIL'));
 			} else {
 				e.target.append(dragSrcEl);
 			}
@@ -296,6 +296,18 @@ var AArrange = (function ($) {
 		}
 	}
 
+	function iSelect (e) {
+		//console.log(this);
+		_pd(e);
+		if (iSlctd) iSlctd.classList.remove('slctd');
+		if (this == iSlctd) {
+			iSlctd = null;
+		} else {
+			iSlctd = this;
+			iSlctd.classList.add('slctd');
+		}
+	}
+
 	var scroll = function (step) {
 		var scrollY = $(window).scrollTop();
 		$(window).scrollTop(scrollY + step);
@@ -319,13 +331,19 @@ var AArrange = (function ($) {
 					_ae(itm, 'drop', handleDrop);
 					_ae(itm, 'dragend', handleDragEnd);
 					_ae(itm, 'touchmove', tMove);
+					_ae(itm, 'click', iSelect);
 				});
+		},
+		selalb: function () {
+			return iSlctd ? iSlctd.getAttribute('data-aid') : 0;
 		}
 	};
 }(jQuery));
 
 
-
+function setDlgParAlb () {
+	document.getElementById('h5u_palbum').value = AArrange.selalb();
+}
 
 
 function allow_group_select_checkboxes(checkbox_wrapper_id){
@@ -389,7 +407,7 @@ function hasSelections (sel, alrt=false) {
 		return true;
 	} else {
 	//	if (alrt) alert("Please select some items first.");
-		if (alrt) bootbox.alert("Please select some items first.");
+		if (alrt) bootbox.alert(Joomla.JText._('COM_MEEDYA_SELECT_SOME'));
 		return false;
 	}
 }
@@ -398,14 +416,14 @@ function deleteSelected (e) {
 	e.preventDefault();
 	if (hasSelections("[name='slctimg[]']:checked", true)) {
 		bootbox.confirm({
-			message: "The selection(s) will be totally and permanently deleted! Delete them?",
+			message: Joomla.JText._('COM_MEEDYA_PERM_DELETE'),
 			buttons: {
 					confirm: {
-						label: 'JACTION_DELETE',
+						label: Joomla.JText._('JACTION_DELETE'),
 						className: 'btn-danger'
 					},
 					cancel: {
-						label: 'JCANCEL'	//,
+						label: Joomla.JText._('JCANCEL')
 					//	className: 'btn-standard'
 					}
 				},
@@ -423,14 +441,14 @@ function removeSelected (e) {
 	e.preventDefault();
 	if (hasSelections("[name='slctimg[]']:checked", true)) {
 		bootbox.confirm({
-			message: "The selection(s) will be removed from the album but still exist in the gallery. Remove them?",
+			message: Joomla.JText._('COM_MEEDYA_REMOVE'),
 			buttons: {
 					confirm: {
-						label: 'JACTION_REMOVE',
+						label: Joomla.JText._('COM_MEEDYA_VRB_REMOVE'),
 						className: 'btn-primary'
 					},
 					cancel: {
-						label: 'JCANCEL'	//,
+						label: Joomla.JText._('JCANCEL')
 					//	className: 'btn-standard'
 					}
 				},

@@ -6,34 +6,48 @@
  */
 defined('_JEXEC') or die;
 
-require_once 'manage.php';
-
-/*
-
-JLoader::register('JHtmlMeedya', JPATH_COMPONENT . '/helpers/html/meedya.php');
+//require_once 'manage.php';
 
 class MeedyaControllerManage extends JControllerLegacy
 {
-//	public function __construct ($config = array())
-//	{
-//		parent::__construct($config);
-//		if (JDEBUG) { JLog::addLogger(array('text_file'=>'com_meedya.log.php'), JLog::ALL, array('com_meedya')); }
-//	}
+	protected $gallPath;
+	protected $impacts = [];
 
+	public function __construct ($config = array())
+	{
+		$this->gallPath = MeedyaHelper::userDataPath();
+		if (RJC_DBUG) { MeedyaHelper::log('MeedyaControllerManageRaw'); }
+		parent::__construct($config);
+	}
+
+	/* * * * * * * * * * functions for format=raw calls * * * * * * * * * */
+	/*--------------------------------------------------------------------*/
 
 	// task to receive and store uploaded files
 	public function upfile ()
 	{
-		if (JDEBUG) { JLog::add('upfile: '.print_r($this->input->post,true), JLog::INFO, 'com_meedya'); }
-		$galid = base64_decode($this->input->get('galid', '', 'base64'));
+		if (JDEBUG) { JLog::add('upfile: '.print_r($this->input, true), JLog::INFO, 'com_meedya'); }
+	//	$galid = base64_decode($this->input->get('galid', '', 'base64'));
 		$file = $this->input->files->get('userpicture');
 
 		try {
+			if (!$file) throw new Exception('Parameters error.');
+			switch ($file['error']) {
+				case UPLOAD_ERR_OK:
+					break;
+				case UPLOAD_ERR_NO_FILE:
+					throw new Exception('No file sent.');
+				case UPLOAD_ERR_INI_SIZE:
+				case UPLOAD_ERR_FORM_SIZE:
+					throw new Exception('Exceeded filesize limit.');
+				default:
+					throw new Exception('Unknown error.');
+			}
 			$m = $this->getModel('manage');
 			$m->storeFile($file, $this->input->post->get('album', 0, 'int'));
 		}
 		catch (Exception $e) {
-			header("HTTP/1.1 400 Failed to store file");
+			header('HTTP/1.1 '.(400+$e->getCode()).' Failed to store file');
 			echo 'Error storing file: ' . $e->getMessage();
 		}
 	}
@@ -55,7 +69,7 @@ class MeedyaControllerManage extends JControllerLegacy
 				echo JHtml::_('meedya.albumsHierOptions', $albs, $aid);
 			}
 		} else {
-			echo 'Bad request (token)';
+			echo JText::_('JINVALID_TOKEN');
 		}
 	}
 
@@ -70,7 +84,7 @@ class MeedyaControllerManage extends JControllerLegacy
 			$m = $this->getModel('manage');
 			$m->removeItems($aid, $items);
 		} else {
-			echo 'Bad request (token)';
+			echo JText::_('JINVALID_TOKEN');
 		}
 	}
 
@@ -83,10 +97,90 @@ class MeedyaControllerManage extends JControllerLegacy
 			$m = $this->getModel('manage');
 			$m->setAlbumPaid($aid, $paid);
 		} else {
-			echo 'Bad request (token)';
+			echo JText::_('JINVALID_TOKEN');
 		}
 	}
 
 
+	public function impstps ()
+	{
+		$this->buildImpActs('/import/');
+		echo json_encode($this->impacts);
+	}
+
+
+	public function impact ()
+	{
+		$this->_log(print_r($this->input->post->getArray(), true));
+		$m = $this->getModel('manage');
+		$act = $this->input->post->get('act','','STRING');
+		switch ($act) {
+			case 'na':
+				$ttl = $this->input->post->get('ttl','New Album','STRING');
+				$pid = $this->input->post->get('pid',0,'INT');
+				$aid = $m->addAlbum($ttl, $pid);
+				echo json_encode(array('r'=>$aid,'tt'=>'new alb id'));
+				break;
+			case 'ii':
+				$aid = $this->input->post->get('aid',null,'INT');
+				$fp = $this->input->post->get('fp','','STRING');
+				$this->placeImageFiles($fp, $aid);
+				$iid = 9;		//$m->addImage($fp, $cid, $gid);
+				echo json_encode(array('r'=>$iid,'aid'=>$aid,'tt'=>'new img id'));
+				break;
+			case 'pa';
+				break;
+		}
+	}
+
+
+	private function placeImageFiles ($fpath, $aid)
+	{
+		$this->_log(print_r(array($aid, $fpath), true));
+		$dir = JPATH_BASE . '/' . $this->gallPath;
+
+		$src = $dir . $fpath;
+		$dst = $dir . '/img/';
+		$pp = pathinfo($fpath);
+		$n = 0; $u = '';
+		while (file_exists($dst.$pp['filename'].$u.'.'.$pp['extension'])) {
+			$u = '~'.$n++;
+		}
+		$fn = $pp['filename'].$u.'.'.$pp['extension'];
+		$fdst = $dst.$fn;
+		$this->_log(print_r(array($src, $fdst), true));
+		if (copy($src, $fdst)) {
+			$m = $this->getModel('manage');
+			$m->processFile($fdst, $fn, $aid, $pp['filename']);
+		}
+	}
+
+
+	private function buildImpActs ($dir='')
+	{
+		$aDir = $this->gallPath.$dir;
+		$dh = opendir(rtrim($aDir,'/'));
+		while (false !== ($file = readdir($dh))) {
+			if ($file[0] != '.') {
+				$fp = $dir.$file;
+				if (is_dir($aDir.$file)) {
+					$this->impacts[] = array('act'=>'na','ttl'=>$file);
+					$this->buildImpActs($fp.'/');
+				} else {
+					// maybe check here that it is a valid image file
+					$this->impacts[] = array('act'=>'ii','fp'=>$fp);
+				}
+			}
+		}
+		$this->impacts[] = array('act'=>'pa');
+		closedir($dh);
+	}
+
+
+	private function _log ($msg)
+	{
+		if (RJC_DBUG) { file_put_contents('ILOG.txt', $msg, FILE_APPEND); }
+	}
+
+
 }
-*/
