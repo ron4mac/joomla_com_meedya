@@ -178,12 +178,12 @@ dd.tabs {
 .impfld {
 	margin-bottom: .5em;
 }
-.impfld input {
-	vertical-align: text-bottom;
+#impcbs input {
+	vertical-align: baseline;
 }
-.impfld label {
+.impfld label, #fast + label {
 	display:inline-block ;
-	margin:0 0 0 .5em;
+	margin:0 0 0 .8em;
 }
 
 /* slideshow config */

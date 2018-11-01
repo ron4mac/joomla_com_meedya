@@ -104,7 +104,9 @@ class MeedyaControllerManage extends JControllerLegacy
 
 	public function impstps ()
 	{
-		$this->buildImpActs('/import/');
+		$fld = $this->input->get('fld','','STRING');
+		if ($fld) $this->impacts[] = array('act'=>'na','ttl'=>$fld);
+		$this->buildImpActs('/import/'.($fld ? ($fld.'/') : ''));
 		echo json_encode($this->impacts);
 	}
 
@@ -124,7 +126,8 @@ class MeedyaControllerManage extends JControllerLegacy
 			case 'ii':
 				$aid = $this->input->post->get('aid',null,'INT');
 				$fp = $this->input->post->get('fp','','STRING');
-				$this->placeImageFiles($fp, $aid);
+				$fast = $this->input->post->get('fat','','BOOL');
+				$this->placeImageFiles($fp, $aid, $fast);
 				$iid = 9;		//$m->addImage($fp, $cid, $gid);
 				echo json_encode(array('r'=>$iid,'aid'=>$aid,'tt'=>'new img id'));
 				break;
@@ -134,7 +137,7 @@ class MeedyaControllerManage extends JControllerLegacy
 	}
 
 
-	private function placeImageFiles ($fpath, $aid)
+	private function placeImageFiles ($fpath, $aid, $fast)
 	{
 		$this->_log(print_r(array($aid, $fpath), true));
 		$dir = JPATH_BASE . '/' . $this->gallPath;
@@ -151,7 +154,7 @@ class MeedyaControllerManage extends JControllerLegacy
 		$this->_log(print_r(array($src, $fdst), true));
 		if (copy($src, $fdst)) {
 			$m = $this->getModel('manage');
-			$m->processFile($fdst, $fn, $aid, $pp['filename']);
+			$m->processFile($fdst, $fn, $aid, $fast ? $pp['filename'] : null);
 		}
 	}
 
@@ -167,8 +170,8 @@ class MeedyaControllerManage extends JControllerLegacy
 					$this->impacts[] = array('act'=>'na','ttl'=>$file);
 					$this->buildImpActs($fp.'/');
 				} else {
-					// maybe check here that it is a valid image file
-					$this->impacts[] = array('act'=>'ii','fp'=>$fp);
+					// check here that it is a valid image file
+					if ($this->validImageFile($aDir.$file)) $this->impacts[] = array('act'=>'ii','fp'=>$fp);
 				}
 			}
 		}
@@ -176,6 +179,16 @@ class MeedyaControllerManage extends JControllerLegacy
 		closedir($dh);
 	}
 
+	private function validImageFile ($fpath)
+	{
+		$mtype = '';
+		if (function_exists('finfo_open') && ($finf = finfo_open(FILEINFO_MIME_TYPE))) {
+			$mtype = finfo_file($finf, $fpath);
+			finfo_close($finf);
+		}
+		$mp = explode('/', $mtype);
+		return (is_array($mp) && $mp[0] == 'image');
+	}
 
 	private function _log ($msg)
 	{

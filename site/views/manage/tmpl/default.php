@@ -63,7 +63,13 @@ $this->btmscript[] = 'AArrange.init("gstruct","album");';
 $hasImport = JFolder::exists($this->gallpath.'/import');
 ?>
 <style>
-.modal-body {padding:1em;width:100%;box-sizing:border-box}
+.modal-body {
+	padding:1em;
+	width:100%;
+	box-sizing:border-box;
+	max-height: 400px;
+	overflow-y: scroll;
+}
 .modal-backdrop.fade.in {opacity:0.2}
 #trashall {margin:0 6px 0 0;position:relative;bottom:1px}
 #trashall + label {display:inline}
@@ -147,7 +153,7 @@ echo JHtml::_(
 	array(
 		'title' => JText::_('COM_MEEDYA_IMPORT_ITEMS'),
 		'footer' => JHtml::_('meedya.modalButtons', JText::_('COM_MEEDYA_IMPORT'),'importItems(this)', 'imporb'),
-		'modalWidth' => '30'
+		'modalWidth' => '40'
 	),
 	$this->loadTemplate('import')
 	);
@@ -181,14 +187,14 @@ endif;
 	}
 <?php if ($hasImport): ?>
 	function importItems (dlg) {
-		jQuery("#importdlg input:checked").each(function(){console.log(jQuery(this).val())});
-		var prms = {'format':'raw','task':'manage.impstps'};
-	//	jQuery.get(myBaseURL+"/?format=raw&task=manage.impstps", function(data) {
+	//	jQuery("#importdlg input:checked").each(function(){console.log(jQuery(this).val())});
+		var fld = jQuery("#importdlg .impfld input:checked").val();
+		var prms = {'format':'raw','task':'manage.impstps','fld':fld};
+		var fast = jQuery("#fast").prop('checked');
 		jQuery.post(myBaseURL, prms, function(data) {
 			console.log(data);
-			meedya_importer.init(data, AArrange.selalb());
+			meedya_importer.init(data, AArrange.selalb(), fast);
 		},'json');
-	//	jQuery("#importdlg").modal("hide");
 	}
 
 	var meedya_importer = (function($) {
@@ -196,6 +202,7 @@ endif;
 		var steps = [],
 			sct = 0,
 			sx = 0,
+			fast = false,
 			pb = null,
 			aid = [];
 
@@ -223,6 +230,7 @@ endif;
 					break;
 				case 'ii':
 					stp.aid = aid[0];
+					stp.fat = fast ? 1 : 0;
 					pagr(stp, function(r){ _L(r); if (!r.r) alert("Error:"+r.r); process(steps[sx++]); });
 					break;
 				case 'pa':
@@ -234,10 +242,11 @@ endif;
 		}
 
 		return {
-			init: function (stps, baid) {
+			init: function (stps, baid, fat) {
 				$('#importdlg').modal('hide');
 				steps = stps;
 				aid.unshift(baid);
+				fast = fat;
 				sct = steps.length;
 				pb = document.getElementById("myBar");
 				$('#myProgress').show();

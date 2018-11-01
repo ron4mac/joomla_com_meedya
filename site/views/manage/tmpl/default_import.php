@@ -6,11 +6,15 @@
  */
 defined('_JEXEC') or die;
 
+echo '<div id="impcbs">';
+echo '<input type="checkbox" name="fast" id="fast" value="1"><label for="fast">'.JText::_('COM_MEEDYA_FILEASTITLE').'</label><br><br>';
+echo '<span>'.JText::_('COM_MEEDYA_IMPSELECT').'</span><br>';
 $folds = JFolder::folders($this->gallpath.'/import');
 foreach ($folds as $k => $fold) {
-	echo '<div class="impfld"><input type="checkbox" id="infld'.$k.'" name="impflds[]" value="'.$fold.'" class="impflds" onchange="watchFolders()" />';
+	echo '<div class="impfld"><input type="checkbox" id="infld'.$k.'" name="impflds[]" value="'.$fold.'" class="impflds" onchange="watchFolders()">';
 	echo '<label for="infld'.$k.'">'.$fold.'</label></div>';
 }
+echo '</div>';
 
 $ajaxlink = JUri::base().'index.php?option=com_meedya&format=raw';
 ?>
@@ -41,7 +45,7 @@ function createAlbum (elm) {
 //	elm.nextElementSibling.style.visibility = 'visible';
 	var ajd = {format: 'raw', task: 'manage.newAlbum', albnam: nualbnam, paralb: (albParFld ? albParFld.value : 0), albdesc: albDscFld.value};
 	ajd[formTokn] = 1;
-	jQuery.post(myBaseURL, ajd, 
+	jQuery.post(myBaseURL, ajd,
 		function (response, status, xhr) {
 			console.log(response, status, xhr);
 //			elm.nextElementSibling.style.visibility = 'hidden';
