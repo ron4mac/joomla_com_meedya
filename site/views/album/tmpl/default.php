@@ -33,11 +33,13 @@ if ($this->files) {
 $ttscript = '
 	var imagelist = '.json_encode($filelist).';
 	var startx = '.$this->six.';
+	ssCtl.repeat = true;
 	jQuery(document).ready(function() {
 		jQuery(\'[data-toggle="tooltip"]\').tooltip();
 	});
 	function showSlides (e, iid) {
 		e.preventDefault();
+		startx = iid;
 	//	jQuery(\'<div class="slideback"></div>\').appendTo(\'body\');
 		jQuery(\'#sstage\').appendTo(\'body\').show();
 		ssCtl.init();
@@ -154,7 +156,7 @@ $jdoc->addScriptDeclaration($ttscript);
 	<?php endforeach; ?>
 	<?php endif; ?>
 	<?php
-		foreach ($this->items as $item) {
+		foreach ($this->items as $ix=>$item) {
 			if (!$item) continue;
 			list($thumb, $ititle, $idesc, $mtype) = $this->getItemThumbPlus($item);
 			$ttip = ($ititle && $idesc) ? $ititle.'<br />'.$idesc : $ititle.$idesc;
@@ -167,7 +169,7 @@ $jdoc->addScriptDeclaration($ttscript);
 			}
 			echo '<div class="anitem">'
 			//	.'<a href="'.JRoute::_('index.php?option=com_meedya&view=item&iid='.$item, false).'" class="itm-thumb">'
-				.'<a href="'.JRoute::_('index.php?option=com_meedya&view=album&layout=each&aid='.$this->aid.'&iid='.$item, false).'" class="itm-thumb" onclick="showSlides(event,'.$item.')">'
+				.'<a href="'.JRoute::_('index.php?option=com_meedya&view=album&layout=each&aid='.$this->aid.'&iid='.$item, false).'" class="itm-thumb" onclick="showSlides(event,'.$ix.')">'
 					.'<div data-toggle="tooltip" data-placement="bottom" title="'.$ttip.'"><img src="'.$thmsrc.'" /></div>'
 					.'<div class="itm-thm-ttl" data-src="'.$thumb.'">'./*$item*/$ititle.'</div>'
 				.'</a>'

@@ -133,6 +133,7 @@ class MeedyaModelMeedya extends JModelList
 		$query->select('*');
 		$query->from('albums');
 		$query->where('paid='.$this->curAlbID);
+		$query->order('`tstamp` DESC');
 		if (RJC_DBUG) { MeedyaHelper::log('ModelMeedya getListQuery', $query); }
 		return $query;
 	}

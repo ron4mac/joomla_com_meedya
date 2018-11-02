@@ -101,7 +101,7 @@ class MeedyaModelManage extends MeedyaModelMeedya
 			$items = array_merge($cur, $diff);
 			$q = 'UPDATE `albums` SET `items`=\''.implode('|',$items).'\' WHERE `aid`='.$album;
 		} else {
-			$q = 'INSERT INTO `albums` ("items","title") VALUES (\''.implode('|',$items).'\',\'New Album\')';
+			$q = 'INSERT INTO albums (items,title,tstamp) VALUES ('.$db->quote(implode('|',$items)).',\'New Album\','.time().')';
 		}
 		$db->setQuery($q);
 		$db->execute();
@@ -131,9 +131,9 @@ class MeedyaModelManage extends MeedyaModelMeedya
 		$db = $this->getDbo();
 		if ($parid) {
 			$hord = $this->getParentNextHord($parid);
-			$q = 'INSERT INTO `albums` (`title`,`desc`,`paid`,`hord`) VALUES ('.$db->quote($anam).','.$db->quote($desc).','.$parid.','.$db->quote($hord).')';
+			$q = 'INSERT INTO albums (`title`,`desc`,`paid`,`hord`,`tstamp`) VALUES ('.$db->quote($anam).','.$db->quote($desc).','.$parid.','.$db->quote($hord).','.time().')';
 		} else {
-			$q = 'INSERT INTO `albums` (`title`,`desc`) VALUES ('.$db->quote($anam).','.$db->quote($desc).')';
+			$q = 'INSERT INTO `albums` (`title`,`desc`,`tstamp`) VALUES ('.$db->quote($anam).','.$db->quote($desc).','.time().')';
 		}
 		$db->setQuery($q);
 		$db->execute();

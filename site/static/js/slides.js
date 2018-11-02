@@ -3,30 +3,24 @@
 		vendorQuirk = {
 			vendorID: 'w3',
 			browserPrefix: '',
-//			tranEnd: 'transitionEnd',
 			reqFull: 'requestFullScreen',
 			canFull: 'cancelFullScreen'
 		};
 	if (navigator.appName == 'Microsoft Internet Explorer') {
 		vendorQuirk.vendorID = 'ie';
 		vendorQuirk.browserPrefix = 'ms';
-//		vendorQuirk.tranEnd = '';
 	} else if (navigator.userAgent.indexOf('WebKit') > -1) {
 		vendorQuirk.vendorID = 'wk';
 		vendorQuirk.browserPrefix = 'webkit';
-//		vendorQuirk.tranEnd = 'webkitTransitionEnd';
 	} else if (navigator.userAgent.indexOf('Gecko') > -1) {
 		vendorQuirk.vendorID = 'ff';
 		vendorQuirk.browserPrefix = 'moz';
-//		vendorQuirk.tranEnd = 'transitionend';
 	} else if (navigator.userAgent.indexOf('Opera') > -1) {
 		vendorQuirk.vendorID = 'op';
 		vendorQuirk.browserPrefix = 'o';
-//		vendorQuirk.tranEnd = 'oTransitionEnd';
 	} else if (navigator.userAgent.indexOf('KHTML') > -1) {
 		vendorQuirk.vendorID = 'kd';
 		vendorQuirk.browserPrefix = 'khtml';
-//		vendorQuirk.tranEnd = 'khtmlTransitionEnd';
 	}
 	// export quirks
 	window.vendorQuirk = vendorQuirk;
@@ -43,7 +37,7 @@
 			fullScreenEventName: '',
 			prefix: ''
 		};
- 
+
 	// check for native support
 	if (typeof document.cancelFullScreen != 'undefined') {
 		fullScreenApi.supportsFullScreen = true;
