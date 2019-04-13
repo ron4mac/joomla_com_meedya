@@ -12,4 +12,5 @@ img.infog { margin-bottom: -2px; cursor: pointer; }
 div.acti {display: none; margin-left: 5px; vertical-align: text-bottom; }
 div.acti img { cursor: pointer; }
 
+.albctl select { width:auto; }
 .dropzone .dz-preview:hover .dz-error-mark { opacity: 0; }

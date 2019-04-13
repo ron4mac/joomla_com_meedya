@@ -32,7 +32,7 @@ class MeedyaViewManage extends MeedyaView
 
 		if ($this->state && $this->state->get('album.id')/* ?: 0*/) {
 			$this->album = $this->get('Album');
-			$this->aid = $this->state->get('album.id');
+//			$this->aid = $this->state->get('album.id');
 	//		$this->items = $this->get('AlbumItems');
 			$this->setLayout('albedit');
 		}

@@ -2,12 +2,12 @@
 	position: relative;
 	text-align: center;
 }
-
-.controls {
+#iarea:focus { outline: none; }
+/*.controls {
 	font-size: large;
 	color: orange;
 	float: right;
-}
+}*/
 
 #ptext {
 	position:absolute;

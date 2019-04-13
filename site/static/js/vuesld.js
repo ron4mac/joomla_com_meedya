@@ -242,7 +242,7 @@ if (LR !== 0) { _titlelm.innerHTML = ""; }
 		if (!img.isSized) { _loading.style.display = "block"; setTimeout(function(){positionImage(img, cb)},100); return; }
 		_loading.style.display = "none";
 		var bW = _iarea.offsetWidth,	//_iarea.innerWidth,
-			fW = img.width;		console.log(_iarea, bW, fW);
+			fW = img.width;
 			if (fW<bW) {
 				img.style.left = Math.floor((bW-fW)/2)+"px";
 			} else img.style.left = '0px';
@@ -282,6 +282,7 @@ if (LR !== 0) { _titlelm.innerHTML = ""; }
 	mySC.doMnu = function(cmd) {
 		switch(cmd) {
 			case _stop:
+				_iarea.blur();
 				$id('sstage').style.display = "none";
 				_ielms.forEach(function(itm){_iarea.removeChild(itm);});
 				_ielms = Array();
@@ -437,6 +438,10 @@ if (LR !== 0) { _titlelm.innerHTML = ""; }
 		_iarea.addEventListener('touchmove', function(e){e.preventDefault();}, false);
 		_iarea.addEventListener('touchend', swipe, false);
 
+		_iarea.addEventListener("keypress", keyPressed, false);
+		_iarea.addEventListener("keydown", keyDowned, false);
+		_iarea.focus();
+
 		_sldnumelm = $id("slidnum");
 		_titlelm = $id("ptext");
 		_pauseRunDiv = $id("cb_paus");
@@ -447,8 +452,8 @@ if (LR !== 0) { _titlelm.innerHTML = ""; }
 		window.onresize = winResized;
 	};
 
-	document.addEventListener("keypress", keyPressed, false);
-	document.addEventListener("keydown", keyDowned, false);
+//	document.addEventListener("keypress", keyPressed, false);
+//	document.addEventListener("keydown", keyDowned, false);
 
 	return mySC;
 }());

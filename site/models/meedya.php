@@ -158,6 +158,12 @@ class MeedyaModelMeedya extends JModelList
 		return $r;
 	}
 
+	protected function populateState ($ordering = null, $direction = null)
+	{
+		parent::populateState($ordering, $direction);
+		$this->setState('list.limit', 0);
+	}
+
 	private function getAlbum ()
 	{
 		if (RJC_DBUG) { MeedyaHelper::log('ModelMeedya getAlbum', $this->_album); }

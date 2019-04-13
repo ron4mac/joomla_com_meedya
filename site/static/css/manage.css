@@ -71,7 +71,7 @@
 
 /* album view*/
 .anitem {
-	display: inline-block;
+/*	display: inline-block;*/
 	width: 100px;
 	height: 100px;
 	border: 2px solid transparent;

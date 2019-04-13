@@ -7,6 +7,7 @@
 defined('_JEXEC') or die;
 
 //require_once 'manage.php';
+JLoader::register('JHtmlMeedya', JPATH_COMPONENT . '/helpers/html/meedya.php');
 
 class MeedyaControllerManage extends JControllerLegacy
 {

@@ -35,13 +35,14 @@ JHtml::_('jquery.framework');
 
 $jdoc = JFactory::getDocument();
 $jdoc->addScriptDeclaration($script);
-$jdoc->addCustomTag('<script src="'.JUri::base(true).'/'.MeedyaHelper::scriptVersion('upload').'" type="text/javascript"></script>');
+//$jdoc->addCustomTag('<script src="'.JUri::base(true).'/'.MeedyaHelper::scriptVersion('upload').'" type="text/javascript"></script>');
 
 $jdoc->addStyleSheet('components/com_meedya/static/css/gallery.css');
 
 $jdoc->addStyleSheet('//cdnjs.cloudflare.com/ajax/libs/dropzone/5.5.0/min/dropzone.min.css');
 $jdoc->addScript('//cdnjs.cloudflare.com/ajax/libs/dropzone/5.5.0/min/dropzone.min.js');
 $jdoc->addScript('//cdnjs.cloudflare.com/ajax/libs/exif-js/2.3.0/exif.min.js');
+$jdoc->addScript('components/com_meedya/static/js/fileup.js');
 
 $jdoc->addStyleSheet('components/com_meedya/static/css/upload.css');
 
@@ -86,49 +87,49 @@ if ($quota) {
 <?php endif; ?>
 <div class="meedya-gallery">
 <?php if ($this->manage) echo JHtml::_('meedya.manageMenu', 1); ?>
-<?php echo JHtml::_('meedya.pageHeader', $this->params, $this->action.'XXXX'); ?>
-<?php if ($quota): ?>
+<?php echo JHtml::_('meedya.pageHeader', $this->params, $this->action); ?>
+<?php if (false && $quota): ?>
 <h3>Storage Quota</h3>
 <div class="progress progress-<?=$bclas?>">
-	<div class="bar" role="progressbar" aria-valuenow="<?=$qper?>" aria-valuemin="0" aria-valuemax="100" style="width:<?=$qper?>%">
+	<div id="mdy-totupld" class="bar" role="progressbar" aria-valuenow="<?=$qper?>" aria-valuemin="0" aria-valuemax="100" style="width:<?=$qper?>%">
 		<?=$qper?>%
 	</div>
 </div>
-<div id="quotaBar"><div id="qBar"><?=$qper?>%</div></div>
 <?php endif; ?>
-<p><big>== UPLOADS HERE ==</big></p>
+<h4><?=JText::_('COM_MEEDYA_QUOTA_VALUE')?> <?=MeedyaHelper::formatBytes($quota)?></h4>
+<div id="quotaBar"><div id="qBar"><?=$qper?>%</div></div>
+<!-- <p><big>== UPLOADS HERE ==</big></p>
 <p>--@@-- STORAGE QUOTA: <?=MeedyaHelper::formatBytes($quota)?></p>
-<p>--@@-- STORAGE USED: <?=MeedyaHelper::formatBytes($this->totStore)?></p>
+<p>--@@-- STORAGE USED: <?=MeedyaHelper::formatBytes($this->totStore)?></p> -->
 <?php if ($this->totStore < $quota): ?>
-<p>MAX UPLOAD FILE SIZE: <?=$this->maxupld?></p>
+<h4><?=JText::_('COM_MEEDYA_MAX_UPLD_SIZE')?> <?=$this->maxupld?></h4>
 <p>
 	<!-- <?php var_dump($this->params); ?> -->
 </p>
-<table>
-	<tr>
-	<td colspan="1">
-		<select id="h5u_album" name="h5u_album" onchange="album_select(this)">
-			<option value="-1"><?=JText::_('COM_MEEDYA_H5U_NEWALBUM')?></option>
-			<option value=""<?=($this->aid?'':' selected')?>><?=JText::_('COM_MEEDYA_H5U_SELECT')?></option>
-			<?=JHtml::_('meedya.albumsHierOptions', $this->albums, $this->aid)?>
-		</select>
-		<div id="crealbm" style="display:none;">
-			<input type="text" name="nualbnam" id="nualbnam" value="" style="margin-left:2em" onkeyup="watchAlbNam(this)" />
+
+<div class="albctl">
+	<label for="h5u_album"><?=JText::_('COM_MEEDYA_H5U_ALB_SELECT')?></label>
+	<select id="h5u_album" name="h5u_album" onchange="album_select(this)">
+		<option value="-1"><?=JText::_('COM_MEEDYA_H5U_NEWALBUM')?></option>
+		<option value=""<?=($this->aid?'':' selected')?>><?=JText::_('COM_MEEDYA_H5U_SELECT')?></option>
+		<?=JHtml::_('meedya.albumsHierOptions', $this->albums, $this->aid)?>
+	</select>
+	<div id="crealbm" style="display:none;">
+		<input type="text" name="nualbnam" id="nualbnam" value="" style="margin-left:2em" onkeyup="watchAlbNam(this)" />
 <?php if ($this->albums): ?>
-			<select id="h5u_palbum" name="h5u_palbum">
-				<option value=""><?=JText::_('COM_MEEDYA_H5U_SELPAR')?></option>
-				<option value="0"><?=JText::_('COM_MEEDYA_H5U_NONE')?></option>
-				<?=JHtml::_('meedya.albumsHierOptions', $this->albums)?>
-			</select>
+		<select id="h5u_palbum" name="h5u_palbum">
+			<option value=""><?=JText::_('COM_MEEDYA_H5U_SELPAR')?></option>
+			<option value="0"><?=JText::_('COM_MEEDYA_H5U_NONE')?></option>
+			<?=JHtml::_('meedya.albumsHierOptions', $this->albums)?>
+		</select>
 <?php endif; ?>
-			<button type="button" id="creab" onclick="createAlbum(this)" style="vertical-align:text-bottom" disabled><?=JText::_('COM_MEEDYA_H5U_CREALBM')?></button>
-			<img src="<?=JUri::base(true)?>/components/com_meedya/static/css/process.gif" style="vertical-align:baseline;visibility:hidden;" />
-		</div>
-	</td>
-	</tr>
-</table>
+		<button type="button" id="creab" onclick="createAlbum(this)" style="vertical-align:text-bottom" disabled><?=JText::_('COM_MEEDYA_H5U_CREALBM')?></button>
+		<img src="<?=JUri::base(true)?>/components/com_meedya/static/css/process.gif" style="vertical-align:baseline;visibility:hidden;" />
+	</div>
+</div>
+
 <div class="row-fluid">
-	<div id="dzupui" class="span12"<?= $this->aid ? '' : 'style="display:none"' ?>>
+	<div id="dzupui" class="span12"<?= ($this->aid ? '' : ' style="display:none"') ?>>
 		<form action="<?php echo JRoute::_('index.php?option=com_meedya', false); ?>" class="dropzone" id="fileuploader" enctype="multipart/form-data">
 			<p class="dz-message" style="font-size:18px">Drop files here to upload<br />(or click to select)</p>
 			<input type="hidden" name="task" value="manage.upfile">
@@ -149,13 +150,16 @@ if ($quota) {
 <script>
 Dropzone.options.fileuploader = {
 	paramName: 'userpicture',
+	acceptedFiles: 'image/*',
 	init: function() {
-		self = this;
+		var self = this;
+//		var prgelm = document.getElementById("mdy-totupld");
+//		var prgelm = document.getElementById("qBar");
 		this.on('sending', function(file, xhr, formData) {
 			formData.append('album', jQuery('#h5u_album').val());
 		});
 		this.on('success', function(file, resp) {
-			setTimeout(function(){ self.removeFile(file); }, 5000);
+			setTimeout(function(){ self.removeFile(file); }, 3000);
 		});
 		this.on('error', function(file, emsg, xhr) {
 			if (xhr && xhr.status==403) {
@@ -166,6 +170,10 @@ Dropzone.options.fileuploader = {
 				}
 			}
 		});
+//		this.on('totaluploadprogress', function(pct,totb,bsnt) {
+//		//	console.log(pct,totb,bsnt);
+//			prgelm.style.width = pct+"%";
+//		});
 		//	console.log(file);
 	},
 	maxFilesize: js_vars.maxfilesize

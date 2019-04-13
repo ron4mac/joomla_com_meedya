@@ -12,19 +12,21 @@ MeedyaHelper::addStyle('gallery');
 ?>
 
 <div class="meedya-gallery">
-<?php if ($this->userPerms->canAdmin) echo JHtml::_('meedya.manageMenu', 1); ?>
+<?php if ($this->userPerms->canAdmin) echo JHtml::_('meedya.manageMenu'); ?>
 <?php echo JHtml::_('meedya.pageHeader', $this->params); ?>
+<div class="albthumbs">
 <?php
 	foreach ($this->items as $item) {
 		$thum = $this->getAlbumThumb($item);
 ?>
 <a href="<?=JRoute::_('index.php?option=com_meedya&view=album&aid='.$item->aid, false) ?>" class="alb-thumb">
-	<div><img src="<?=$thum?>" width="120px" height="120px" /></div>
+	<div><img src="<?=$thum?>" width="240px" height="240px" /></div>
 	<div class="alb-thm-ttl"><?= $item->title ?></div>
 </a>
 <?php
 	}
 ?>
+</div>
 </div>
 <div class="page-footer">
 	<?php echo $this->pagination->getListFooter(); ?>

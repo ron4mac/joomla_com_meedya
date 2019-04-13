@@ -32,13 +32,13 @@ abstract class JHtmlMeedya
 		return $html;
 	}
 
-	public static function manageMenu ($aid)
+	public static function manageMenu ($aid=0)
 	{
 		//JFactory::getUser()->authorise('core.edit', 'com_meedya');
 		$html = '<div class="btn-group mgmenu">
 	<a class="btn btn-small dropdown-toggle" data-toggle="dropdown" href="#"><i class="icon-pencil"></i>'.JText::_('COM_MEEDYA_MENU_MANAGE').' <span class="caret"></span></a>
 	<ul class="dropdown-menu">
-		<li><a href="' . JRoute::_('index.php?option=com_meedya&task=manage.doUpload&aid='.$aid, false) . '"><i class="icon-upload"></i>'.JText::_('COM_MEEDYA_MENU_UPLOAD').'</a></li>
+		<li><a href="' . JRoute::_('index.php?option=com_meedya&task=manage.doUpload'.($aid?('&aid='.$aid):''), false) . '"><i class="icon-upload"></i>'.JText::_('COM_MEEDYA_MENU_UPLOAD').'</a></li>
 		<li><a href="' . JRoute::_('index.php?option=com_meedya&view=manage', false) . '"><i class="icon-grid"></i>'.JText::_('COM_MEEDYA_MENU_EDALBS').'</a></li>
 		<li><a href="' . JRoute::_('index.php?option=com_meedya&task=manage.editImgs', false) . '"><i class="icon-images"></i>'.JText::_('COM_MEEDYA_MENU_EDIMGS').'</a></li>
 		<li><a href="' . JRoute::_('index.php?option=com_meedya&task=manage.doConfig', false) . '"><i class="icon-options"></i>'.JText::_('COM_MEEDYA_MENU_CONFIG').'</a></li>
@@ -54,7 +54,8 @@ abstract class JHtmlMeedya
 		usort($albs, function ($a, $b) { return strnatcmp($a->hord,$b->hord); });
 		foreach ($albs as $alb) {
 			$d = count(explode('.',$alb->hord));
-			$html .= '<option value="'.$alb->aid.'"'.($alb->aid==$sel ? ' selected' : '').'>'.str_repeat('&nbsp;&nbsp;',$d-1).$alb->title.'</option>';
+			$pfx = str_repeat('&nbsp;&nbsp;',$d-1).($d>1?'&#x251c;&#x2500; ':'');
+			$html .= '<option value="'.$alb->aid.'"'.($alb->aid==$sel ? ' selected' : '').'>'.$pfx.$alb->title.'</option>';
 		}
 		return $html;
 	}

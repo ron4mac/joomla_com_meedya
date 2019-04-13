@@ -12,7 +12,7 @@ MeedyaHelper::addStyle('manage');
 MeedyaHelper::addStyle('each');
 MeedyaHelper::addScript('vuesld');
 
-JHtml::_('bootstrap.tooltip','.hasTip',array('fixed'=>true));
+JHtml::_('bootstrap.tooltip', '.hasTip', array('fixed'=>true));
 //$jdoc->addScript('components/com_meedya/static/js/echo.min.js');
 
 if ($this->files) {
@@ -115,7 +115,7 @@ $jdoc->addScriptDeclaration($ttscript);
 	text-align: center;
 }
 .slideback {
-	position: absolute;
+	position: fixed;
 	background-color: rgba(0, 0, 0, 0.9);
 	left: 0;
 	top: 0;
@@ -206,7 +206,7 @@ $jdoc->addScriptDeclaration($ttscript);
 	});
 </script>
 <div id="sstage" class="slideback" style="display:none">
-	<div id="iarea">
+	<div id="iarea" tabindex="0" onclick="ssCtl.doMnu(0)">
 		<div id="ptext"></div>
 		<p id="loading" style="display:none">∙∙∙LOADING∙∙∙</p>
 	</div>

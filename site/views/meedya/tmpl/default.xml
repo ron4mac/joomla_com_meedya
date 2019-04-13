@@ -13,8 +13,8 @@
 	<fields name="params">
 		<fieldset name="request">
 
-			<field 
-				name="instance_type" 
+			<field
+				name="instance_type"
 				type="list"
 				label="COM_MEEDYA_FIELD_OWNER_LABEL"
 				description="COM_MEEDYA_FIELD_OWNER_DESC"
@@ -65,6 +65,18 @@
 				default="0"
 				label="COM_MEEDYA_CONFIG_KEEPO_LABEL"
 				description="COM_MEEDYA_CONFIG_KEEPO_DESC"
+			>
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+
+			<field
+				name="req_alb"
+				type="radio"
+				class="btn-group btn-group-yesno"
+				default="0"
+				label="COM_MEEDYA_CONFIG_REQALB_LABEL"
+				description="COM_MEEDYA_CONFIG_REQALB_DESC"
 			>
 				<option value="0">JNO</option>
 				<option value="1">JYES</option>

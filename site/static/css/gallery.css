@@ -13,12 +13,18 @@
 	display: none;
 	background-color: lavender;
 }
+.albthumbs {
+	display: flex;
+	flex-wrap: wrap;
+}
 .alb-thumb {
-	display: inline-block;
+/*	display: inline-block;*/
+	margin-right: 1rem;
+	margin-bottom: 1rem;
 }
 .alb-thm-ttl {
 	text-align: center;
-	max-width: 120px;
-	white-space: nowrap;
-	overflow-x: hidden;
+	max-width: 240px;
+/*	white-space: nowrap;
+	overflow-x: hidden;*/
 }
