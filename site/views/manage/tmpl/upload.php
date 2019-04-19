@@ -86,7 +86,7 @@ if ($quota) {
 </style>
 <?php endif; ?>
 <div class="meedya-gallery">
-<?php if ($this->manage) echo JHtml::_('meedya.manageMenu', 1); ?>
+<?php /*if ($this->manage)*/ echo JHtml::_('meedya.manageMenu', $this->userPerms, 1); ?>
 <?php echo JHtml::_('meedya.pageHeader', $this->params, $this->action); ?>
 <?php if (false && $quota): ?>
 <h3>Storage Quota</h3>

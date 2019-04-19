@@ -32,17 +32,25 @@ abstract class JHtmlMeedya
 		return $html;
 	}
 
-	public static function manageMenu ($aid=0)
+	public static function manageMenu ($perms, $aid=0)
 	{
-		//JFactory::getUser()->authorise('core.edit', 'com_meedya');
+		if (!$perms) return '';
 		$html = '<div class="btn-group mgmenu">
-	<a class="btn btn-small dropdown-toggle" data-toggle="dropdown" href="#"><i class="icon-pencil"></i>'.JText::_('COM_MEEDYA_MENU_MANAGE').' <span class="caret"></span></a>
-	<ul class="dropdown-menu">
-		<li><a href="' . JRoute::_('index.php?option=com_meedya&task=manage.doUpload'.($aid?('&aid='.$aid):''), false) . '"><i class="icon-upload"></i>'.JText::_('COM_MEEDYA_MENU_UPLOAD').'</a></li>
+	<a class="btn btn-small dropdown-toggle" data-toggle="dropdown" href="#">
+		<i class="icon-pencil"></i>'.JText::_('COM_MEEDYA_MENU_MANAGE').' <span class="caret"></span>
+	</a>
+	<ul class="dropdown-menu">';
+		if ($perms->canAdmin || $perms->canUpload) {
+			$html .= '<li><a href="' . JRoute::_('index.php?option=com_meedya&task=manage.doUpload'.($aid?('&aid='.$aid):''), false) . '">
+				<i class="icon-upload"></i>'.JText::_('COM_MEEDYA_MENU_UPLOAD').'</a></li>';
+		}
+		if ($perms->canAdmin) {
+			$html .= '
 		<li><a href="' . JRoute::_('index.php?option=com_meedya&view=manage', false) . '"><i class="icon-grid"></i>'.JText::_('COM_MEEDYA_MENU_EDALBS').'</a></li>
 		<li><a href="' . JRoute::_('index.php?option=com_meedya&task=manage.editImgs', false) . '"><i class="icon-images"></i>'.JText::_('COM_MEEDYA_MENU_EDIMGS').'</a></li>
-		<li><a href="' . JRoute::_('index.php?option=com_meedya&task=manage.doConfig', false) . '"><i class="icon-options"></i>'.JText::_('COM_MEEDYA_MENU_CONFIG').'</a></li>
-	</ul>
+		<li><a href="' . JRoute::_('index.php?option=com_meedya&task=manage.doConfig', false) . '"><i class="icon-options"></i>'.JText::_('COM_MEEDYA_MENU_CONFIG').'</a></li>';
+		}
+		$html .= '</ul>
 </div>
 ';
 		return $html;
@@ -166,6 +174,5 @@ abstract class JHtmlMeedya
 		}
 		return $branch;
 	}
-
 
 }

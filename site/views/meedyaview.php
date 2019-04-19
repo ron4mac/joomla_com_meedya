@@ -17,7 +17,9 @@ class MeedyaView extends JViewLegacy
 {
 	protected $state;
 	protected $items = null;
+	protected $user;
 	protected $params;
+	protected $userPerms = null;
 	protected $meedyaID;
 	protected $gallpath;
 	protected $pagination;
@@ -29,7 +31,9 @@ class MeedyaView extends JViewLegacy
 			MeedyaHelper::log('MeedyaView');
 		}
 		parent::__construct($config);
+		$this->user = JFactory::getUser();
 		$this->params = JFactory::getApplication()->getParams();
+		$this->userPerms = MeedyaHelper::getUserPermissions($this->user, $this->params);
 //		$this->state = $this->get('State');
 		$this->meedyaID = MeedyaHelper::getInstanceID();
 		$this->gallpath = MeedyaHelper::userDataPath();

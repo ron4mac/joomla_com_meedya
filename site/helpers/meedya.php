@@ -98,13 +98,12 @@ abstract class MeedyaHelper
 		return self::$udp;
 	}
 
-	public static function getUserPermissions ()
+	public static function getUserPermissions ($user, $params)
 	{
 		static $perms = [];
 
 		if (!$perms) {
-			$user = JFactory::getUser();
-			$params = JFactory::getApplication()->getParams();
+	//		echo'<xmp>';var_dump($user->groups,$params);echo'</xmp>';
 			$admgrp = $params->get('admin_group', null);
 			if ($params->get('instance_type', 3) > 0) {
 				if ($admgrp) {
@@ -116,7 +115,8 @@ abstract class MeedyaHelper
 				$perms['canAdmin'] = $user->id > 0;
 			}
 			if (!$perms['canAdmin']) $perms['canAdmin'] = JFactory::getUser()->authorise('core.edit', 'com_meedya');
-			$perms['canUpload'] = $perms['canAdmin'] || in_array($params->get('owner_group', null), $user->groups);
+			$perms['canUpload'] = $perms['canAdmin'] || in_array($params->get('owner_group', null), $user->groups)
+								|| array_intersect($params->get('upload_group', []), $user->groups);
 		}
 		return (object)$perms;
 	}
@@ -200,7 +200,7 @@ abstract class MeedyaHelper
 		$units = array('B', 'KB', 'MB', 'GB', 'TB');
 		$bytes = max($bytes, 0);
 		$pow = floor(($bytes ? log($bytes) : 0) / log(1024));
-		$pow = min($pow, count($units) - 1); 
+		$pow = min($pow, count($units) - 1);
 		$bytes /= pow(1024, $pow);
 		return round($bytes, $precision) . $units[$pow];
 	}
@@ -252,7 +252,7 @@ abstract class MeedyaHelper
 	private static function componentOption ($key, $dflt)
 	{
 		static $cp;
-	
+
 		if (empty($cp)) {
 			$cp = JComponentHelper::getParams('com_meedya');
 		}

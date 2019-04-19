@@ -12,7 +12,7 @@ MeedyaHelper::addStyle('gallery');
 ?>
 
 <div class="meedya-gallery">
-<?php if ($this->userPerms->canAdmin) echo JHtml::_('meedya.manageMenu'); ?>
+<?php /*if ($this->userPerms->canAdmin)*/ echo JHtml::_('meedya.manageMenu', $this->userPerms); ?>
 <?php echo JHtml::_('meedya.pageHeader', $this->params); ?>
 <div class="albthumbs">
 <?php
