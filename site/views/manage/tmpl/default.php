@@ -105,7 +105,7 @@ $hasImport = JFolder::exists($this->gallpath.'/import');
 #myBar { width:0; background-color:#4CAF50; font-size:larger; padding:3px 0; }
 </style>
 <div class="meedya-gallery">
-	<?php if ($this->manage) echo JHtml::_('meedya.manageMenu', 1); ?>
+	<?php if ($this->manage) echo JHtml::_('meedya.manageMenu', $this->userPerms, 1); ?>
 	<?php echo JHtml::_('meedya.pageHeader', $this->params, $this->action.'XXXX'); ?>
 	<div id="toolbar">
 		<a href="#" onclick="goUpload(event)" title="Upload Files">Upload</a>

@@ -35,7 +35,7 @@ JText::script('COM_MEEDYA_VRB_REMOVE');
 	.modal-footer {padding: 8px 10px}
 </style>
 <div class="meedya-gallery">
-<?php if ($this->manage) echo JHtml::_('meedya.manageMenu', 1); ?>
+<?php if ($this->manage) echo JHtml::_('meedya.manageMenu', $this->userPerms, 1); ?>
 <h1>- NEED SOME SORT OF HEADING HERE -</h1>
 <button class="btn btn-primary" onclick="saveAlbum()">Save Changes</button>
 <button class="btn" onclick="cancelEdt()">Cancel</button>
