@@ -33,7 +33,7 @@ class MeedyaController extends JControllerLegacy
 			return false;
 		}
 
-		parent::display();
+		parent::display($cachable, $urlparams);
 
 		return $this;
 	}

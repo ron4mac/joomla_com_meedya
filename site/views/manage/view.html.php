@@ -31,6 +31,7 @@ class MeedyaViewManage extends MeedyaView
 		if (RJC_DBUG) { MeedyaHelper::log('ViewManage state', $this->state); }
 
 		if ($this->state && $this->state->get('album.id')/* ?: 0*/) {
+			$this->aid = $this->state->get('album.id');
 			$this->album = $this->get('Album');
 //			$this->aid = $this->state->get('album.id');
 	//		$this->items = $this->get('AlbumItems');

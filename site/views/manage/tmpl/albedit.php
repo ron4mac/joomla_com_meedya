@@ -36,7 +36,7 @@ JText::script('COM_MEEDYA_VRB_REMOVE');
 </style>
 <div class="meedya-gallery">
 <?php if ($this->manage) echo JHtml::_('meedya.manageMenu', $this->userPerms, 1); ?>
-<h1>- NEED SOME SORT OF HEADING HERE -</h1>
+<h3>ALBUM EDIT: <?=$this->album['title']?></h3>
 <button class="btn btn-primary" onclick="saveAlbum()">Save Changes</button>
 <button class="btn" onclick="cancelEdt()">Cancel</button>
 <form action="<?=JRoute::_('index.php?option=com_meedya')?>" id="albForm" name="albForm" method="POST">
@@ -92,7 +92,7 @@ JText::script('COM_MEEDYA_VRB_REMOVE');
 </div>
 
 
-
+<!--
   <style>
   #sortable { list-style-type: none; margin: 0; padding: 0; /*width: 450px;*/ }
   #sortable li { margin: 3px 3px 3px 0; padding: 1px; float: left; width: 100px; height: 90px; font-size: 5em; text-align: center; border: 1px solid #EEE; line-height: normal; background-color: #EEF; }
@@ -111,7 +111,7 @@ JText::script('COM_MEEDYA_VRB_REMOVE');
   <li class="ui-state-default">11</li>
   <li class="ui-state-default">12</li>
 </ul>
-
+-->
 
 
 <div class="page-footer">

@@ -1,7 +1,7 @@
 <?php
 /**
  * @package		com_meedya
- * @copyright	Copyright (C) 2017 Ron Crans. All rights reserved.
+ * @copyright	Copyright (C) 2019 Ron Crans. All rights reserved.
  * @license		GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
@@ -141,6 +141,13 @@ abstract class MeedyaAdminHelper
 		}
 	}
 
+	public static function getGroupTitle ($gid)
+	{
+		$db = JFactory::getDbo();
+		$db->setQuery('SELECT title FROM #__usergroups WHERE id='.$gid);
+		return ($db->loadResult()?:'- ??? -');
+	}
+
 	public static function getActions ()
 	{
 		$user = JFactory::getUser();
@@ -215,7 +222,7 @@ abstract class MeedyaAdminHelper
 		$units = array('B', 'KB', 'MB', 'GB', 'TB');
 		$bytes = max($bytes, 0);
 		$pow = floor(($bytes ? log($bytes) : 0) / log(1024));
-		$pow = min($pow, count($units) - 1); 
+		$pow = min($pow, count($units) - 1);
 		$bytes /= pow(1024, $pow);
 		return round($bytes, $precision) . ' ' . $units[$pow];
 	}
@@ -252,7 +259,7 @@ abstract class MeedyaAdminHelper
 	private static function componentOption ($key, $dflt)
 	{
 		static $co;
-	
+
 		if (empty($co)) {
 			$co = JComponentHelper::getParams('com_meedya');
 		}

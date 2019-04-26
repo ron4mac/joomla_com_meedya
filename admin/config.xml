@@ -28,6 +28,16 @@
 			default="0"
 			compdef="4194304" />
 
+		<field name="image_proc" type="list"
+			label="COM_MEEDYA_CONFIG_IMGPRC_LABEL"
+			description="COM_MEEDYA_CONFIG_IMGPRC_DESC"
+		>
+			<option value="">AUTO</option>
+			<option value="imx">Imagick Extension</option>
+			<option value="im">Image Magick</option>
+			<option value="gd">GD2</option>
+		</field>
+
 		<field
 			name="max_width"
 			type="DefNumber"

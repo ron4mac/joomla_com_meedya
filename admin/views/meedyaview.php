@@ -21,13 +21,13 @@ class MeedyaView extends JViewLegacy
 	/**
 	 * Display the view
 	 */
-	public function display($tpl = null)
+	public function display ($tpl = null)
 	{
-		$this->items		= $this->get('Items');
-		$this->pagination	= $this->get('Pagination');
-		$this->state		= $this->get('State');	//var_dump($this->state);
-		$this->filterForm    = $this->get('FilterForm');
-		$this->activeFilters = $this->get('ActiveFilters');
+		$this->items			= $this->get('Items');
+		$this->pagination		= $this->get('Pagination');	echo'@@@@'.($this->pagination?'YES':'NO').'@@@@';	//echo'<xmp>';var_dump($this->pagination);echo'</xmp>';
+		$this->state			= $this->get('State');	//var_dump($this->state);
+		$this->filterForm		= $this->get('FilterForm');
+		$this->activeFilters	= $this->get('ActiveFilters');
 
 		//UserNotesHelper::addSubmenu($this->relm);
 		$this->addSubmenu($this->relm);
@@ -56,7 +56,7 @@ class MeedyaView extends JViewLegacy
 		);
 		JHtmlSidebar::addEntry(
 			JText::_('COM_MEEDYA_SUBMENU_GROUP'),
-			'index.php?option=com_meedya&view=group',
+			'index.php?option=com_meedya&view=groups',
 			$vName == 'group'
 		);
 //		JHtmlSidebar::addEntry(
@@ -69,7 +69,7 @@ class MeedyaView extends JViewLegacy
 	/**
 	 * Add the page title and toolbar.
 	 */
-	protected function addToolbar()
+	protected function addToolbar ()
 	{
 		$canDo	= MeedyaAdminHelper::getActions();
 

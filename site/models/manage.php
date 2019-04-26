@@ -1,7 +1,7 @@
 <?php
 /**
  * @package		com_meedya
- * @copyright	Copyright (C) 2017 Ron Crans. All rights reserved.
+ * @copyright	Copyright (C) 2019 Ron Crans. All rights reserved.
  * @license		GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
@@ -173,7 +173,9 @@ class MeedyaModelManage extends MeedyaModelMeedya
 	{
 		if (RJC_DBUG) { MeedyaHelper::log("store ... album: {$alb} file: {$file['name']}"); }
 
-		$quota = MeedyaHelper::getStoreQuota(JFactory::getApplication()->getParams());
+		$params = JFactory::getApplication()->getParams();
+		$keep = (int)$params->get('keep_orig', 0);
+		$quota = MeedyaHelper::getStoreQuota($params);
 		if ($quota) {
 			if ($this->getStorageTotal() > $quota) throw new Exception('Quota exceeded', 3);
 		}
@@ -233,17 +235,20 @@ class MeedyaModelManage extends MeedyaModelMeedya
 		$xsize += $imgP->createThumb($mdydir.'/thm/'.$base_name.$uniq, $ext);	*/
 		$ittl = isset($file['title']) ? $file['title'] : null;
 	//	$this->addItem($base_name.$uniq.$ext, $mtype, $ittl, $alb, $fsize, $fsize+$xsize, $xpdt);
-		$this->processFile($ffpnam, $base_name.$uniq.$ext, $alb, $ittl);
+		$this->processFile($ffpnam, $base_name.$uniq.$ext, $alb, $ittl, $keep);
+		if (!$keep) {
+			@unlink($ffpnam);
+		}
 	}
 
-	public function processFile ($fpath, $fname, $alb, $ittl)
+	public function processFile ($fpath, $fname, $alb, $ittl, $keep=false)
 	{
 		$mtype = '';
 		if (function_exists('finfo_open') && ($finf = finfo_open(FILEINFO_MIME_TYPE))) {
 			$mtype = finfo_file($finf, $fpath);
 			finfo_close($finf);
 		}
-		$fsize = filesize($fpath);
+		$fsize = $keep ? filesize($fpath) : 0;
 		$xpdt = null;
 		$xf = @exif_read_data($fpath, 'IFD0,EXIF', true);
 		if (RJC_DBUG) { MeedyaHelper::log('exif: '.print_r($xf,true)); }
@@ -263,9 +268,11 @@ class MeedyaModelManage extends MeedyaModelMeedya
 		$base_name = $fnp['filename'];
 		$ext = isset($fnp['extension']) ? ('.'.$fnp['extension']) : '';
 		$xsize = $imgP->orientImage($fpath);
+		if (!$keep) $xsize = 0;
 		$xsize += $imgP->createMedium($mdydir.'/med/'.$base_name, $ext);
 		$xsize += $imgP->createThumb($mdydir.'/thm/'.$base_name, $ext);
 		$this->addItem($fname, $mtype, $ittl, $alb, $fsize, $fsize+$xsize, $xpdt);
+		if (!$keep) @unlink($fpath);
 	}
 
 	public function getStorageTotal ()
@@ -344,10 +351,12 @@ class MeedyaModelManage extends MeedyaModelMeedya
 	}
 
 	public function saveAlbum ($aid, $flds)
-	{
+	{	//echo'<xmp>';var_dump($aid, $flds);echo'</xmp>';jexit();
 		if (is_null($this->album) || $this->album['aid']!=$aid) $this->album = $this->getAlbum($aid);
 	//	$this->album = array('aid'=>$aid);
 	// @@need to remove album id from removed items
+	//	echo'<xmp>';var_dump($this->album['items'], $flds['items']);echo'</xmp>';jexit();
+// @@@@@@@@@@ use a different method to determine what to remove rather than a dangerous diff of items
 		$rmvd = array_diff(explode('|', $this->album['items']), explode('|', $flds['items']));
 		foreach ($rmvd as $itm) {
 			$this->removeItemAlbum($itm, $aid);

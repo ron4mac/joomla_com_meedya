@@ -55,7 +55,7 @@ function editImg (iid) {
 </style>
 <div class="meedya-gallery">
 	<?php if ($this->manage) echo JHtml::_('meedya.manageMenu', $this->userPerms, 1); ?>
-	<?php echo JHtml::_('meedya.pageHeader', $this->params, $this->action.'XXXX'); ?>
+	<?php echo JHtml::_('meedya.pageHeader', $this->params, $this->action/*.'XXXX'*/); ?>
 	<form action="index.php?option=com_meedya&task=manage.editImgs&Itemid=<?php echo $this->itemId; ?>" method="post" name="adminForm" id="adminForm">
 		<?php
 			if ($this->mode == 'G') {

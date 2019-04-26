@@ -7,7 +7,7 @@
 	<license>GNU General Public License version 3 or later; see LICENSE.txt</license>
 	<authorEmail>ron@rjconline.net</authorEmail>
 	<authorUrl>rjconline.net</authorUrl>
-	<version>0.9.1</version>
+	<version>0.9.3</version>
 	<updater jver="3\.[3456789]" pver="5.5" />
 	<description>COM_MEEDYA_XML_DESCRIPTION</description>
 	<scriptfile>script.php</scriptfile>
@@ -28,8 +28,8 @@
 		<menu img="class:meedya">COM_MEEDYA_MENU</menu>
 		<submenu>
 			<!--Note that all & must be escaped to &amp; -->
-			<menu link="index.php?option=com_meedya" view="links" img="class:meedya" alt="Meedya/Links">Links</menu>
-			<menu link="index.php?option=com_categories&amp;extension=com_meedya" view="categories" img="class:meedya-cat" alt="Meedya/Categories">Categories</menu>
+			<menu link="index.php?option=com_meedya" view="users" img="class:meedya-user" alt="Meedya/Users">Users</menu>
+			<menu link="index.php?option=com_meedya" view="groups" img="class:meedya-group" alt="Meedya/Groups">Groups</menu>
 		</submenu>
 		<files folder="admin">
 			<filename>access.xml</filename>

@@ -19,7 +19,7 @@ var formTokn = "'.JSession::getFormToken().'";
 echo '<div class="meedya-config">';
 
 if ($this->manage) echo JHtml::_('meedya.manageMenu', $this->userPerms, 1);
-echo JHtml::_('meedya.pageHeader', $this->params, $this->action.'XXXX');
+echo JHtml::_('meedya.pageHeader', $this->params, $this->action/*.'XXXX'*/);
 
 echo JHtml::_('bootstrap.startTabSet', 'mdya_tabs', array('active'=>'cfg-ah'))
 	,JHtml::_('bootstrap.addTab', 'mdya_tabs', 'cfg-ah', JText::_('Panel Title 1'))

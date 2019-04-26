@@ -15,7 +15,7 @@ class MeedyaModelMeedya extends JModelList
 	protected $_total = -1;
 
 	public function __construct($config = array())
-	{   
+	{
 		$config['filter_fields'] = array('fullname', 'username', 'userid');
 		parent::__construct($config);
 	}
@@ -39,7 +39,7 @@ class MeedyaModelMeedya extends JModelList
 				$user = JUser::getInstance($userid);
 				$unotes[] = array('name'=>$user->name,'uname'=>$user->username,'uid'=>$userid, 'fcount'=>$files);
 			} else {
-				$unotes[] = array('uname'=>MeedyaHelper::getGroupTitle($userid),'name'=>'group','uid'=>$userid, 'fcount'=>$files);
+				$unotes[] = array('uname'=>MeedyaAdminHelper::getGroupTitle($userid),'name'=>'group','uid'=>$userid, 'fcount'=>$files);
 			}
 		}
 		$this->_total = count($unotes);
@@ -56,7 +56,7 @@ class MeedyaModelMeedya extends JModelList
 			$uid[$key] = $row['uid'];
 			$fcount[$key] = $row['fcount'];
 		}
-		
+
 		if ($this->_total)
 		// Sort the data with volume descending, edition ascending
 		// Add $data as the last parameter, to sort by the common key

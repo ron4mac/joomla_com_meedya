@@ -1,10 +1,9 @@
 <?php
 /**
- * @package    com_usernotes
- *
- * @copyright  Copyright (C) 2016 RJCreations - All rights reserved.
- * @license    GNU General Public License version 3 or later; see LICENSE.txt
- */
+* @package    com_meedya
+* @copyright  Copyright (C) 2019 RJCreations - All rights reserved.
+* @license    GNU General Public License version 3 or later; see LICENSE.txt
+*/
 defined('_JEXEC') or die;
 
 // Include the component HTML helpers.
@@ -16,9 +15,9 @@ JHtml::_('behavior.multiselect');
 
 $listOrder	= $this->state('list.ordering');
 $listDirn	= $this->state('list.direction');
-$canDo		= UserNotesHelper::getActions();
+$canDo		= MeedyaAdminHelper::getActions();
 ?>
-<form action="<?php echo JRoute::_('index.php?option=com_usernotes&view=groupnotes'); ?>" method="post" name="adminForm" id="adminForm">
+<form action="<?php echo JRoute::_('index.php?option=com_meedya&view=groups'); ?>" method="post" name="adminForm" id="adminForm">
 	<div id="j-sidebar-container" class="span2">
 		<?php echo $this->sidebar; ?>
 	</div>
@@ -29,10 +28,10 @@ $canDo		= UserNotesHelper::getActions();
 					<th width="1%"></th>
 					<th width="1%"><?php echo JHtml::_('myGrid.checkall'); ?></th>
 					<th width="15%">
-						<?php echo JHtml::_('grid.sort', 'COM_USERNOTES_GROUPNAME', 'username', $listDirn, $listOrder); ?>
+						<?php echo JHtml::_('grid.sort', 'COM_MEEDYA_GROUPNAME', 'username', $listDirn, $listOrder); ?>
 					</th>
 					<th width="15%">
-						<?php echo JHtml::_('grid.sort', 'COM_USERNOTES_GROUPID', 'userid', $listDirn, $listOrder); ?>
+						<?php echo JHtml::_('grid.sort', 'COM_MEEDYA_GROUPID', 'userid', $listDirn, $listOrder); ?>
 					</th>
 					<th width="30%">
 						&#160;
@@ -57,7 +56,7 @@ $canDo		= UserNotesHelper::getActions();
 					</td>
 					<td>
 						<?php echo $item['uname']; ?>
-						<a href="<?php echo JRoute::_('index.php?option=com_usernotes&view=events&uid=').$item['uid']; ?>">view</a>
+						<a href="<?php echo JRoute::_('index.php?option=com_meedya&view=events&uid=').$item['uid']; ?>">view</a>
 					</td>
 					<td>
 						<?php echo $item['uid'] ?>
