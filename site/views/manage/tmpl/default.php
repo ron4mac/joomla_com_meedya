@@ -22,14 +22,6 @@ var myBaseURL = "'.JRoute::_('index.php?option=com_meedya', false).'";
 var formTokn = "'.JSession::getFormToken().'";
 ');
 
-function myModalButtons ($verb, $script)
-{
-	return '
-	<button type="button" class="btn" data-dismiss="modal">'.JText::_('JCANCEL').'</button>
-	<button type="button" id="creab" class="btn btn-disabled" onclick="'.$script.';" disabled>'.$verb.'</button>
-';
-}
-
 function buildTree(array $albums, &$html, $paid = 0) {
 	$branch = array();
 	foreach ($albums as $alb) {
@@ -140,7 +132,6 @@ echo JHtml::_(
 	array(
 		'title' => JText::_('COM_MEEDYA_CREATE_NEW_ALBUM'),
 		'footer' => JHtml::_('meedya.modalButtons', 'COM_MEEDYA_H5U_CREALBM','createAlbum(this)', 'creab'),
-		'__footer' => myModalButtons(JText::_('COM_MEEDYA_H5U_CREALBM'),'createAlbum(this)'),
 		'modalWidth' => '40'
 	),
 	$this->loadTemplate('newalb')

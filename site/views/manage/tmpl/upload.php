@@ -170,6 +170,9 @@ Dropzone.options.fileuploader = {
 				}
 			}
 		});
+		this.on('queuecomplete', function() {
+			setTimeout(function(){ alert("Uploads complete"); }, 3000);
+		});
 //		this.on('totaluploadprogress', function(pct,totb,bsnt) {
 //		//	console.log(pct,totb,bsnt);
 //			prgelm.style.width = pct+"%";

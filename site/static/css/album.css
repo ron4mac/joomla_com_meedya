@@ -25,6 +25,8 @@
 
 .itm-thumb {
 	display: inline-block;
+	border: 1px solid #CCC;
+	padding: 3px;
 }
 .itm-thm-ttl {
 	text-align: center;

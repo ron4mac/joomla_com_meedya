@@ -100,11 +100,32 @@ class MeedyaModelManage extends MeedyaModelMeedya
 			$diff = array_diff($items, $cur);
 			$items = array_merge($cur, $diff);
 			$q = 'UPDATE `albums` SET `items`=\''.implode('|',$items).'\' WHERE `aid`='.$album;
+			$db->setQuery($q);
+			$db->execute();
 		} else {
 			$q = 'INSERT INTO albums (items,title,tstamp) VALUES ('.$db->quote(implode('|',$items)).',\'New Album\','.time().')';
+			$db->setQuery($q);
+			$db->execute();
+			$album = $db->insertid();
 		}
-		$db->setQuery($q);
-		$db->execute();
+		$db->transactionCommit();
+		$this->addAlbum2Items($album, $items);
+	}
+
+	public function addAlbum2Items ($album, $items)
+	{
+		if (!is_array($album)) $album = array($album);
+		$db = $this->getDbo();
+		$db->transactionStart();
+		$db->setQuery('SELECT `id`,`album` FROM `meedyaitems` WHERE `id` IN ('.implode(',',$items).')');
+		$itms = $db->loadAssocList();
+		foreach ($itms as $itm) {
+			$cur = explode('|',$itm['album']);
+			$albs = array_merge($cur, $album);
+			$q = 'UPDATE `meedyaitems` SET `album`=\''.implode('|',$albs).'\' WHERE `id`='.$itm['id'];
+			$db->setQuery($q);
+			$db->execute();
+		}
 		$db->transactionCommit();
 	}
 

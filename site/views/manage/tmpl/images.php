@@ -1,7 +1,7 @@
 <?php
 /**
  * @package		com_meedya
- * @copyright	Copyright (C) 2018 Ron Crans. All rights reserved.
+ * @copyright	Copyright (C) 2019 Ron Crans. All rights reserved.
  * @license		GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
@@ -23,13 +23,15 @@ function dateF ($dt)
 	if (!$dt) return '';
 	return date('M j, Y, g:i a', strtotime($dt));
 }
-
 ?>
 <script>
 function editImg (iid) {
 	window.location = "<?=JRoute::_('index.php?option=com_meedya')?>?task=manage.imgEdit&items="+iid;
 }
+var myBaseURL = "<?= JRoute::_('index.php?option=com_meedya', false); ?>";
+var formTokn = "<?= JSession::getFormToken(); ?>";
 </script>
+
 <style>
 .mitem, .litem {width:120px; height:120px;}
 .mitem {/*border:1px dashed transparent;*/}
@@ -53,6 +55,7 @@ function editImg (iid) {
 .bootbox-body {padding: 12px; font-size: larger;}
 .modal-footer {padding: 8px 10px}
 </style>
+
 <div class="meedya-gallery">
 	<?php if ($this->manage) echo JHtml::_('meedya.manageMenu', $this->userPerms, 1); ?>
 	<?php echo JHtml::_('meedya.pageHeader', $this->params, $this->action/*.'XXXX'*/); ?>
@@ -66,21 +69,19 @@ function editImg (iid) {
 				echo '<a href="'.$this->linkUrl.'&mode=G"><span class="icon-grid-2 action-icon inaicon" title="Grid View"> </span></a>';
 			}
 		?>
-		<?php //echo JLayoutHelper::render('joomla.searchtools.default', array('view' => $this)); ?>
 		<?php $fOpts = array('filterButton' => true); ?>
 		<?php echo JLayoutHelper::render('search', array('view' => $this, 'options' => $fOpts), JPATH_ROOT.'/components/com_meedya/layouts'); ?>
 		<?php if ($this->iids): ?>
 		<div class="actbuts">
-		<!--	<button class="btn btn-mini" title="select all images" onclick="selAllImg(event, true)">Select All</button>
-			<button class="btn btn-mini" title="un-select all images" onclick="selAllImg(event, false)">Select None</button>
-			<button class="btn btn-mini" title="edit selected images" onclick="editSelected(event)"><i class="icon-pencil"></i> Edit selected items</button>
-			<button class="btn btn-mini" title="new album with selected items" onclick="addSelected(event)"><i class="icon-plus-circle"></i> Create new album with selected items</button>
-			<button class="btn btn-mini" title="totally remove selected items" onclick="removeSelected(event)"><i class="icon-minus-circle"></i> Totally remove selected items</button> -->
 			<?php echo JHtml::_('meedya.actionButtons', array('sela','seln','edts','adds','dels')); ?>
 		</div>
 		<?php endif; ?>
 		<?php echo $this->loadTemplate($this->mode == 'G' ? 'grid' : 'list'); ?>
 		<input type="hidden" name="task" value="manage.editImgs" />
+		<input type="hidden" name="albumid" value="" />
+		<input type="hidden" name="nualbnam" value="" />
+		<input type="hidden" name="nualbpar" value="" />
+		<input type="hidden" name="nualbdesc" value="" />
 		<input type="hidden" name="mode" value="<?=$this->mode?>" />
 		<?php echo JHtml::_('form.token'); ?>
 	</form>
@@ -88,6 +89,20 @@ function editImg (iid) {
 <div class="page-footer">
 	<?php echo $this->pagination->getListFooter(); ?>
 </div>
+
+<?php
+echo JHtml::_(
+	'bootstrap.renderModal',
+	'add2albdlg',
+	array(
+		'title' => JText::_('COM_MEEDYA_ADD_ALBUM_ITEMS'),
+		'footer' => JHtml::_('meedya.modalButtons', 'COM_MEEDYA_ADD2ALBUM', 'addItems2Album(this)', 'creab'),
+		'modalWidth' => '40'
+	),
+	$this->loadTemplate('add2alb')
+	);
+?>
+
 <script>
 jQuery('#system-message-container').delay(5000).slideUp("slow");
 var blb_path = "<?=JUri::root(true).'/'.$this->gallpath?>/med/";

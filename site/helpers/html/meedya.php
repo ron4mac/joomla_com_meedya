@@ -92,22 +92,22 @@ abstract class JHtmlMeedya
 				break;
 			case 'edts':
 				$html[] = '<button class="btn btn-mini" title="edit selected images" onclick="editSelected(event)">'
-					.'<i class="icon-pencil"></i> Edit selected items'
+					.'<i class="icon-pencil"></i> Edit items'
 					.'</button>';
 				break;
 			case 'adds':
-				$html[] = '<button class="btn btn-mini" title="new album with selected items" onclick="addSelected(event)">'
-					.'<i class="icon-plus-circle"></i> Create new album with selected items'
+				$html[] = '<button class="btn btn-mini" title="add selected items to an album" onclick="return addSelected(event);">'
+					.'<i class="icon-plus-circle"></i> Add items to an album'
 					.'</button>';
 				break;
 			case 'rems':
 				$html[] = '<button class="btn btn-mini" title="remove selected from album" onclick="removeSelected(event)">'
-					.'<i class="icon-minus-circle"></i> Remove selected images from album'
+					.'<i class="icon-minus-circle"></i> Remove images from album'
 					.'</button>';
 				break;
 			case 'dels':
 				$html[] = '<button class="btn btn-mini" title="totally delete selected items" onclick="deleteSelected(event)">'
-					.'<i class="icon-minus-circle"></i> Totally delete selected items'
+					.'<i class="icon-minus-circle"></i> Totally delete items'
 					.'</button>';
 				break;
 			default:

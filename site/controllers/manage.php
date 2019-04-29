@@ -1,7 +1,7 @@
 <?php
 /**
  * @package		com_meedya
- * @copyright	Copyright (C) 2017 Ron Crans. All rights reserved.
+ * @copyright	Copyright (C) 2019 Ron Crans. All rights reserved.
  * @license		GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
@@ -107,6 +107,31 @@ class MeedyaControllerManage extends JControllerLegacy
 //		$this->setRedirect(JRoute::_('index.php?option=com_meedya&view=manage&limitstart=0', false));
 //	}
 
+	public function addItemsToAlbum ()
+	{
+		if (!JSession::checkToken()) {
+			JFactory::getApplication()->enqueueMessage(JText::_('JINVALID_TOKEN'),'error');
+			return;
+		}
+		$this->setRedirect($_SERVER['HTTP_REFERER']);
+		file_put_contents('MEELOG.txt', print_r($this->input->post,true), FILE_APPEND);
+
+		$itms = $this->input->post->get('slctimg',[],'array');
+		if (!$itms) return;
+
+		$m = $this->getModel('manage');
+
+		$aid = $this->input->post->get('albumid',0,'int');
+		if ($aid == 0) return;
+		if ($aid < 0) {
+			$albttl = $this->input->post->get('nualbnam','New Album','string');
+			$albpar = $this->input->post->get('nualbpar',0,'int');
+			$albdesc = $this->input->post->get('nualbdesc','','string');
+			$aid = $m->addAlbum($albttl, $albpar, $albdesc);
+		}
+		$m->addItems2Album($itms, $aid);
+		JFactory::getApplication()->enqueueMessage('Items added to album');
+	}
 
 	public function imgsAddAlbum ()
 	{
@@ -294,170 +319,5 @@ class MeedyaControllerManage extends JControllerLegacy
 	{
 		if (RJC_DBUG) { file_put_contents('ILOG.txt', $msg, FILE_APPEND); }
 	}
-
-
-
-	/* * * * * * * * * * functions for format=raw calls * * * * * * * * * */
-	/*--------------------------------------------------------------------*/
-/*
-	// task to receive and store uploaded files
-	public function upfile ()
-	{
-		if (JDEBUG) { JLog::add('upfile: '.print_r($this->input, true), JLog::INFO, 'com_meedya'); }
-	//	$galid = base64_decode($this->input->get('galid', '', 'base64'));
-		$file = $this->input->files->get('userpicture');
-
-		try {
-			if (!$file) throw new Exception('Parameters error.');
-			switch ($file['error']) {
-				case UPLOAD_ERR_OK:
-					break;
-				case UPLOAD_ERR_NO_FILE:
-					throw new Exception('No file sent.');
-				case UPLOAD_ERR_INI_SIZE:
-				case UPLOAD_ERR_FORM_SIZE:
-					throw new Exception('Exceeded filesize limit.');
-				default:
-					throw new Exception('Unknown error.');
-			}
-			$m = $this->getModel('manage');
-			$m->storeFile($file, $this->input->post->get('album', 0, 'int'));
-		}
-		catch (Exception $e) {
-			header('HTTP/1.1 '.(400+$e->getCode()).' Failed to store file');
-			echo 'Error storing file: ' . $e->getMessage();
-		}
-	}
-
-
-	// task to create a new album
-	public function newAlbum ()
-	{
-		if (JSession::checkToken()) {
-			$a = $this->input->post->get('albnam', 'A NEW ALBUM', 'string');
-			$p = $this->input->post->get('paralb', 0, 'int');
-			$d = $this->input->post->get('albdesc', null, 'string');
-			$m = $this->getModel('manage');
-			$aid = $m->addAlbum($a, $p, $d);
-			if (!$aid) {
-				header("HTTP/1.0 400 Could not create album: {$a}");
-			} elseif ($this->input->post->get('o', 0, 'int')) {
-				$albs = $m->getAlbumsList();
-				echo JHtml::_('meedya.albumsHierOptions', $albs, $aid);
-			}
-		} else {
-			echo JText::_('JINVALID_TOKEN');
-		}
-	}
-
-
-	// task to remove items from an album
-	public function removeItems ()
-	{
-		if (JSession::checkToken()) {
-			$aid = $this->input->post->get('aid','','int');
-			$parm = $this->input->post->get('items','','string');
-			$items = explode('|',$parm);
-			$m = $this->getModel('manage');
-			$m->removeItems($aid, $items);
-		} else {
-			echo JText::_('JINVALID_TOKEN');
-		}
-	}
-
-
-	public function adjustAlbPaid ()
-	{
-		if (JSession::checkToken()) {
-			$aid = $this->input->post->get('aid','','int');
-			$paid = $this->input->post->get('paid','','int');
-			$m = $this->getModel('manage');
-			$m->setAlbumPaid($aid, $paid);
-		} else {
-			echo JText::_('JINVALID_TOKEN');
-		}
-	}
-
-	public function impact ()
-	{
-		$this->_log(print_r($this->input->post->getArray(), true));
-		$m = $this->getModel();
-		$act = $this->input->post->get('act','','STRING');
-		switch ($act) {
-			case 'ng':
-				$ttl = $this->input->post->get('ttl','New Gallery','STRING');
-				$gid = $m->addGallery($ttl);
-				echo json_encode(array('r'=>$gid,'tt'=>'new gal id'));
-				break;
-			case 'nc':
-				$gid = $this->input->post->get('gid',null,'INT');
-				$ttl = $this->input->post->get('ttl','New Category','STRING');
-				$cid = $m->addCategory($gid, $ttl);
-				echo json_encode(array('r'=>$cid,'tt'=>'new cat id'));
-				break;
-			case 'ii':
-				$gid = $this->input->post->get('gid',null,'INT');
-				$cid = $this->input->post->get('cid',null,'INT');
-				if (!$cid) {
-					$cid = $m->addCategory($gid);
-				}
-				$fp = $this->input->post->get('fp','','STRING');
-				$this->placeImageFiles($fp, $gid, $cid);
-				$iid = 9;		//$m->addImage($fp, $cid, $gid);
-				echo json_encode(array('r'=>$iid,'cid'=>$cid,'tt'=>'new img id'));
-				break;
-		}
-	}
-
-
-	private function placeImageFiles ($fpath, $gid, $cid)
-	{
-		$dir = JPATH_BASE . '/images/com_osgallery/gal-'.$gid;
-		if (!file_exists($dir) || !is_dir($dir)) mkdir($dir, 0755, true);
-		if (!file_exists($dir . '/original') || !is_dir($dir)) mkdir($dir . '/original', 0755, true);
-		if (!file_exists($dir . '/original/watermark') || !is_dir($dir)) mkdir($dir . '/original/watermark', 0755, true);
-		if (!file_exists($dir . '/thumbnail') || !is_dir($dir)) mkdir($dir . '/thumbnail', 0755, true);
-		if (!file_exists($dir . '/watermark') || !is_dir($dir)) mkdir($dir . '/watermark', 0755, true);
-
-		$src = JPATH_BASE . '/images/com_osgallery/import/'.$fpath;
-		$dst = $dir . '/original/';
-		$pp = pathinfo($fpath);
-		$n = 0; $u = '';
-		while (file_exists($dst.$pp['filename'].$u.'.'.$pp['extension'])) {
-			$u = '~'.$n++;
-		}
-		$fn = $pp['filename'].$u.'.'.$pp['extension'];
-		$fdst = $dst.$fn;
-		if (copy($src, $fdst)) {
-			osGalleryHelperAdmin::_orientImage($fdst);
-			osGalleryHelperAdmin::createImageThumbnail($dir . "/original/{$fn}", $dir ."/thumbnail/{$fn}", 600, 400, 1);
-			osGalleryHelperAdmin::dbSaveImages($fn, $cid, $gid, '{"imgTitle":"'.$pp['filename'].'"}');
-		}
-	}
-
-	private function buildImpActs ($dir='', $l=0)
-	{
-		$aDir = $this->ibase.$dir;
-		$dh = opendir(rtrim($aDir,'/'));
-		while (false !== ($file = readdir($dh))) {
-			if ($file[0] != '.') {
-				$fp = $dir.$file;
-				if (is_dir($aDir.$file)) {
-					if ($l) {
-						$this->impacts[] = array('act'=>'nc','ttl'=>$file);
-					} else {
-						$this->impacts[] = array('act'=>'ng','ttl'=>$file);
-					}
-					$this->buildImpActs($fp.'/', $l+1);
-				} else {
-					// maybe check here that it is a valid image file
-					$this->impacts[] = array('act'=>'ii','fp'=>$fp);
-				}
-			}
-		}
-		$this->impacts[] = array('act'=>$l==1?'pg':'pc');
-		closedir($dh);
-	}
-*/
 
 }

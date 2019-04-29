@@ -346,7 +346,7 @@ function setDlgParAlb () {
 }
 
 
-function allow_group_select_checkboxes(checkbox_wrapper_id){
+function allow_group_select_checkboxes (checkbox_wrapper_id) {
 	var lastChecked = null;
 	var checkboxes = document.querySelectorAll('#'+checkbox_wrapper_id+' input[type="checkbox"]');
 
@@ -397,7 +397,7 @@ function handleAlbthmDrop (e) {
 	this.style.opacity = '1.0';
 }
 
-function removeAlbThm() {
+function removeAlbThm () {
 	document.getElementById('albthmimg').src = 'components/com_meedya/static/img/img.png';
 	document.getElementById('albthmid').value = 0;
 }
@@ -406,7 +406,6 @@ function hasSelections (sel, alrt=false) {
 	if (document.querySelectorAll(sel).length) {
 		return true;
 	} else {
-	//	if (alrt) alert("Please select some items first.");
 		if (alrt) bootbox.alert(Joomla.JText._('COM_MEEDYA_SELECT_SOME'));
 		return false;
 	}
@@ -487,8 +486,7 @@ function editSelected (e) {
 function addSelected (e) {
 	e.preventDefault();
 	if (hasSelections("input[name='slctimg[]']:checked",true)) {
-		document.adminForm.task.value = 'manage.imgsAddAlbum';
-		document.adminForm.submit();
+		jQuery('#add2albdlg').modal('show');
 	}
 }
 

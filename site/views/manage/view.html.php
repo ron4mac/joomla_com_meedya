@@ -51,6 +51,7 @@ class MeedyaViewManage extends MeedyaView
 				break;
 
 			case 'images':
+				$this->albums = $this->get('AlbumsList');
 				$this->action = 'Edit Images';
 				$this->iids = $this->get('Items');
 				$this->total = count($this->iids);
