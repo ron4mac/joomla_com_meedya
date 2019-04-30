@@ -61,12 +61,12 @@ $jdoc->addScriptDeclaration($ttscript);
 ?>
 <style>
 .tooltip.in {
-	opacity: 0.85;
-	filter: alpha(opacity=85);
+	opacity: 1;
+	filter: alpha(opacity=100);
 }
 .tooltip-inner {
 	color: #000;
-	background-color: #EA9;
+	background-color: #FF0;
 	white-space: normal;
 }
 .tooltip.top .tooltip-arrow {
@@ -171,7 +171,7 @@ $jdoc->addScriptDeclaration($ttscript);
 			//	.'<a href="'.JRoute::_('index.php?option=com_meedya&view=item&iid='.$item, false).'" class="itm-thumb">'
 				.'<a href="'.JRoute::_('index.php?option=com_meedya&view=album&layout=each&aid='.$this->aid.'&iid='.$item, false).'" class="itm-thumb" onclick="showSlides(event,'.$ix.')">'
 					.'<div data-toggle="tooltip" data-placement="bottom" title="'.$ttip.'"><img src="'.$thmsrc.'" /></div>'
-					.'<div class="itm-thm-ttl" data-src="'.$thumb.'">'./*$item*/$ititle.'</div>'
+//					.'<div class="itm-thm-ttl" data-src="'.$thumb.'">'./*$item*/$ititle.'</div>'
 				.'</a>'
 			.'</div>';
 		}

@@ -11,9 +11,9 @@
 
 #ptext {
 	position:absolute;
-	background-color: rgba(51,51,51,0.4);
+	background-color: rgba(51,51,51,0.6);
 	color: #FFFFFF;
-	font-size: larger;
+	font-size: large;
 	line-height: 1.7em;
 	right: 0;
 	left: 0;
@@ -31,9 +31,13 @@
 }
 .img_show {
 	opacity:1;
+	transition: 0.25s opacity;
+	transition-timing-function: ease;
 }
 .img_hide {
 	opacity:0;
+	transition: 0.25s opacity;
+	transition-timing-function: ease;
 }
 .img_off {
 	opacity:0;
