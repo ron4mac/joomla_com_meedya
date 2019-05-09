@@ -27,6 +27,10 @@
 	display: inline-block;
 	border: 1px solid #CCC;
 	padding: 3px;
+	transition: all .4s ease-in-out;
+}
+.itm-thumb:hover {
+	border: 1px solid #000;
 }
 .itm-thm-ttl {
 	text-align: center;

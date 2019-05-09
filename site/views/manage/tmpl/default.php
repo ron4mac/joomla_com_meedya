@@ -1,7 +1,7 @@
 <?php
 /**
  * @package		com_meedya
- * @copyright	Copyright (C) 2018 Ron Crans. All rights reserved.
+ * @copyright	Copyright (C) 2019 Ron Crans. All rights reserved.
  * @license		GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
@@ -97,7 +97,7 @@ $hasImport = JFolder::exists($this->gallpath.'/import');
 #myBar { width:0; background-color:#4CAF50; font-size:larger; padding:3px 0; }
 </style>
 <div class="meedya-gallery">
-	<?php if ($this->manage) echo JHtml::_('meedya.manageMenu', $this->userPerms, 1); ?>
+	<?php if ($this->manage) echo JHtml::_('meedya.manageMenu', $this->userPerms/*, 1*/); ?>
 	<?php echo JHtml::_('meedya.pageHeader', $this->params, $this->action/*.'XXXX'*/); ?>
 	<div id="toolbar">
 		<a href="#" onclick="goUpload(event)" title="Upload Files">Upload</a>

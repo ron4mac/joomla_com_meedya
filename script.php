@@ -1,29 +1,34 @@
 <?php
+/**
+ * @package		com_meedya
+ * @copyright	Copyright (C) 2019 Ron Crans. All rights reserved.
+ * @license		GNU General Public License version 3 or later; see LICENSE.txt
+ */
 defined('_JEXEC') or die;
- 
+
 jimport('rjuserdata.userdata');
 
 class com_meedyaInstallerScript
 {
-	function install ($parent) 
+	function install ($parent)
 	{
 		$parent->getParent()->setRedirectURL('index.php?option=com_meedya');
 	}
 
-	function uninstall ($parent) 
+	function uninstall ($parent)
 	{
 	}
 
-	function update ($parent) 
+	function update ($parent)
 	{
 	}
 
-	function preflight ($type, $parent) 
+	function preflight ($type, $parent)
 	{
 		$this->release = $parent->get('manifest')->version;
 	}
 
-	function postflight ($type, $parent) 
+	function postflight ($type, $parent)
 	{
 		$params['version'] = $this->release;
 		$this->setParams($params, true);

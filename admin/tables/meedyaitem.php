@@ -1,11 +1,9 @@
 <?php
 /**
- * @version		$Id: meedyaitem.php 20782 2011-02-19 06:01:24Z infograf768 $
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
- * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ * @package		com_meedya
+ * @copyright	Copyright (C) 2019 Ron Crans. All rights reserved.
+ * @license		GNU General Public License version 3 or later; see LICENSE.txt
  */
-
-// No direct access
 defined('_JEXEC') or die;
 
 /**
@@ -76,8 +74,8 @@ class MeedyaTableMeedyaItem extends JTable
 			if (empty($this->created_by)) {
 				$this->created_by = $user->get('id');
 			}
-		}	
-		
+		}
+
 	// Verify that the alias is unique
 		$table = JTable::getInstance('MeedyaItem', 'MeedyaTable');
 		if ($table->load(array('alias'=>$this->alias,'catid'=>$this->catid)) && ($table->id != $this->id || $this->id==0)) {

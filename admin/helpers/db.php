@@ -1,10 +1,9 @@
 <?php
 /**
  * @package		com_meedya
- * @copyright	Copyright (C) 2016 Ron Crans. All rights reserved.
+ * @copyright	Copyright (C) 2019 Ron Crans. All rights reserved.
  * @license		GNU General Public License version 3 or later; see LICENSE.txt
  */
-
 defined('_JEXEC') or die;
 
 abstract class MeedyaHelperDb
@@ -55,12 +54,35 @@ abstract class MeedyaHelperDb
 		$thmFils = self::storedFiles($udbPath.'/thm/', $files);
 
 		$dcnt = 0;
-		$imgFils = array_diff($imgFils, $files);
-//		foreach 
-		$medFils = array_diff($medFils, $files);
-		$thmFils = array_diff($thmFils, $files);
+	//	$imgFils = array_diff($imgFils, $files);
+//		foreach
+	//	$medFils = array_diff($medFils, $files);
+	//	$thmFils = array_diff($thmFils, $files);
 
-	//	echo'<pre>';var_dump($imgFils,$medFils,$thmFils);echo'</pre>';jexit();
+		echo'<xmp>';var_dump($files,$imgFils,$medFils,$thmFils);echo'</xmp>';jexit();
+	}
+
+	public static function recalcStorage ($udbPath)
+	{
+		if (!file_exists($udbPath)) return;
+
+		$db = JDatabaseDriver::getInstance(array('driver'=>'sqlite', 'database'=>$udbPath.'/meedya.db3'));
+
+		// get files listed in the database
+		$db->setQuery('SELECT id,file FROM meedyaitems');
+		$files = $db->loadAssocList();
+
+	//	echo'<pre>';
+		foreach ($files as $file) {
+			$fs = @filesize($udbPath.'/img/'.$file['file']);
+			$ms = @filesize($udbPath.'/med/'.$file['file']);
+			$ts = @filesize($udbPath.'/thm/'.$file['file']);
+			$sz = $fs+$ms+$ts;
+		//	echo $sz."\n";
+			$db->setQuery('UPDATE meedyaitems SET tsize='.$sz.' WHERE id='.$file['id']);
+			$db->execute();
+		}
+	//	echo'</pre>';jexit();
 	}
 
 	private static function storedFiles ($dir, &$indb)
@@ -68,16 +90,16 @@ abstract class MeedyaHelperDb
 		$files = [];
 		if ($h = opendir($dir)) {
 			while (false !== ($entry = readdir($h))) {
-				if ($entry[0] != '.' && $entry != 'index.html') {
+				if (($entry[0] != '.') && ($entry != 'index.html')) {
 					$files[] = $entry;
 				}
 			}
 			closedir($h);
-		}
+		} else echo 'CRAP!   ';
 
 		$orfs = array_diff($files, $indb);
 		foreach ($orfs as $orf) {
-			unlink($dir.$orf);
+		//	unlink($dir.$orf);
 		}
 
 		return $files;

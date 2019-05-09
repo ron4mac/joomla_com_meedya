@@ -1,11 +1,9 @@
 <?php
 /**
- * @version		$Id: view.html.php 20989 2011-03-18 09:19:41Z infograf768 $
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
- * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ * @package		com_meedya
+ * @copyright	Copyright (C) 2019 Ron Crans. All rights reserved.
+ * @license		GNU General Public License version 3 or later; see LICENSE.txt
  */
-
-// No direct access
 defined('_JEXEC') or die;
 
 jimport('joomla.application.component.view');
@@ -64,7 +62,7 @@ class MeedyaViewMeedyaItem extends JViewLegacy
 			JToolBarHelper::apply('meedyaitem.apply', 'JTOOLBAR_APPLY');
 			JToolBarHelper::save('meedyaitem.save', 'JTOOLBAR_SAVE');
 		}
-		if (!$checkedOut && (count($user->getAuthorisedCategories('com_meedya', 'core.create')))){			
+		if (!$checkedOut && (count($user->getAuthorisedCategories('com_meedya', 'core.create')))){
 			JToolBarHelper::custom('meedyaitem.save2new', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false);
 		}
 		// If an existing item, can save to a copy.

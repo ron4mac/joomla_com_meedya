@@ -286,7 +286,6 @@ if (LR !== 0) { _titlelm.innerHTML = ""; }
 				$id('sstage').style.display = "none";
 				_ielms.forEach(function(itm){_iarea.removeChild(itm);});
 				_ielms = Array();
-			//	window.history.back();
 				break;
 			case _rwnd:
 				rewindShow();
@@ -362,15 +361,16 @@ if (LR !== 0) { _titlelm.innerHTML = ""; }
 		var te = e.changedTouches[0];
 		var	dx = _tstartx - te.clientX,
 			dy = _tstarty - te.clientY;
-		e.preventDefault();
 		if ((e.timeStamp - _tstartt) > 400) { return; }
 		if (Math.abs(dx) > Math.abs(dy)) {
-			if (Math.abs(dx) > 150) {
+			if (Math.abs(dx) > 100) {
+				e.preventDefault();
 				if (dx>0) {mySC.doMnu(_next)}
 				else {mySC.doMnu(_prev)}
 			}
 		} else {
-			if (Math.abs(dy) > 150) {
+			if (Math.abs(dy) > 100) {
+				e.preventDefault();
 				mySC.doMnu(_paus);
 			}
 		}
@@ -380,7 +380,6 @@ if (LR !== 0) { _titlelm.innerHTML = ""; }
 		_tstartx = ts.clientX;
 		_tstarty = ts.clientY;
 		_tstartt = e.timeStamp;
-		e.preventDefault();
 	}
 
 	function winResized () {
@@ -452,10 +451,5 @@ if (LR !== 0) { _titlelm.innerHTML = ""; }
 		window.onresize = winResized;
 	};
 
-//	document.addEventListener("keypress", keyPressed, false);
-//	document.addEventListener("keydown", keyDowned, false);
-
 	return mySC;
 }());
-
-//window.onload = function(){ssCtl.init();};

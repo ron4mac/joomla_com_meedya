@@ -1,7 +1,7 @@
 <?php
 /**
  * @package		com_meedya
- * @copyright	Copyright (C) 2018 Ron Crans. All rights reserved.
+ * @copyright	Copyright (C) 2019 Ron Crans. All rights reserved.
  * @license		GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
@@ -78,7 +78,7 @@ function createAlbum (elm) {
 //	elm.nextElementSibling.style.visibility = 'visible';
 	var ajd = {format: 'raw', task: 'manage.newAlbum', albnam: nualbnam, paralb: (albParFld ? albParFld.value : 0), albdesc: albDscFld.value};
 	ajd[formTokn] = 1;
-	jQuery.post(myBaseURL, ajd, 
+	jQuery.post(myBaseURL, ajd,
 		function (response, status, xhr) {
 			console.log(response, status, xhr);
 //			elm.nextElementSibling.style.visibility = 'hidden';

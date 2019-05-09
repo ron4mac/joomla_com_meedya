@@ -107,6 +107,7 @@ class MeedyaControllerManage extends JControllerLegacy
 //		$this->setRedirect(JRoute::_('index.php?option=com_meedya&view=manage&limitstart=0', false));
 //	}
 
+
 	public function addItemsToAlbum ()
 	{
 		if (!JSession::checkToken()) {
@@ -114,7 +115,7 @@ class MeedyaControllerManage extends JControllerLegacy
 			return;
 		}
 		$this->setRedirect($_SERVER['HTTP_REFERER']);
-		file_put_contents('MEELOG.txt', print_r($this->input->post,true), FILE_APPEND);
+	//	file_put_contents('MEELOG.txt', print_r($this->input->post,true), FILE_APPEND);
 
 		$itms = $this->input->post->get('slctimg',[],'array');
 		if (!$itms) return;

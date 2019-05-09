@@ -1,7 +1,7 @@
 <?php
 /**
  * @package		com_meedya
- * @copyright	Copyright (C) 2016 Ron Crans. All rights reserved.
+ * @copyright	Copyright (C) 2019 Ron Crans. All rights reserved.
  * @license		GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
@@ -28,6 +28,10 @@ class MeedyaControllerManage extends JControllerLegacy
 	public function upfile ()
 	{
 		if (JDEBUG) { JLog::add('upfile: '.print_r($this->input, true), JLog::INFO, 'com_meedya'); }
+		if (!JSession::checkToken()) {
+			header('HTTP/1.1 403 Not Allowed');
+			jexit(JText::_('JINVALID_TOKEN'));
+		}
 	//	$galid = base64_decode($this->input->get('galid', '', 'base64'));
 		$file = $this->input->files->get('userpicture');
 

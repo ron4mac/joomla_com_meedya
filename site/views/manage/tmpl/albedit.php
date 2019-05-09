@@ -1,7 +1,7 @@
 <?php
 /**
  * @package		com_meedya
- * @copyright	Copyright (C) 2018 Ron Crans. All rights reserved.
+ * @copyright	Copyright (C) 2019 Ron Crans. All rights reserved.
  * @license		GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
@@ -35,7 +35,7 @@ JText::script('COM_MEEDYA_VRB_REMOVE');
 	.modal-footer {padding: 8px 10px}
 </style>
 <div class="meedya-gallery">
-<?php if ($this->manage) echo JHtml::_('meedya.manageMenu', $this->userPerms, 1); ?>
+<?php if ($this->manage) echo JHtml::_('meedya.manageMenu', $this->userPerms/*, 1*/); ?>
 <h3>ALBUM EDIT: <?=$this->album['title']?></h3>
 <button class="btn btn-primary" onclick="saveAlbum()">Save Changes</button>
 <button class="btn" onclick="cancelEdt()">Cancel</button>

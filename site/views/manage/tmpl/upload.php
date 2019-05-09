@@ -1,7 +1,7 @@
 <?php
 /**
  * @package		com_meedya
- * @copyright	Copyright (C) 2018 Ron Crans. All rights reserved.
+ * @copyright	Copyright (C) 2019 Ron Crans. All rights reserved.
  * @license		GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
@@ -28,7 +28,7 @@ js_vars.H5uPath = "'.JUri::base(true).'/components/com_meedya/static/";
 //js_vars.upLink = "'.JUri::base().'index.php?option=com_meedya&format=raw";
 js_vars.upLink = "'.JRoute::_('index.php?option=com_meedya&format=raw', false).'";
 js_vars.fup_payload = {task: "manage.upfile", galid: "'.$this->galid.'"};
-js_vars.maxfilesize = '.($this->maxUploadFS/1048576*2).';';
+js_vars.maxfilesize = '.($this->maxUploadFS/1048576).';';
 
 //JHtml::_('bootstrap.loadCss', true);
 JHtml::_('jquery.framework');
@@ -83,10 +83,16 @@ if ($quota) {
 }
 .progress { height:22px; }
 .progress .bar { font-size:16px; }
+.dropzone {
+	min-height: 130px;
+	border: 1px solid rgba(0,0,0,0.3);
+	padding: 10px 10px;
+	border-radius: 5px;
+}
 </style>
 <?php endif; ?>
 <div class="meedya-gallery">
-<?php /*if ($this->manage)*/ echo JHtml::_('meedya.manageMenu', $this->userPerms, 1); ?>
+<?php /*if ($this->manage)*/ echo JHtml::_('meedya.manageMenu', $this->userPerms/*, 1*/); ?>
 <?php echo JHtml::_('meedya.pageHeader', $this->params, $this->action); ?>
 <?php if (false && $quota): ?>
 <h3>Storage Quota</h3>
@@ -150,7 +156,9 @@ if ($quota) {
 <script>
 Dropzone.options.fileuploader = {
 	paramName: 'userpicture',
-	acceptedFiles: 'image/*',
+	acceptedFiles: 'image/*,video/*',
+	maxFilesize: js_vars.maxfilesize, // + 134217728,
+//	addRemoveLinks: true,
 	init: function() {
 		var self = this;
 //		var prgelm = document.getElementById("mdy-totupld");
@@ -159,7 +167,7 @@ Dropzone.options.fileuploader = {
 			formData.append('album', jQuery('#h5u_album').val());
 		});
 		this.on('success', function(file, resp) {
-			setTimeout(function(){ self.removeFile(file); }, 3000);
+			setTimeout(function(){ self.removeFile(file); }, 2500);
 		});
 		this.on('error', function(file, emsg, xhr) {
 			if (xhr && xhr.status==403) {
@@ -171,17 +179,18 @@ Dropzone.options.fileuploader = {
 			}
 		});
 		this.on('queuecomplete', function() {
+			console.log(this.getRejectedFiles());
+			if (!this.getRejectedFiles())
 			setTimeout(function(){
 			 	redirURL = js_vars.site_url + '&task=manage.imgEdit&after=' + js_vars.timestamp;
 				window.location = redirURL;
-			}, 3000);
+			}, 2500);
 		});
 //		this.on('totaluploadprogress', function(pct,totb,bsnt) {
 //		//	console.log(pct,totb,bsnt);
 //			prgelm.style.width = pct+"%";
 //		});
 		//	console.log(file);
-	},
-	maxFilesize: js_vars.maxfilesize
+	}
 };
 </script>

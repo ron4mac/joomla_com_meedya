@@ -1,7 +1,7 @@
 <?php
 /**
  * @package		com_meedya
- * @copyright	Copyright (C) 2018 Ron Crans. All rights reserved.
+ * @copyright	Copyright (C) 2019 Ron Crans. All rights reserved.
  * @license		GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
@@ -206,7 +206,7 @@ $jdoc->addScriptDeclaration($ttscript);
 	});
 </script>
 <div id="sstage" class="slideback" style="display:none">
-	<div id="iarea" tabindex="0" onclick="ssCtl.doMnu(0)">
+	<div id="iarea" tabindex="0" onclick="ssCtl.doMnu(0);">
 		<div id="ptext"></div>
 		<p id="loading" style="display:none">∙∙∙LOADING∙∙∙</p>
 	</div>
