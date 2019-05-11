@@ -12,7 +12,7 @@ class MeedyaControllerManage extends JControllerLegacy
 {
 	protected $default_view = 'manage';
 
-	public function __construct ($config = array())
+	public function __construct ($config = [])
 	{
 	//	$config['name'] = $this->default_view;
 		if (RJC_DBUG) { MeedyaHelper::log('MeedyaControllerManage'); }
@@ -71,7 +71,7 @@ class MeedyaControllerManage extends JControllerLegacy
 		$m = $this->getModel('manage');
 	//	echo'<xmp>';var_dump($this->input->post->get('attr',array(),'array'));echo'</xmp>';jexit();
 		if ($this->input->post->get('save',0,'int')) {
-			$attrs = $this->input->post->get('attr',array(),'array');
+			$attrs = $this->input->post->get('attr',[],'array');
 			foreach ($attrs as $k=>$v) {
 				$m->updImage($k, $v);
 			}
@@ -86,10 +86,10 @@ class MeedyaControllerManage extends JControllerLegacy
 		$aid = $this->input->get('aid', 0, 'int');
 		$w = $this->input->get('wipe', false, 'boolean');
 		if ($aid) {
-			$albs = array($aid);
+			$albs = [$aid];
 			$m = $this->getModel('manage');
 			$m->removeAlbums($albs, $w);
-			JFactory::getApplication()->enqueueMessage('The album would have been successfully deleted');
+			JFactory::getApplication()->enqueueMessage('The album was successfully deleted');
 		}
 		$this->setRedirect(JRoute::_('index.php?option=com_meedya&view=manage&limitstart=0', false));
 	}
@@ -233,7 +233,7 @@ class MeedyaControllerManage extends JControllerLegacy
 
 	public function saveConfig ()
 	{
-		$unchk = array('aA'=>0,'aT'=>0,'uA'=>0,'nW'=>0,'sI'=>0,'aP'=>0,'lS'=>0,'vT'=>0,'vD'=>0);
+		$unchk = ['aA'=>0,'aT'=>0,'uA'=>0,'nW'=>0,'sI'=>0,'aP'=>0,'lS'=>0,'vT'=>0,'vD'=>0];
 
 		$vals = array_merge($unchk, $this->input->post->get('ss',null,'array'));
 
@@ -274,7 +274,7 @@ class MeedyaControllerManage extends JControllerLegacy
 					} else {
 						// add item
 						echo "{$paid}::{$entry}<br />";
-						$mdl->storeFile(array('name'=>$entry, 'title'=>pathinfo($entry, PATHINFO_FILENAME)), $paid, $base);
+						$mdl->storeFile(['name'=>$entry, 'title'=>pathinfo($entry, PATHINFO_FILENAME)], $paid, $base);
 					}
 				}
 			}
@@ -315,6 +315,7 @@ class MeedyaControllerManage extends JControllerLegacy
 		JFactory::getApplication()->enqueueMessage('Album properties sucessfully saved');
 		$this->setRedirect(base64_decode($this->input->post->get('referer','','base64')));
 	}
+
 
 	private function _log ($msg)
 	{

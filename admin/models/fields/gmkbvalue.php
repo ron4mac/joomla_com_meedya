@@ -33,7 +33,7 @@ class JFormFieldGmkbValue extends JFormField
 		}
 
 		// turn the value into GMK and number
-		list($uplsiz,$uplsizm) = $this->num2gmkv($this->value);
+		list($uplsiz,$uplsizm) = $this->num2gmkv($this->value?:$this->element['compdef']);
 
 		// Setup variables for display.
 		$html	= array();
@@ -42,7 +42,7 @@ class JFormFieldGmkbValue extends JFormField
 		$html[] = '<label for="'.$this->id.'_dchk" style="display:inline;margin-right:1em">'.JText::_('JDEFAULT').'</label>';
 
 		$html[] = '<span class="input-gmkb'.($this->value ? '' : ' hidden').'">';
-		$html[] = '<input type="number" step="1" min="1" class="input-medium" id="' . $this->id . '_name" value="' . $uplsiz .'" onkeyup="GMKBff.sVal(this.parentNode)" style="width:4em;text-align:right" />';
+		$html[] = '<input type="number" step="1" min="1" class="input-medium" id="' . $this->id . '_name" value="' . $uplsiz .'" onchange="GMKBff.sVal(this.parentNode)" onkeyup="GMKBff.sVal(this.parentNode)" style="width:4em;text-align:right" />';
 		$html[] = '<select id="' . $this->id . '_gmkb" class="gkmb-sel" onchange="GMKBff.sVal(this.parentNode)" style="width:5em">';
 		$html[] = '<option value="1024"'.($uplsizm==0?' selected="selected"':'').'>KB</option>';
 		$html[] = '<option value="1048576"'.($uplsizm==1?' selected="selected"':'').'>MB</option>';
