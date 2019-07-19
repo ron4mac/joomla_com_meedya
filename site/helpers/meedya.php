@@ -104,10 +104,11 @@ abstract class MeedyaHelper
 
 		if (!$perms) {
 	//		echo'<xmp>';var_dump($user->groups,$params);echo'</xmp>';
-			$admgrp = $params->get('admin_group', null);
+			$admgrps = $params->get('admin_group', null);
+			if (!is_array($admgrps)) $admgrps = [$admgrps];
 			if ($params->get('instance_type', 3) > 0) {
-				if ($admgrp) {
-					$perms['canAdmin'] = in_array($admgrp, $user->groups);
+				if ($admgrps) {
+					$perms['canAdmin'] = !empty(array_intersect($user->groups, $admgrps));
 				} else {
 					$perms['canAdmin'] = in_array($params->get('owner_group', null), $user->groups);
 				}

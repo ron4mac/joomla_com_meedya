@@ -38,6 +38,7 @@
 			<field
 				name="admin_group"
 				type="optgrouplist"
+				multiple="multiple"
 				label="COM_MEEDYA_FIELD_AGROUP_LABEL"
 				description="COM_MEEDYA_FIELD_AGROUP_DESC"
 				default=""
