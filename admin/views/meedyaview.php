@@ -84,6 +84,7 @@ class MeedyaView extends JViewLegacy
 		JToolBarHelper::custom('rebuildExpodt', 'wrench', '', 'Rebuild exposure dates');
 		JToolBarHelper::custom('cleanOrphans', 'scissors', '', 'Clean orphan files');
 		JToolBarHelper::custom('recalcStorage', 'database', '', 'Re-calculate storage');
+		JToolBarHelper::custom('dbaseFixes', 'wand', '', 'Fix database issues');
 
 		JToolBarHelper::divider();
 		if ($canDo->get('core.admin')) {

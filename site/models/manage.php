@@ -121,7 +121,7 @@ class MeedyaModelManage extends MeedyaModelMeedya
 		$itms = $db->loadAssocList();
 		foreach ($itms as $itm) {
 			$cur = explode('|',$itm['album']);
-			$albs = array_merge($cur, $album);
+			$albs = $this->uniqVals(array_merge($cur, $album));
 			$q = 'UPDATE `meedyaitems` SET `album`=\''.implode('|',$albs).'\' WHERE `id`='.$itm['id'];
 			$db->setQuery($q);
 			$db->execute();
@@ -574,6 +574,15 @@ class MeedyaModelManage extends MeedyaModelMeedya
 		//echo '<xmp>';var_dump($query);echo'</xmp>';
 
 		return $query;
+	}
+
+	private function uniqVals (array $ary)
+	{
+		$vals = []; 
+		foreach ($ary as $k=>$v) {    
+			$vals[$v] = true; 
+		} 
+		return array_keys($vals); 
 	}
 
 }

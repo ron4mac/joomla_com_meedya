@@ -85,6 +85,28 @@ abstract class MeedyaHelperDb
 	//	echo'</pre>';jexit();
 	}
 
+	public static function fixItemAlbums ($udbPath)
+	{
+		if (!file_exists($udbPath)) return;
+
+		$db = JDatabaseDriver::getInstance(array('driver'=>'sqlite', 'database'=>$udbPath.'/meedya.db3'));
+
+		// get files listed in the database
+		$db->setQuery('SELECT id,album FROM meedyaitems');
+		$itms = $db->loadAssocList();
+
+		foreach ($itms as $itm) {
+			$albs = explode('|', $itm['album']);
+			$vals = []; 
+			foreach ($albs as $k=>$v) {    
+				$vals[$v] = true; 
+			} 
+			$albs = array_keys($vals); 
+			$db->setQuery('UPDATE meedyaitems SET album=\''.implode('|',$albs).'\' WHERE id='.$itm['id']);
+			$db->execute();
+		}
+	}
+
 	private static function storedFiles ($dir, &$indb)
 	{
 		$files = [];
