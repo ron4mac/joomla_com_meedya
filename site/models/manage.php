@@ -14,6 +14,7 @@ class MeedyaModelManage extends MeedyaModelMeedya
 {
 	//protected $context = 'manage';
 	protected $album = null;
+	protected $ownid;
 
 	public function __construct ($config = array())
 	{
@@ -27,6 +28,7 @@ class MeedyaModelManage extends MeedyaModelMeedya
 		}
 		if (RJC_DBUG) { MeedyaHelper::log('MeedyaModelManage'); }
 		parent::__construct($config);
+		$this->ownid = JFactory::getUser()->get('id');
 	}
 
 	public function updateConfig ($type, $vals)
@@ -103,7 +105,7 @@ class MeedyaModelManage extends MeedyaModelMeedya
 			$db->setQuery($q);
 			$db->execute();
 		} else {
-			$q = 'INSERT INTO albums (items,title,tstamp) VALUES ('.$db->quote(implode('|',$items)).',\'New Album\','.time().')';
+			$q = 'INSERT INTO albums (items,ownid,title,tstamp) VALUES ('.$db->quote(implode('|',$items)).','.$this->ownid.',\'New Album\','.time().')';
 			$db->setQuery($q);
 			$db->execute();
 			$album = $db->insertid();
@@ -132,8 +134,8 @@ class MeedyaModelManage extends MeedyaModelMeedya
 	public function addItem ($fnam, $mtype, $ittl, $albm, $fsize, $tsize, $xpdt)
 	{
 		$db = $this->getDbo();
-		$flds = $db->quoteName(array('file','mtype','title','album','fsize','tsize','expodt'));
-		$vals = $db->quote(array($fnam, $mtype, $ittl, $albm, (int)$fsize, (int)$tsize, $xpdt));
+		$flds = $db->quoteName(array('file','mtype','ownid','title','album','fsize','tsize','expodt'));
+		$vals = $db->quote(array($fnam, $mtype, $this->ownid, $ittl, $albm, (int)$fsize, (int)$tsize, $xpdt));
 		if (count($vals) < 7) $vals[] = 'NULL';
 		$db->setQuery('INSERT INTO `meedyaitems` ('.implode(',', $flds).') VALUES ('.implode(',', $vals).')');
 		if (RJC_DBUG) { MeedyaHelper::log('addItem: '.$db->getQuery()); }
@@ -152,9 +154,9 @@ class MeedyaModelManage extends MeedyaModelMeedya
 		$db = $this->getDbo();
 		if ($parid) {
 			$hord = $this->getParentNextHord($parid);
-			$q = 'INSERT INTO albums (`title`,`desc`,`paid`,`hord`,`tstamp`) VALUES ('.$db->quote($anam).','.$db->quote($desc).','.$parid.','.$db->quote($hord).','.time().')';
+			$q = 'INSERT INTO albums (`title`,`desc`,`paid`,`hord`,`ownid`,`tstamp`) VALUES ('.$db->quote($anam).','.$db->quote($desc).','.$parid.','.$db->quote($hord).','.$this->ownid.','.time().')';
 		} else {
-			$q = 'INSERT INTO `albums` (`title`,`desc`,`tstamp`) VALUES ('.$db->quote($anam).','.$db->quote($desc).','.time().')';
+			$q = 'INSERT INTO `albums` (`title`,`desc`,`ownid`,`tstamp`) VALUES ('.$db->quote($anam).','.$db->quote($desc).','.$this->ownid.','.time().')';
 		}
 		$db->setQuery($q);
 		$db->execute();

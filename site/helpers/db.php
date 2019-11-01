@@ -12,8 +12,8 @@ abstract class MeedyaHelperDb
 	{
 		$execs = explode(';', file_get_contents(JPATH_COMPONENT_ADMINISTRATOR.'/tables/db3.sql'));
 		foreach ($execs as $exec) {
-			$db->setQuery($exec);
-			$db->execute();
+			$exec = trim($exec);
+			if ($exec[0] != '#') $db->setQuery($exec)->execute();
 		}
 	}
 }

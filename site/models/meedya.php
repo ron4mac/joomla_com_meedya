@@ -128,12 +128,15 @@ class MeedyaModelMeedya extends JModelList
 
 	protected function getListQuery ()
 	{
+		$albord = ['`tstamp` DESC','`tstamp` ASC','`title` DESC','`title` ASC'];
+		$params = JFactory::getApplication()->getParams();
+		$ordopt = (int)$params->get('album_order', 0);
 		$db = $this->getDbo();
 		$query = $db->getQuery(true);
 		$query->select('*');
 		$query->from('albums');
 		$query->where('paid='.$this->curAlbID);
-		$query->order('`tstamp` DESC');
+		$query->order($albord[$ordopt]);
 		if (RJC_DBUG) { MeedyaHelper::log('ModelMeedya getListQuery', $query); }
 		return $query;
 	}

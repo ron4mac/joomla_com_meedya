@@ -65,6 +65,7 @@ class MeedyaViewManage extends MeedyaView
 
 				$this->linkUrl = 'index.php?option=com_meedya&task=manage.editImgs';
 				break;
+
 			case 'albedit':
 				$this->action = 'Edit Album';
 				//echo'<xmp>';var_dump($this->state);echo'</xmp>';
@@ -73,6 +74,7 @@ class MeedyaViewManage extends MeedyaView
 				$this->items = explode('|', $this->album['items']);
 				$this->aThum = $this->album['thumb'] ? $this->getAlbumThumb((object)$this->album) : 'components/com_meedya/static/img/img.png';
 				break;
+
 			case 'imgedit':
 			//	$this->iids = $this->getModel('manage')->get('Items');
 			//	var_dump($this->iids);
