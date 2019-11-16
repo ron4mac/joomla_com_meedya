@@ -23,7 +23,7 @@ if ($this->files) {
 		$txtinfo .= trim($file['title']);
 		$txtinfo .= ($txtinfo ? ' ... ' : '') . trim($file['desc']);
 		$fileentry = array(
-				'fpath' => $this->gallpath .'/med/'. $file['file'],
+				'fpath' => $file['file'],
 				'title' => $txtinfo
 				);
 		$filelist[] = $fileentry;
@@ -31,6 +31,8 @@ if ($this->files) {
 }
 
 $ttscript = '
+	var baseUrl = "'.JUri::root(true).'/'.$this->gallpath.'/med/";
+	var imgerror = "'.JText::_('COM_MEEDYA_SS_IMGERROR').'";
 	var imagelist = '.json_encode($filelist).';
 	var startx = '.$this->six.';
 	ssCtl.repeat = true;
@@ -123,6 +125,7 @@ $jdoc->addScriptDeclaration($ttscript);
 	height: 100%;
 	padding: 8px;
 	box-sizing: border-box;
+	z-index: 9999;
 }
 #iarea {
 	width: 100%;
@@ -139,7 +142,7 @@ $jdoc->addScriptDeclaration($ttscript);
 		echo '<span class="albttl">'.$this->title.'</span>';
 	?>
 	<?php if (count($this->items)>1): ?>
-		<a href="<?=JRoute::_('index.php?option=com_meedya&view=slides&tmpl=component&aid='.$this->aid, false) ?>" title="<?=JText::_('COM_MEEDYA_SLIDESHOW')?>">
+		<a href="<?=JRoute::_('index.php?option=com_meedya&view=slides&tmpl=component&aid='.$this->aid.'&Itemid='.$this->itemId, false) ?>" title="<?=JText::_('COM_MEEDYA_SLIDESHOW')?>">
 			<img src="components/com_meedya/static/img/slideshow.png" alt="" />
 		</a>
 	<?php endif; ?>
@@ -148,7 +151,7 @@ $jdoc->addScriptDeclaration($ttscript);
 	<?php if($this->state->get('list.start'.$this->state->get('album.id')) == 0): ?>
 	<?php foreach ($this->albums as $alb): ?>
 		<div class="anitem falbum">
-			<a href="<?=JRoute::_('index.php?option=com_meedya&view=album&aid='.$alb->aid, false) ?>" class="itm-thumb">
+			<a href="<?=JRoute::_('index.php?option=com_meedya&view=album&aid='.$alb->aid.'&Itemid='.$this->itemId, false) ?>" class="itm-thumb">
 				<div><img src="<?=$this->getAlbumThumb($alb)?>" class="falbumi" /></div>
 				<div class="itm-alb-ttl"><?=$alb->title?></div>
 			</a>
@@ -169,7 +172,7 @@ $jdoc->addScriptDeclaration($ttscript);
 			}
 			echo '<div class="anitem">'
 			//	.'<a href="'.JRoute::_('index.php?option=com_meedya&view=item&iid='.$item, false).'" class="itm-thumb">'
-				.'<a href="'.JRoute::_('index.php?option=com_meedya&view=album&layout=each&aid='.$this->aid.'&iid='.$item, false).'" class="itm-thumb" onclick="showSlides(event,'.$ix.')">'
+				.'<a href="'.JRoute::_('index.php?option=com_meedya&view=album&layout=each&aid='.$this->aid.'&iid='.$item.'&Itemid='.$this->itemId, false).'" class="itm-thumb" onclick="showSlides(event,'.$ix.')">'
 					.'<div data-toggle="tooltip" data-placement="bottom" title="'.$ttip.'"><img src="'.$thmsrc.'" /></div>'
 //					.'<div class="itm-thm-ttl" data-src="'.$thumb.'">'./*$item*/$ititle.'</div>'
 				.'</a>'

@@ -11,26 +11,31 @@ JLoader::register('JHtmlMeedya', JPATH_COMPONENT . '/helpers/html/meedya.php');
 class MeedyaControllerManage extends JControllerLegacy
 {
 	protected $default_view = 'manage';
+	protected $mnuItm;
 
 	public function __construct ($config = [])
 	{
 	//	$config['name'] = $this->default_view;
 		if (RJC_DBUG) { MeedyaHelper::log('MeedyaControllerManage'); }
 		parent::__construct($config);
+		$this->mnuItm = $this->input->getInt('Itemid', 0);
+	//	echo'<xmp>';var_dump($config, $this);echo'</xmp>';	jexit();
 	}
 
 
-/*	public function display ($cachable = false, $urlparams = false)
+	public function display ($cachable = false, $urlparams = false)
 	{
 		if (RJC_DBUG) { MeedyaHelper::log('MeedyaControllerManage : display'); }
-		$aid = $this->input->get->get('aid',0,'int');
-		if ($aid) {
-			$view = $this->getView('manage','html');
-			$view->setLayout('album_edit');
-		}
+//		$aid = $this->input->get->get('aid',0,'int');
+//		if ($aid) {
+//			$view = $this->getView('manage','html');
+//			$view->setLayout('album_edit');
+//		}
+		$view = $this->getView('manage','html');
+		$view->itemId = $this->mnuItm;
 		return parent::display($cachable, $urlparams);
 	}
-*/
+
 
 	public function upload ()
 	{
@@ -91,7 +96,7 @@ class MeedyaControllerManage extends JControllerLegacy
 			$m->removeAlbums($albs, $w);
 			JFactory::getApplication()->enqueueMessage('The album was successfully deleted');
 		}
-		$this->setRedirect(JRoute::_('index.php?option=com_meedya&view=manage&limitstart=0', false));
+		$this->setRedirect(JRoute::_('index.php?option=com_meedya&view=manage&limitstart=0&Itemid='.$this->mnuItm, false));
 	}
 
 
@@ -151,7 +156,7 @@ class MeedyaControllerManage extends JControllerLegacy
 		$aid = $m->addAlbum('New Album');
 		$m->addItems2Album($itms, $aid);
 
-		$this->setRedirect(JRoute::_('index.php?option=com_meedya&view=manage&layout=albedit&aid='.$aid, false));
+		$this->setRedirect(JRoute::_('index.php?option=com_meedya&view=manage&layout=albedit&aid='.$aid.'&Itemid='.$this->mnuItm, false));
 	}
 
 	public function deleteItems ()
@@ -177,6 +182,7 @@ class MeedyaControllerManage extends JControllerLegacy
 		$view->albums = $m->getAlbumsList();
 		$view->dbTime = $m->getDbTime();
 		$view->totStore = (int)$m->getStorageTotal();
+		$view->itemId = $this->mnuItm;
 		$view->setLayout('upload');
 		$view->display();
 	}
@@ -191,7 +197,7 @@ class MeedyaControllerManage extends JControllerLegacy
 	//	$itms = explode('|',$this->input->post->get('items','','string'));
 	//	if (!$itms[0]) $itms = $this->input->get('after','','string');
 	//	$view->iids = $m->getItems();
-		$view->itemId = $this->input->getInt('Itemid');
+		$view->itemId = $this->mnuItm;
 		$view->mode = $this->input->get('mode','L','string');
 		$view->display();
 	}
@@ -200,6 +206,7 @@ class MeedyaControllerManage extends JControllerLegacy
 	public function editImgs ()
 	{
 		$view = $this->getView('manage','html');
+		$view->itemId = $this->mnuItm;
 		$view->setLayout('images');
 		$m = $this->getModel('manage');
 		$m->set('filterFormName', 'filter_images');
@@ -207,7 +214,6 @@ class MeedyaControllerManage extends JControllerLegacy
 	//	$itms = explode('|',$this->input->post->get('items','','string'));
 	//	if (!$itms[0]) $itms = $this->input->get('after','','string');
 	//	$view->iids = $m->getItems();
-		$view->itemId = $this->input->getInt('Itemid');
 
 		$mode = $this->input->get('mode', null, 'word');
 		if (!$mode) $mode = $this->input->cookie->get('meedya_eig', 'L');
@@ -221,6 +227,7 @@ class MeedyaControllerManage extends JControllerLegacy
 	public function doConfig ()
 	{
 		$view = $this->getView('manage','html');
+		$view->itemId = $this->mnuItm;
 		$view->setLayout('config');
 		$m = $this->getModel('meedya');
 		$view->html5slideshowCfg = $m->getCfg('ss');

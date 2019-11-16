@@ -6,6 +6,8 @@
  */
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Factory;
+
 abstract class MeedyaHelper
 {
 	protected static $instanceType = null;
@@ -35,7 +37,7 @@ abstract class MeedyaHelper
 
 	public static function addScript ($scr, $path='js/')
 	{
-		if (self::$jdoc === null) self::$jdoc = JFactory::getDocument();
+		if (self::$jdoc === null) self::$jdoc = Factory::getDocument();
 		self::$jdoc->addScript(self::scriptVersion($scr, $path));
 	}
 
@@ -61,7 +63,7 @@ abstract class MeedyaHelper
 
 	public static function addStyle ($css, $path='css/')
 	{
-		if (self::$jdoc === null) self::$jdoc = JFactory::getDocument();
+		if (self::$jdoc === null) self::$jdoc = Factory::getDocument();
 		self::$jdoc->addStyleSheet(self::styleVersion($css, $path));
 	}
 
@@ -89,8 +91,7 @@ abstract class MeedyaHelper
 				break;
 		}
 
-		$dispatcher = JDispatcher::getInstance();
-		$results = $dispatcher->trigger('onRjuserDatapath', null);
+		$result = Factory::getApplication()->triggerEvent('onRjuserDatapath');
 		$sdp = isset($results[0]) ? trim($results[0]) : '';
 		if (!$sdp) $sdp = 'userstor';
 
@@ -115,7 +116,7 @@ abstract class MeedyaHelper
 			} else {
 				$perms['canAdmin'] = $user->id > 0;
 			}
-			if (!$perms['canAdmin']) $perms['canAdmin'] = JFactory::getUser()->authorise('core.edit', 'com_meedya');
+			if (!$perms['canAdmin']) $perms['canAdmin'] = Factory::getUser()->authorise('core.edit', 'com_meedya');
 			$perms['canUpload'] = $perms['canAdmin'] || in_array($params->get('owner_group', null), $user->groups)
 								|| array_intersect($params->get('upload_group', []), $user->groups);
 		}
@@ -135,6 +136,7 @@ abstract class MeedyaHelper
 	{
 		$cupmax = $op ?: self::componentOption('maxUpload', 4194304);
 		$cupmax = $cupmax ?: 4194304;
+		$cupmax = self::instanceOption('maxUpload', $cupmax);
 		return min($cupmax, JFilesystemHelper::fileUploadMaxSize(false));
 	}
 
@@ -224,7 +226,7 @@ abstract class MeedyaHelper
 	private static function getTypeOwner ()
 	{
 		if (is_null(self::$instanceType)) {
-			$app = JFactory::getApplication();
+			$app = Factory::getApplication();
 			$id = $app->input->getBase64('mID', false);
 			if ($id) {
 				$ids = explode(':',base64_decode($id));
@@ -235,7 +237,7 @@ abstract class MeedyaHelper
 				self::$instanceType = $params->get('instance_type');
 				switch (self::$instanceType) {
 					case 0:
-						self::$ownerID = JFactory::getUser()->get('id');
+						self::$ownerID = Factory::getUser()->get('id');
 						if (!self::$ownerID) self::$ownerID = -1;
 						break;
 					case 1:
@@ -248,6 +250,20 @@ abstract class MeedyaHelper
 			}
 		//var_dump(self::$instanceType,self::$ownerID);
 		}
+	}
+
+
+	private static function instanceOption ($key, $dflt)
+	{
+		static $ip;
+
+		if (empty($ip)) {
+			$ip = Factory::getApplication()->getParams();
+			$active = Factory::getApplication()->getMenu()->getActive();
+		//	echo'<xmp>';var_dump($active,$ip);echo'</xmp>';
+		}
+
+		return $ip->get($key) ?: $dflt;
 	}
 
 	private static function componentOption ($key, $dflt)

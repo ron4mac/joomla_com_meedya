@@ -26,9 +26,9 @@ function dateF ($dt)
 ?>
 <script>
 function editImg (iid) {
-	window.location = "<?=JRoute::_('index.php?option=com_meedya')?>?task=manage.imgEdit&items="+iid;
+	window.location = "<?=JRoute::_('index.php?option=com_meedya&task=manage.imgEdit&Itemid='.$this->itemId)?>&items="+iid;
 }
-var myBaseURL = "<?= JRoute::_('index.php?option=com_meedya', false); ?>";
+var myBaseURL = "<?= JRoute::_('index.php?option=com_meedya&Itemid='.$this->itemId, false); ?>";
 var formTokn = "<?= JSession::getFormToken(); ?>";
 </script>
 
@@ -57,9 +57,9 @@ var formTokn = "<?= JSession::getFormToken(); ?>";
 </style>
 
 <div class="meedya-gallery">
-	<?php if ($this->manage) echo JHtml::_('meedya.manageMenu', $this->userPerms/*, 1*/); ?>
+	<?php if ($this->manage) echo JHtml::_('meedya.manageMenu', $this->userPerms, 0, $this->itemId); ?>
 	<?php echo JHtml::_('meedya.pageHeader', $this->params, $this->action/*.'XXXX'*/); ?>
-	<form action="index.php?option=com_meedya&task=manage.editImgs&Itemid=<?php echo $this->itemId; ?>" method="post" name="adminForm" id="adminForm">
+	<form action="<?=JRoute::_('index.php?option=com_meedya&view=manage&Itemid='.$this->itemId)?>" method="post" name="adminForm" id="adminForm">
 		<?php
 			if ($this->mode == 'G') {
 				echo '<a href="'.$this->linkUrl.'&mode=L"><span class="icon-list-2 action-icon inaicon" title="List View"> </span></a>';

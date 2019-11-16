@@ -9,12 +9,14 @@ defined('_JEXEC') or die;
 class MeedyaController extends JControllerLegacy
 {
 	protected $uid = 0;
+	protected $mnuItm;
 
 	public function __construct ($config = array())
 	{
 		if (RJC_DBUG) { MeedyaHelper::log('MeedyaController'); }
 		parent::__construct($config);
 		$this->uid = JFactory::getUser()->get('id');
+		$this->mnuItm = $this->input->getInt('Itemid', 0);
 	}
 
 	public function display ($cachable = false, $urlparams = false)
@@ -26,6 +28,9 @@ class MeedyaController extends JControllerLegacy
 		if (!file_exists(MeedyaHelper::userDataPath())) {
 			//set to a view that has no model
 			$this->input->set('view', 'startup');
+		} else {
+			$view = $this->getView('meedya','html');
+			$view->itemId = $this->mnuItm;
 		}
 		return parent::display($cachable, $urlparams);
 	}
@@ -42,7 +47,7 @@ class MeedyaController extends JControllerLegacy
 		file_put_contents($udp.'/img/index.html', $htm);
 		file_put_contents($udp.'/thm/index.html', $htm);
 		file_put_contents($udp.'/med/index.html', $htm);
-		$this->setRedirect(JRoute::_('index.php?option=com_meedya', false));
+		$this->setRedirect(JRoute::_('index.php?option=com_meedya&Itemid='.$this->mnuItm, false));
 	}
 
 }

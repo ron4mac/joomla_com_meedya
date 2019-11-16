@@ -13,12 +13,11 @@ MeedyaHelper::addStyle('gallery');
 MeedyaHelper::addStyle('manage');
 JHtml::_('jquery.framework');
 //JHtml::_('jquery.framework', false);
-JHtml::_('bootstrap.modal');
+//JHtml::_('bootstrap.modal');
 MeedyaHelper::addScript('manage');
 $jdoc = JFactory::getDocument();
-$jdoc->addScriptDeclaration('var baseURL = "'.JUri::base().'";
-//var aBaseURL = "'.JUri::base().'index.php?option=com_meedya&format=raw&mID='.urlencode($this->meedyaID).'&task=";
-var myBaseURL = "'.JRoute::_('index.php?option=com_meedya', false).'";
+$jdoc->addScriptDeclaration('
+var myBaseURL = "'.JRoute::_('index.php?option=com_meedya&Itemid='.$this->itemId, false).'";
 var formTokn = "'.JSession::getFormToken().'";
 ');
 
@@ -97,11 +96,11 @@ $hasImport = JFolder::exists($this->gallpath.'/import');
 #myBar { width:0; background-color:#4CAF50; font-size:larger; padding:3px 0; }
 </style>
 <div class="meedya-gallery">
-	<?php if ($this->manage) echo JHtml::_('meedya.manageMenu', $this->userPerms/*, 1*/); ?>
+	<?php if ($this->manage) echo JHtml::_('meedya.manageMenu', $this->userPerms, 0, $this->itemId); ?>
 	<?php echo JHtml::_('meedya.pageHeader', $this->params, $this->action/*.'XXXX'*/); ?>
 	<div id="toolbar">
 		<a href="#" onclick="goUpload(event)" title="Upload Files">Upload</a>
-		<a href="<?php echo JRoute::_('index.php?option=com_meedya&task=manage.doUpload&aid=0', false); ?>">Upload Items</a>
+		<a href="<?php echo JRoute::_('index.php?option=com_meedya&task=manage.doUpload&aid=0&Itemid='.$this->itemId, false); ?>">Upload Items</a>
 		<a href="#newalbdlg" data-toggle="modal" onclick="setDlgParAlb();">New Album</a>
 	<?php if ($hasImport): ?>
 		<a href="#importdlg" data-toggle="modal">Import Items</a>
@@ -158,13 +157,13 @@ endif;
 	function deleteAlbum (elm) {
 		//alert(jQuery(elm).parent().attr('data-aid'));
 		var wipe = document.getElementById('trashall').checked ? '&wipe=1' : '';
-		window.location = '<?=JRoute::_('index.php?option=com_meedya&task=manage.delAlbum&aid=', false)?>' + alb2delete + wipe;
+		window.location = '<?=JRoute::_('index.php?option=com_meedya&task=manage.delAlbum&Itemid='.$this->itemId.'&aid=', false)?>' + alb2delete + wipe;
 	}
 	function albEdtAction (e, elm) {
 		_pd(e);
 		var alb2edit = jQuery(elm).parent().attr('data-aid');
 		//window.location = '<?=JRoute::_('index.php?option=com_meedya&view=manage&layout=albedit&aid=', false)?>' + alb2edit;
-		window.location = '<?=JRoute::_('index.php?option=com_meedya&task=manage.editAlbum&aid=', false)?>' + alb2edit;
+		window.location = '<?=JRoute::_('index.php?option=com_meedya&task=manage.editAlbum&Itemid='.$this->itemId.'&aid=', false)?>' + alb2edit;
 	}
 	function albDelAction (e, elm) {
 		_pd(e);
@@ -174,7 +173,7 @@ endif;
 	}
 	function goUpload (e) {
 		_pd(e);
-		window.location = '<?=JRoute::_('index.php?option=com_meedya&task=manage.doUpload&aid=', false)?>' + AArrange.selalb();
+		window.location = '<?=JRoute::_('index.php?option=com_meedya&task=manage.doUpload&Itemid='.$this->itemId.'&aid=', false)?>' + AArrange.selalb();
 	}
 <?php if ($hasImport): ?>
 	function importItems (dlg) {

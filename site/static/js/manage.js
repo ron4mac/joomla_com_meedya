@@ -181,7 +181,6 @@ var AArrange = (function ($) {
 	//	var prms = {'aid': aid, 'paid': paid};
 		var prms = {'format':'raw','task':'manage.adjustAlbPaid','aid': aid, 'paid': paid};
 		prms[Joomla.getOptions('csrf.token', '')] = 1;
-	//	$.post(aBaseURL+'manage.adjustAlbPaid', prms, function (d) {
 		$.post(myBaseURL, prms, function (d) {
 			if (d) {
 				console.log(d);

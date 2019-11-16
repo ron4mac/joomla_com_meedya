@@ -46,7 +46,7 @@ class MeedyaViewAlbum extends MeedyaView
 			foreach ($apw as $ap) {
 				foreach ($ap as $k => $v) {
 					if ($k != $this->aid) {
-						$pw->addItem($v, JRoute::_('index.php?option=com_meedya&view=album&aid='.$k, false));
+						$pw->addItem($v, JRoute::_('index.php?option=com_meedya&view=album&aid='.$k.'&Itemid='.$this->itemId, false));
 					}
 				}
 			}

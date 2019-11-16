@@ -18,6 +18,9 @@ class MeedyaViewMeedya extends MeedyaView
 	//	$this->manage = JFactory::getUser()->authorise('core.edit', 'com_meedya');
 //		$this->user = JFactory::getUser();
 //		$this->userPerms = MeedyaHelper::getUserPermissions();
+
+//		echo'<xmp>';var_dump($this->get('State'), $this->itemId);echo'</xmp>';
+
 		$this->state = $this->get('State');
 		$this->items = $this->get('Items');
 		$app = JFactory::getApplication();

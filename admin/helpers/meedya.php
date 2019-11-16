@@ -6,6 +6,8 @@
  */
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Factory;
+
 abstract class MeedyaAdminHelper
 {
 	protected static $instanceType = null;
@@ -43,8 +45,7 @@ abstract class MeedyaAdminHelper
 
 	public static function getStorageBase ()
 	{
-		$dispatcher = JDispatcher::getInstance();
-		$results = $dispatcher->trigger('onRjuserDatapath', null);
+		$result = Factory::getApplication()->triggerEvent('onRjuserDatapath');
 		$sdp = isset($results[0]) ? trim($results[0]) : '';
 		return $sdp ? $sdp : 'userstor';
 	}
@@ -75,8 +76,7 @@ abstract class MeedyaAdminHelper
 				break;
 		}
 
-		$dispatcher = JDispatcher::getInstance();
-		$results = $dispatcher->trigger('onRjuserDatapath', null);
+		$result = Factory::getApplication()->triggerEvent('onRjuserDatapath');
 		$sdp = isset($results[0]) ? trim($results[0]) : '';
 		if (!$sdp) $sdp = 'userstor';
 
@@ -154,7 +154,8 @@ abstract class MeedyaAdminHelper
 		$result = new JObject;
 		$assetName = 'com_meedya';
 
-		$actions = JAccess::getActions($assetName);
+		$actions = JAccess::getActionsFromFile(JPATH_ADMINISTRATOR . '/components/com_meedya/access.xml');
+//		$actions = JAccess::getActions($assetName);
 
 		foreach ($actions as $action) {
 			$result->set($action->name,	$user->authorise($action->name, $assetName));
