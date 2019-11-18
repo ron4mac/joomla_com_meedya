@@ -27,6 +27,12 @@ class MeedyaModelAlbum extends MeedyaModelMeedya
 		return $this->_album->title;
 	}
 
+	public function getDesc ()
+	{
+		$this->getAlbum();
+		return $this->_album->desc;
+	}
+
 	public function getItems ()
 	{
 		$this->getAlbum();

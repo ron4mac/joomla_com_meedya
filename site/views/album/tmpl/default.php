@@ -81,6 +81,10 @@ $jdoc->addScriptDeclaration($ttscript);
 .tooltip.bottom .tooltip-arrow {
 	border-bottom-color: #EA9;
 }
+#albdesc {
+	font-size: large;
+	padding: 4px;
+}
 #area {
 	display: flex;
 	flex-wrap: wrap;
@@ -144,8 +148,9 @@ $jdoc->addScriptDeclaration($ttscript);
 		</a>
 	<?php endif; ?>
 	</div>
+	<div id="albdesc"><?php echo $this->desc; ?></div>
 	<div id="area">
-	<?php if($this->state->get('list.start'.$this->state->get('album.id')) == 0): ?>
+	<?php if ($this->state->get('list.start'.$this->state->get('album.id')) == 0): ?>
 	<?php foreach ($this->albums as $alb): ?>
 		<div class="anitem falbum">
 			<a href="<?=JRoute::_('index.php?option=com_meedya&view=album&aid='.$alb->aid, false) ?>" class="itm-thumb">

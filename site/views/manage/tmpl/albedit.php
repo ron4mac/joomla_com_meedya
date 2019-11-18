@@ -9,12 +9,14 @@ defined('_JEXEC') or die;
 MeedyaHelper::addStyle('basicLightbox', 'vendor/blb/');
 MeedyaHelper::addStyle('gallery');
 MeedyaHelper::addStyle('manage');
+MeedyaHelper::addStyle('pell.min', 'vendor/pell/');
 JHtml::_('jquery.framework');
 //JHtml::_('jquery.framework', false);
 //JHtml::_('jquery.ui', array('core', 'sortable'));
 MeedyaHelper::addScript('manage');
 MeedyaHelper::addScript('basicLightbox', 'vendor/blb/');
 MeedyaHelper::addScript('bootbox');
+MeedyaHelper::addScript('pell.min', 'vendor/pell/');
 
 $jdoc = JFactory::getDocument();
 $jdoc->addScriptDeclaration('var baseURL = "'.JUri::base().'";
@@ -45,7 +47,8 @@ JText::script('COM_MEEDYA_VRB_REMOVE');
 			Title:<br />
 			<input type="text" name="albttl" value="<?=$this->album['title']?>" /><br />
 			Description:<br />
-			<textarea name="albdsc"><?=$this->album['desc']?></textarea>
+			<textarea name="albdsc" id="albdsc" style="display:none"><?=$this->album['desc']?></textarea>
+			<div id="peditor" class="pell"></div>
 			<input type="hidden" name="albthmid" id="albthmid" value=<?=$this->album['thumb']?> />
 		</div>
 		<div class="albthm" id="albthm">
@@ -150,4 +153,15 @@ albfrm.addEventListener('dragstart', function(e){ e.dataTransfer.setData('albthm
 albfrm.addEventListener('dragover', function(e){ if (e.dataTransfer.types.indexOf('albthm')>0) { _pd(e);e.dataTransfer.dropEffect = 'move'; } }, false);
 albfrm.addEventListener('dragenter', function(e){ if (e.dataTransfer.types.indexOf('albthm')>0) { _pd(e);e.dataTransfer.dropEffect = 'move'; } }, false);
 albfrm.addEventListener('drop', function(e){ _pd(e); removeAlbThm(); }, false);
+
+var editor = window.pell.init({
+		element: document.getElementById('peditor'),
+		defaultParagraphSeparator: 'p',
+		onChange: function (html) {
+			document.getElementById('albdsc').textContent = html;
+		},
+		actions: ['bold','italic','underline','heading2','quote','olist','ulist','link']
+	});
+editor.content.innerHTML = document.getElementById('albdsc').textContent;
+
 </script>

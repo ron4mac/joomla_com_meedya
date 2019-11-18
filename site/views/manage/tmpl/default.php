@@ -30,9 +30,9 @@ function buildTree(array $albums, &$html, $paid = 0) {
 			$html[] = '<span class="icon-delete" title="Delete Album"> </span>';
 			$html[] = '<span class="icon-edit" title="Edit Album"> </span>';
 			$html[] = '<big><b>'.$alb['title'].'</b></big> ( '.$alb['items'].' items )';
-			if ($alb['desc']) {
-				$html[] = '<br />'.$alb['desc'];
-			}
+		//	if ($alb['desc']) {
+		//		$html[] = '<br />'.$alb['desc'];
+		//	}
 			$children = buildTree($albums, $html, $alb['aid']);
 			if ($children) {
 				$alb['children'] = $children;

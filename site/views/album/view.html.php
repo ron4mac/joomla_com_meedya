@@ -25,6 +25,7 @@ class MeedyaViewAlbum extends MeedyaView
 		$this->aid = $this->state->get('album.id');
 		$this->items = $this->get('Items');
 		$this->title = $this->get('Title');
+		$this->desc = $this->get('Desc');
 		$this->albums = $this->get('Albums');
 		$m = $this->getModel();
 
