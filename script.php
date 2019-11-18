@@ -25,7 +25,7 @@ class com_meedyaInstallerScript
 
 	function preflight ($type, $parent)
 	{
-		$this->release = $parent->get('manifest')->version;
+		$this->release = $parent->getManifest->version;
 	}
 
 	function postflight ($type, $parent)

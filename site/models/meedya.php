@@ -161,11 +161,39 @@ class MeedyaModelMeedya extends JModelList
 		return $r;
 	}
 
+//	protected function populateState ($ordering = null, $direction = null)
+//	{
+//		parent::populateState($ordering, $direction);
+//		$this->setState('list.limit', 0);
+//	}
+
+
 	protected function populateState ($ordering = null, $direction = null)
 	{
-		parent::populateState($ordering, $direction);
-		$this->setState('list.limit', 0);
+		// Initialize variables
+		$app = JFactory::getApplication();
+		$params = JComponentHelper::getParams('com_meedya');
+		$input = $app->input;
+
+		// menu params
+		$mparams = $app->getParams();
+		$this->setState('maxUpload', (int)$mparams->get('maxUpload', 0));
+
+		// album ID
+		$pid = $input->get('pid', 0, 'INT');
+		$this->state->set('parent.id', $pid);
+
+		// List state information
+		$limit = $app->getUserStateFromRequest('global.list.limit', 'limit', $app->getCfg('list_limit'));
+		$this->setState('list.limit'.$pid, $limit);
+
+		$limitstart = $input->getInt('limitstart', 0);
+		$this->setState('list.start'.$pid, $limitstart);
+
+		// Load the parameters.
+		$this->setState('cparams', $params);
 	}
+
 
 	private function getAlbum ()
 	{

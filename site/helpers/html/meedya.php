@@ -32,23 +32,24 @@ abstract class JHtmlMeedya
 		return $html;
 	}
 
-	public static function manageMenu ($perms, $aid=0)
+	public static function manageMenu ($perms, $aid=0, $Itemid=0)
 	{
 		if (!$perms) return '';
+		$itmid = $Itemid ? ('&Itemid='.$Itemid) : '';
 		$html = '<div class="btn-group mgmenu">
 	<a class="btn btn-small dropdown-toggle" data-toggle="dropdown" href="#">
 		<i class="icon-pencil"></i>'.JText::_('COM_MEEDYA_MENU_MANAGE').' <span class="caret"></span>
 	</a>
 	<ul class="dropdown-menu">';
 		if ($perms->canAdmin || $perms->canUpload) {
-			$html .= '<li><a href="' . JRoute::_('index.php?option=com_meedya&task=manage.doUpload'.($aid?('&aid='.$aid):''), false) . '">
+			$html .= '<li><a href="' . JRoute::_('index.php?option=com_meedya&task=manage.doUpload'.($aid?('&aid='.$aid):'') . $itmid, false) . '">
 				<i class="icon-upload"></i>'.JText::_('COM_MEEDYA_MENU_UPLOAD').'</a></li>';
 		}
 		if ($perms->canAdmin) {
 			$html .= '
-		<li><a href="' . JRoute::_('index.php?option=com_meedya&view=manage', false) . '"><i class="icon-grid"></i>'.JText::_('COM_MEEDYA_MENU_EDALBS').'</a></li>
-		<li><a href="' . JRoute::_('index.php?option=com_meedya&task=manage.editImgs', false) . '"><i class="icon-images"></i>'.JText::_('COM_MEEDYA_MENU_EDIMGS').'</a></li>
-		<li><a href="' . JRoute::_('index.php?option=com_meedya&task=manage.doConfig', false) . '"><i class="icon-options"></i>'.JText::_('COM_MEEDYA_MENU_CONFIG').'</a></li>';
+		<li><a href="' . JRoute::_('index.php?option=com_meedya&view=manage'.$itmid, false) . '"><i class="icon-grid"></i>'.JText::_('COM_MEEDYA_MENU_EDALBS').'</a></li>
+		<li><a href="' . JRoute::_('index.php?option=com_meedya&task=manage.editImgs'.$itmid, false) . '"><i class="icon-images"></i>'.JText::_('COM_MEEDYA_MENU_EDIMGS').'</a></li>
+		<li><a href="' . JRoute::_('index.php?option=com_meedya&task=manage.doConfig'.$itmid, false) . '"><i class="icon-options"></i>'.JText::_('COM_MEEDYA_MENU_CONFIG').'</a></li>';
 		}
 		$html .= '</ul>
 </div>
@@ -83,32 +84,22 @@ abstract class JHtmlMeedya
 		foreach ($whch as $but) {
 			switch ($but) {
 			case 'sela':
-				$html[] = '<button class="btn btn-mini" title="select all images" onclick="selAllImg(event, true)">'
-					.'Select All</button>';
+				$html[] = '<button class="btn btn-mini" onclick="selAllImg(event, true)">'.JText::_('COM_MEEDYA_MANAGE_SELECT_ALL').'</button>';
 				break;
 			case 'seln':
-				$html[] = '<button class="btn btn-mini" title="un-select all images" onclick="selAllImg(event, false)">'
-					.'Select None</button>';
+				$html[] = '<button class="btn btn-mini" onclick="selAllImg(event, false)">'.JText::_('COM_MEEDYA_MANAGE_SELECT_NONE').'</button>';
 				break;
 			case 'edts':
-				$html[] = '<button class="btn btn-mini" title="edit selected images" onclick="editSelected(event)">'
-					.'<i class="icon-pencil"></i> Edit items'
-					.'</button>';
+				$html[] = '<button class="btn btn-mini" onclick="editSelected(event)">'.'<i class="icon-pencil"></i> '.JText::_('COM_MEEDYA_MANAGE_EDIT_ITEMS').'</button>';
 				break;
 			case 'adds':
-				$html[] = '<button class="btn btn-mini" title="add selected items to an album" onclick="return addSelected(event);">'
-					.'<i class="icon-plus-circle"></i> Add items to an album'
-					.'</button>';
+				$html[] = '<button class="btn btn-mini" onclick="return addSelected(event);">'.'<i class="icon-plus-circle"></i> '.JText::_('COM_MEEDYA_MANAGE_ADD2ALBUM').'</button>';
 				break;
 			case 'rems':
-				$html[] = '<button class="btn btn-mini" title="remove selected from album" onclick="removeSelected(event)">'
-					.'<i class="icon-minus-circle"></i> Remove images from album'
-					.'</button>';
+				$html[] = '<button class="btn btn-mini" onclick="removeSelected(event)">'.'<i class="icon-minus-circle"></i> '.JText::_('COM_MEEDYA_MANAGE_REMOVE').'</button>';
 				break;
 			case 'dels':
-				$html[] = '<button class="btn btn-mini" title="totally delete selected items" onclick="deleteSelected(event)">'
-					.'<i class="icon-minus-circle"></i> Totally delete items'
-					.'</button>';
+				$html[] = '<button class="btn btn-mini" onclick="deleteSelected(event)">'.'<i class="icon-minus-circle"></i> '.JText::_('COM_MEEDYA_MANAGE_TOTAL_DEL').'</button>';
 				break;
 			default:
 				$html[] = 'NOACTION';

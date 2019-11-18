@@ -26,7 +26,7 @@ js_vars.user_id = '.JFactory::getUser()->id.';
 js_vars.site_url = "'.JUri::base().'index.php?option=com_meedya";
 js_vars.H5uPath = "'.JUri::base(true).'/components/com_meedya/static/";
 //js_vars.upLink = "'.JUri::base().'index.php?option=com_meedya&format=raw";
-js_vars.upLink = "'.JRoute::_('index.php?option=com_meedya&format=raw', false).'";
+js_vars.upLink = "'.JRoute::_('index.php?option=com_meedya&format=raw&Itemid='.$this->itemId, false).'";
 js_vars.fup_payload = {task: "manage.upfile", galid: "'.$this->galid.'"};
 js_vars.maxfilesize = '.($this->maxUploadFS/1048576).';';
 
@@ -92,7 +92,7 @@ if ($quota) {
 </style>
 <?php endif; ?>
 <div class="meedya-gallery">
-<?php /*if ($this->manage)*/ echo JHtml::_('meedya.manageMenu', $this->userPerms/*, 1*/); ?>
+<?php echo JHtml::_('meedya.manageMenu', $this->userPerms, 0, $this->itemId); ?>
 <?php echo JHtml::_('meedya.pageHeader', $this->params, $this->action); ?>
 <?php if (false && $quota): ?>
 <h3>Storage Quota</h3>
@@ -136,7 +136,7 @@ if ($quota) {
 
 <div class="row-fluid">
 	<div id="dzupui" class="span12"<?= ($this->aid ? '' : ' style="display:none"') ?>>
-		<form action="<?php echo JRoute::_('index.php?option=com_meedya', false); ?>" class="dropzone" id="fileuploader" enctype="multipart/form-data">
+		<form action="<?php echo JRoute::_('index.php?option=com_meedya&Itemid='.$this->itemId, false); ?>" class="dropzone" id="fileuploader" enctype="multipart/form-data">
 			<p class="dz-message" style="font-size:18px">Drop files here to upload<br />(or click to select)</p>
 			<input type="hidden" name="task" value="manage.upfile">
 			<input type="hidden" name="galid" value="<?php echo $this->galid; ?>">

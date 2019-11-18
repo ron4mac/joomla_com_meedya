@@ -28,6 +28,9 @@ class MeedyaViewManage extends MeedyaView
 //		$this->user = JFactory::getUser();
 //		$this->items = $this->get('Items');
 
+		$this->mparams = !empty($this->itemId) ? JFactory::getApplication()->getMenu()->getItem($this->itemId)->getParams() : new JRegistry();
+	//	echo'<xmp>';var_dump($this->mparams);echo'</xmp>';
+
 		if (RJC_DBUG) { MeedyaHelper::log('ViewManage state', $this->state); }
 
 		if ($this->state && $this->state->get('album.id')/* ?: 0*/) {
@@ -103,7 +106,7 @@ class MeedyaViewManage extends MeedyaView
 // @+@+@+@+@+@+@+@+@ get media types from config
 				$this->acptmime = 'accept="image/*,video/*" ';
 			//	$this->albums = $this->get('AlbumsList');
-				$this->maxUploadFS = MeedyaHelper::maxUpload($this->params->get('maxUpload'));
+				$this->maxUploadFS = MeedyaHelper::maxUpload($this->mparams->get('maxUpload'));
 				$this->maxupld = MeedyaHelper::formatBytes($this->maxUploadFS);
 			//	$this->dbTime = $this->get('DbTime');
 				$this->items = array();		// keep parent view from loading items

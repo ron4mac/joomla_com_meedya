@@ -38,6 +38,10 @@ class MeedyaView extends JViewLegacy
 		$this->meedyaID = MeedyaHelper::getInstanceID();
 		$this->gallpath = MeedyaHelper::userDataPath();
 //		$this->pagination = $this->get('Pagination');
+
+		if (empty($this->itemId)) {
+			$this->itemId = JFactory::getApplication()->input->getInt('Itemid', 0);
+		}
 	}
 
 	public function display ($tpl = null)

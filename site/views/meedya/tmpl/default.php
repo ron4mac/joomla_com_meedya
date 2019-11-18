@@ -12,14 +12,14 @@ MeedyaHelper::addStyle('gallery');
 ?>
 
 <div class="meedya-gallery">
-<?php if ($this->userPerms->canAdmin || $this->userPerms->canUpload) echo JHtml::_('meedya.manageMenu', $this->userPerms); ?>
+<?php if ($this->userPerms->canAdmin || $this->userPerms->canUpload) echo JHtml::_('meedya.manageMenu', $this->userPerms, 0, $this->itemId); ?>
 <?php echo JHtml::_('meedya.pageHeader', $this->params); ?>
 <div class="albthumbs">
 <?php
 	foreach ($this->items as $item) {
 		$thum = $this->getAlbumThumb($item);
 ?>
-<a href="<?=JRoute::_('index.php?option=com_meedya&view=album&aid='.$item->aid, false) ?>" class="alb-thumb">
+<a href="<?=JRoute::_('index.php?option=com_meedya&view=album&aid='.$item->aid.'&Itemid='.$this->itemId, false) ?>" class="alb-thumb">
 	<div><img src="<?=$thum?>" width="240px" height="240px" /></div>
 	<div class="alb-thm-ttl"><?= $item->title ?></div>
 </a>

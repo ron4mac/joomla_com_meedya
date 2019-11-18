@@ -11,14 +11,13 @@ MeedyaHelper::addStyle('manage');
 JHtml::_('jquery.framework', false);
 MeedyaHelper::addScript('manage');
 $jdoc = JFactory::getDocument();
-$jdoc->addScriptDeclaration('var baseURL = "'.JUri::base().'";
-//var aBaseURL = "'.JUri::base().'index.php?option=com_meedya&format=raw&mID='.urlencode($this->meedyaID).'&task=";
+$jdoc->addScriptDeclaration('
 var formTokn = "'.JSession::getFormToken().'";
 ');
 
 echo '<div class="meedya-config">';
 
-if ($this->manage) echo JHtml::_('meedya.manageMenu', $this->userPerms/*, 1*/);
+if ($this->manage) echo JHtml::_('meedya.manageMenu', $this->userPerms, 0, $this->itemId);
 echo JHtml::_('meedya.pageHeader', $this->params, $this->action/*.'XXXX'*/);
 
 echo JHtml::_('bootstrap.startTabSet', 'mdya_tabs', array('active'=>'cfg-ah'))
