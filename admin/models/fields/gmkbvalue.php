@@ -1,14 +1,15 @@
 <?php
 /**
- * @package    com_usernotes
+ * @package    com_meedya
  *
- * @copyright  Copyright (C) 2016 RJCreations - All rights reserved.
+ * @copyright  Copyright (C) 2019 RJCreations - All rights reserved.
  * @license    GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('JPATH_BASE') or die;
 
 class JFormFieldGmkbValue extends JFormField
 {
+	const COMP = 'com_meedya';
 	protected $type = 'GmkbValue';
 
 	protected function getInput()
@@ -17,7 +18,7 @@ class JFormFieldGmkbValue extends JFormField
 		$allowClear		= ((string) $this->element['clear'] != 'false') ? true : false;
 
 		// Load language
-		JFactory::getLanguage()->load('com_usernotes', JPATH_ADMINISTRATOR);
+		JFactory::getLanguage()->load(self::COMP, JPATH_ADMINISTRATOR);
 
 		// create the component default display
 		list($cdv,$cdm) = $this->num2gmkv($this->element['compdef']);
@@ -44,7 +45,7 @@ class JFormFieldGmkbValue extends JFormField
 		$html[] = '<span class="input-gmkb'.($this->value ? '' : ' hidden').'">';
 		$html[] = '<input type="number" step="1" min="1" class="input-medium" id="' . $this->id . '_name" value="' . $uplsiz .'" onchange="GMKBff.sVal(this.parentNode)" onkeyup="GMKBff.sVal(this.parentNode)" style="width:4em;text-align:right" />';
 		$html[] = '<select id="' . $this->id . '_gmkb" class="gkmb-sel" onchange="GMKBff.sVal(this.parentNode)" style="width:5em">';
-		$html[] = '<option value="1024"'.($uplsizm==0?' selected="selected"':'').'>KB</option>';
+		$html[] = '<option value="1024"'.($uplsizm==0?' selected="selected"':'').'>kB</option>';
 		$html[] = '<option value="1048576"'.($uplsizm==1?' selected="selected"':'').'>MB</option>';
 		$html[] = '<option value="1073741824"'.($uplsizm==2?' selected="selected"':'').'>GB</option>';
 		$html[] = '</select>';
@@ -116,7 +117,7 @@ var GMKBff = (function($) {
 	{
 		static $opts = null;
 		if (!$opts) {
-			$opts = JComponentHelper::getParams('com_meedya');
+			$opts = JComponentHelper::getParams(self::COMP);
 		}
 		$val = (int)$opts->get($opt);
 		return $val ?: $def;

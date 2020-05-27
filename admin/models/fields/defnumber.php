@@ -1,8 +1,8 @@
 <?php
 /**
- * @package    com_usernotes
+ * @package    com_meedya
  *
- * @copyright  Copyright (C) 2016 RJCreations - All rights reserved.
+ * @copyright  Copyright (C) 2019 RJCreations - All rights reserved.
  * @license    GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('JPATH_BASE') or die;
@@ -11,6 +11,7 @@ JFormHelper::loadFieldClass('number');
 
 class JFormFieldDefNumber extends JFormFieldNumber
 {
+	const COMP = 'com_meedya';
 	protected $type = 'DefNumber';
 
 	protected function getInput()
@@ -72,7 +73,7 @@ var DEFNff = (function($) {
 	{
 		static $opts = null;
 		if (!$opts) {
-			$opts = JComponentHelper::getParams('com_meedya');
+			$opts = JComponentHelper::getParams(self::COMP);
 		}
 		$val = (int)$opts->get($opt);
 		return $val ?: $def;
