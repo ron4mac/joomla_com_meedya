@@ -6,6 +6,9 @@
  */
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Router\Route;
+
 include_once JPATH_COMPONENT.'/views/meedyaview.php';
 
 class MeedyaViewAlbum extends MeedyaView
@@ -20,7 +23,7 @@ class MeedyaViewAlbum extends MeedyaView
 
 	function display ($tpl = null)
 	{
-		$app = JFactory::getApplication();
+		$app = Factory::getApplication();
 		$this->state = $this->get('State');	//echo'<xmp>';var_dump($this->state);echo'</xmp>';	//echo get_class($this->state);
 		$this->aid = $this->state->get('album.id');
 		$this->items = $this->get('Items');
@@ -47,7 +50,7 @@ class MeedyaViewAlbum extends MeedyaView
 			foreach ($apw as $ap) {
 				foreach ($ap as $k => $v) {
 					if ($k != $this->aid) {
-						$pw->addItem($v, JRoute::_('index.php?option=com_meedya&view=album&aid='.$k.'&Itemid='.$this->itemId, false));
+						$pw->addItem($v, Route::_('index.php?option=com_meedya&view=album&aid='.$k.'&Itemid='.$this->itemId, false));
 					}
 				}
 			}

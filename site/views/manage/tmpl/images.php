@@ -6,6 +6,8 @@
  */
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Router\Route;
+
 JHtml::_('bootstrap.framework');
 MeedyaHelper::addStyle('basicLightbox', 'vendor/blb/');
 MeedyaHelper::addStyle('gallery');
@@ -26,9 +28,9 @@ function dateF ($dt)
 ?>
 <script>
 function editImg (iid) {
-	window.location = "<?=JRoute::_('index.php?option=com_meedya&task=manage.imgEdit&Itemid='.$this->itemId)?>&items="+iid;
+	window.location = "<?=Route::_('index.php?option=com_meedya&task=manage.imgEdit&Itemid='.$this->itemId)?>&items="+iid;
 }
-var myBaseURL = "<?= JRoute::_('index.php?option=com_meedya&Itemid='.$this->itemId, false); ?>";
+var myBaseURL = "<?= Route::_('index.php?option=com_meedya&Itemid='.$this->itemId, false); ?>";
 var formTokn = "<?= JSession::getFormToken(); ?>";
 </script>
 
@@ -59,7 +61,7 @@ var formTokn = "<?= JSession::getFormToken(); ?>";
 <div class="meedya-gallery">
 	<?php if ($this->manage) echo JHtml::_('meedya.manageMenu', $this->userPerms, 0, $this->itemId); ?>
 	<?php echo JHtml::_('meedya.pageHeader', $this->params, $this->action/*.'XXXX'*/); ?>
-	<form action="<?=JRoute::_('index.php?option=com_meedya&view=manage&Itemid='.$this->itemId)?>" method="post" name="adminForm" id="adminForm">
+	<form action="<?=Route::_('index.php?option=com_meedya&view=manage&Itemid='.$this->itemId)?>" method="post" name="adminForm" id="adminForm">
 		<?php
 			if ($this->mode == 'G') {
 				echo '<a href="'.$this->linkUrl.'&mode=L"><span class="icon-list-2 action-icon inaicon" title="List View"> </span></a>';

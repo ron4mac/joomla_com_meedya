@@ -6,6 +6,9 @@
  */
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Router\Route;
+
 include_once JPATH_COMPONENT.'/views/meedyaview.php';
 
 class MeedyaViewMeedya extends MeedyaView
@@ -15,17 +18,17 @@ class MeedyaViewMeedya extends MeedyaView
 
 	function display ($tpl=null)
 	{
-	//	$this->manage = JFactory::getUser()->authorise('core.edit', 'com_meedya');
-//		$this->user = JFactory::getUser();
+	//	$this->manage = Factory::getUser()->authorise('core.edit', 'com_meedya');
+//		$this->user = Factory::getUser();
 //		$this->userPerms = MeedyaHelper::getUserPermissions();
 
 //		echo'<xmp>';var_dump($this->get('State'), $this->itemId);echo'</xmp>';
 
 		$this->state = $this->get('State');
 		$this->items = $this->get('Items');
-		$app = JFactory::getApplication();
+		$app = Factory::getApplication();
 		$pathway = $app->getPathway();
-		$pathway->addItem('My Added Breadcrumb Link', JRoute::_(''));
+		$pathway->addItem('My Added Breadcrumb Link', Route::_(''));
 		parent::display($tpl);
 	}
 

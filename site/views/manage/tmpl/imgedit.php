@@ -13,10 +13,11 @@ JHtml::stylesheet('components/com_meedya/static/css/manage.css');
 <script src="components/com_meedya/static/vendor/blb/basicLightbox.min.js"></script>
 <script>
 var blb_path = "<?=JUri::root(true).'/'.$this->gallpath?>/med/";
-function lboxPimg (evt, elm) {
+function lboxPimg (evt, elm, mTyp) {
 	const pimg = elm.parentElement.previousElementSibling;	console.log(pimg);
 	const src = blb_path + pimg.getAttribute('data-img');	console.log(src);
-	const html = '<img src="' + src + '">';
+	const html = mTyp=="v" ? ('<video controls><source src="'+src+'"></video>') : ('<img src="'+src+'">');
+//	const html = '<img src="' + src + '">';
 	basicLightbox.create(html).show();
 }
 </script>
@@ -29,14 +30,19 @@ function lboxPimg (evt, elm) {
 <?php
 	$namx = $iid->id;
 	$idx = '_'.$namx;
-	$tPath = $this->gallpath.'/thm/'.$iid->file;
+	$mTyp = substr($iid->mtype, 0, 1);
+	if ($mTyp == 'v') {
+		$tPath = 'components/com_meedya/static/img/video.png';
+	} else {
+		$tPath = $this->gallpath.'/thm/'.$iid->file;
+	}
 	$iFile = $iid->file;
 ?>
 <div class="ied-img">
 	<div class="eitem">
-		<img src="<?=$tPath?>" data-img="<?=$iFile?>" />
+		<img src="<?=$tPath?>" data-img="<?=$iFile?>" class="mitem" />
 		<div class="item-overlay top">
-			<i class="icon-expand" title="expand image" onclick="lboxPimg(event, this)"></i>
+			<i class="icon-expand" title="expand image" onclick="lboxPimg(event,this,'<?=$mTyp?>')"></i>
 			<i class="icon-info-2 pull-left" title="image info"></i>
 			<i class="icon-upload pull-right" title="replace image" onclick="editImg(event, this)"></i>
 		</div>

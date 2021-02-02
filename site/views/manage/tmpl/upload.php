@@ -6,6 +6,8 @@
  */
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Router\Route;
+
 JHtml::addIncludePath(JPATH_COMPONENT.'/helpers');
 
 $script = 'var kkkkk = "YYYYY";
@@ -26,25 +28,24 @@ js_vars.user_id = '.JFactory::getUser()->id.';
 js_vars.site_url = "'.JUri::base().'index.php?option=com_meedya";
 js_vars.H5uPath = "'.JUri::base(true).'/components/com_meedya/static/";
 //js_vars.upLink = "'.JUri::base().'index.php?option=com_meedya&format=raw";
-js_vars.upLink = "'.JRoute::_('index.php?option=com_meedya&format=raw&Itemid='.$this->itemId, false).'";
+js_vars.upLink = "'.Route::_('index.php?option=com_meedya&format=raw&Itemid='.$this->itemId, false).'";
 js_vars.fup_payload = {task: "manage.upfile", galid: "'.$this->galid.'"};
 js_vars.maxfilesize = '.($this->maxUploadFS/1048576).';';
 
 //JHtml::_('bootstrap.loadCss', true);
 JHtml::_('jquery.framework');
 
-$jdoc = JFactory::getDocument();
-$jdoc->addScriptDeclaration($script);
-//$jdoc->addCustomTag('<script src="'.JUri::base(true).'/'.MeedyaHelper::scriptVersion('upload').'" type="text/javascript"></script>');
+$this->jDoc->addScriptDeclaration($script);
+//$this->jDoc->addCustomTag('<script src="'.JUri::base(true).'/'.MeedyaHelper::scriptVersion('upload').'" type="text/javascript"></script>');
 
-$jdoc->addStyleSheet('components/com_meedya/static/css/gallery.css');
+$this->jDoc->addStyleSheet('components/com_meedya/static/css/gallery.css');
 
-$jdoc->addStyleSheet('//cdnjs.cloudflare.com/ajax/libs/dropzone/5.5.0/min/dropzone.min.css');
-$jdoc->addScript('//cdnjs.cloudflare.com/ajax/libs/dropzone/5.5.0/min/dropzone.min.js');
-$jdoc->addScript('//cdnjs.cloudflare.com/ajax/libs/exif-js/2.3.0/exif.min.js');
-$jdoc->addScript('components/com_meedya/static/js/fileup.js');
+$this->jDoc->addStyleSheet('//cdnjs.cloudflare.com/ajax/libs/dropzone/5.5.0/min/dropzone.min.css');
+$this->jDoc->addScript('//cdnjs.cloudflare.com/ajax/libs/dropzone/5.5.0/min/dropzone.min.js');
+$this->jDoc->addScript('//cdnjs.cloudflare.com/ajax/libs/exif-js/2.3.0/exif.min.js');
+$this->jDoc->addScript('components/com_meedya/static/js/fileup.js');
 
-$jdoc->addStyleSheet('components/com_meedya/static/css/upload.css');
+$this->jDoc->addStyleSheet('components/com_meedya/static/css/upload.css');
 
 JText::script('COM_MEEDYA_Q_STOPPED');
 
@@ -136,7 +137,7 @@ if ($quota) {
 
 <div class="row-fluid">
 	<div id="dzupui" class="span12"<?= ($this->aid ? '' : ' style="display:none"') ?>>
-		<form action="<?php echo JRoute::_('index.php?option=com_meedya&Itemid='.$this->itemId, false); ?>" class="dropzone" id="fileuploader" enctype="multipart/form-data">
+		<form action="<?php echo Route::_('index.php?option=com_meedya&Itemid='.$this->itemId, false); ?>" class="dropzone" id="fileuploader" enctype="multipart/form-data">
 			<p class="dz-message" style="font-size:18px">Drop files here to upload<br />(or click to select)</p>
 			<input type="hidden" name="task" value="manage.upfile">
 			<input type="hidden" name="galid" value="<?php echo $this->galid; ?>">

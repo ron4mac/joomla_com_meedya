@@ -6,6 +6,8 @@
  */
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Router\Route;
+
 MeedyaHelper::addStyle('gallery');
 
 //echo'<xmp>';var_dump($this->params);echo'</xmp>';
@@ -19,8 +21,8 @@ MeedyaHelper::addStyle('gallery');
 	foreach ($this->items as $item) {
 		$thum = $this->getAlbumThumb($item);
 ?>
-<a href="<?=JRoute::_('index.php?option=com_meedya&view=album&aid='.$item->aid.'&Itemid='.$this->itemId, false) ?>" class="alb-thumb">
-	<div><img src="<?=$thum?>" width="240px" height="240px" /></div>
+<a href="<?=Route::_('index.php?option=com_meedya&view=album&aid='.$item->aid.'&Itemid='.$this->itemId, false) ?>" class="alb-thumb">
+	<div><img src="<?=$thum?>" /></div>
 	<div class="alb-thm-ttl"><?= $item->title ?></div>
 </a>
 <?php

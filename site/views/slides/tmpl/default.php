@@ -30,7 +30,8 @@ if ($this->slides) {
 		if ($H5ss_cfg['vD'] && trim($slide['desc'])) $txtinfo .= ($txtinfo ? ' ... ' : '') . trim($slide['desc']);
 		$fileentry = array(
 				'fpath' => $slide['file'],
-				'title' => $txtinfo
+				'title' => $txtinfo,
+				'mTyp' => substr($slide['mtype'], 0, 1)
 				);
 		$filelist[] = $fileentry;
 	}
@@ -56,6 +57,8 @@ $dcolors = $H5ss_cfg['dC'];		//explode(',', $H5ss_cfg['dC']);
 	var albumID = '<?=$this->aid?>';
 	var popdwin = <?=$popdwin?'true':'false'?>;
 	var baseUrl = "<?=JUri::root(true).'/'.$this->gallpath?>/med/";
+	var _imgP = "components/com_meedya/static/img/";
+	var viderror = "COULD NOT PLAY VIDEO";
 	var imagelist = <?=json_encode($filelist)?>;
 	var imgerror = "<?=JText::_('COM_MEEDYA_SS_IMGERROR')?>";
 	ssCtl.autoPlay = <?=$H5ss_cfg['aP']*1?>;

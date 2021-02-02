@@ -6,6 +6,8 @@
  */
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Router\Route;
+
 MeedyaHelper::addStyle('basicLightbox', 'vendor/blb/');
 MeedyaHelper::addStyle('gallery');
 MeedyaHelper::addStyle('manage');
@@ -18,8 +20,7 @@ MeedyaHelper::addScript('basicLightbox', 'vendor/blb/');
 MeedyaHelper::addScript('bootbox');
 MeedyaHelper::addScript('pell.min', 'vendor/pell/');
 
-$jdoc = JFactory::getDocument();
-$jdoc->addScriptDeclaration('
+$this->jDoc->addScriptDeclaration('
 var albumID = '.$this->aid.';
 var blb_path = "'.JUri::root(true).'/'.$this->gallpath.'/med/";
 ');
@@ -40,7 +41,7 @@ JText::script('COM_MEEDYA_VRB_REMOVE');
 <h3>ALBUM EDIT: <?=$this->album['title']?></h3>
 <button class="btn btn-primary" onclick="saveAlbum()">Save Changes</button>
 <button class="btn" onclick="cancelEdt()">Cancel</button>
-<form action="<?=JRoute::_('index.php?option=com_meedya&Itemid='.$this->itemId)?>" id="albForm" name="albForm" method="POST">
+<form action="<?=Route::_('index.php?option=com_meedya&Itemid='.$this->itemId)?>" id="albForm" name="albForm" method="POST">
 	<div class="albman">
 		<div class="albprp">
 			Title:<br />
@@ -75,11 +76,11 @@ JText::script('COM_MEEDYA_VRB_REMOVE');
 	<button class="btn btn-mini" title="remove selected from album" onclick="removeSelected(event)"><i class="icon-minus-circle"></i> Remove selected images from album</button> -->
 	<?php echo JHtml::_('meedya.actionButtons', array('sela','seln','edts','rems')); ?>
 </div>
-<form id="actform" method="POST" action="<?=JRoute::_('index.php?option=com_meedya&Itemid='.$this->itemId)?>" style="display:none">
+<form id="actform" method="POST" action="<?=Route::_('index.php?option=com_meedya&Itemid='.$this->itemId)?>" style="display:none">
 	<input name="task" id="atask" type="hidden" value="manage.imgEdit" />
 	<input name="items" id="aitems" type="hidden" value="" />
 </form>
-<form action="<?=JRoute::_('index.php?option=com_meedya&Itemid='.$this->itemId)?>" method="POST" name="adminForm" id="adminForm">
+<form action="<?=Route::_('index.php?option=com_meedya&Itemid='.$this->itemId)?>" method="POST" name="adminForm" id="adminForm">
 <div id="area" style="display:flex;flex-wrap:wrap">
 <?php
 	foreach ($this->items as $item) {

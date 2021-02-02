@@ -1,14 +1,14 @@
 <?php
 /**
- * @version		$Id$
- * @package		Joomla.Site
- * @subpackage	com_meedya
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @package		com_meedya
+ * @copyright	Copyright (C) 2015 - 2020 Open RJCreations. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
-
-// no direct access
 defined('_JEXEC') or die;
+
+use Joomla\CMS\Factory;
+use Joomla\CMS\Router\Route;
+
 jimport('joomla.application.component.helper');
 /**
  * MeedyaItem Component HTML Helper
@@ -20,21 +20,21 @@ jimport('joomla.application.component.helper');
  */
 class JHtmlIcon
 {
-	static function create($meedyaitem, $params)
+	static function create ($meedyaitem, $params)
 	{
-		$uri = JFactory::getURI();
+		$uri = Factory::getURI();
 
-		$url = JRoute::_(MeedyaHelperRoute::getFormRoute(0, base64_encode($uri)), false);
+		$url = Route::_(MeedyaHelperRoute::getFormRoute(0, base64_encode($uri)), false);
 		$text = JHtml::_('image','system/new.png', JText::_('JNEW'), NULL, true);
 		$button = JHtml::_('link',$url, $text);
 		$output = '<span class="hasTip" title="'.JText::_('COM_MEEDYA_FORM_CREATE_MEEDYAITEM').'">'.$button.'</span>';
 		return $output;
 	}
 
-	static function edit($meedyaitem, $params, $attribs = array())
+	static function edit ($meedyaitem, $params, $attribs = array())
 	{
-		$user = JFactory::getUser();
-		$uri = JFactory::getURI();
+		$user = Factory::getUser();
+		$uri = Factory::getURI();
 
 		if ($params && $params->get('popup')) {
 			return;
@@ -64,7 +64,7 @@ class JHtmlIcon
 		$overlib .= '&lt;br /&gt;';
 		$overlib .= htmlspecialchars($author, ENT_COMPAT, 'UTF-8');
 
-		$button = JHtml::_('link',JRoute::_($url, false), $text);
+		$button = JHtml::_('link',Route::_($url, false), $text);
 
 		$output = '<span class="hasTip" title="'.JText::_('COM_MEEDYA_EDIT').' :: '.$overlib.'">'.$button.'</span>';
 

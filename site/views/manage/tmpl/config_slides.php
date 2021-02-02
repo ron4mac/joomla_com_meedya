@@ -15,8 +15,7 @@ MeedyaHelper::addScript('spectrum.min');
 
 MeedyaHelper::addStyle('spectrum');
 
-$jdoc = JFactory::getDocument();
-$jdoc->addScriptDeclaration('jQuery.fn.spectrum.defaults.showAlpha = true;
+$this->jDoc->addScriptDeclaration('jQuery.fn.spectrum.defaults.showAlpha = true;
 	jQuery.fn.spectrum.defaults.showInput = true;
 	jQuery.fn.spectrum.defaults.preferredFormat = "rgb";');
 

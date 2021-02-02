@@ -6,6 +6,8 @@
  */
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Factory;
+
 require_once __DIR__ . '/meedya.php';
 
 //JLoader::register('MeedyaHelper', JPATH_COMPONENT_ADMINISTRATOR.'/helpers/meedya.php');
@@ -28,7 +30,7 @@ class MeedyaModelManage extends MeedyaModelMeedya
 		}
 		if (RJC_DBUG) { MeedyaHelper::log('MeedyaModelManage'); }
 		parent::__construct($config);
-		$this->ownid = JFactory::getUser()->get('id');
+		$this->ownid = Factory::getUser()->get('id');
 	}
 
 	public function updateConfig ($type, $vals)
@@ -196,7 +198,7 @@ class MeedyaModelManage extends MeedyaModelMeedya
 	{
 		if (RJC_DBUG) { MeedyaHelper::log("store ... album: {$alb} file: {$file['name']}"); }
 
-		$params = JFactory::getApplication()->getParams();
+		$params = Factory::getApplication()->getParams();
 		$keep = (int)$params->get('keep_orig', 0);
 		$quota = MeedyaHelper::getStoreQuota($params);
 		if ($quota) {
@@ -259,9 +261,9 @@ class MeedyaModelManage extends MeedyaModelMeedya
 		$ittl = isset($file['title']) ? $file['title'] : null;
 	//	$this->addItem($base_name.$uniq.$ext, $mtype, $ittl, $alb, $fsize, $fsize+$xsize, $xpdt);
 		$this->processFile($ffpnam, $base_name.$uniq.$ext, $alb, $ittl, $keep);
-		if (!$keep) {
-			@unlink($ffpnam);
-		}
+//		if (!$keep) {
+//			@unlink($ffpnam);
+//		}
 	}
 
 	public function processFile ($fpath, $fname, $alb, $ittl, $keep=false)
@@ -271,6 +273,12 @@ class MeedyaModelManage extends MeedyaModelMeedya
 			$mtype = finfo_file($finf, $fpath);
 			finfo_close($finf);
 		}
+
+		// make sure to keep video files
+		if (substr($mtype, 0, 5) == 'video') {
+			$keep = true;
+		}
+
 		$fsize = $keep ? filesize($fpath) : 0;
 		$xpdt = null;
 		$xf = @exif_read_data($fpath, 'IFD0,EXIF', true);
@@ -432,7 +440,7 @@ class MeedyaModelManage extends MeedyaModelMeedya
 	protected function populateState ($ordering = null, $direction = null)
 	{	//echo'####POPSTATE####';
 		// Initialise variables.
-		$app = JFactory::getApplication();
+		$app = Factory::getApplication();
 		$params = JComponentHelper::getParams('com_meedya');
 		$input = $app->input;
 

@@ -133,6 +133,10 @@ dd.tabs {
 .eitem:hover .item-overlay.top {
 	top: 100px;
 }
+.eitem img {
+	width:120px;
+	height:120px;
+}
 .ied-img {
 	position: relative;
 }

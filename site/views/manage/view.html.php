@@ -6,6 +6,8 @@
  */
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Factory;
+
 include_once JPATH_COMPONENT.'/views/meedyaview.php';
 
 jimport('joomla.filesystem.folder');
@@ -25,10 +27,10 @@ class MeedyaViewManage extends MeedyaView
 	public function display ($tpl=null)
 	{
 		$this->state = $this->get('State');	//var_dump($this->state);
-//		$this->user = JFactory::getUser();
+//		$this->user = Factory::getUser();
 //		$this->items = $this->get('Items');
 
-		$this->mparams = !empty($this->itemId) ? JFactory::getApplication()->getMenu()->getItem($this->itemId)->getParams() : new JRegistry();
+		$this->mparams = !empty($this->itemId) ? Factory::getApplication()->getMenu()->getItem($this->itemId)->getParams() : new JRegistry();
 	//	echo'<xmp>';var_dump($this->mparams);echo'</xmp>';
 
 		if (RJC_DBUG) { MeedyaHelper::log('ViewManage state', $this->state); }
@@ -97,9 +99,9 @@ class MeedyaViewManage extends MeedyaView
 			//echo'<pre>';var_dump(JComponentHelper::getParams('com_meedya'));
 			//var_dump($this->params);
 	//			$this->totStore = (int)$this->get('StorageTotal');
-				$user = JFactory::getUser();
+				$user = Factory::getUser();
 				$uid = $user->get('id');
-				$this->params = JFactory::getApplication()->getParams();		//echo'<pre>';var_dump($this->params);echo'</pre>';
+				$this->params = Factory::getApplication()->getParams();		//echo'<pre>';var_dump($this->params);echo'</pre>';
 				$this->galid = base64_encode($this->params->get('instance_type').':'.$this->params->get('owner_group').':'.$uid);
 			//	$this->state = $this->get('State');
 //				$this->curalb = 0;

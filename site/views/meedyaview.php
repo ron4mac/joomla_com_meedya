@@ -10,8 +10,12 @@ defined('_JEXEC') or die;
  * This is a base view class to (hopefully) avoid duplication of code needed by all views
  */
 
+use Joomla\CMS\Factory;
+
 // provide all views with a JHtml helper class
 JLoader::register('JHtmlMeedya', JPATH_COMPONENT . '/helpers/html/meedya.php');
+// and our htmlobject class
+JLoader::register('HtmlElementObject', JPATH_COMPONENT . '/classes/HtmlObject.php');
 
 class MeedyaView extends JViewLegacy
 {
@@ -25,14 +29,17 @@ class MeedyaView extends JViewLegacy
 	protected $pagination;
 	protected $btmscript = [];	// accumulate here any scripts that will render at the bottom of content
 
+	protected $instance;
+	protected $jDoc;
+
 	public function __construct ($config = array())
 	{
 		if (RJC_DBUG) {
 			MeedyaHelper::log('MeedyaView');
 		}
 		parent::__construct($config);
-		$this->user = JFactory::getUser();
-		$this->params = JFactory::getApplication()->getParams();
+		$this->user = Factory::getUser();
+		$this->params = Factory::getApplication()->getParams();
 		$this->userPerms = MeedyaHelper::getUserPermissions($this->user, $this->params);
 //		$this->state = $this->get('State');
 		$this->meedyaID = MeedyaHelper::getInstanceID();
@@ -40,21 +47,24 @@ class MeedyaView extends JViewLegacy
 //		$this->pagination = $this->get('Pagination');
 
 		if (empty($this->itemId)) {
-			$this->itemId = JFactory::getApplication()->input->getInt('Itemid', 0);
+			$this->itemId = Factory::getApplication()->input->getInt('Itemid', 0);
 		}
+
+		$this->instance = Factory::getApplication()->getUserState('com_meedya.instance', '::');
+		$this->jDoc = Factory::getDocument();
 	}
 
 	public function display ($tpl = null)
 	{
 		if (RJC_DBUG) { MeedyaHelper::log('MeedyaView - display'); }
-//		$this->params = JFactory::getApplication()->getParams();
+//		$this->params = Factory::getApplication()->getParams();
 //		$this->state = $this->get('State');
 //		$this->items = $this->get('Items');
 	//	if (is_null($this->items)) $this->items = $this->getModel()->getItems();
 		$this->pagination = $this->get('Pagination');
 
 	//	echo'GOt here';var_dump($this->pagination,$this->items);jexit();
-//		$jdoc = JFactory::getDocument();
+//		$jdoc = Factory::getDocument();
 //		$jdoc->addScript('components/com_meedya/static/js/'.MeedyaHelper::scriptVersion('echo'));
 		MeedyaHelper::addScript('echo');
 	//	JHtml::_('jquery.framework', false);

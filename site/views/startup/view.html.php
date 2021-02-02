@@ -6,6 +6,8 @@
  */
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Factory;
+
 class MeedyaViewStartup extends JViewLegacy
 {
 	protected $user;
@@ -14,8 +16,8 @@ class MeedyaViewStartup extends JViewLegacy
 
 	function display ($tpl=null)
 	{
-		$this->user = JFactory::getUser();
-		$this->params = JFactory::getApplication()->getParams();
+		$this->user = Factory::getUser();
+		$this->params = Factory::getApplication()->getParams();
 		$this->userPerms = MeedyaHelper::getUserPermissions($this->user, $this->params);
 		parent::display($tpl);
 	}

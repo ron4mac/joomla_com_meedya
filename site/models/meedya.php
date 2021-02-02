@@ -6,6 +6,8 @@
  */
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Factory;
+
 class MeedyaModelMeedya extends JModelList
 {
 	protected $curAlbID = 0;
@@ -129,7 +131,7 @@ class MeedyaModelMeedya extends JModelList
 	protected function getListQuery ()
 	{
 		$albord = ['`tstamp` DESC','`tstamp` ASC','`title` DESC','`title` ASC'];
-		$params = JFactory::getApplication()->getParams();
+		$params = Factory::getApplication()->getParams();
 		$ordopt = (int)$params->get('album_order', 0);
 		$db = $this->getDbo();
 		$query = $db->getQuery(true);
@@ -171,7 +173,7 @@ class MeedyaModelMeedya extends JModelList
 	protected function populateState ($ordering = null, $direction = null)
 	{
 		// Initialize variables
-		$app = JFactory::getApplication();
+		$app = Factory::getApplication();
 		$params = JComponentHelper::getParams('com_meedya');
 		$input = $app->input;
 

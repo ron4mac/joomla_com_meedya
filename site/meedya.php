@@ -6,6 +6,9 @@
  */
 defined('_JEXEC') or die;
 
+use Joomla\CMS\MVC\Controller\BaseController;
+use Joomla\CMS\Factory;
+
 define('RJC_DBUG', JDEBUG && file_exists(JPATH_ROOT.'/rjcdev.php'));
 
 // provide a general helper class for the rest of the component
@@ -19,6 +22,6 @@ if (RJC_DBUG) {
 	JLog::addLogger($cml, JLog::ALL, array('com_meedya'));
 }
 
-$controller = JControllerLegacy::getInstance('Meedya');
-$controller->execute(JFactory::getApplication()->input->get('task'));
+$controller = BaseController::getInstance('Meedya');
+$controller->execute(Factory::getApplication()->input->get('task'));
 $controller->redirect();

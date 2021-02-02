@@ -38,6 +38,7 @@ var	ssCtl = (function() {
 		_ffv = 2,			// frame focus view - generally the middle view of the frame
 		_fle = 0,			// left edge of view frame relative to imagelist
 		_ielms = Array(),	// elements associated with the view frame
+		_vELm = null,		// reusable video element
 		_iarea = null,		// image area
 		_iniClass,
 		_onClass,
@@ -140,8 +141,15 @@ var	ssCtl = (function() {
 	function loadElm (elm, lix, lft) {
 		elm.eMsg = null;
 		if (vendorQuirk.vendorID == "ff") { elm.src = ''; elm.completed = false; }	//for FF to full load image
-	//	elm.src = null;
-		elm.src = baseUrl + imagelist[lix].fpath;
+
+		if (imagelist[lix].mTyp == "i") {
+			elm.ism = false;
+			elm.src = baseUrl + imagelist[lix].fpath;
+		} else {
+			elm.ism = true;
+			elm.src = _imgP+"blank.png";
+		}
+
 		elm.slidnum = lix;
 		elm.isSized = false;
 		trzn.preS(elm, lft);
@@ -174,6 +182,9 @@ var	ssCtl = (function() {
 		_ielms.unshift(rf);
 	}
 	function nextFrame (LR) {
+		_vElm.pause();
+		_vElm.style.display = "none";
+
 		if (!mySC.repeat) {
 			if ((LR==1 && _fle+_ffv+1==_ill)) {
 				mySC.doMnu(_stop);
@@ -187,7 +198,12 @@ var	ssCtl = (function() {
 //		_titlelm.innerHTML = imagelist[tElm.slidnum].title;
 //		if (tElm.eMsg) { _titlelm.innerHTML += tElm.eMsg; }
 if (LR !== 0) { _titlelm.innerHTML = ""; }
-		positionImage(tElm, function(){ imgPlaced(tElm); /*tElm.className = _onClass;*/});
+		if (tElm.ism) {
+			_vElm.src = baseUrl + imagelist[tElm.slidnum].fpath;
+//			_sldnumelm.innerHTML = tElm.slidnum + 1;
+		} else {
+			positionImage(tElm, function(){ imgPlaced(tElm); /*tElm.className = _onClass;*/});
+		}
 //		_sldnumelm.innerHTML = tElm.slidnum + 1;
 		return true;
 	}
@@ -286,6 +302,7 @@ if (LR !== 0) { _titlelm.innerHTML = ""; }
 				$id('sstage').style.display = "none";
 				_ielms.forEach(function(itm){_iarea.removeChild(itm);});
 				_ielms = Array();
+				_iarea.removeChild(_vElm);
 				break;
 			case _rwnd:
 				rewindShow();
@@ -387,9 +404,20 @@ if (LR !== 0) { _titlelm.innerHTML = ""; }
 		_resizeTime=setTimeout(function(){_resizing=true;trzn.resz();nextFrame(0);_resizing=false}, 200);
 	}
 
+	function medEnded (elm) {
+		if (_running) {
+			nextSlide();
+		}
+	}
+
 	function imgError () {
 		this.eMsg = '<p class="errMsg">'+imgerror+this.src+'</p>';
-		this.src = "plugins/html5slideshow/css/broken.png";
+		this.src = "components/com_meedya/static/css/broken.png";
+	}
+
+	function medError (evt) {
+		_titlelm.innerHTML += '<p class="errMsg">'+viderror+this.src+'</p>';
+		if (_running) { _sTimer = setTimeout(function(){nextSlide()}, _slideDur); }
 	}
 
 	mySC.sdur = function(up) {
@@ -429,6 +457,17 @@ if (LR !== 0) { _titlelm.innerHTML = ""; }
 			_ielms.push(ielm);
 			_iarea.appendChild(ielm);
 		}
+
+		_vElm = document.createElement("VIDEO");
+		_vElm.style.display="none";
+		_vElm.onerror = medError;
+		_vElm.className = "medsld";
+		_vElm.id = "medsld";
+		_vElm.controls = true;
+		_vElm.onended = function(){medEnded(this);};
+		_vElm.oncanplay = function(){this.style.display="block";this.play()};
+		_iarea.appendChild(_vElm);
+
 		// get the middle element of the image frame
 		_ffv = Math.floor(_iecnt/2);
 

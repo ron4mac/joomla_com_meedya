@@ -6,6 +6,9 @@
  */
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Router\Route;
+
 JLoader::register('JHtmlMeedya', JPATH_COMPONENT . '/helpers/html/meedya.php');
 
 class MeedyaControllerManage extends JControllerLegacy
@@ -80,7 +83,7 @@ class MeedyaControllerManage extends JControllerLegacy
 			foreach ($attrs as $k=>$v) {
 				$m->updImage($k, $v);
 			}
-			JFactory::getApplication()->enqueueMessage('Image properties sucessfully saved');
+			$this->_nqMsg('Image properties sucessfully saved');
 		}
 		$this->setRedirect(base64_decode($this->input->post->get('referer','','base64')));
 	}
@@ -94,9 +97,9 @@ class MeedyaControllerManage extends JControllerLegacy
 			$albs = [$aid];
 			$m = $this->getModel('manage');
 			$m->removeAlbums($albs, $w);
-			JFactory::getApplication()->enqueueMessage('The album was successfully deleted');
+			$this->_nqMsg('The album was successfully deleted');
 		}
-		$this->setRedirect(JRoute::_('index.php?option=com_meedya&view=manage&limitstart=0&Itemid='.$this->mnuItm, false));
+		$this->setRedirect(Route::_('index.php?option=com_meedya&view=manage&limitstart=0&Itemid='.$this->mnuItm, false));
 	}
 
 
@@ -109,14 +112,14 @@ class MeedyaControllerManage extends JControllerLegacy
 //			$m = $this->getModel('manage');
 //			$m->removeAlbums($albs, $w);
 //		}
-//		$this->setRedirect(JRoute::_('index.php?option=com_meedya&view=manage&limitstart=0', false));
+//		$this->setRedirect(Route::_('index.php?option=com_meedya&view=manage&limitstart=0', false));
 //	}
 
 
 	public function addItemsToAlbum ()
 	{
 		if (!JSession::checkToken()) {
-			JFactory::getApplication()->enqueueMessage(JText::_('JINVALID_TOKEN'),'error');
+			$this->_nqMsg(JText::_('JINVALID_TOKEN'),'error');
 			return;
 		}
 		$this->setRedirect($_SERVER['HTTP_REFERER']);
@@ -136,7 +139,7 @@ class MeedyaControllerManage extends JControllerLegacy
 			$aid = $m->addAlbum($albttl, $albpar, $albdesc);
 		}
 		$m->addItems2Album($itms, $aid);
-		JFactory::getApplication()->enqueueMessage('Items added to album');
+		$this->_nqMsg('Items added to album');
 	}
 
 	public function imgsAddAlbum ()
@@ -144,7 +147,7 @@ class MeedyaControllerManage extends JControllerLegacy
 		$this->setRedirect($_SERVER['HTTP_REFERER']);
 
 		if (!JSession::checkToken()) {
-			JFactory::getApplication()->enqueueMessage(JText::_('JINVALID_TOKEN'),'error');
+			$this->_nqMsg(JText::_('JINVALID_TOKEN'),'error');
 			return;
 		}
 
@@ -156,14 +159,14 @@ class MeedyaControllerManage extends JControllerLegacy
 		$aid = $m->addAlbum('New Album');
 		$m->addItems2Album($itms, $aid);
 
-		$this->setRedirect(JRoute::_('index.php?option=com_meedya&view=manage&layout=albedit&aid='.$aid.'&Itemid='.$this->mnuItm, false));
+		$this->setRedirect(Route::_('index.php?option=com_meedya&view=manage&layout=albedit&aid='.$aid.'&Itemid='.$this->mnuItm, false));
 	}
 
 	public function deleteItems ()
 	{
 		$this->setRedirect($_SERVER['HTTP_REFERER']);
 		if (!JSession::checkToken()) {
-			JFactory::getApplication()->enqueueMessage(JText::_('JINVALID_TOKEN'),'error');
+			$this->_nqMsg(JText::_('JINVALID_TOKEN'),'error');
 			return;
 		}
 		//echo'<xmp>';var_dump($this->input->post);echo'</xmp>';jexit();
@@ -252,7 +255,7 @@ class MeedyaControllerManage extends JControllerLegacy
 			}
 			$m = $this->getModel('manage');
 		//	$m->updateConfig('ss', $vals);
-			JFactory::getApplication()->enqueueMessage('Gallery settings sucessfully saved');
+			$this->_nqMsg('Gallery settings sucessfully saved');
 		}
 		$this->setRedirect(base64_decode($this->input->post->get('return','','base64')));
 	}
@@ -319,8 +322,14 @@ class MeedyaControllerManage extends JControllerLegacy
 		$m->saveAlbum($aid, $flds);
 
 	//	echo'<xmp>';var_dump($this->input);echo'</xmp>';
-		JFactory::getApplication()->enqueueMessage('Album properties sucessfully saved');
+		$this->_nqMsg('Album properties sucessfully saved');
 		$this->setRedirect(base64_decode($this->input->post->get('referer','','base64')));
+	}
+
+
+	private function _nqMsg ($msg)
+	{
+		Factory::getApplication()->enqueueMessage($msg);
 	}
 
 

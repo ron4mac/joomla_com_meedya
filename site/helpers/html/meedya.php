@@ -6,6 +6,9 @@
  */
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Router\Route;
+
 abstract class JHtmlMeedya
 {
 	public static function pageHeader ($params, $sub='')
@@ -16,7 +19,7 @@ abstract class JHtmlMeedya
 			$html .= $params->get('page_title');
 			switch ($params->get('instance_type')) {
 				case 0:
-					$user = JFactory::getUser();
+					$user = Factory::getUser();
 					$html .= ' <small>- '.$user->name.'</small>';
 					break;
 				case 1:
@@ -42,14 +45,14 @@ abstract class JHtmlMeedya
 	</a>
 	<ul class="dropdown-menu">';
 		if ($perms->canAdmin || $perms->canUpload) {
-			$html .= '<li><a href="' . JRoute::_('index.php?option=com_meedya&task=manage.doUpload'.($aid?('&aid='.$aid):'') . $itmid, false) . '">
+			$html .= '<li><a href="' . Route::_('index.php?option=com_meedya&task=manage.doUpload'.($aid?('&aid='.$aid):'') . $itmid, false) . '">
 				<i class="icon-upload"></i>'.JText::_('COM_MEEDYA_MENU_UPLOAD').'</a></li>';
 		}
 		if ($perms->canAdmin) {
 			$html .= '
-		<li><a href="' . JRoute::_('index.php?option=com_meedya&view=manage'.$itmid, false) . '"><i class="icon-grid"></i>'.JText::_('COM_MEEDYA_MENU_EDALBS').'</a></li>
-		<li><a href="' . JRoute::_('index.php?option=com_meedya&task=manage.editImgs'.$itmid, false) . '"><i class="icon-images"></i>'.JText::_('COM_MEEDYA_MENU_EDIMGS').'</a></li>
-		<li><a href="' . JRoute::_('index.php?option=com_meedya&task=manage.doConfig'.$itmid, false) . '"><i class="icon-options"></i>'.JText::_('COM_MEEDYA_MENU_CONFIG').'</a></li>';
+		<li><a href="' . Route::_('index.php?option=com_meedya&view=manage'.$itmid, false) . '"><i class="icon-grid"></i>'.JText::_('COM_MEEDYA_MENU_EDALBS').'</a></li>
+		<li><a href="' . Route::_('index.php?option=com_meedya&task=manage.editImgs'.$itmid, false) . '"><i class="icon-images"></i>'.JText::_('COM_MEEDYA_MENU_EDIMGS').'</a></li>
+		<li><a href="' . Route::_('index.php?option=com_meedya&task=manage.doConfig'.$itmid, false) . '"><i class="icon-options"></i>'.JText::_('COM_MEEDYA_MENU_CONFIG').'</a></li>';
 		}
 		$html .= '</ul>
 </div>
@@ -112,20 +115,26 @@ abstract class JHtmlMeedya
 	{	//var_dump($item);
 	$id = $item->id;
 	$escfn = str_replace('\'','\\\'',$item->file);
-	$iDat = 'data-echo="thm/'.$item->file.'"';
+
+	if (substr($item->mtype, 0, 1) == 'v') {
+		$iDat = 'video.png';
+	} else {
+		$iDat = 'img.png" data-echo="thm/'.$item->file;
+	}
+
 	if ($edt) {
-		$acts = '<i class="icon-expand" onclick="lboxPimg(\''.$escfn.'\')"></i>
+		$acts = '<i class="icon-expand" onclick="lboxPimg(\''.$escfn.'\',\''.substr($item->mtype, 0, 1).'\')"></i>
 			<i class="icon-info-2 pull-left"></i>
 			<i class="icon-edit pull-right" onclick="editImg('.$id.')"></i>';
 	} else {
 		$acts = '<i class="icon-info-2 pull-left"></i>
-			<i class="icon-expand pull-right" onclick="lboxPimg(\''.$escfn.'\')"></i>';
+			<i class="icon-expand pull-right" onclick="lboxPimg(\''.$escfn.'\',\''.substr($item->mtype, 0, 1).'\')"></i>';
 	}
 	$nah = $item->album ? '' : ' style="opacity:0.2"';
 	return '
 	<div class="'.$iclss.'" data-id="'.$id.'">
 		<label for="slctimg'.$id.'">
-		<img src="components/com_meedya/static/img/img.png" '.$iDat.' class="mitem"'.$nah.' />
+		<img src="components/com_meedya/static/img/'.$iDat.'" class="mitem"'.$nah.' />
 		</label>
 		<div class="item-overlay top">
 			'.$acts.'

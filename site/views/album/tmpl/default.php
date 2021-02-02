@@ -6,6 +6,8 @@
  */
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Router\Route;
+
 MeedyaHelper::addStyle('album');
 MeedyaHelper::addStyle('basicLightbox', 'vendor/blb/');
 MeedyaHelper::addStyle('manage');
@@ -13,7 +15,6 @@ MeedyaHelper::addStyle('each');
 MeedyaHelper::addScript('vuesld');
 
 JHtml::_('bootstrap.tooltip', '.hasTip', array('fixed'=>true));
-//$jdoc->addScript('components/com_meedya/static/js/echo.min.js');
 
 if ($this->files) {
 	foreach ($this->files as $file) {
@@ -24,7 +25,8 @@ if ($this->files) {
 		$txtinfo .= ($txtinfo ? ' ... ' : '') . trim($file['desc']);
 		$fileentry = array(
 				'fpath' => $file['file'],
-				'title' => $txtinfo
+				'title' => $txtinfo,
+				'mTyp' => substr($file['mtype'], 0, 1)
 				);
 		$filelist[] = $fileentry;
 	}
@@ -35,6 +37,7 @@ $ttscript = '
 	var imgerror = "'.JText::_('COM_MEEDYA_SS_IMGERROR').'";
 	var imagelist = '.json_encode($filelist).';
 	var startx = '.$this->six.';
+	var _imgP = "components/com_meedya/static/img/";
 	ssCtl.repeat = true;
 	jQuery(document).ready(function() {
 		jQuery(\'[data-toggle="tooltip"]\').tooltip();
@@ -48,8 +51,7 @@ $ttscript = '
 	}
 ';
 
-$jdoc = JFactory::getDocument();
-$jdoc->addScriptDeclaration($ttscript);
+$this->jDoc->addScriptDeclaration($ttscript);
 
 ///<form>
 ///<div class="display-limit">
@@ -146,7 +148,7 @@ $jdoc->addScriptDeclaration($ttscript);
 		echo '<span class="albttl">'.$this->title.'</span>';
 	?>
 	<?php if (count($this->items)>1): ?>
-		<a href="<?=JRoute::_('index.php?option=com_meedya&view=slides&tmpl=component&aid='.$this->aid.'&Itemid='.$this->itemId, false) ?>" title="<?=JText::_('COM_MEEDYA_SLIDESHOW')?>">
+		<a href="<?=Route::_('index.php?option=com_meedya&view=slides&tmpl=component&aid='.$this->aid.'&Itemid='.$this->itemId, false) ?>" title="<?=JText::_('COM_MEEDYA_SLIDESHOW')?>">
 			<img src="components/com_meedya/static/img/slideshow.png" alt="" />
 		</a>
 	<?php endif; ?>
@@ -156,7 +158,7 @@ $jdoc->addScriptDeclaration($ttscript);
 	<?php if ($this->state->get('list.start'.$this->state->get('album.id')) == 0): ?>
 	<?php foreach ($this->albums as $alb): ?>
 		<div class="anitem falbum">
-			<a href="<?=JRoute::_('index.php?option=com_meedya&view=album&aid='.$alb->aid.'&Itemid='.$this->itemId, false) ?>" class="itm-thumb">
+			<a href="<?=Route::_('index.php?option=com_meedya&view=album&aid='.$alb->aid.'&Itemid='.$this->itemId, false) ?>" class="itm-thumb">
 				<div><img src="<?=$this->getAlbumThumb($alb)?>" class="falbumi" /></div>
 				<div class="itm-alb-ttl"><?=$alb->title?></div>
 			</a>
@@ -164,25 +166,34 @@ $jdoc->addScriptDeclaration($ttscript);
 	<?php endforeach; ?>
 	<?php endif; ?>
 	<?php
-		foreach ($this->items as $ix=>$item) {
-			if (!$item) continue;
-			list($thumb, $ititle, $idesc, $mtype) = $this->getItemThumbPlus($item);
-			$ttip = ($ititle && $idesc) ? $ititle.'<br />'.$idesc : $ititle.$idesc;
-			switch (strstr($mtype, '/', true)) {
-				case 'video':
-					$thmsrc = 'components/com_meedya/static/img/video.png';
-					break;
-				default:
-					$thmsrc = 'components/com_meedya/static/img/img.png" data-echo="thm/'.$thumb;
-			}
-			echo '<div class="anitem">'
-			//	.'<a href="'.JRoute::_('index.php?option=com_meedya&view=item&iid='.$item, false).'" class="itm-thumb">'
-				.'<a href="'.JRoute::_('index.php?option=com_meedya&view=album&layout=each&aid='.$this->aid.'&iid='.$item.'&Itemid='.$this->itemId, false).'" class="itm-thumb" onclick="showSlides(event,'.$ix.')">'
-					.'<div data-toggle="tooltip" data-placement="bottom" title="'.$ttip.'"><img src="'.$thmsrc.'" /></div>'
-//					.'<div class="itm-thm-ttl" data-src="'.$thumb.'">'./*$item*/$ititle.'</div>'
-				.'</a>'
-			.'</div>';
+	$itemImg = new HtmlElementObject('img');
+	$itemImgD = new HtmlElementObject('div', null, $itemImg);
+	$itemImgD->setAttr(['data-toggle'=>'tooltip', 'data-placement'=>'bottom']);
+	$itemLnk = new HtmlElementObject('a', null, $itemImgD);
+	$itemLnk->setAttr('class','itm-thumb');
+	$itemDiv = new HtmlElementObject('div', null, $itemLnk);
+	$itemDiv->setAttr('class','anitem');
+
+	foreach ($this->items as $ix=>$item) {
+		if (!$item) continue;
+		list($thumb, $ititle, $idesc, $mtype) = $this->getItemThumbPlus($item);
+		$ttip = ($ititle && $idesc) ? $ititle.'<br />'.$idesc : $ititle.$idesc;
+		switch (strstr($mtype, '/', true)) {
+			case 'video':
+				$thmsrc = 'video.png';
+				break;
+			case 'audio':
+				$thmsrc = 'audio.png';
+				break;
+			default:
+				$thmsrc = 'img.png" data-echo="thm/'.$thumb;
 		}
+		$itemImg->setAttr('src', 'components/com_meedya/static/img/'.$thmsrc);
+		$itemImgD->setAttr('title', $ttip);
+		$itemLnk->setAttr('href', Route::_('index.php?option=com_meedya&view=album&layout=each&aid='.$this->aid.'&iid='.$item.'&Itemid='.$this->itemId, false));
+		$itemLnk->setAttr('onclick', 'showSlides(event,'.$ix.')');
+		echo $itemDiv->render();
+	}
 	?>
 	<!-- <div id="itmend" class="noitem"></div> -->
 	</div>

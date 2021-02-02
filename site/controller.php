@@ -6,23 +6,30 @@
  */
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Router\Route;
+
 class MeedyaController extends JControllerLegacy
 {
 	protected $uid = 0;
 	protected $mnuItm;
 
-	public function __construct ($config = array())
+	public function __construct ($config = [])
 	{
 		if (RJC_DBUG) { MeedyaHelper::log('MeedyaController'); }
 		parent::__construct($config);
-		$this->uid = JFactory::getUser()->get('id');
+		if (JDEBUG) { JLog::addLogger(['text_file'=>'com_meedya.log.php'], JLog::ALL, ['com_meedya']); }
+		$this->uid = Factory::getUser()->get('id');
 		$this->mnuItm = $this->input->getInt('Itemid', 0);
+		if ($this->mnuItm) {
+			Factory::getApplication()->setUserState('com_meedya.instance', $this->mnuItm.':'.MeedyaHelper::getInstanceID().':'.$this->uid);
+		}
 	}
 
 	public function display ($cachable = false, $urlparams = false)
 	{
 	//	if (!$this->uid) {
-	//		JFactory::getApplication()->enqueueMessage(JText::_('JERROR_ALERTNOAUTHOR'), 'error');
+	//		Factory::getApplication()->enqueueMessage(JText::_('JERROR_ALERTNOAUTHOR'), 'error');
 	//		return;
 	//	}
 		if (!file_exists(MeedyaHelper::userDataPath())) {
@@ -47,7 +54,7 @@ class MeedyaController extends JControllerLegacy
 		file_put_contents($udp.'/img/index.html', $htm);
 		file_put_contents($udp.'/thm/index.html', $htm);
 		file_put_contents($udp.'/med/index.html', $htm);
-		$this->setRedirect(JRoute::_('index.php?option=com_meedya&Itemid='.$this->mnuItm, false));
+		$this->setRedirect(Route::_('index.php?option=com_meedya&Itemid='.$this->mnuItm, false));
 	}
 
 }

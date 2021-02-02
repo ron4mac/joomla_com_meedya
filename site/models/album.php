@@ -6,6 +6,8 @@
  */
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Factory;
+
 require_once __DIR__ . '/meedya.php';
 
 class MeedyaModelAlbum extends MeedyaModelMeedya
@@ -108,7 +110,7 @@ class MeedyaModelAlbum extends MeedyaModelMeedya
 	protected function populateState ($ordering = null, $direction = null)
 	{	//echo'####POPSTATE####';
 		// Initialise variables.
-		$app = JFactory::getApplication();
+		$app = Factory::getApplication();
 		$params = JComponentHelper::getParams('com_meedya');
 		$input = $app->input;
 
