@@ -1,7 +1,7 @@
 <?php
 /**
  * @package		com_meedya
- * @copyright	Copyright (C) 2020 RJCreations. All rights reserved.
+ * @copyright	Copyright (C) 2021 RJCreations. All rights reserved.
  * @license		GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
@@ -26,7 +26,7 @@ class com_meedyaInstallerScript
 	function preflight ($type, $parent)
 	{
 		if (method_exists($parent,'getManifest')) {
-			$this->release = $parent->getManifest->version;
+			$this->release = $parent->getManifest()->version;
 		} else {
 			$this->release = $parent->get('manifest')->version;
 		}
