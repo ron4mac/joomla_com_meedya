@@ -1,7 +1,7 @@
 <?php
 /**
  * @package		com_meedya
- * @copyright	Copyright (C) 2020 RJCreations. All rights reserved.
+ * @copyright	Copyright (C) 2021 RJCreations. All rights reserved.
  * @license		GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
@@ -55,16 +55,6 @@ class MeedyaController extends JControllerLegacy
 		file_put_contents($udp.'/thm/index.html', $htm);
 		file_put_contents($udp.'/med/index.html', $htm);
 		$this->setRedirect(Route::_('index.php?option=com_meedya&Itemid='.$this->mnuItm, false));
-	}
-
-	public function search ()
-	{
-		$m = $this->getModel('album');	//, '', array('ignore_request' => false));
-		$m->setState('sterm', $this->input->post->getString('sterm', '*'));
-		$view = $this->getView('album','html');
-		$view->setModel($m, true);
-		$view->isSearch = true;
-		$view->display();
 	}
 
 }

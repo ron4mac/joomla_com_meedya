@@ -6,6 +6,8 @@
  */
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Factory;
+
 class MeedyaControllerSearch extends JControllerLegacy
 {
 	protected $default_view = 'search';
@@ -18,14 +20,21 @@ class MeedyaControllerSearch extends JControllerLegacy
 		$this->mnuItm = $this->input->getInt('Itemid', 0);
 	}
 
-	public function display ($cachable = false, $urlparams = false)
+	public function search ()
 	{
-		if (RJC_DBUG) { MeedyaHelper::log('MeedyaControllerSearch : display'); }
-		$view = $this->getView('search','html');
-		$view->itemId = $this->mnuItm;
-		$view->aid = $this->input->post->getInt('aid', 0);
-		$view->sterm = $this->input->post->getString('sterm', '');
-		return parent::display($cachable, $urlparams);
+		$sterm = $this->input->post->getString('sterm', '');
+		$sterm = str_replace('#','\#',$sterm);
+		if (@preg_match('#'.$sterm.'#', null)===false) {
+			Factory::getApplication()->enqueueMessage(JText::_('COM_MEEDYA_INVALID_SEARCH'), 'error');
+			$this->setRedirect($this->input->server->getString('HTTP_REFERER', 'index.php?Itemid='.$this->mnuItm));
+		} else {
+			$view = $this->getView('search','html');
+			$view->setModel($this->getModel('search'), true);
+			$view->itemId = $this->mnuItm;
+			$view->aid = $this->input->post->getInt('aid', 0);
+			$view->sterm = $sterm;
+			$view->display();
+		}
 	}
 
 }
