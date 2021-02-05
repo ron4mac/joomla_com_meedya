@@ -57,4 +57,14 @@ class MeedyaController extends JControllerLegacy
 		$this->setRedirect(Route::_('index.php?option=com_meedya&Itemid='.$this->mnuItm, false));
 	}
 
+	public function search ()
+	{
+		$m = $this->getModel('album');	//, '', array('ignore_request' => false));
+		$m->setState('sterm', $this->input->post->getString('sterm', '*'));
+		$view = $this->getView('album','html');
+		$view->setModel($m, true);
+		$view->isSearch = true;
+		$view->display();
+	}
+
 }

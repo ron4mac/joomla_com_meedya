@@ -1,33 +1,45 @@
 <?php
 /**
  * @package		com_meedya
- * @copyright	Copyright (C) 2020 RJCreations. All rights reserved.
+ * @copyright	Copyright (C) 2021 RJCreations. All rights reserved.
  * @license		GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
 
+/* ========== NOTICE! THIS TEMPLATE IS REUSED BY SEARCH DISPLAY ========== */
+
 use Joomla\CMS\Router\Route;
 
+JHtml::_('jquery.framework');
 MeedyaHelper::addStyle('album');
 MeedyaHelper::addStyle('basicLightbox', 'vendor/blb/');
 MeedyaHelper::addStyle('manage');
 MeedyaHelper::addStyle('each');
+MeedyaHelper::addScript('meedya');
 MeedyaHelper::addScript('vuesld');
 
-JHtml::_('bootstrap.tooltip', '.hasTip', array('fixed'=>true));
+$jslang = [
+		'no_sterm' => JText::_('COM_MEEDYA_MSG_STERM'),
+		'ru_sure' => JText::_('COM_USERNOTES_RU_SURE')
+	];
+$this->jDoc->addScriptDeclaration('Meedya.L = '.json_encode($jslang).';
+');
 
-if ($this->files) {
-	foreach ($this->files as $file) {
+JHtml::_('bootstrap.tooltip', '.hasTip', ['fixed'=>true]);
+
+$filelist = [];
+if ($this->items) {
+	foreach ($this->items as $file) {
 		//$ftyp = cpg_get_type($row['filename']);
 		//if ($ftyp['content'] != 'image') continue;
 		$txtinfo = '';
 		$txtinfo .= trim($file['title']);
 		$txtinfo .= ($txtinfo ? ' ... ' : '') . trim($file['desc']);
-		$fileentry = array(
+		$fileentry = [
 				'fpath' => $file['file'],
 				'title' => $txtinfo,
 				'mTyp' => substr($file['mtype'], 0, 1)
-				);
+				];
 		$filelist[] = $fileentry;
 	}
 }
@@ -124,7 +136,7 @@ $this->jDoc->addScriptDeclaration($ttscript);
 }
 .slideback {
 	position: fixed;
-	background-color: rgba(0, 0, 0, 0.9);
+	background-color: rgba(0, 0, 0, 0.7);
 	left: 0;
 	top: 0;
 	width: 100%;
@@ -138,8 +150,9 @@ $this->jDoc->addScriptDeclaration($ttscript);
 	height: 100%;
 }
 </style>
-<?php echo JHtml::_('meedya.pageHeader', $this->params); ?>
 <div class="meedya-gallery">
+<?php echo JHtml::_('meedya.pageHeader', $this->params); ?>
+<?php if (!$this->isSearch) echo JHtml::_('meedya.searchField', $this->aid); ?>
 	<div class="crumbs">
 	<?php
 		foreach ($this->pathWay as $crm) {
@@ -147,7 +160,7 @@ $this->jDoc->addScriptDeclaration($ttscript);
 		}
 		echo '<span class="albttl">'.$this->title.'</span>';
 	?>
-	<?php if (count($this->items)>1): ?>
+	<?php if (!$this->isSearch && count($this->items)>1): ?>
 		<a href="<?=Route::_('index.php?option=com_meedya&view=slides&tmpl=component&aid='.$this->aid.'&Itemid='.$this->itemId, false) ?>" title="<?=JText::_('COM_MEEDYA_SLIDESHOW')?>">
 			<img src="components/com_meedya/static/img/slideshow.png" alt="" />
 		</a>
@@ -176,7 +189,7 @@ $this->jDoc->addScriptDeclaration($ttscript);
 
 	foreach ($this->items as $ix=>$item) {
 		if (!$item) continue;
-		list($thumb, $ititle, $idesc, $mtype) = $this->getItemThumbPlus($item);
+		list($thumb, $ititle, $idesc, $mtype) = $this->getItemThumbPlus($item['id']);
 		$ttip = ($ititle && $idesc) ? $ititle.'<br />'.$idesc : $ititle.$idesc;
 		switch (strstr($mtype, '/', true)) {
 			case 'video':
@@ -190,7 +203,7 @@ $this->jDoc->addScriptDeclaration($ttscript);
 		}
 		$itemImg->setAttr('src', 'components/com_meedya/static/img/'.$thmsrc);
 		$itemImgD->setAttr('title', $ttip);
-		$itemLnk->setAttr('href', Route::_('index.php?option=com_meedya&view=album&layout=each&aid='.$this->aid.'&iid='.$item.'&Itemid='.$this->itemId, false));
+		$itemLnk->setAttr('href', Route::_('index.php?option=com_meedya&view=album&layout=each&aid='.$this->aid.'&iid='.$item['id'].'&Itemid='.$this->itemId, false));
 		$itemLnk->setAttr('onclick', 'showSlides(event,'.$ix.')');
 		echo $itemDiv->render();
 	}

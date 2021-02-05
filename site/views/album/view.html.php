@@ -1,7 +1,7 @@
 <?php
 /**
  * @package		com_meedya
- * @copyright	Copyright (C) 2020 RJCreations. All rights reserved.
+ * @copyright	Copyright (C) 2021 RJCreations. All rights reserved.
  * @license		GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
@@ -32,58 +32,38 @@ class MeedyaViewAlbum extends MeedyaView
 		$this->albums = $this->get('Albums');
 		$m = $this->getModel();
 
-//		if ($this->getLayout() == 'each') {
-			$iid = $app->input->get->get('iid');
-			$this->six = 0;
-			$this->files = array();
+		$this->isSearch = false;
+		$this->six = 0;
 
-//			$this->album = $m->getAlbum($this->aid);
-			if ($this->items)
-				foreach ($this->items as $item) {
-					if ($item == $iid) $this->six = count($this->files);
-					$this->files[] = $m->getItemFile($item);
-				}
-//		} else {
-			$pw = $app->getPathWay();
-			$pw->setItemName(0, '<i class="icon-home-2" title="Gallery Home"></i>');
-			$apw = $m->getAlbumPath($this->aid);
-			foreach ($apw as $ap) {
-				foreach ($ap as $k => $v) {
-					if ($k != $this->aid) {
-						$pw->addItem($v, Route::_('index.php?option=com_meedya&view=album&aid='.$k.'&Itemid='.$this->itemId, false));
-					}
+		// setup the 'files' array with all the needed data
+//		$this->files = [];
+//		if ($this->items)
+//			foreach ($this->items as $item) {
+//				if ($item == $iid) $this->six = count($this->files);
+//				$this->files[] = $m->getItemFile($item);
+//			}
+
+		// build the bread crumbs
+		$pw = $app->getPathWay();
+		$pw->setItemName(0, '<i class="icon-home-2" title="Gallery Home"></i>');
+		$apw = $m->getAlbumPath($this->aid);
+		foreach ($apw as $ap) {
+			foreach ($ap as $k => $v) {
+				if ($k != $this->aid) {
+					$pw->addItem($v, Route::_('index.php?option=com_meedya&view=album&aid='.$k.'&Itemid='.$this->itemId, false));
 				}
 			}
-		//	$app->getPathWay()->addItem($this->get('Title'),'RRRRRR'.$this->aid);
-			$this->pathWay = $pw->getPathway();
-			$this->pagination = $this->get('Pagination');
-//		}
-
-		parent::display($tpl);
-	}
-
-	function __display ($tpl = null)
-	{
-		$this->state = $this->get('State');
-		$this->aid = $this->state->get('album.id');
-		$items = $this->get('Items');
-		$m = $this->getModel();
-		$this->album = $m->getAlbum($this->aid);
-		if ($items)
-			foreach ($items as $item)  {
-				$this->slides[] = $m->getItemFile($item);
-			}
-
-		$this->html5slideshowCfg = $m->getCfg('ss');
-		if (!$this->html5slideshowCfg) {
-			$this->html5slideshowCfg = MeedyaHelper::$ssDefault;
 		}
-		$jawc = new JApplicationWebClient();
-		if ($jawc->mobile) {
-			$this->html5slideshowCfg['tT'] = 's';
-		}
+		$this->pathWay = $pw->getPathway();
 
-		parent::display($tpl);
+		// probably unnecessary pagination 
+		$this->pagination = $this->get('Pagination');
+
+		if ($this->items) {
+			parent::display($tpl);
+		} else {
+			parent::display('empty');
+		}
 	}
 
 }

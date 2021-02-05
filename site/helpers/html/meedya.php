@@ -35,6 +35,21 @@ abstract class JHtmlMeedya
 		return $html;
 	}
 
+	public static function searchField ($aid)
+	{
+		$fact = self::aiUrl('view=search');
+//		$fact = self::aiUrl('view=album');
+		return <<<EOD
+<div class="search">
+	<form name="sqry" action="{$fact}" method="POST" onsubmit="return Meedya.performSearch(this)">
+		<input type="hidden" name="task" value="search.search" />
+		<input type="hidden" name="aid" value="{$aid}" />
+		<input type="search" name="sterm" results="10" autosave="meedya" placeholder="Search..." />
+	</form>
+</div>
+EOD;
+	}
+
 	public static function manageMenu ($perms, $aid=0, $Itemid=0)
 	{
 		if (!$perms) return '';
@@ -174,5 +189,21 @@ abstract class JHtmlMeedya
 		}
 		return $branch;
 	}
+
+
+/***** private functions *****/
+
+	private static function aiUrl ($prms, $xml=true)
+	{
+		static $mnuId = 0;
+
+		if (!$mnuId) {
+			$mnuId = Factory::getApplication()->input->getInt('Itemid', 0);
+		}
+		if (is_array($prms)) $prms = http_build_query($prms);
+		$url = Route::_('index.php?option=com_meedya'.($prms?('&'.$prms):'').'&Itemid='.$mnuId, $xml);
+		return $url;
+	}
+
 
 }

@@ -6,6 +6,11 @@
  */
 defined('_JEXEC') or die;
 
+JHtml::_('jquery.framework');
+
+MeedyaHelper::addStyle('jquery.tagsinput', 'vendor/tags/');
+MeedyaHelper::addScript('jquery.tagsinput', 'vendor/tags/');
+
 JHtml::stylesheet('components/com_meedya/static/vendor/blb/basicLightbox.min.css');
 JHtml::stylesheet('components/com_meedya/static/css/manage.css');
 //echo'<pre>';var_dump($this->iids);echo'</pre>';
@@ -50,7 +55,7 @@ function lboxPimg (evt, elm, mTyp) {
 	<div class="ied-attr">
 		<div class="ied-div2">
 		<div><label for="title<?=$idx?>">Title</label><input type="text" name="attr[<?=$namx?>][title]" id="title<?=$idx?>" value="<?=$iid->title?>" /></div>
-		<div><label for="kywrd<?=$idx?>">Key words</label><input type="text" name="attr[<?=$namx?>][kywrd]" id="kywrd<?=$idx?>" value="<?=$iid->kywrd?>" /></div>
+		<div><label for="kywrd<?=$idx?>">Key words</label><input type="text" name="attr[<?=$namx?>][kywrd]" class="itmtags" id="kywrd<?=$idx?>" value="<?=$iid->kywrd?>" /></div>
 		</div>
 		<div class="ied-div3"><label for="desc<?=$idx?>">Description</label><textarea name="attr[<?=$namx?>][desc]" id="desc<?=$idx?>" cols="60" rows="5"><?=$iid->desc?></textarea></div>
 	</div>
@@ -58,3 +63,6 @@ function lboxPimg (evt, elm, mTyp) {
 <?php endforeach; ?>
 <?=JHtml::_('meedya.submissionButtons')?>
 </form>
+<script>
+	jQuery(".itmtags").tagsInput();
+</script>

@@ -39,11 +39,13 @@ $this->jDoc->addScriptDeclaration($script);
 //$this->jDoc->addCustomTag('<script src="'.JUri::base(true).'/'.MeedyaHelper::scriptVersion('upload').'" type="text/javascript"></script>');
 
 $this->jDoc->addStyleSheet('components/com_meedya/static/css/gallery.css');
+$this->jDoc->addStyleSheet('components/com_meedya/static/vendor/tags/jquery.tagsinput.css');
 
 $this->jDoc->addStyleSheet('//cdnjs.cloudflare.com/ajax/libs/dropzone/5.5.0/min/dropzone.min.css');
 $this->jDoc->addScript('//cdnjs.cloudflare.com/ajax/libs/dropzone/5.5.0/min/dropzone.min.js');
 $this->jDoc->addScript('//cdnjs.cloudflare.com/ajax/libs/exif-js/2.3.0/exif.min.js');
 $this->jDoc->addScript('components/com_meedya/static/js/fileup.js');
+$this->jDoc->addScript('components/com_meedya/static/vendor/tags/jquery.tagsinput.js');
 
 $this->jDoc->addStyleSheet('components/com_meedya/static/css/upload.css');
 
@@ -137,6 +139,7 @@ if ($quota) {
 
 <div class="row-fluid">
 	<div id="dzupui" class="span12"<?= ($this->aid ? '' : ' style="display:none"') ?>>
+		<label for="h5u_keywords">Tags: </label><input type="text" id="h5u_keywords" />
 		<form action="<?php echo Route::_('index.php?option=com_meedya&Itemid='.$this->itemId, false); ?>" class="dropzone" id="fileuploader" enctype="multipart/form-data">
 			<p class="dz-message" style="font-size:18px">Drop files here to upload<br />(or click to select)</p>
 			<input type="hidden" name="task" value="manage.upfile">
@@ -155,6 +158,7 @@ if ($quota) {
 <?php endif; ?>
 </div>
 <script>
+jQuery('#h5u_keywords').tagsInput();
 Dropzone.options.fileuploader = {
 	paramName: 'userpicture',
 	acceptedFiles: 'image/*,video/*',
@@ -166,6 +170,7 @@ Dropzone.options.fileuploader = {
 //		var prgelm = document.getElementById("qBar");
 		this.on('sending', function(file, xhr, formData) {
 			formData.append('album', jQuery('#h5u_album').val());
+			formData.append('keywords', jQuery('#h5u_keywords').val());
 		});
 		this.on('success', function(file, resp) {
 			setTimeout(function(){ self.removeFile(file); }, 2500);

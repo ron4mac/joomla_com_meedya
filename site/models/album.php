@@ -38,15 +38,23 @@ class MeedyaModelAlbum extends MeedyaModelMeedya
 	public function getItems ()
 	{
 		$this->getAlbum();
+		if (!trim($this->_album->items)) return [];
 		$this->_itms = explode('|', $this->_album->items);
 		$this->_total = count($this->_itms);
 		$aid = $this->getState('album.id') ? : 0;
 		$limit = $this->state->get('list.limit'.$aid);
 		if ($limit) {
-			return array_slice($this->_itms, $this->state->get('list.start'.$aid), $limit);
+		//	return array_slice($this->_itms, $this->state->get('list.start'.$aid), $limit);
+			$iids = array_slice($this->_itms, $this->state->get('list.start'.$aid), $limit);
 		} else {
-			return array_slice($this->_itms, $this->state->get('list.start'.$aid));
+		//	return array_slice($this->_itms, $this->state->get('list.start'.$aid));
+			$iids = array_slice($this->_itms, $this->state->get('list.start'.$aid));
 		}
+		$items = [];
+		foreach ($iids as $iid) {
+			$items[] = $this->getItemFile($iid);
+		}
+		return $items;
 	}
 
 	public function getAlbums ()
@@ -55,20 +63,6 @@ class MeedyaModelAlbum extends MeedyaModelMeedya
 		$db = $this->getDbo();
 		$db->setQuery('SELECT * FROM `albums` WHERE `paid`='.$aid);
 		$albs = $db->loadObjectList();
-		return $albs;
-	}
-
-	// returns an array of aid=>title to the specified album
-	public function getAlbumPath ($to)
-	{
-		$db = $this->getDbo();
-		$albs = array();
-		while ($to) {
-			$db->setQuery('SELECT paid,title FROM albums WHERE aid='.$to);
-			$r = $db->loadAssoc();
-			array_unshift($albs, array($to =>$r['title']));
-			$to = $r['paid'];
-		}
 		return $albs;
 	}
 

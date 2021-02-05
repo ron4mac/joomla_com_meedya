@@ -25,7 +25,7 @@
 			label="COM_MEEDYA_FILTER_TAG"
 			description="COM_MEEDYA_FILTER_TAG_DESC"
 			onchange="this.form.submit();"
-			hint="keyword(s)"
+			hint="tag(s)"
 		/>
 	</fields>
 	<fields name="list">

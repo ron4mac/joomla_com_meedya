@@ -1,6 +1,9 @@
 .meedya-gallery {
 	position: relative;
 }
+.meedya-gallery .search {
+	float: right;
+}
 .btn-group.mgmenu {
 	position: absolute;
 	right: 0;
@@ -14,6 +17,7 @@
 	background-color: lavender;
 }
 .albthumbs {
+	clear: both;
 	display: flex;
 	flex-wrap: wrap;
 }

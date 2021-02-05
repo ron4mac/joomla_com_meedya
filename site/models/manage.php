@@ -133,11 +133,11 @@ class MeedyaModelManage extends MeedyaModelMeedya
 		$db->transactionCommit();
 	}
 
-	public function addItem ($fnam, $mtype, $ittl, $albm, $fsize, $tsize, $xpdt)
+	public function addItem ($fnam, $mtype, $ittl, $itgs, $albm, $fsize, $tsize, $xpdt)
 	{
 		$db = $this->getDbo();
-		$flds = $db->quoteName(array('file','mtype','ownid','title','album','fsize','tsize','expodt'));
-		$vals = $db->quote(array($fnam, $mtype, $this->ownid, $ittl, $albm, (int)$fsize, (int)$tsize, $xpdt));
+		$flds = $db->quoteName(array('file','mtype','ownid','title','kywrd','album','fsize','tsize','expodt'));
+		$vals = $db->quote(array($fnam, $mtype, $this->ownid, $ittl, $itgs, $albm, (int)$fsize, (int)$tsize, $xpdt));
 		if (count($vals) < 7) $vals[] = 'NULL';
 		$db->setQuery('INSERT INTO `meedyaitems` ('.implode(',', $flds).') VALUES ('.implode(',', $vals).')');
 		if (RJC_DBUG) { MeedyaHelper::log('addItem: '.$db->getQuery()); }
@@ -259,14 +259,15 @@ class MeedyaModelManage extends MeedyaModelMeedya
 		$xsize += $imgP->createMedium($mdydir.'/med/'.$base_name.$uniq, $ext);
 		$xsize += $imgP->createThumb($mdydir.'/thm/'.$base_name.$uniq, $ext);	*/
 		$ittl = isset($file['title']) ? $file['title'] : null;
+		$itgs = isset($file['tags']) ? $file['tags'] : null;
 	//	$this->addItem($base_name.$uniq.$ext, $mtype, $ittl, $alb, $fsize, $fsize+$xsize, $xpdt);
-		$this->processFile($ffpnam, $base_name.$uniq.$ext, $alb, $ittl, $keep);
+		$this->processFile($ffpnam, $base_name.$uniq.$ext, $alb, $ittl, $itgs, $keep);
 //		if (!$keep) {
 //			@unlink($ffpnam);
 //		}
 	}
 
-	public function processFile ($fpath, $fname, $alb, $ittl, $keep=false)
+	public function processFile ($fpath, $fname, $alb, $ittl, $itgs=null, $keep=false)
 	{
 		$mtype = '';
 		if (function_exists('finfo_open') && ($finf = finfo_open(FILEINFO_MIME_TYPE))) {
@@ -302,7 +303,7 @@ class MeedyaModelManage extends MeedyaModelMeedya
 		if (!$keep) $xsize = 0;
 		$xsize += $imgP->createMedium($mdydir.'/med/'.$base_name, $ext);
 		$xsize += $imgP->createThumb($mdydir.'/thm/'.$base_name, $ext);
-		$this->addItem($fname, $mtype, $ittl, $alb, $fsize, $fsize+$xsize, $xpdt);
+		$this->addItem($fname, $mtype, $ittl, $itgs, $alb, $fsize, $fsize+$xsize, $xpdt);
 		if (!$keep) @unlink($fpath);
 	}
 

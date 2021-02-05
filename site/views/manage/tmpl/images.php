@@ -12,9 +12,11 @@ JHtml::_('bootstrap.framework');
 MeedyaHelper::addStyle('basicLightbox', 'vendor/blb/');
 MeedyaHelper::addStyle('gallery');
 MeedyaHelper::addStyle('manage');
+MeedyaHelper::addStyle('jquery.tagsinput', 'vendor/tags/');
 MeedyaHelper::addScript('manage');
 MeedyaHelper::addScript('basicLightbox', 'vendor/blb/');
 MeedyaHelper::addScript('bootbox');
+MeedyaHelper::addScript('jquery.tagsinput', 'vendor/tags/');
 
 JText::script('COM_MEEDYA_PERM_DELETE');
 JText::script('JCANCEL');

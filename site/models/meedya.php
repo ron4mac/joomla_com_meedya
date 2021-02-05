@@ -33,6 +33,7 @@ class MeedyaModelMeedya extends JModelList
 			$dbc->sqliteCreateFunction('strtotime', 'strtotime', 1);
 			$dbc->sqliteCreateFunction('albhier', array($this,'albhier'), 2);
 			$dbc->sqliteCreateFunction('inpsv', array($this,'inpsv'), 2);
+			$dbc->sqliteCreateFunction('match', array($this,'match'), 2);
 
 			if ($doInit) {
 				require_once JPATH_COMPONENT.'/helpers/db.php';
@@ -63,6 +64,13 @@ class MeedyaModelMeedya extends JModelList
 	public function inpsv ($n, $fld)
 	{
 		return in_array($n, explode('|',$fld));
+	}
+	//
+	//
+	public function match ($pat, $fld)
+	{
+		$vals = explode(' ', trim($pat));
+		return preg_match('#'.implode('|', $vals).'#i', $fld);
 	}
 /* * * * * * * * * * * * * * * * * * * * * */
 
@@ -126,6 +134,20 @@ class MeedyaModelMeedya extends JModelList
 		$r = $db->loadObjectList();
 		//var_dump($r);
 		return $r;
+	}
+
+	// returns an array of aid=>title to the specified album
+	public function getAlbumPath ($to)
+	{
+		$db = $this->getDbo();
+		$albs = array();
+		while ($to) {
+			$db->setQuery('SELECT paid,title FROM albums WHERE aid='.$to);
+			$r = $db->loadAssoc();
+			array_unshift($albs, array($to =>$r['title']));
+			$to = $r['paid'];
+		}
+		return $albs;
 	}
 
 	protected function getListQuery ()

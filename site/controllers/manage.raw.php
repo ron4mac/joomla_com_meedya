@@ -49,7 +49,8 @@ class MeedyaControllerManage extends JControllerLegacy
 					throw new Exception('Unknown error.');
 			}
 			$m = $this->getModel('manage');
-			$m->storeFile($file, $this->input->post->get('album', 0, 'int'));
+			$file['tags'] = $this->input->post->getString('keywords', '');
+			$m->storeFile($file, $this->input->post->getInt('album', 0));
 		}
 		catch (Exception $e) {
 			header('HTTP/1.1 '.(400+$e->getCode()).' Failed to store file');
