@@ -1,7 +1,7 @@
 <?php
 /**
  * @package		com_meedya
- * @copyright	Copyright (C) 2020 RJCreations. All rights reserved.
+ * @copyright	Copyright (C) 2021 RJCreations. All rights reserved.
  * @license		GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
@@ -19,7 +19,7 @@ class MeedyaControllerManage extends JControllerLegacy
 	public function __construct ($config = [])
 	{
 	//	$config['name'] = $this->default_view;
-		if (RJC_DBUG) { MeedyaHelper::log('MeedyaControllerManage'); }
+	//	if (RJC_DBUG) MeedyaHelper::log('MeedyaControllerManage');
 		parent::__construct($config);
 		$this->mnuItm = $this->input->getInt('Itemid', 0);
 	//	echo'<xmp>';var_dump($config, $this);echo'</xmp>';	jexit();
@@ -28,7 +28,7 @@ class MeedyaControllerManage extends JControllerLegacy
 
 	public function display ($cachable = false, $urlparams = false)
 	{
-		if (RJC_DBUG) { MeedyaHelper::log('MeedyaControllerManage : display'); }
+	//	if (RJC_DBUG) MeedyaHelper::log('MeedyaControllerManage : display');
 //		$aid = $this->input->get->get('aid',0,'int');
 //		if ($aid) {
 //			$view = $this->getView('manage','html');
@@ -335,7 +335,7 @@ class MeedyaControllerManage extends JControllerLegacy
 
 	private function _log ($msg)
 	{
-		if (RJC_DBUG) { file_put_contents('ILOG.txt', $msg, FILE_APPEND); }
+		if (RJC_DBUG) file_put_contents('ILOG.txt', $msg, FILE_APPEND);
 	}
 
 }

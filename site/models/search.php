@@ -31,7 +31,7 @@ class MeedyaModelSearch extends MeedyaModelMeedya
 		} else {
 			$query->where($terms,'OR');
 		}
-		if (RJC_DBUG) { MeedyaHelper::log('ModelSearch search', (string)$query); }
+		if (RJC_DBUG) MeedyaHelper::log('ModelSearch search', (string)$query);
 
 		$db->setQuery($query);
 		$r = $db->loadAssocList();
@@ -113,7 +113,7 @@ class MeedyaModelSearch extends MeedyaModelMeedya
 				$query->where('album='.$aid);
 			}
 			}
-			if (RJC_DBUG) { MeedyaHelper::log('ModelManage getListQuery(items)', $query); }
+			if (RJC_DBUG) MeedyaHelper::log('ModelManage getListQuery(items)', $query);
 			return $query;
 		}
 

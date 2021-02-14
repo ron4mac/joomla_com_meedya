@@ -46,10 +46,12 @@ if ($this->items) {
 
 $ttscript = '
 	var baseUrl = "'.JUri::root(true).'/'.$this->gallpath.'/med/";
+	var baseUrlV = "'.JUri::root(true).'/'.$this->gallpath.'/img/";
 	var imgerror = "'.JText::_('COM_MEEDYA_SS_IMGERROR').'";
 	var imagelist = '.json_encode($filelist).';
 	var startx = '.$this->six.';
 	var _imgP = "components/com_meedya/static/img/";
+	var viderror = "COULD NOT PLAY VIDEO";
 	ssCtl.repeat = true;
 	jQuery(document).ready(function() {
 		jQuery(\'[data-toggle="tooltip"]\').tooltip();
@@ -102,6 +104,7 @@ $this->jDoc->addScriptDeclaration($ttscript);
 	padding: 4px;
 }
 #area {
+	clear: both;
 	display: flex;
 	flex-wrap: wrap;
 }
@@ -218,6 +221,7 @@ $this->jDoc->addScriptDeclaration($ttscript);
 <script src="components/com_meedya/static/vendor/blb/basicLightbox.min.js"></script>
 <script>
 	var blb_path = "<?=JUri::root(true).'/'.$this->gallpath?>/med/";
+	var blb_pathV = "<?=JUri::root(true).'/'.$this->gallpath?>/img/";
 	document.querySelectorAll('.itm-thm-ttl').forEach(function(elem) {
 		elem.onclick = function(e) {
 			const src = blb_path + elem.getAttribute('data-src');

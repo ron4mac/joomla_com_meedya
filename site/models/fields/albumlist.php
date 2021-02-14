@@ -1,13 +1,14 @@
 <?php
 /**
  * @package		com_meedya
- * @copyright	Copyright (C) 2020 RJCreations. All rights reserved.
+ * @copyright	Copyright (C) 2021 RJCreations. All rights reserved.
  * @license		GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('JPATH_BASE') or die;
 
-jimport('joomla.form.helper');
-JFormHelper::loadFieldClass('list');
+use Joomla\CMS\Form\FormHelper;
+
+FormHelper::loadFieldClass('list');
 
 class JFormFieldAlbumList extends JFormFieldList
 {

@@ -1,8 +1,8 @@
 <?php
 /**
  * @package		com_meedya
- * @copyright	Copyright (C) 2015 - 2020 Open RJCreations. All rights reserved.
- * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ * @copyright	Copyright (C) 2021 RJCreations. All rights reserved.
+ * @license		GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
 

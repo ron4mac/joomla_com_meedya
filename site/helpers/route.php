@@ -1,27 +1,16 @@
 <?php
 /**
- * @version		$Id: route.php 21097 2011-04-07 15:38:03Z dextercowley $
- * @package		Joomla.Site
- * @subpackage	com_meedya
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
- * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ * @package		com_meedya
+ * @copyright	Copyright (C) 2021 RJCreations. All rights reserved.
+ * @license		GNU General Public License version 3 or later; see LICENSE.txt
  */
 
 // no direct access
 defined('_JEXEC') or die;
 
 // Component Helper
-jimport('joomla.application.component.helper');
-jimport('joomla.application.categories');
+use Joomla\CMS\Component\ComponentHelper;
 
-/**
- * Meedya Component Route Helper
- *
- * @static
- * @package		Joomla.Site
- * @subpackage	com_meedya
- * @since 1.5
- */
 abstract class MeedyaHelperRoute
 {
 	protected static $lookup;
@@ -134,7 +123,7 @@ abstract class MeedyaHelperRoute
 		if (self::$lookup === null) {
 			self::$lookup = array();
 
-			$component	= JComponentHelper::getComponent('com_meedya');
+			$component	= ComponentHelper::getComponent('com_meedya');
 			$items		= $menus->getItems('component_id', $component->id);
 			foreach ($items as $item)
 			{

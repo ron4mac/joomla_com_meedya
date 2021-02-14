@@ -499,7 +499,8 @@ function blbEscape (e) {
 
 function lboxPimg (iFile, mTyp) {
 	const src = blb_path + iFile;
-	const html = mTyp=="v" ? ('<video controls><source src="'+src+'"></video>') : ('<img src="'+src+'">');
+	const srcV = blb_pathV + iFile;
+	const html = mTyp=="v" ? ('<video controls><source src="'+srcV+'"></video>') : ('<img src="'+src+'">');
 	blbI = basicLightbox.create(html);
 	blbI.show();
 	document.addEventListener("keydown", blbEscape);

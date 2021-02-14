@@ -15,7 +15,7 @@ class MeedyaControllerSearch extends JControllerLegacy
 
 	public function __construct ($config = [])
 	{
-		if (RJC_DBUG) { MeedyaHelper::log('MeedyaControllerSearch'); }
+	//	if (RJC_DBUG) MeedyaHelper::log('MeedyaControllerSearch');
 		parent::__construct($config);
 		$this->mnuItm = $this->input->getInt('Itemid', 0);
 	}

@@ -1,23 +1,26 @@
 <?php
 /**
  * @package		com_meedya
- * @copyright	Copyright (C) 2020 RJCreations. All rights reserved.
+ * @copyright	Copyright (C) 2021 RJCreations. All rights reserved.
  * @license		GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
 
-//require_once 'manage.php';
+use Joomla\CMS\Factory;
+
 JLoader::register('JHtmlMeedya', JPATH_COMPONENT . '/helpers/html/meedya.php');
 
 class MeedyaControllerManage extends JControllerLegacy
 {
 	protected $gallPath;
 	protected $impacts = [];
+	protected $uplodr;
 
-	public function __construct ($config = array())
+	public function __construct ($config = [])
 	{
 		$this->gallPath = MeedyaHelper::userDataPath();
-		if (RJC_DBUG) { MeedyaHelper::log('MeedyaControllerManageRaw'); }
+	//	if (RJC_DBUG) MeedyaHelper::log('MeedyaControllerManageRaw');
+		$this->uplodr = Factory::getApplication()->getParams()->get('upload_ap','UL');
 		parent::__construct($config);
 	}
 
@@ -27,37 +30,22 @@ class MeedyaControllerManage extends JControllerLegacy
 	// task to receive and store uploaded files
 	public function upfile ()
 	{
-		if (JDEBUG) { JLog::add('upfile: '.print_r($this->input, true), JLog::INFO, 'com_meedya'); }
+	//	if (RJC_DBUG) MeedyaHelper::log('upfile:', $this->input);
 		if (!JSession::checkToken()) {
 			header('HTTP/1.1 403 Not Allowed');
 			jexit(JText::_('JINVALID_TOKEN'));
 		}
-	//	$galid = base64_decode($this->input->get('galid', '', 'base64'));
-		$file = $this->input->files->get('userpicture');
 
-		try {
-			if (!$file) throw new Exception('Parameters error.');
-			switch ($file['error']) {
-				case UPLOAD_ERR_OK:
-					break;
-				case UPLOAD_ERR_NO_FILE:
-					throw new Exception('No file sent.');
-				case UPLOAD_ERR_INI_SIZE:
-				case UPLOAD_ERR_FORM_SIZE:
-					throw new Exception('Exceeded filesize limit.');
-				default:
-					throw new Exception('Unknown error.');
-			}
+		$cf = $this->uplodr == 'DZ' ? 'uplodz.php' : 'uplodr.php';
+		require_once JPATH_COMPONENT.'/classes/'.$cf;
+		$toname = null;
+		$uplodr_obj = new Up_Load($this->input, $toname, ['target_dir'=>JPATH_BASE.'/']);
+		if ($toname) {
 			$m = $this->getModel('manage');
-			$file['tags'] = $this->input->post->getString('keywords', '');
-			$m->storeFile($file, $this->input->post->getInt('album', 0));
-		}
-		catch (Exception $e) {
-			header('HTTP/1.1 '.(400+$e->getCode()).' Failed to store file');
-			echo 'Error storing file: ' . $e->getMessage();
+			$qr = $m->storeFile($toname, $this->input->post, $uplodr_obj);
+			echo ':qp:'.$qr;
 		}
 	}
-
 
 	// task to create a new album
 	public function newAlbum ()
@@ -79,7 +67,6 @@ class MeedyaControllerManage extends JControllerLegacy
 		}
 	}
 
-
 	// task to remove items from an album
 	public function removeItems ()
 	{
@@ -94,7 +81,6 @@ class MeedyaControllerManage extends JControllerLegacy
 		}
 	}
 
-
 	public function adjustAlbPaid ()
 	{
 		if (JSession::checkToken()) {
@@ -107,15 +93,13 @@ class MeedyaControllerManage extends JControllerLegacy
 		}
 	}
 
-
 	public function impstps ()
 	{
 		$fld = $this->input->get('fld','','STRING');
-		if ($fld) $this->impacts[] = array('act'=>'na','ttl'=>$fld);
+		if ($fld) $this->impacts[] = ['act'=>'na','ttl'=>$fld];
 		$this->buildImpActs('/import/'.($fld ? ($fld.'/') : ''));
 		echo json_encode($this->impacts);
 	}
-
 
 	public function impact ()
 	{
@@ -127,7 +111,7 @@ class MeedyaControllerManage extends JControllerLegacy
 				$ttl = $this->input->post->get('ttl','New Album','STRING');
 				$pid = $this->input->post->get('pid',0,'INT');
 				$aid = $m->addAlbum($ttl, $pid);
-				echo json_encode(array('r'=>$aid,'tt'=>'new alb id'));
+				echo json_encode(['r'=>$aid,'tt'=>'new alb id']);
 				break;
 			case 'ii':
 				$aid = $this->input->post->get('aid',null,'INT');
@@ -135,17 +119,16 @@ class MeedyaControllerManage extends JControllerLegacy
 				$fast = $this->input->post->get('fat','','BOOL');
 				$this->placeImageFiles($fp, $aid, $fast);
 				$iid = 9;		//$m->addImage($fp, $cid, $gid);
-				echo json_encode(array('r'=>$iid,'aid'=>$aid,'tt'=>'new img id'));
+				echo json_encode(['r'=>$iid,'aid'=>$aid,'tt'=>'new img id']);
 				break;
 			case 'pa';
 				break;
 		}
 	}
 
-
 	private function placeImageFiles ($fpath, $aid, $fast)
 	{
-		$this->_log(print_r(array($aid, $fpath), true));
+		$this->_log(print_r([$aid, $fpath], true));
 		$dir = JPATH_BASE . '/' . $this->gallPath;
 
 		$src = $dir . $fpath;
@@ -157,13 +140,12 @@ class MeedyaControllerManage extends JControllerLegacy
 		}
 		$fn = $pp['filename'].$u.'.'.$pp['extension'];
 		$fdst = $dst.$fn;
-		$this->_log(print_r(array($src, $fdst), true));
+		$this->_log(print_r([$src, $fdst]), true);
 		if (copy($src, $fdst)) {
 			$m = $this->getModel('manage');
 			$m->processFile($fdst, $fn, $aid, $fast ? $pp['filename'] : null);
 		}
 	}
-
 
 	private function buildImpActs ($dir='')
 	{
@@ -173,15 +155,15 @@ class MeedyaControllerManage extends JControllerLegacy
 			if ($file[0] != '.') {
 				$fp = $dir.$file;
 				if (is_dir($aDir.$file)) {
-					$this->impacts[] = array('act'=>'na','ttl'=>$file);
+					$this->impacts[] = ['act'=>'na','ttl'=>$file];
 					$this->buildImpActs($fp.'/');
 				} else {
 					// check here that it is a valid image file
-					if ($this->validImageFile($aDir.$file)) $this->impacts[] = array('act'=>'ii','fp'=>$fp);
+					if ($this->validImageFile($aDir.$file)) $this->impacts[] = ['act'=>'ii','fp'=>$fp];
 				}
 			}
 		}
-		$this->impacts[] = array('act'=>'pa');
+		$this->impacts[] = ['act'=>'pa'];
 		closedir($dh);
 	}
 
@@ -198,7 +180,7 @@ class MeedyaControllerManage extends JControllerLegacy
 
 	private function _log ($msg)
 	{
-		if (RJC_DBUG) { file_put_contents('ILOG.txt', $msg, FILE_APPEND); }
+		if (RJC_DBUG) file_put_contents('ILOG.txt', $msg, FILE_APPEND);
 	}
 
 

@@ -1,7 +1,7 @@
 <?php
 /**
  * @package		com_meedya
- * @copyright	Copyright (C) 2020 RJCreations. All rights reserved.
+ * @copyright	Copyright (C) 2021 RJCreations. All rights reserved.
  * @license		GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
@@ -18,10 +18,12 @@ JHtml::stylesheet('components/com_meedya/static/css/manage.css');
 <script src="components/com_meedya/static/vendor/blb/basicLightbox.min.js"></script>
 <script>
 var blb_path = "<?=JUri::root(true).'/'.$this->gallpath?>/med/";
+var blb_pathV = "<?=JUri::root(true).'/'.$this->gallpath?>/img/";
 function lboxPimg (evt, elm, mTyp) {
 	const pimg = elm.parentElement.previousElementSibling;	console.log(pimg);
 	const src = blb_path + pimg.getAttribute('data-img');	console.log(src);
-	const html = mTyp=="v" ? ('<video controls><source src="'+src+'"></video>') : ('<img src="'+src+'">');
+	const srcV = blb_pathV + pimg.getAttribute('data-img');	console.log(src);
+	const html = mTyp=="v" ? ('<video controls><source src="'+srcV+'"></video>') : ('<img src="'+src+'">');
 //	const html = '<img src="' + src + '">';
 	basicLightbox.create(html).show();
 }

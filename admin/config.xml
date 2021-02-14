@@ -79,6 +79,18 @@
 			compdef="120" />
 
 		<field
+			name="upload_app"
+			type="radio"
+			class="btn-group btn-group-yesno"
+			default="UL"
+			label="COM_MEEDYA_CONFIG_UPLOADER_LABEL"
+			description="COM_MEEDYA_CONFIG_UPLOADER_DESC"
+		>
+			<option value="UL">UpLodr</option>
+			<option value="DZ">DropZone</option>
+		</field>
+
+		<field
 			name="show_version"
 			type="radio"
 			class="btn-group btn-group-yesno"

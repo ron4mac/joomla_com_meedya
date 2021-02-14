@@ -1,7 +1,7 @@
 <?php
 /**
  * @package		com_meedya
- * @copyright	Copyright (C) 2020 RJCreations. All rights reserved.
+ * @copyright	Copyright (C) 2021 RJCreations. All rights reserved.
  * @license		GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
@@ -110,6 +110,7 @@ echo JHtml::_(
 <script>
 jQuery('#system-message-container').delay(5000).slideUp("slow");
 var blb_path = "<?=JUri::root(true).'/'.$this->gallpath?>/med/";
+var blb_pathV = "<?=JUri::root(true).'/'.$this->gallpath?>/img/";
 echo.init({
 	baseUrl: "<?=JUri::root(true).'/'.$this->gallpath?>/",
 	offset: 200,

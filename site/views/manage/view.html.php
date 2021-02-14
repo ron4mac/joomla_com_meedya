@@ -1,7 +1,7 @@
 <?php
 /**
  * @package		com_meedya
- * @copyright	Copyright (C) 2020 RJCreations. All rights reserved.
+ * @copyright	Copyright (C) 2021 RJCreations. All rights reserved.
  * @license		GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
@@ -20,7 +20,7 @@ class MeedyaViewManage extends MeedyaView
 
 	public function __construct ($config = array())
 	{
-		if (RJC_DBUG) { MeedyaHelper::log('MeedyaViewManage'); }
+	//	if (RJC_DBUG) MeedyaHelper::log('MeedyaViewManage');
 		parent::__construct($config);
 	}
 
@@ -31,9 +31,9 @@ class MeedyaViewManage extends MeedyaView
 //		$this->items = $this->get('Items');
 
 		$this->mparams = !empty($this->itemId) ? Factory::getApplication()->getMenu()->getItem($this->itemId)->getParams() : new JRegistry();
-	//	echo'<xmp>';var_dump($this->mparams);echo'</xmp>';
+		//echo'<xmp>';var_dump($this->mparams);echo'</xmp>';
 
-		if (RJC_DBUG) { MeedyaHelper::log('ViewManage state', $this->state); }
+	//	if (RJC_DBUG) MeedyaHelper::log('ViewManage state', $this->state);
 
 		if ($this->state && $this->state->get('album.id')/* ?: 0*/) {
 			$this->aid = $this->state->get('album.id');
@@ -43,7 +43,7 @@ class MeedyaViewManage extends MeedyaView
 			$this->setLayout('albedit');
 		}
 
-		if (RJC_DBUG) { MeedyaHelper::log('layout='.$this->getLayout()); }
+	//	if (RJC_DBUG) MeedyaHelper::log('layout='.$this->getLayout());
 
 		JText::script('JACTION_DELETE');
 		JText::script('JCANCEL');
@@ -106,6 +106,7 @@ class MeedyaViewManage extends MeedyaView
 			//	$this->state = $this->get('State');
 //				$this->curalb = 0;
 // @+@+@+@+@+@+@+@+@ get media types from config
+				$this->uplodr = $this->params->get('upload_ap','UL');
 				$this->acptmime = 'accept="image/*,video/*" ';
 			//	$this->albums = $this->get('AlbumsList');
 				$this->maxUploadFS = MeedyaHelper::maxUpload($this->mparams->get('maxUpload'));

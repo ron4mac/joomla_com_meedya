@@ -16,9 +16,8 @@ class MeedyaController extends JControllerLegacy
 
 	public function __construct ($config = [])
 	{
-		if (RJC_DBUG) { MeedyaHelper::log('MeedyaController'); }
+	//	if (RJC_DBUG) { MeedyaHelper::log('MeedyaController'); }
 		parent::__construct($config);
-		if (JDEBUG) { JLog::addLogger(['text_file'=>'com_meedya.log.php'], JLog::ALL, ['com_meedya']); }
 		$this->uid = Factory::getUser()->get('id');
 		$this->mnuItm = $this->input->getInt('Itemid', 0);
 		if ($this->mnuItm) {

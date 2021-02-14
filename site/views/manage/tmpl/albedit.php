@@ -1,7 +1,7 @@
 <?php
 /**
  * @package		com_meedya
- * @copyright	Copyright (C) 2020 RJCreations. All rights reserved.
+ * @copyright	Copyright (C) 2021 RJCreations. All rights reserved.
  * @license		GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
@@ -23,6 +23,7 @@ MeedyaHelper::addScript('pell.min', 'vendor/pell/');
 $this->jDoc->addScriptDeclaration('
 var albumID = '.$this->aid.';
 var blb_path = "'.JUri::root(true).'/'.$this->gallpath.'/med/";
+var blb_pathV = "'.JUri::root(true).'/'.$this->gallpath.'/img/";
 ');
 
 JText::script('COM_MEEDYA_REMOVE');

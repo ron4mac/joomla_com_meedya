@@ -199,7 +199,7 @@ var	ssCtl = (function() {
 //		if (tElm.eMsg) { _titlelm.innerHTML += tElm.eMsg; }
 if (LR !== 0) { _titlelm.innerHTML = ""; }
 		if (tElm.ism) {
-			_vElm.src = baseUrl + imagelist[tElm.slidnum].fpath;
+			_vElm.src = baseUrlV + imagelist[tElm.slidnum].fpath;
 //			_sldnumelm.innerHTML = tElm.slidnum + 1;
 		} else {
 			positionImage(tElm, function(){ imgPlaced(tElm); /*tElm.className = _onClass;*/});

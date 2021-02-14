@@ -52,3 +52,13 @@ function createAlbum (elm) {
 		}
 	);
 }
+
+function updStorBar (elem, val) {
+	elem.style.width = val + "%";
+	elem.innerHTML = val + "%";
+	if (val > 90) {
+		elem.style.backgroundColor = "#ff8888";
+	} else if (val > 80) {
+		elem.style.backgroundColor = "#fff888";
+	}
+}
