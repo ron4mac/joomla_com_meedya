@@ -59,7 +59,7 @@ class MeedyaViewAlbum extends MeedyaView
 		// probably unnecessary pagination 
 		$this->pagination = $this->get('Pagination');
 
-		if ($this->items) {
+		if ($this->items || $this->albums) {
 			parent::display($tpl);
 		} else {
 			parent::display('empty');

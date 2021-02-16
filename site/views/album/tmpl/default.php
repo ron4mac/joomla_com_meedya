@@ -113,8 +113,12 @@ $this->jDoc->addScriptDeclaration($ttscript);
 	height: 120px;
 }
 .falbum img {
-	width: 104px;
-	height: 104px;
+	width: 120px;
+	height: 120px;
+}
+.falbum img {
+	width: 94px;
+	height: 94px;
 	background: #fff;
 	margin-right: 15px;
 	box-shadow:
@@ -131,11 +135,19 @@ $this->jDoc->addScriptDeclaration($ttscript);
 	/* Padding for demo purposes */
 	padding: 8px;
 }
+.falbum a {
+	width: 120px;
+	height: 120px;
+}
 .itm-alb-ttl {
-	position: relative;
+	position: absolute;
 	min-width: 120px;
-	top: 120px;
+	top: 50px;
 	text-align: center;
+	background-color: rgba(255,255,255,0.7);
+}
+.itm-alb-ttl:hover {
+	background-color: #FFF;
 }
 .slideback {
 	position: fixed;

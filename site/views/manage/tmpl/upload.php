@@ -196,6 +196,7 @@ if ($quota) {
 </div>
 <script>
 jQuery('#h5u_keywords').tagsInput();
+var sqb = document.getElementById("qBar");
 <?php if ($this->uplodr == 'DZ'): ?>
 Dropzone.options.fileuploader = {
 	paramName: 'userpicture',
@@ -204,7 +205,6 @@ Dropzone.options.fileuploader = {
 //	addRemoveLinks: true,
 	init: function() {
 		var self = this;
-		var sqb = document.getElementById('qBar');
 //		var prgelm = document.getElementById("mdy-totupld");
 //		var prgelm = document.getElementById("qBar");
 		this.on('sending', function(file, xhr, formData) {

@@ -333,7 +333,7 @@ function $ae (elem, evnt, func) {
 					} else if (this.status === 200) {
 						if (this.responseText.length) {
 							if (this.responseText.charAt()==':') {
-								opts.success(responseText.substr(1));
+								opts.success(this.responseText.substr(1));
 							} else {
 								$.pBar.msg(this.responseText, true);
 								return;

@@ -30,6 +30,7 @@ function buildTree(array $albums, &$html, $paid = 0) {
 			$html[] = '<span class="icon-delete" title="Delete Album"> </span>';
 			$html[] = '<span class="icon-edit" title="Edit Album"> </span>';
 			$html[] = '<big><b>'.$alb['title'].'</b></big> ( '.$alb['items'].' items )';
+			$html[] = '<span class="icon-upload" title="Upload to Album"> </span>';
 		//	if ($alb['desc']) {
 		//		$html[] = '<br />'.$alb['desc'];
 		//	}
@@ -49,6 +50,7 @@ buildTree($this->galStruct, $html);
 //JHtml::_('meedya.buildTree', $this->galStruct, $html);	echo'<xmp>';var_dump($html);echo'</xmp>';
 $this->btmscript[] = 'var albStruct = '. json_encode($this->galStruct).';';
 $this->btmscript[] = 'jQuery("#gstruct .icon-edit").on("click", function (e) { albEdtAction(e,this); });';
+$this->btmscript[] = 'jQuery("#gstruct .icon-upload").on("click", function (e) { albUpldAction(e,this); });';
 $this->btmscript[] = 'jQuery("#gstruct .icon-delete").on("click", function (e) { albDelAction(e,this); });';
 $this->btmscript[] = 'AArrange.init("gstruct","album");';
 
@@ -82,6 +84,13 @@ $hasImport = JFolder::exists($this->gallpath.'/import');
 #gstruct .icon-edit:hover {
 	color: orange;
 }
+#gstruct .icon-upload {
+	color: #0BD;
+	cursor: pointer;
+}
+#gstruct .icon-upload:hover {
+	color: blue;
+}
 #gstruct .icon-delete {
 	color: #FDD;
 	float: right;
@@ -100,8 +109,8 @@ $hasImport = JFolder::exists($this->gallpath.'/import');
 	<?php if ($this->manage) echo JHtml::_('meedya.manageMenu', $this->userPerms, 0, $this->itemId); ?>
 	<?php echo JHtml::_('meedya.pageHeader', $this->params, $this->action/*.'XXXX'*/); ?>
 	<div id="toolbar">
-		<a href="#" onclick="goUpload(event)" title="Upload Files">Upload</a>
-		<a href="<?php echo Route::_('index.php?option=com_meedya&task=manage.doUpload&aid=0&Itemid='.$this->itemId, false); ?>">Upload Items</a>
+		<!-- <a href="#" onclick="goUpload(event)" title="Upload Files">Upload</a> -->
+		<!-- <a href="<?php echo Route::_('index.php?option=com_meedya&task=manage.doUpload&aid=0&Itemid='.$this->itemId, false); ?>">Upload Items</a> -->
 		<a href="#newalbdlg" data-toggle="modal" onclick="setDlgParAlb();">New Album</a>
 	<?php if ($hasImport): ?>
 		<a href="#importdlg" data-toggle="modal">Import Items</a>
@@ -165,6 +174,12 @@ endif;
 		var alb2edit = jQuery(elm).parent().attr('data-aid');
 		//window.location = '<?=Route::_('index.php?option=com_meedya&view=manage&layout=albedit&aid=', false)?>' + alb2edit;
 		window.location = '<?=Route::_('index.php?option=com_meedya&task=manage.editAlbum&Itemid='.$this->itemId.'&aid=', false)?>' + alb2edit;
+	}
+	function albUpldAction (e, elm) {
+		_pd(e);
+		var alb2upld = jQuery(elm).parent().attr('data-aid');
+		//window.location = '<?=Route::_('index.php?option=com_meedya&view=manage&layout=albedit&aid=', false)?>' + alb2edit;
+		window.location = '<?=Route::_('index.php?option=com_meedya&task=manage.doUpload&Itemid='.$this->itemId.'&aid=', false)?>' + alb2upld;
 	}
 	function albDelAction (e, elm) {
 		_pd(e);
