@@ -77,11 +77,7 @@ abstract class MeedyaAdminHelper
 				break;
 		}
 
-	//	$result = Factory::getApplication()->triggerEvent('onRjuserDatapath');
-	//	$sdp = isset($result[0]) ? trim($result[0]) : '';
-	//	if (!$sdp) $sdp = 'userstor';
-		$dispatcher = new EventDispatcher();
-		$result = $dispatcher->triggerEvent('onRjuserDatapath', null);
+		$result = Factory::getApplication()->triggerEvent('onRjuserDatapath', null);
 		$sdp = isset($result[0]) ? trim($result[0]) : 'userstor';
 
 		self::$udp = $sdp.'/'.$ndir.'/'.$cmp;
