@@ -92,7 +92,7 @@ abstract class MeedyaHelper
 				break;
 		}
 
-		$result = Factory::getApplication()->triggerEvent('onRjuserDatapath', null);
+		$result = Factory::getApplication()->triggerEvent('onRjuserDatapath');
 		$sdp = isset($result[0]) ? trim($result[0]) : 'userstor';
 
 		self::$udp = $sdp.'/'.$ndir.'/'.$cmp;
