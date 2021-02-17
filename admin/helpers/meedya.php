@@ -1,12 +1,13 @@
 <?php
 /**
  * @package		com_meedya
- * @copyright	Copyright (C) 2020 RJCreations. All rights reserved.
+ * @copyright	Copyright (C) 2021 RJCreations. All rights reserved.
  * @license		GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
+use Joomla\Event\Dispatcher as EventDispatcher;
 
 abstract class MeedyaAdminHelper
 {
@@ -76,9 +77,12 @@ abstract class MeedyaAdminHelper
 				break;
 		}
 
-		$result = Factory::getApplication()->triggerEvent('onRjuserDatapath');
-		$sdp = isset($results[0]) ? trim($results[0]) : '';
-		if (!$sdp) $sdp = 'userstor';
+	//	$result = Factory::getApplication()->triggerEvent('onRjuserDatapath');
+	//	$sdp = isset($result[0]) ? trim($result[0]) : '';
+	//	if (!$sdp) $sdp = 'userstor';
+		$dispatcher = new EventDispatcher();
+		$result = $dispatcher->triggerEvent('onRjuserDatapath', null);
+		$sdp = isset($result[0]) ? trim($result[0]) : 'userstor';
 
 		self::$udp = $sdp.'/'.$ndir.'/'.$cmp;
 		return self::$udp;
@@ -127,7 +131,7 @@ abstract class MeedyaAdminHelper
 	public static function userAuth ($uid)
 	{
 		self::getTypeOwner();
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 		$uid = $user->get('id');
 		$ugrps = $user->get('groups');	//var_dump('ug:',$ugrps);
 		switch (self::$instanceType) {
@@ -143,14 +147,14 @@ abstract class MeedyaAdminHelper
 
 	public static function getGroupTitle ($gid)
 	{
-		$db = JFactory::getDbo();
+		$db = Factory::getDbo();
 		$db->setQuery('SELECT title FROM #__usergroups WHERE id='.$gid);
 		return ($db->loadResult()?:'- ??? -');
 	}
 
 	public static function getActions ()
 	{
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 		$result = new JObject;
 		$assetName = 'com_meedya';
 
@@ -231,7 +235,7 @@ abstract class MeedyaAdminHelper
 	private static function getTypeOwner ()
 	{
 		if (is_null(self::$instanceType)) {
-			$app = JFactory::getApplication();
+			$app = Factory::getApplication();
 			$id = $app->input->getBase64('mID', false);
 			if ($id) {
 				$ids = explode(':',base64_decode($id));
@@ -242,7 +246,7 @@ abstract class MeedyaAdminHelper
 				self::$instanceType = $params->get('instance_type');
 				switch (self::$instanceType) {
 					case 0:
-						self::$ownerID = JFactory::getUser()->get('id');
+						self::$ownerID = Factory::getUser()->get('id');
 						if (!self::$ownerID) self::$ownerID = -1;
 						break;
 					case 1:

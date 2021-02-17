@@ -7,6 +7,7 @@
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
+use Joomla\Event\Dispatcher as EventDispatcher;
 
 abstract class MeedyaHelper
 {
@@ -91,9 +92,12 @@ abstract class MeedyaHelper
 				break;
 		}
 
-		$result = Factory::getApplication()->triggerEvent('onRjuserDatapath');
-		$sdp = isset($results[0]) ? trim($results[0]) : '';
-		if (!$sdp) $sdp = 'userstor';
+	//	$result = Factory::getApplication()->triggerEvent('onRjuserDatapath');
+	//	$sdp = isset($result[0]) ? trim($result[0]) : '';
+	//	if (!$sdp) $sdp = 'userstor';
+		$dispatcher = new EventDispatcher();
+		$result = $dispatcher->triggerEvent('onRjuserDatapath', null);
+		$sdp = isset($result[0]) ? trim($result[0]) : 'userstor';
 
 		self::$udp = $sdp.'/'.$ndir.'/'.$cmp;
 		return self::$udp;
