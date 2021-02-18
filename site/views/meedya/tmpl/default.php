@@ -22,8 +22,8 @@ $this->jDoc->addScriptDeclaration('Meedya.L = '.json_encode($jslang).';
 ?>
 
 <div class="meedya-gallery">
-<?php if ($this->userPerms->canAdmin || $this->userPerms->canUpload) echo JHtml::_('meedya.manageMenu', $this->userPerms, 0, $this->itemId); ?>
 <?php echo JHtml::_('meedya.pageHeader', $this->params); ?>
+<?php if ($this->userPerms->canAdmin || $this->userPerms->canUpload) echo JHtml::_('meedya.manageMenu', $this->userPerms, 0, $this->itemId); ?>
 <?php echo JHtml::_('meedya.searchField', 0); ?>
 <div class="albthumbs">
 <?php

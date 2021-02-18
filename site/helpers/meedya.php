@@ -7,7 +7,6 @@
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
-use Joomla\Event\Dispatcher as EventDispatcher;
 
 abstract class MeedyaHelper
 {
@@ -140,6 +139,14 @@ abstract class MeedyaHelper
 		return min($cupmax, JFilesystemHelper::fileUploadMaxSize(false));
 	}
 
+	// gat a resolved option value based on component and instance (same-named) values
+	public static function getResolvedOption ($opt, $dflt=null)
+	{
+		$optval = self::instanceOption($opt);
+		$optval = $optval ?: self::componentOption($opt);
+		return $optval ?: $dflt;
+	}
+
 	// return the instance storage quota
 	public static function getStoreQuota ($prms)
 	{
@@ -253,25 +260,27 @@ abstract class MeedyaHelper
 	}
 
 
-	private static function instanceOption ($key, $dflt)
+	private static function instanceOption ($key, $dflt=null)
 	{
 		static $ip;
 
 		if (empty($ip)) {
 			$ip = Factory::getApplication()->getParams();
-			$active = Factory::getApplication()->getMenu()->getActive();
+		//	$active = Factory::getApplication()->getMenu()->getActive();
 		//	echo'<xmp>';var_dump($active,$ip);echo'</xmp>';
+			if (RJC_DBUG) self::log('inst opts', $ip);
 		}
 
 		return $ip->get($key) ?: $dflt;
 	}
 
-	private static function componentOption ($key, $dflt)
+	private static function componentOption ($key, $dflt=null)
 	{
 		static $cp;
 
 		if (empty($cp)) {
 			$cp = JComponentHelper::getParams('com_meedya');
+			if (RJC_DBUG) self::log('comp opts', $cp);
 		}
 
 		return $cp->get($key) ?: $dflt;

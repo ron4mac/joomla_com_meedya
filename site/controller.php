@@ -34,6 +34,8 @@ class MeedyaController extends JControllerLegacy
 		if (!file_exists(MeedyaHelper::userDataPath())) {
 			//set to a view that has no model
 			$this->input->set('view', 'startup');
+			$view = $this->getView('startup','html');
+			$view->itemId = $this->mnuItm;
 		} else {
 			$view = $this->getView('meedya','html');
 			$view->itemId = $this->mnuItm;

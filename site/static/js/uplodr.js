@@ -368,7 +368,7 @@ function $ae (elem, evnt, func) {
 
 		// put up the progress bar
 		$.pBar = new ProgressBar($, $.doChnk ? 'chnkpb' : 'normpb');
-
+console.log(file);
 		var errM = '';
 		if (typeof(aft) == 'object' && aft.length) {
 			var dotParts = file.name.split('.');

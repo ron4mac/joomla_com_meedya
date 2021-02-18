@@ -6,6 +6,8 @@
  */
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Router\Route;
+
 //echo'<xmp>';var_dump($this->params);echo'</xmp>';
 ?>
 <h1><?php echo $this->params->get('page_title'); ?> Startup Screen</h1>
@@ -15,8 +17,8 @@ defined('_JEXEC') or die('Restricted access');
 	<p>Please be patient and give me a few weeks to figure out what to do here.</p>
 </div>
 <div>
-	<form>
-		<button type="submit" class="btn btn-primary">Start My Gallery</button>
+	<form action="<?=Route::_('index.php?option=com_meedya&Itemid='.$this->itemId, false)?>" method="post">
+		<button type="submit" class="btn btn-primary">Start The Gallery</button>
 		<input type="hidden" name="task" value="begin" />
 	</form>
 </div>

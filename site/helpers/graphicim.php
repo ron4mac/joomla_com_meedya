@@ -59,7 +59,18 @@ class ImageProcessor extends ImageProc
 		$dfil = $dest.$ext;
 		$w = $this->img_width;
 		$h = $this->img_height;
-		if ($maxH) {
+		if ($maxW && $maxH) {
+			$iar = $w/$h;
+			$tar = $maxW/$maxH;
+			$w = $maxW;
+			$h = $maxH;
+			if ($iar > $tar) {
+				$h = (int)($maxW / $iar);
+			} elseif ($iar < $tar) {
+				$w = (int)($maxH * $iar);
+			} else {
+			}
+		} elseif ($maxH) {
 			$r = $w/$h;
 			$h = $maxH;
 			$w = $r * $maxH;
@@ -86,6 +97,7 @@ class ImageProcessor extends ImageProc
         exec($cmd, $output, $retval);
 		if (RJC_DBUG) { MeedyaHelper::log(print_r(array($output, $retval), true)); }
 		$this->src = $dest;
+		parent::refresh();
 		return filesize($this->src);
 	}
 

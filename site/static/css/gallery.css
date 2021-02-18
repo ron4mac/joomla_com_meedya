@@ -5,9 +5,11 @@
 	float: right;
 }
 .btn-group.mgmenu {
-	position: absolute;
+/*	position: absolute;
 	right: 0;
-	top: 0;
+	top: 0;*/
+	float: right;
+	margin-left: 10px;
 }
 .mgmenup {
 	cursor: pointer;

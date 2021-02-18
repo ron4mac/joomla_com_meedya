@@ -44,4 +44,10 @@ class ImageProc
 		list($this->img_width, $this->img_height, $this->img_type) = getimagesize($src);
 	}
 
+	// call to get new attribuutes for modified file
+	protected function refresh ()
+	{
+		list($this->img_width, $this->img_height, $this->img_type) = getimagesize($this->src);
+	}
+
 }

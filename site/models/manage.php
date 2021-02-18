@@ -10,8 +10,6 @@ use Joomla\CMS\Factory;
 
 require_once __DIR__ . '/meedya.php';
 
-//JLoader::register('MeedyaHelper', JPATH_COMPONENT_ADMINISTRATOR.'/helpers/meedya.php');
-
 class MeedyaModelManage extends MeedyaModelMeedya
 {
 	//protected $context = 'manage';
@@ -85,6 +83,7 @@ class MeedyaModelManage extends MeedyaModelMeedya
 
 	public function removeItems ($aid, $list)
 	{
+		if (RJC_DBUG) MeedyaHelper::log('removeItems', ['album'=>$aid,'items'=>$list]);
 		if (is_null($this->album) || $this->album['aid']!=$aid) $this->album = $this->getAlbum($aid);
 		$cur = explode('|', $this->album['items']);
 		$mod = array_diff($cur, $list);
@@ -262,8 +261,12 @@ class MeedyaModelManage extends MeedyaModelMeedya
 		$base_name = $fnp['filename'];
 		$ext = isset($fnp['extension']) ? ('.'.$fnp['extension']) : '';
 		$xsize = $imgP->orientImage($fpath);
+		if (RJC_DBUG && $xsize) MeedyaHelper::log('image rotated');
 		if (!$keep) $xsize = 0;
-		$xsize += $imgP->createMedium($mdydir.'/med/'.$base_name, $ext);
+		$maxw = MeedyaHelper::getResolvedOption('max_width', 1200);
+		$maxh = MeedyaHelper::getResolvedOption('max_height', 1200);
+		if (RJC_DBUG) MeedyaHelper::log("sizing medium image ... maxW: {$maxw} maxH: {$maxh}");
+		$xsize += $imgP->createMedium($mdydir.'/med/'.$base_name, $ext, $maxw, $maxh);
 		$xsize += $imgP->createThumb($mdydir.'/thm/'.$base_name, $ext);
 		$this->addItem($fname, $mtype, $ittl, $itgs, $alb, $fsize, $fsize+$xsize, $xpdt);
 		if (!$keep) @unlink($fpath);
@@ -369,6 +372,7 @@ class MeedyaModelManage extends MeedyaModelMeedya
 			$sets .= $k.' = '.$db->quote($v);
 		}
 		$db->setQuery('UPDATE `albums` SET '.$sets.' WHERE `aid`='.$this->album['aid']);
+		if (RJC_DBUG) MeedyaHelper::log('update album', ['album'=>$this->album,'fields'=>$fields]);
 	//	echo $db->getQuery();
 		$db->execute();
 	}
