@@ -95,7 +95,7 @@ class MeedyaModelManage extends MeedyaModelMeedya
 	{
 		if (RJC_DBUG) MeedyaHelper::log('addItems', ['album'=>$album,'items'=>$items]);
 		$db = $this->getDbo();
-		$db->transactionStart();
+		$db->transactionStart(true);
 		$db->setQuery('SELECT `items` FROM `albums` WHERE `aid`='.$album);
 		$r = $db->loadResult();
 		if ($r!==false || is_null($r)) {
@@ -111,7 +111,7 @@ class MeedyaModelManage extends MeedyaModelMeedya
 			$db->execute();
 			$album = $db->insertid();
 		}
-		$db->transactionCommit();
+		$db->transactionCommit(true);
 		$this->addAlbum2Items($album, $items);
 	}
 
@@ -119,7 +119,7 @@ class MeedyaModelManage extends MeedyaModelMeedya
 	{
 		if (!is_array($album)) $album = [$album];
 		$db = $this->getDbo();
-		$db->transactionStart();
+		$db->transactionStart(true);
 		$db->setQuery('SELECT `id`,`album` FROM `meedyaitems` WHERE `id` IN ('.implode(',',$items).')');
 		$itms = $db->loadAssocList();
 		foreach ($itms as $itm) {
@@ -129,7 +129,7 @@ class MeedyaModelManage extends MeedyaModelMeedya
 			$db->setQuery($q);
 			$db->execute();
 		}
-		$db->transactionCommit();
+		$db->transactionCommit(true);
 	}
 
 	public function addItem ($fnam, $mtype, $ittl, $itgs, $albm, $fsize, $tsize, $xpdt)
@@ -138,6 +138,7 @@ class MeedyaModelManage extends MeedyaModelMeedya
 		$flds = $db->quoteName(['file','mtype','ownid','title','kywrd','album','fsize','tsize','expodt']);
 		$vals = $db->quote([$fnam, $mtype, $this->ownid, $ittl, $itgs, $albm, (int)$fsize, (int)$tsize, $xpdt]);
 		if (count($vals) < 7) $vals[] = 'NULL';
+		$db->transactionStart();
 		$db->setQuery('INSERT INTO `meedyaitems` ('.implode(',', $flds).') VALUES ('.implode(',', $vals).')');
 		if (RJC_DBUG) MeedyaHelper::log('addItem: '.(string)$db->getQuery());
 		try {
@@ -148,6 +149,7 @@ class MeedyaModelManage extends MeedyaModelMeedya
 			if (RJC_DBUG) MeedyaHelper::log('addItem error: '.$e->getMessage());
 			JError::raiseError(500, $e->getMessage());
 		}
+		$db->transactionCommit();
 	}
 
 	public function addAlbum ($anam, $parid=0, $desc='')

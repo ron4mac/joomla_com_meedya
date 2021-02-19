@@ -135,7 +135,7 @@ class ImageProcessor extends ImageProc
 	public function createMedium ($dest, $ext, $maxW=0, $maxH=1200)
 	{
 		try {
-			$this->imgk->scaleImage($maxW, $maxH);
+			$this->imgk->scaleImage($maxW, $maxH, (bool)($maxW && $maxH));
 			$this->imgk->writeImage($dest.$ext);
 			return filesize($dest.$ext);
 		}
