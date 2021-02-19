@@ -249,14 +249,14 @@ abstract class MeedyaHelper
 						if (!self::$ownerID) self::$ownerID = -1;
 						break;
 					case 1:
-						self::$ownerID = $params->get('group_auth');
+						self::$ownerID = $params->get('owner_group');
 						break;
 					case 2:
 						self::$ownerID = $params->get('site_auth');
 						break;
 				}
 			}
-		//var_dump(self::$instanceType,self::$ownerID);
+		//echo'<xmp>';var_dump($params,self::$instanceType,self::$ownerID);echo'</xmp>';
 		}
 	}
 
