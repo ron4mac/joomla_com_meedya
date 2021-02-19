@@ -10,6 +10,7 @@ include_once 'imgproc.php';
 
 class ImageProcessor extends ImageProc
 {
+	public $ipp = 'GD2';
 	protected $errs = array();
 	protected $res = null;
 
@@ -106,6 +107,9 @@ class ImageProcessor extends ImageProc
 	public function createMedium ($dest, $ext, $maxW=1200, $maxH=-1)
 	{
 		if (RJC_DBUG) { MeedyaHelper::log('GDimageProc-createMedium'.print_r(array($dest, $ext, $maxW, $maxH),true)); }
+		if ($maxW && $maxH>0) {
+			list($maxW,$maxH) = $this->fitInRect($this->img_width, $this->img_height, $maxW, $maxH);
+		}
 		try {
 //			$img = imagescale($this->res, $maxW, $maxH);
 //			imagedestroy($this->res);
@@ -128,7 +132,8 @@ class ImageProcessor extends ImageProc
 		$flp = 0; $rot = 0;
 		$osize = filesize($this->src);
 		$exif = @exif_read_data($this->src);		//file_put_contents('exif.txt', print_r($exif,true), FILE_APPEND);
-		if (!$exif) return;
+		if (!$exif) return 0;
+		if (!isset($exif['Orientation'])) return 0;
 		$ort = $exif['Orientation'];
 		switch ($ort) {
 			case 1: // nothing
@@ -180,6 +185,8 @@ class ImageProcessor extends ImageProc
 						imagepng($this->res, $dest, 0);
 						break;
 				}
+				$this->img_width = imagesx($this->res);
+				$this->img_height = imagesy($this->res);
 				return filesize($dest) - $osize;
 			}
 			catch(Exception $e) {

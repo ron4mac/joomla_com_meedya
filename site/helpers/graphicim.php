@@ -10,6 +10,7 @@ include_once 'imgproc.php';
 
 class ImageProcessor extends ImageProc
 {
+	public $ipp = 'IM';
 	protected $errs = array();
 
 	public function __construct ($src)
@@ -60,16 +61,17 @@ class ImageProcessor extends ImageProc
 		$w = $this->img_width;
 		$h = $this->img_height;
 		if ($maxW && $maxH) {
-			$iar = $w/$h;
-			$tar = $maxW/$maxH;
-			$w = $maxW;
-			$h = $maxH;
-			if ($iar > $tar) {
-				$h = (int)($maxW / $iar);
-			} elseif ($iar < $tar) {
-				$w = (int)($maxH * $iar);
-			} else {
-			}
+			list($w,$h) = $this->fitInRect($this->img_width, $this->img_height, $maxW, $maxH);
+//			$iar = $w/$h;
+//			$tar = $maxW/$maxH;
+//			$w = $maxW;
+//			$h = $maxH;
+//			if ($iar > $tar) {
+//				$h = (int)($maxW / $iar);
+//			} elseif ($iar < $tar) {
+//				$w = (int)($maxH * $iar);
+//			} else {
+//			}
 		} elseif ($maxH) {
 			$r = $w/$h;
 			$h = $maxH;

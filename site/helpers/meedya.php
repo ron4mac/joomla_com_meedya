@@ -157,15 +157,16 @@ abstract class MeedyaHelper
 
 	public static function getImgProc ($imgf)
 	{
-	//	if (JDEBUG) { JLog::add('@@ENV@@'.print_r(getenv(), true), JLog::DEBUG, 'com_meedya'); }
-
-		$imp = 'gd';	// default to GD
-		if (class_exists('Imagick')) {
-			$imp = 'imx';
-		} else {
-			$sps = explode(':', getenv('PATH'));
-			foreach ($sps as $sp) {
-				if (file_exists($sp.'/convert')) $imp = 'im';
+		$imp = self::componentOption('image_proc');
+		if (!$imp) {
+			$imp = 'gd';	// default to GD
+			if (class_exists('Imagick')) {
+				$imp = 'imx';
+			} else {
+				$sps = explode(':', getenv('PATH'));
+				foreach ($sps as $sp) {
+					if (file_exists($sp.'/convert')) $imp = 'im';
+				}
 			}
 		}
 		require_once JPATH_COMPONENT.'/helpers/graphic'.$imp.'.php';

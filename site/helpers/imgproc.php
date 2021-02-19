@@ -44,6 +44,21 @@ class ImageProc
 		list($this->img_width, $this->img_height, $this->img_type) = getimagesize($src);
 	}
 
+	// adjust a source dimension to just fit in a destination dimension, keeping aspect
+	protected function fitInRect ($sW, $sH, $dW, $dH)
+	{
+		$sar = $sW/$sH;
+		$dar = $dW/$dH;
+		$w = $dW;
+		$h = $dH;
+		if ($sar > $dar) {
+			$h = (int)($dW / $sar);
+		} elseif ($sar < $dar) {
+			$w = (int)($dH * $sar);
+		}
+		return [$w,$h];
+	}
+
 	// call to get new attribuutes for modified file
 	protected function refresh ()
 	{

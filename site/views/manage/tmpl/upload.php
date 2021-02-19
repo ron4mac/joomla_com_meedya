@@ -147,7 +147,12 @@ if ($quota) {
 <p>
 	<!-- <?php var_dump($this->params); ?> -->
 </p>
-
+<?php
+if (RJC_DBUG) {
+	$ipp = MeedyaHelper::getImgProc('images/powered_by.png');
+	echo "<p>{$ipp->ipp} image processor</p>";
+}
+?>
 <div class="albctl">
 	<label for="h5u_album"><?=JText::_('COM_MEEDYA_H5U_ALB_SELECT')?></label>
 	<select id="h5u_album" name="h5u_album" onchange="album_select(this)">

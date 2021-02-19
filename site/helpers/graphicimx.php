@@ -93,6 +93,7 @@ include_once 'imgproc.php';
 
 class ImageProcessor extends ImageProc
 {
+	public $ipp = 'IMX';
 	protected $errs = array();
 	protected $src;
 	protected $imgk;
