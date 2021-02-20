@@ -194,9 +194,11 @@ function $ae (elem, evnt, func) {
 		var $ = this, key, query;
 		$.upFile = file;
 		$.fileName = file.fileName || file.name;
-		$.size = file.size;
+		$.size = file.fileSize || file.size;
+		$.fType = file.fileType || file.type;
+		$.date = file.lastModified;
 		$.upState = '';
-		$.doChnk = ($.upFile.size > maxcnksz);
+		$.doChnk = ($.size > maxcnksz);
 		$.chnkSize = Math.round(maxcnksz / 2) - 3072;
 		$.relPath = file.webkitRelativePath || $.fileName;
 		$.uniqueId = $.size + '-' + Math.random().toString().replace("0.", "");
@@ -236,7 +238,7 @@ function $ae (elem, evnt, func) {
 			fDat();
 			switch ($.upState) {
 				case '':
-//					addData($.fData, $.upForm);
+					addData($.fData, {type: $.fType, size: $.size, lastMod: $.date});
 					$.fData.append('Filedata', $.upFile);
 					$.upState = 'upld';
 					break;
@@ -254,7 +256,7 @@ function $ae (elem, evnt, func) {
 			switch ($.upState) {
 				case '':
 					//console.log('pref',$.fileName);
-					addData($.fData, { chunkact: 'pref', file: $.fileName, size: $.size, ident: $.uniqueId});
+					addData($.fData, { chunkact: 'pref', file: $.fileName, type: $.fType, size: $.size, ident: $.uniqueId});
 //					addData($.fData, $.upForm);
 					$.upState = 'chnk';
 					break;
@@ -272,7 +274,7 @@ function $ae (elem, evnt, func) {
 					$.actSize = $.endByte - $.startByte;
 					$.fData.append('chnkn', ++$.chnkNum);
 					if ($.chnkNum == $.numChnks) {
-						addData($.fData, { fname: $.fileName })
+						addData($.fData, { fname: $.fileName, type: $.fType, size: $.size, lastMod: $.date })
 						addData($.fData, $.palod);
 					}
 					$.fData.append('Filedata', $.upFile[slfunc]($.startByte, $.endByte));
@@ -370,18 +372,20 @@ function $ae (elem, evnt, func) {
 		$.pBar = new ProgressBar($, $.doChnk ? 'chnkpb' : 'normpb');
 console.log(file);
 		var errM = '';
-		if (typeof(aft) == 'object' && aft.length) {
-			var dotParts = file.name.split('.');
+		if (!$.fType.match(/image\/|video\//)) {
+			errM = 'File type is not allowed';
+		} else if (typeof(aft) == 'object' && aft.length) {
+			var dotParts = $.fileName.split('.');
 			if (dotParts.length == 1 || (aft.indexOf(dotParts.pop().toLowerCase()) < 0)) {
 				errM = '<i class="fa fa-info-circle infoG" onclick="alert(\'Allowed file types: \' + H5uOpts.allowed_file_types.join(\', \'));"></i> File type not allowed';
 			}
-		} else if (file.size > opts.maxfilesize) {
+		} else if ($.size > opts.maxfilesize) {
 			errM = 'File is larger than allowed';
 		}
 
 		if (errM) {
 			$.pBar.msg(errM, true);
-			UpdateTotalProgress(file.size);
+			UpdateTotalProgress($.size);
 			$.xhr = null;
 			NextInQueue(true,'errM');
 			return;
@@ -406,7 +410,7 @@ console.log(file);
 			// create UI
 			updiv.appendChild(CreateElement(
 				'div',
-				'<input type="file" name="userpictures" id="file_field" multiple="multiple" accccept="image/*,video/*" style="display:none">'
+				'<input type="file" name="userpictures" id="file_field" multiple="multiple" accept="image/*,video/*" style="display:none">'
 				+ '<div class="drpmsg">'+opts.dropMessage+'</div>',
 				{id:'dropArea', onclick:"$id('file_field').click();"}
 				)
