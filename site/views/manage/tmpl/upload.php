@@ -32,6 +32,7 @@ js_vars.upLink = "'.Route::_('index.php?option=com_meedya&format=raw&Itemid='.$t
 js_vars.fup_payload = {task: "manage.upfile", galid: "'.$this->galid.'"};
 js_vars.maxfilesize = '.($this->maxUploadFS/1048576).';';
 
+$chnksize = MeedyaHelper::phpMaxUp() - 262144;
 if ($this->uplodr == 'UL')
 	$script .= '
 	const h5uOptions = {
@@ -40,7 +41,7 @@ if ($this->uplodr == 'UL')
 		dropMessage: "Please drop files here to upload<br>(or click to select)",
 		concurrent:4,
 	//	allowed_file_types: ["jpg","jpeg","mp4"],
-	//	maxchunksize: 1048576,
+		maxchunksize: '.$chnksize.',
 		success: function(resp) { updStorBar(sqb, resp.split(\':\')[1]); },
 		doneFunc: uploadDone
 	};
@@ -64,15 +65,10 @@ $this->jDoc->addScriptDeclaration($script);
 //$this->jDoc->addCustomTag('<script src="'.JUri::base(true).'/'.MeedyaHelper::scriptVersion('upload').'" type="text/javascript"></script>');
 
 $this->jDoc->addStyleSheet('components/com_meedya/static/css/gallery.css');
+$this->jDoc->addStyleSheet('components/com_meedya/static/css/manage.css');
 $this->jDoc->addStyleSheet('components/com_meedya/static/vendor/tags/jquery.tagsinput.css');
-if ($this->uplodr == 'DZ') {
-	$this->jDoc->addStyleSheet('//cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.0/min/dropzone.min.css');
-	$this->jDoc->addScript('//cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.0/min/dropzone.min.js');
-	$this->jDoc->addScript('//cdnjs.cloudflare.com/ajax/libs/exif-js/2.3.0/exif.min.js');
-} else {
-	$this->jDoc->addStyleSheet('components/com_meedya/static/css/uplodr.css');
-//	$this->jDoc->addScript('components/com_meedya/static/js/uplodr.js');
-}
+$this->jDoc->addStyleSheet('components/com_meedya/static/css/uplodr.css');
+
 $this->jDoc->addScript('components/com_meedya/static/js/fileup.js');
 $this->jDoc->addScript('components/com_meedya/static/vendor/tags/jquery.tagsinput.js');
 
@@ -80,7 +76,7 @@ $this->jDoc->addStyleSheet('components/com_meedya/static/css/upload.css');
 
 JText::script('COM_MEEDYA_Q_STOPPED');
 
-$qcolors = array('#eeffee','#fff888','#ff8888');
+$qcolors = ['#eeffee','#fff888','#ff8888'];
 $quota = MeedyaHelper::getStoreQuota($this->params);	//echo'<pre>';var_dump($this->params);echo'</pre>';
 if ($quota) {
 	$qper = $this->totStore / $quota;
@@ -124,6 +120,9 @@ if ($quota) {
 	padding: 10px 10px;
 	border-radius: 5px;
 }
+.modal-backdrop.fade.in {
+    opacity: 0.3;
+}
 </style>
 <?php endif; ?>
 <div class="meedya-gallery">
@@ -160,38 +159,12 @@ if (RJC_DBUG) {
 		<option value=""<?=($this->aid?'':' selected')?>><?=JText::_('COM_MEEDYA_H5U_SELECT')?></option>
 		<?=JHtml::_('meedya.albumsHierOptions', $this->albums, $this->aid)?>
 	</select>
-	<div id="crealbm" style="display:none;">
-		<input type="text" name="nualbnam" id="nualbnam" value="" style="margin-left:2em" onkeyup="watchAlbNam(this)" />
-<?php if ($this->albums): ?>
-		<select id="h5u_palbum" name="h5u_palbum">
-			<option value=""><?=JText::_('COM_MEEDYA_H5U_SELPAR')?></option>
-			<option value="0"><?=JText::_('COM_MEEDYA_H5U_NONE')?></option>
-			<?=JHtml::_('meedya.albumsHierOptions', $this->albums)?>
-		</select>
-<?php endif; ?>
-		<button type="button" id="creab" onclick="createAlbum(this)" style="vertical-align:text-bottom" disabled><?=JText::_('COM_MEEDYA_H5U_CREALBM')?></button>
-		<img src="<?=JUri::base(true)?>/components/com_meedya/static/css/process.gif" style="vertical-align:baseline;visibility:hidden;" />
-	</div>
 </div>
-
 <div class="row-fluid">
 	<div id="dzupui" class="span12"<?= ($this->aid ? '' : ' style="display:none"') ?>>
 		<label for="h5u_keywords">Tags: </label><input type="text" id="h5u_keywords" />
-<?php if ($this->uplodr == 'DZ'): ?>
-		<form action="<?php echo Route::_('index.php?option=com_meedya&Itemid='.$this->itemId, false); ?>" class="dropzone" id="fileuploader" enctype="multipart/form-data">
-			<p class="dz-message" style="font-size:18px">Drop files here to upload<br />(or click to select)</p>
-			<input type="hidden" name="task" value="manage.upfile">
-			<input type="hidden" name="galid" value="<?php echo $this->galid; ?>">
-			<input type="hidden" name="format" value="raw">
-			<?php echo JHtml::_('form.token'); ?>
-			<div class="fallback">
-				<input name="file" type="file" multiple />
-			</div>
-		</form>
-<?php else: ?>
 		<div id="errmsgs"></div>
 		<div id="uplodr"></div>
-<?php endif; ?>
 	</div>
 </div>
 <?php else: ?>
@@ -199,53 +172,18 @@ if (RJC_DBUG) {
 <h3>You have exceeded your storage quota.</h3>
 <?php endif; ?>
 </div>
+<?php
+echo JHtml::_(
+	'bootstrap.renderModal',
+	'newalbdlg',
+	['title' => JText::_('COM_MEEDYA_CREATE_NEW_ALBUM'),
+	'footer' => JHtml::_('meedya.modalButtons', 'COM_MEEDYA_H5U_CREALBM','createAlbum(this)', 'creab'),
+	'modalWidth' => '40'],
+	$this->loadTemplate('newalb')
+	);
+?>
 <script>
 jQuery('#h5u_keywords').tagsInput();
 var sqb = document.getElementById("qBar");
-<?php if ($this->uplodr == 'DZ'): ?>
-Dropzone.options.fileuploader = {
-	paramName: 'userpicture',
-	acceptedFiles: 'image/*,video/*',
-	maxFilesize: js_vars.maxfilesize, // + 134217728,
-//	addRemoveLinks: true,
-	init: function() {
-		var self = this;
-//		var prgelm = document.getElementById("mdy-totupld");
-//		var prgelm = document.getElementById("qBar");
-		this.on('sending', function(file, xhr, formData) {
-			formData.append('album', jQuery('#h5u_album').val());
-			formData.append('keywords', jQuery('#h5u_keywords').val());
-		});
-		this.on('success', function(file, resp) {
-			var qp = resp.split(':')[1];
-			updStorBar(sqb, qp);
-			setTimeout(function(){ self.removeFile(file); }, 2500);
-		});
-		this.on('error', function(file, emsg, xhr) {
-			if (xhr && xhr.status==403) {
-				if (self.options.autoProcessQueue) {
-					var emsg = file.xhr.responseText;
-					self.options.autoProcessQueue = false;
-					alert(emsg+"\n"+Joomla.JText._('COM_MEEDYA_Q_STOPPED'));
-				}
-			}
-		});
-		this.on('queuecomplete', function() {
-			console.log(this.getRejectedFiles());
-			if (!this.getRejectedFiles().length)
-			setTimeout(function(){
-			 	redirURL = js_vars.site_url + '&task=manage.imgEdit&after=' + js_vars.timestamp;
-				if (confirm('Edit info for files?')) window.location = redirURL;
-			}, 2500);
-		});
-//		this.on('totaluploadprogress', function(pct,totb,bsnt) {
-//		//	console.log(pct,totb,bsnt);
-//			prgelm.style.width = pct+"%";
-//		});
-		//	console.log(file);
-	}
-};
-<?php else: ?>
-	H5uSetup();
-<?php endif; ?>
+H5uSetup();
 </script>

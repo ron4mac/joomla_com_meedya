@@ -23,6 +23,7 @@ abstract class MeedyaHelperGraphics
 		}
 	}
 
+
 	public static function createMedium ($src, $dest, $ext, $maxW=0, $maxH=1200)
 	{
 		try {
@@ -36,6 +37,7 @@ abstract class MeedyaHelperGraphics
 			die('Error when creating medium image: ' . $e->getMessage());
 		}
 	}
+
 
 	public static function orientImage ($src, $dest)
 	{
@@ -89,12 +91,13 @@ abstract class MeedyaHelperGraphics
 	}
 }
 
+
 include_once 'imgproc.php';
 
 class ImageProcessor extends ImageProc
 {
 	public $ipp = 'IMX';
-	protected $errs = array();
+	protected $errs = [];
 	protected $src;
 	protected $imgk;
 
@@ -114,10 +117,12 @@ class ImageProcessor extends ImageProc
 		}
 	}
 
+
 	public function getErrors ()
 	{
 		return $this->errs;
 	}
+
 
 	public function createThumb ($dest, $ext, $maxW=0, $maxH=100, $sqr=true)
 	{
@@ -133,6 +138,7 @@ class ImageProcessor extends ImageProc
 		}
 	}
 
+
 	public function createMedium ($dest, $ext, $maxW=0, $maxH=1200)
 	{
 		try {
@@ -145,6 +151,7 @@ class ImageProcessor extends ImageProc
 			$this->errs[] = 'Error when creating medium image: ' . $e->getMessage();
 		}
 	}
+
 
 	public function orientImage ($dest)
 	{

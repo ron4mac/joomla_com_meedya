@@ -53,7 +53,7 @@ function $id (id) {
 }
 function watchAlbNam (elm) {
 	//var creab = $id('creab');	console.log(creab,elm.value);
-	var creab = $id('creab');
+	var creab = $id('creab');	console.log(creab,elm.value);
 	var classes = creab.classList;
 	if (elm.value.trim()) {
 		//creab.disabled = false;
@@ -69,24 +69,21 @@ function watchAlbNam (elm) {
 		creab.disabled = true;
 	}
 }
-function createAlbum (elm) {
+function ae_createAlbum (elm) {
 	elm.disabled = true;
 	var albNamFld = $id('nualbnam');
 	var albParFld = $id('h5u_palbum');
 	var albDscFld = $id('albdesc');
 	var nualbnam = albNamFld.value.trim();
-//	elm.nextElementSibling.style.visibility = 'visible';
 	var ajd = {format: 'raw', task: 'manage.newAlbum', albnam: nualbnam, paralb: (albParFld ? albParFld.value : 0), albdesc: albDscFld.value};
 	ajd[formTokn] = 1;
 	jQuery.post(myBaseURL, ajd,
 		function (response, status, xhr) {
 			console.log(response, status, xhr);
-//			elm.nextElementSibling.style.visibility = 'hidden';
 			if (status=="success") {
+				jQuery('#newalbdlg').modal('hide');
 				if (response) {
 					alert(response);
-//				var crea = $id("crealbm");
-//				crea.style.display = "none";
 				} else {
 					window.location.reload(true);
 				}

@@ -19,14 +19,14 @@ abstract class MeedyaHelper
 	{
 		$dbg = RJC_DBUG;
 		$sfx = $dbg ? ('?'.time()) : '';
-		$vray = array(
-			'manage' => array('manage.js', 'manage.js'),
-			'echo' => array('echo.js', 'echo.min.js'),
-			'slides' => array('slides.js', 'slides.min.js'),
-			'upload' => array('upload.js', 'upload.min.js'),
-			'each' => array('each.js', 'each.js'),
-			'basicLightbox' => array('basicLightbox.min.js', 'basicLightbox.min.js')
-			);
+		$vray = [
+			'manage' => ['manage.js', 'manage.js'],
+			'echo' => ['echo.js', 'echo.min.js'],
+			'slides' => ['slides.js', 'slides.min.js'],
+			'upload' => ['upload.js', 'upload.min.js'],
+			'each' => ['each.js', 'each.js'],
+			'basicLightbox' => ['basicLightbox.min.js', 'basicLightbox.min.js']
+			];
 		if (isset($vray[$scr])) {
 			$s = $vray[$scr][$dbg ? 0 : 1];
 		} else {
@@ -45,14 +45,14 @@ abstract class MeedyaHelper
 	{
 		$dbg = RJC_DBUG;
 		$sfx = $dbg ? ('?'.time()) : '';
-		$vray = array(
-			'manage' => array('manage.css', 'manage.css'),
-			'echo' => array('echo.css', 'echo.min.css'),
-			'slides' => array('slides.css', 'slides.min.css'),
-			'upload' => array('upload.css', 'upload.min.css'),
-			'each' => array('each.css', 'each.css'),
-			'basicLightbox' => array('basicLightbox.min.css', 'basicLightbox.min.css')
-			);
+		$vray = [
+			'manage' => ['manage.css', 'manage.css'],
+			'echo' => ['echo.css', 'echo.min.css'],
+			'slides' => ['slides.css', 'slides.min.css'],
+			'upload' => ['upload.css', 'upload.min.css'],
+			'each' => ['each.css', 'each.css'],
+			'basicLightbox' => ['basicLightbox.min.css', 'basicLightbox.min.css']
+			];
 		if (isset($vray[$css])) {
 			$s = $vray[$css][$dbg ? 0 : 1];
 		} else {
@@ -173,7 +173,7 @@ abstract class MeedyaHelper
 		return new ImageProcessor($imgf);
 	}
 
-	public static $ssDefault = array(
+	public static $ssDefault = [
 			'aA'=>1,	//slideshow action icon at album header
 			'aT'=>1,	//shoehorn in this slideshow action at thumbs page
 			'uA'=>1,	//user allow album settings (and their default)
@@ -186,9 +186,17 @@ abstract class MeedyaHelper
 			'aP'=>1,	//autoplay
 			'lS'=>0,	//loop slideshow
 			'sD'=>5,	//slide duration
-			'dC'=>array('#666','#CCC','rgba(51,51,51,0.5)','#FFF','#000'),	//control background, control text, text background, text text, pic background
+			'dC'=>['#666','#CCC','rgba(51,51,51,0.5)','#FFF','#000'],	//control background, control text, text background, text text, pic background
 			'iS'=>'cb1' //iconset
-		);
+		];
+
+	// return the max file upload size as set by the php config
+	public static function phpMaxUp ()
+	{
+		$u = self::to_bytes(ini_get('upload_max_filesize'));
+		$p = self::to_bytes(ini_get('post_max_size'));
+		return min($p,$u);
+	}
 
 	// convert string in form n(K|M|G) to an integer value
 	public static function to_bytes ($val)
@@ -208,7 +216,7 @@ abstract class MeedyaHelper
 	// convert integer value to n(K|M|G) string
 	public static function formatBytes ($bytes, $precision=2)
 	{
-		$units = array('B', 'KB', 'MB', 'GB', 'TB');
+		$units = ['B','KB','MB','GB','TB'];
 		$bytes = max($bytes, 0);
 		$pow = floor(($bytes ? log($bytes) : 0) / log(1024));
 		$pow = min($pow, count($units) - 1);
@@ -221,7 +229,7 @@ abstract class MeedyaHelper
 		if ($msg) JLog::add($msg, JLog::INFO, 'com_meedya');
 		if ($data) {
 			$msg = '';
-			if (!is_array($data)) $data = array($data);
+			if (!is_array($data)) $data = [$data];
 			foreach ($data as $dat) {
 				$msg .= print_r($dat, true);
 			}

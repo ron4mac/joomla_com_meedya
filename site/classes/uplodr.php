@@ -123,8 +123,7 @@ class Up_Load
 	private function receiveFile ()
 	{
 		$this->vetUpload();
-	//	if (!move_uploaded_file($this->file['tmp_name'], $this->target_file)) throw new Exception('Could not place file');
-	//	if ($this->filup_cb) call_user_func($this->filup_cb, basename($this->target_file));
+		if (!$this->aValidFile()) throw new Exception('The file is not acceptable.', 0);
 	}
 
 	// receive a file from multiple 'chunks'
@@ -159,6 +158,12 @@ class Up_Load
 	private function addChunk ()
 	{
 		$chnkn = $this->pvals->get('chnkn');
+		if ($chnkn == 1) {
+			if (!$this->aValidFile()) {
+				$this->cleanup();
+				throw new Exception('The file is not acceptable.', 0);
+			}
+		}
 		$dest = $this->ckpath.'/part'.$chnkn;
 		if (!move_uploaded_file($this->file['tmp_name'], $dest)) {
 			$this->upldLog('failed to place chunk: '.$dest);
@@ -198,6 +203,15 @@ class Up_Load
 			$this->cleanup();
 			if ($this->filup_cb) call_user_func($this->filup_cb, basename($dest));
 		}
+	}
+
+	// check that the file is actually a valid media file
+	private function aValidFile ()
+	{
+		$mime = mime_content_type($this->file['tmp_name']);
+		if (preg_match('#image\/|video\/#', $mime)) return true;
+		@unlink($this->file['tmp_name']);
+		return false;
 	}
 
 	// remove temporary storage that was used for chunks

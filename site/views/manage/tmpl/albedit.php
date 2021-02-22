@@ -13,8 +13,6 @@ MeedyaHelper::addStyle('gallery');
 MeedyaHelper::addStyle('manage');
 MeedyaHelper::addStyle('pell.min', 'vendor/pell/');
 JHtml::_('jquery.framework');
-//JHtml::_('jquery.framework', false);
-//JHtml::_('jquery.ui', array('core', 'sortable'));
 MeedyaHelper::addScript('manage');
 MeedyaHelper::addScript('basicLightbox', 'vendor/blb/');
 MeedyaHelper::addScript('bootbox');
@@ -75,7 +73,7 @@ JText::script('COM_MEEDYA_VRB_REMOVE');
 	<button class="btn btn-mini" title="un-select all images" onclick="selAllImg(event, false)">Select None</button>
 	<button class="btn btn-mini" title="edit selected images" onclick="editSelected(event)"><i class="icon-pencil"></i> Edit selected images</button>
 	<button class="btn btn-mini" title="remove selected from album" onclick="removeSelected(event)"><i class="icon-minus-circle"></i> Remove selected images from album</button> -->
-	<?php echo JHtml::_('meedya.actionButtons', array('sela','seln','edts','rems')); ?>
+	<?php echo JHtml::_('meedya.actionButtons', ['sela','seln','edts','rems']); ?>
 </div>
 <form id="actform" method="POST" action="<?=Route::_('index.php?option=com_meedya&Itemid='.$this->itemId)?>" style="display:none">
 	<input name="task" id="atask" type="hidden" value="manage.imgEdit" />

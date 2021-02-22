@@ -27,16 +27,16 @@ class ImageProc
 	88          88  888888  888888
 	*/
 
-	protected $orientAction = array(
-		1 => array(0, false),		// <none>
-		2 => array(0, true),		// flop
-		3 => array(180, false),		// rotate(180) or flip,flop
-		4 => array(180, true),		// flip
-		5 => array(-90, true),		// rotate(-90), flop
-		6 => array(-90, false),		// rotate(-90)
-		7 => array(90, true),		// rotate(90), flip
-		8 => array(90, false)		// rotate(90)
-	);
+	protected $orientAction = [
+		1 => [0, false],	// <none>
+		2 => [0, true],		// flop
+		3 => [180, false],	// rotate(180) or flip,flop
+		4 => [180, true],	// flip
+		5 => [-90, true],	// rotate(-90), flop
+		6 => [-90, false],	// rotate(-90)
+		7 => [90, true],	// rotate(90), flip
+		8 => [90, false]	// rotate(90)
+	];
 
 	public function __construct ($src)
 	{

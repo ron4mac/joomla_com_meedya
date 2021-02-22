@@ -11,7 +11,7 @@ include_once 'imgproc.php';
 class ImageProcessor extends ImageProc
 {
 	public $ipp = 'GD2';
-	protected $errs = array();
+	protected $errs = [];
 	protected $res = null;
 
 	public function __construct ($src)
@@ -76,15 +76,8 @@ class ImageProcessor extends ImageProc
 			$img = imagecreatetruecolor($new_w, $new_h);
 			imagecopyresampled($img, $this->res, 0 , 0 , $src_x, $src_y, $crop_w, $crop_h, $orig_w, $orig_h);
 
-			$sharpenMatrix = array
-			(
-			//	array(-1.2, -1, -1.2),
-			//	array(-1, 20, -1),
-			//	array(-1.2, -1, -1.2)
-				array(-1, -1, -1),
-				array(-1, 16, -1),
-				array(-1, -1, -1)
-			);
+			$sharpenMatrix = [[-1, -1, -1],[-1, 16, -1],[-1, -1, -1]];
+
 			// calculate the sharpen divisor
 			$divisor = array_sum(array_map('array_sum', $sharpenMatrix));
 			$offset = 0;
@@ -106,7 +99,7 @@ class ImageProcessor extends ImageProc
 
 	public function createMedium ($dest, $ext, $maxW=1200, $maxH=-1)
 	{
-		if (RJC_DBUG) { MeedyaHelper::log('GDimageProc-createMedium'.print_r(array($dest, $ext, $maxW, $maxH),true)); }
+		if (RJC_DBUG) { MeedyaHelper::log('GDimageProc-createMedium'.print_r([$dest, $ext, $maxW, $maxH],true)); }
 		if ($maxW && $maxH>0) {
 			list($maxW,$maxH) = $this->fitInRect($this->img_width, $this->img_height, $maxW, $maxH);
 		}

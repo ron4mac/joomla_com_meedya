@@ -15,10 +15,10 @@ define('RJC_DBUG', JDEBUG && file_exists(JPATH_ROOT.'/rjcdev.php'));
 JLoader::register('MeedyaHelper', JPATH_COMPONENT.'/helpers/meedya.php');
 
 if (RJC_DBUG) {
-	$cml = array(
+	$cml = [
 		'text_file'=>'com_meedya.log.php',
 		'text_entry_format'=>'{DATETIME}			{PRIORITY}			{MESSAGE}'
-	);
+	];
 	JLog::addLogger($cml, JLog::ALL, array('com_meedya'));
 }
 

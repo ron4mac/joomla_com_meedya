@@ -4,7 +4,7 @@ function $id(id) {
 	return document.getElementById(id);
 }
 
-function watchAlbNam (elm) {
+function up_watchAlbNam (elm) {
 	var creab = $id('creab');
 	if (elm.value.trim()) {
 		creab.disabled = false;
@@ -15,6 +15,11 @@ function watchAlbNam (elm) {
 
 function album_select (elm) {
 	var asel = elm.options[elm.selectedIndex].value;
+	if (asel==-1) {
+		elm.value = '';
+		jQuery('#newalbdlg').modal();
+		return;
+	}
 	var crea = $id("crealbm");
 	crea.style.display = asel==-1 ? "inline-block" : "none";
 	if (asel==-1) {
@@ -29,7 +34,6 @@ function createAlbum (elm) {
 	var albNamFld = $id('nualbnam');
 	var albParFld = $id('h5u_palbum');
 	var nualbnam = albNamFld.value.trim();
-	elm.nextElementSibling.style.visibility = 'visible';
 	var ajd = {
 		task: 'manage.newAlbum',
 		albnam: nualbnam,
@@ -40,10 +44,8 @@ function createAlbum (elm) {
 	jQuery("#h5u_album").load(js_vars.upLink, ajd,
 		function (response, status, xhr) {
 			console.log(response, status, xhr);
-			elm.nextElementSibling.style.visibility = 'hidden';
 			if (status=="success") {
-				var crea = $id("crealbm");
-				crea.style.display = "none";
+				jQuery('#newalbdlg').modal('hide');
 				album_select($id("h5u_album"));
 			} else {
 				alert(xhr.statusText);

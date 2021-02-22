@@ -66,8 +66,8 @@ EOD;
 		if ($perms->canAdmin) {
 			$html .= '
 		<li><a href="' . Route::_('index.php?option=com_meedya&view=manage'.$itmid, false) . '"><i class="icon-grid"></i>'.JText::_('COM_MEEDYA_MENU_EDALBS').'</a></li>
-		<li><a href="' . Route::_('index.php?option=com_meedya&task=manage.editImgs'.$itmid, false) . '"><i class="icon-images"></i>'.JText::_('COM_MEEDYA_MENU_EDIMGS').'</a></li>
-		<li><a href="' . Route::_('index.php?option=com_meedya&task=manage.doConfig'.$itmid, false) . '"><i class="icon-options"></i>'.JText::_('COM_MEEDYA_MENU_CONFIG').'</a></li>';
+		<li><a href="' . Route::_('index.php?option=com_meedya&task=manage.editImgs'.$itmid, false) . '"><i class="icon-images"></i>'.JText::_('COM_MEEDYA_MENU_EDIMGS').'</a></li>';
+//		<li><a href="' . Route::_('index.php?option=com_meedya&task=manage.doConfig'.$itmid, false) . '"><i class="icon-options"></i>'.JText::_('COM_MEEDYA_MENU_CONFIG').'</a></li>';
 		}
 		$html .= '</ul>
 </div>
@@ -145,7 +145,7 @@ EOD;
 		$acts = '<i class="icon-info-2 pull-left"></i>
 			<i class="icon-expand pull-right" onclick="lboxPimg(\''.$escfn.'\',\''.substr($item->mtype, 0, 1).'\')"></i>';
 	}
-	$nah = $item->album ? '' : ' style="opacity:0.2"';
+	$nah = $item->album ? '' : ' style="opacity:0.4"';
 	return '
 	<div class="'.$iclss.'" data-id="'.$id.'">
 		<label for="slctimg'.$id.'">
@@ -171,7 +171,7 @@ EOD;
 	}
 
 	public static function buildTree (array $albums, &$html, $paid = 0) {
-		$branch = array();
+		$branch = [];
 		foreach ($albums as $alb) {
 			if ($alb['paid'] == $paid) {
 			//	$itms = $alb['items'] ? count(explode('|',$alb['items'])) : 'no';

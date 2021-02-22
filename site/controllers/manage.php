@@ -8,6 +8,7 @@ defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Router\Route;
+use Joomla\CMS\Language\Text;
 
 JLoader::register('JHtmlMeedya', JPATH_COMPONENT . '/helpers/html/meedya.php');
 
@@ -18,22 +19,15 @@ class MeedyaControllerManage extends JControllerLegacy
 
 	public function __construct ($config = [])
 	{
-	//	$config['name'] = $this->default_view;
 	//	if (RJC_DBUG) MeedyaHelper::log('MeedyaControllerManage');
 		parent::__construct($config);
 		$this->mnuItm = $this->input->getInt('Itemid', 0);
-	//	echo'<xmp>';var_dump($config, $this);echo'</xmp>';	jexit();
 	}
 
 
 	public function display ($cachable = false, $urlparams = false)
 	{
 	//	if (RJC_DBUG) MeedyaHelper::log('MeedyaControllerManage : display');
-//		$aid = $this->input->get->get('aid',0,'int');
-//		if ($aid) {
-//			$view = $this->getView('manage','html');
-//			$view->setLayout('album_edit');
-//		}
 		$view = $this->getView('manage','html');
 		$view->itemId = $this->mnuItm;
 		return parent::display($cachable, $urlparams);
@@ -52,7 +46,6 @@ class MeedyaControllerManage extends JControllerLegacy
 		$view->setLayout('imgedit');
 		$m = $this->getModel('manage');
 		$itms = $this->input->post->get('slctimg',[],'array');
-//		if (!$itms[0]) $itms = $this->input->get('after','','string');
 		$view->iids = $m->getImages($itms);
 		$view->referer = $this->input->server->getRaw('HTTP_REFERER');
 		$view->display();
@@ -68,8 +61,6 @@ class MeedyaControllerManage extends JControllerLegacy
 		if (!$itms[0]) $itms = $this->input->get('after','','string');
 		$view->iids = $m->getImages($itms);
 		$view->referer = $this->input->server->getRaw('HTTP_REFERER');
-	//	$view->items = $view->iids;
-	//	$view->setModel('manage');
 		$view->display();
 	}
 
@@ -77,7 +68,6 @@ class MeedyaControllerManage extends JControllerLegacy
 	public function iedSave ()
 	{
 		$m = $this->getModel('manage');
-	//	echo'<xmp>';var_dump($this->input->post->get('attr',array(),'array'));echo'</xmp>';jexit();
 		if ($this->input->post->get('save',0,'int')) {
 			$attrs = $this->input->post->get('attr',[],'array');
 			foreach ($attrs as $k=>$v) {
@@ -103,27 +93,13 @@ class MeedyaControllerManage extends JControllerLegacy
 	}
 
 
-//	public function delAlbums ()
-//	{
-//		$a = $this->input->get('albs', '', 'string');
-//		$w = $this->input->get('wipe', false, 'boolean');
-//		if ($a) {
-//			$albs = explode('|', $a);
-//			$m = $this->getModel('manage');
-//			$m->removeAlbums($albs, $w);
-//		}
-//		$this->setRedirect(Route::_('index.php?option=com_meedya&view=manage&limitstart=0', false));
-//	}
-
-
 	public function addItemsToAlbum ()
 	{
 		if (!JSession::checkToken()) {
-			$this->_nqMsg(JText::_('JINVALID_TOKEN'),'error');
+			$this->_nqMsg(Text::_('JINVALID_TOKEN'),'error');
 			return;
 		}
 		$this->setRedirect($_SERVER['HTTP_REFERER']);
-	//	file_put_contents('MEELOG.txt', print_r($this->input->post,true), FILE_APPEND);
 
 		$itms = $this->input->post->get('slctimg',[],'array');
 		if (!$itms) return;
@@ -142,19 +118,19 @@ class MeedyaControllerManage extends JControllerLegacy
 		$this->_nqMsg('Items added to album');
 	}
 
+
 	public function imgsAddAlbum ()
 	{
 		$this->setRedirect($_SERVER['HTTP_REFERER']);
 
 		if (!JSession::checkToken()) {
-			$this->_nqMsg(JText::_('JINVALID_TOKEN'),'error');
+			$this->_nqMsg(Text::_('JINVALID_TOKEN'),'error');
 			return;
 		}
 
 		$itms = $this->input->post->get('slctimg',[],'array');
 		if (!$itms) return;
 
-		//var_dump($itms);
 		$m = $this->getModel('manage');
 		$aid = $m->addAlbum('New Album');
 		$m->addItems2Album($itms, $aid);
@@ -162,16 +138,15 @@ class MeedyaControllerManage extends JControllerLegacy
 		$this->setRedirect(Route::_('index.php?option=com_meedya&view=manage&layout=albedit&aid='.$aid.'&Itemid='.$this->mnuItm, false));
 	}
 
+
 	public function deleteItems ()
 	{
 		$this->setRedirect($_SERVER['HTTP_REFERER']);
 		if (!JSession::checkToken()) {
-			$this->_nqMsg(JText::_('JINVALID_TOKEN'),'error');
+			$this->_nqMsg(Text::_('JINVALID_TOKEN'),'error');
 			return;
 		}
-		//echo'<xmp>';var_dump($this->input->post);echo'</xmp>';jexit();
 		$itms = $this->input->post->get('slctimg',[],'array');
-		//echo'<xmp>';var_dump($itms);echo'</xmp>';jexit();
 		$m = $this->getModel('manage');
 		$m->deleteItems($itms);
 	}
@@ -197,9 +172,6 @@ class MeedyaControllerManage extends JControllerLegacy
 		$view->setLayout('imgedit');
 		$m = $this->createModel('Images','MeedyaModel');		//$this->getModel('manage');
 		$view->setModel($m, true);
-	//	$itms = explode('|',$this->input->post->get('items','','string'));
-	//	if (!$itms[0]) $itms = $this->input->get('after','','string');
-	//	$view->iids = $m->getItems();
 		$view->itemId = $this->mnuItm;
 		$view->mode = $this->input->get('mode','L','string');
 		$view->display();
@@ -214,9 +186,6 @@ class MeedyaControllerManage extends JControllerLegacy
 		$m = $this->getModel('manage');
 		$m->set('filterFormName', 'filter_images');
 		$view->setModel($m, true);
-	//	$itms = explode('|',$this->input->post->get('items','','string'));
-	//	if (!$itms[0]) $itms = $this->input->get('after','','string');
-	//	$view->iids = $m->getItems();
 
 		$mode = $this->input->get('mode', null, 'word');
 		if (!$mode) $mode = $this->input->cookie->get('meedya_eig', 'L');
@@ -250,7 +219,7 @@ class MeedyaControllerManage extends JControllerLegacy
 	//	echo'<xmp>';var_dump($vals);echo'</xmp>';jexit();
 		if ($this->input->post->get('save',0,'int')) {
 			if (!JSession::checkToken()) {
-				echo JText::_('JINVALID_TOKEN');
+				echo Text::_('JINVALID_TOKEN');
 				return;
 			}
 			$m = $this->getModel('manage');
@@ -299,10 +268,6 @@ class MeedyaControllerManage extends JControllerLegacy
 		$view = $this->getView('manage','html');
 		$view->setLayout('albedit');
 		$view->setModel($this->getModel('manage'), true);
-//		$m = $this->getModel('manage');
-//		$itms = $this->input->post->get('slctimg',[],'array');
-//		if (!$itms[0]) $itms = $this->input->get('after','','string');
-//		$view->iids = $m->getImages($itms);
 		$view->referer = $this->input->server->getRaw('HTTP_REFERER');
 		$view->display();
 	}
@@ -321,7 +286,6 @@ class MeedyaControllerManage extends JControllerLegacy
 		$m = $this->getModel('manage');
 		$m->saveAlbum($aid, $flds);
 
-	//	echo'<xmp>';var_dump($this->input);echo'</xmp>';
 		$this->_nqMsg('Album properties sucessfully saved');
 		$this->setRedirect(base64_decode($this->input->post->get('referer','','base64')));
 	}

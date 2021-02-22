@@ -14,13 +14,11 @@ class MeedyaControllerManage extends JControllerLegacy
 {
 	protected $gallPath;
 	protected $impacts = [];
-	protected $uplodr;
 
 	public function __construct ($config = [])
 	{
 		$this->gallPath = MeedyaHelper::userDataPath();
 	//	if (RJC_DBUG) MeedyaHelper::log('MeedyaControllerManageRaw');
-		$this->uplodr = Factory::getApplication()->getParams()->get('upload_ap','UL');
 		parent::__construct($config);
 	}
 
@@ -36,8 +34,7 @@ class MeedyaControllerManage extends JControllerLegacy
 			jexit(JText::_('JINVALID_TOKEN'));
 		}
 
-		$cf = $this->uplodr == 'DZ' ? 'uplodz.php' : 'uplodr.php';
-		require_once JPATH_COMPONENT.'/classes/'.$cf;
+		require_once JPATH_COMPONENT.'/classes/uplodr.php';
 		$toname = null;
 		$uplodr_obj = new Up_Load($this->input, $toname, ['target_dir'=>JPATH_BASE.'/']);
 		if ($toname) {

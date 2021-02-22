@@ -13,7 +13,7 @@ class MeedyaModelMeedya extends JModelList
 	protected $curAlbID = 0;
 	protected $_album = null;
 
-	public function __construct ($config = array())
+	public function __construct ($config = [])
 	{
 		$dbFile = '/meedya.db3';
 		$udbDir = MeedyaHelper::userDataPath();
@@ -27,13 +27,13 @@ class MeedyaModelMeedya extends JModelList
 		$doInit = !file_exists($udbPath);
 
 		try {
-			$db = JDatabaseDriver::getInstance(array('driver'=>'sqlite','database'=>$udbPath));
+			$db = JDatabaseDriver::getInstance(['driver'=>'sqlite','database'=>$udbPath]);
 			$db->connect();
 			$dbc = $db->getConnection();
 			$dbc->sqliteCreateFunction('strtotime', 'strtotime', 1);
-			$dbc->sqliteCreateFunction('albhier', array($this,'albhier'), 2);
-			$dbc->sqliteCreateFunction('inpsv', array($this,'inpsv'), 2);
-			$dbc->sqliteCreateFunction('match', array($this,'match'), 2);
+			$dbc->sqliteCreateFunction('albhier', [$this,'albhier'], 2);
+			$dbc->sqliteCreateFunction('inpsv', [$this,'inpsv'], 2);
+			$dbc->sqliteCreateFunction('match', [$this,'match'], 2);
 
 			if ($doInit) {
 				require_once JPATH_COMPONENT.'/helpers/db.php';
@@ -78,7 +78,7 @@ class MeedyaModelMeedya extends JModelList
 // override some parent functions
 
 	// add form access to our database
-//	public function getFilterForm($data = array(), $loadData = true)
+//	public function getFilterForm($data = [], $loadData = true)
 //	{
 //		$form = parent::getFilterForm($data, $loadData);
 //		$form['_DB'] = 'XXYYZZ';
@@ -124,7 +124,7 @@ class MeedyaModelMeedya extends JModelList
 		$db->setQuery('SELECT `file`,`mtype`,`thumb`,`title`,`desc` FROM `meedyaitems` WHERE `id`='.$iid);
 		$r = $db->loadAssoc();
 		$thm = $r['thumb'] ? $r['thumb'] : $r['file'];
-		return array($thm, $r['title'], $r['desc'], $r['mtype']);
+		return [$thm, $r['title'], $r['desc'], $r['mtype']];
 	}
 
 	public function getAlbumsList ()
@@ -140,11 +140,11 @@ class MeedyaModelMeedya extends JModelList
 	public function getAlbumPath ($to)
 	{
 		$db = $this->getDbo();
-		$albs = array();
+		$albs = [];
 		while ($to) {
 			$db->setQuery('SELECT paid,title FROM albums WHERE aid='.$to);
 			$r = $db->loadAssoc();
-			array_unshift($albs, array($to =>$r['title']));
+			array_unshift($albs, [$to =>$r['title']]);
 			$to = $r['paid'];
 		}
 		return $albs;

@@ -23,7 +23,7 @@ var formTokn = "'.JSession::getFormToken().'";
 ');
 
 function buildTree(array $albums, &$html, $paid = 0) {
-	$branch = array();
+	$branch = [];
 	foreach ($albums as $alb) {
 		if ($alb['paid'] == $paid) {
 			$html[] = '<div data-aid="'.$alb['aid'].'" class="album" draggable="true">';
@@ -138,11 +138,9 @@ $hasImport = JFolder::exists($this->gallpath.'/import');
 echo JHtml::_(
 	'bootstrap.renderModal',
 	'newalbdlg',
-	array(
-		'title' => JText::_('COM_MEEDYA_CREATE_NEW_ALBUM'),
-		'footer' => JHtml::_('meedya.modalButtons', 'COM_MEEDYA_H5U_CREALBM','createAlbum(this)', 'creab'),
-		'modalWidth' => '40'
-	),
+	['title' => JText::_('COM_MEEDYA_CREATE_NEW_ALBUM'),
+	'footer' => JHtml::_('meedya.modalButtons', 'COM_MEEDYA_H5U_CREALBM','ae_createAlbum(this)', 'creab'),
+	'modalWidth' => '40'],
 	$this->loadTemplate('newalb')
 	);
 ?>
@@ -150,11 +148,9 @@ echo JHtml::_(
 echo JHtml::_(
 	'bootstrap.renderModal',
 	'importdlg',
-	array(
-		'title' => JText::_('COM_MEEDYA_IMPORT_ITEMS'),
-		'footer' => JHtml::_('meedya.modalButtons', JText::_('COM_MEEDYA_IMPORT'),'importItems(this)', 'imporb'),
-		'modalWidth' => '40'
-	),
+	['title' => JText::_('COM_MEEDYA_IMPORT_ITEMS'),
+	'footer' => JHtml::_('meedya.modalButtons', JText::_('COM_MEEDYA_IMPORT'),'importItems(this)', 'imporb'),
+	'modalWidth' => '40'],
 	$this->loadTemplate('import')
 	);
 endif;

@@ -9,6 +9,10 @@ defined('_JEXEC') or die;
 use Joomla\CMS\Router\Route;
 
 JHtml::_('bootstrap.framework');
+//JHtml::_('behavior.multiselect');
+JHtml::_('formbehavior.chosen', 'select');
+//JHtml::_('bootstrap.tooltip');
+
 MeedyaHelper::addStyle('basicLightbox', 'vendor/blb/');
 MeedyaHelper::addStyle('gallery');
 MeedyaHelper::addStyle('manage');
@@ -58,6 +62,7 @@ var formTokn = "<?= JSession::getFormToken(); ?>";
 /*div.modal.bootbox-confirm {left: 50%; width: 400px; margin-left: -200px;}*/
 .bootbox-body {padding: 12px; font-size: larger;}
 .modal-footer {padding: 8px 10px}
+#filter_tag{margin-bottom:0}
 </style>
 
 <div class="meedya-gallery">
