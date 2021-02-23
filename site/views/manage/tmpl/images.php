@@ -70,12 +70,12 @@ var formTokn = "<?= JSession::getFormToken(); ?>";
 	<?php echo JHtml::_('meedya.pageHeader', $this->params, $this->action/*.'XXXX'*/); ?>
 	<form action="<?=Route::_('index.php?option=com_meedya&view=manage&Itemid='.$this->itemId)?>" method="post" name="adminForm" id="adminForm">
 		<?php
-			if ($this->mode == 'G') {
-				echo '<a href="'.$this->linkUrl.'&mode=L"><span class="icon-list-2 action-icon inaicon" title="List View"> </span></a>';
-				echo '<span class="icon-grid-2 action-icon acticon" title="Grid View"> </span>';
-			} else {
-				echo '<span class="icon-list-2 action-icon acticon" title="List View"> </span>';
+			if ($this->mode == 'L') {
 				echo '<a href="'.$this->linkUrl.'&mode=G"><span class="icon-grid-2 action-icon inaicon" title="Grid View"> </span></a>';
+				echo '<span class="icon-list-2 action-icon acticon" title="List View"> </span>';
+			} else {
+				echo '<span class="icon-grid-2 action-icon acticon" title="Grid View"> </span>';
+				echo '<a href="'.$this->linkUrl.'&mode=L"><span class="icon-list-2 action-icon inaicon" title="List View"> </span></a>';
 			}
 		?>
 		<?php $fOpts = array('filterButton' => true); ?>

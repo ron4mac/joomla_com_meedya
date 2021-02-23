@@ -173,7 +173,7 @@ class MeedyaControllerManage extends JControllerLegacy
 		$m = $this->createModel('Images','MeedyaModel');		//$this->getModel('manage');
 		$view->setModel($m, true);
 		$view->itemId = $this->mnuItm;
-		$view->mode = $this->input->get('mode','L','string');
+		$view->mode = $this->input->get('mode','G','string');
 		$view->display();
 	}
 
@@ -188,7 +188,7 @@ class MeedyaControllerManage extends JControllerLegacy
 		$view->setModel($m, true);
 
 		$mode = $this->input->get('mode', null, 'word');
-		if (!$mode) $mode = $this->input->cookie->get('meedya_eig', 'L');
+		if (!$mode) $mode = $this->input->cookie->get('meedya_eig', 'G');
 		$this->input->cookie->set('meedya_eig', $mode);
 		$view->mode = $mode;
 

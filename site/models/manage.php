@@ -413,6 +413,7 @@ class MeedyaModelManage extends MeedyaModelMeedya
 		$app = Factory::getApplication();
 		$params = JComponentHelper::getParams('com_meedya');
 		$input = $app->input;
+//echo '<xmp>';var_dump($input,$app->get('list_limit'),$this->context);echo'</xmp>';
 
 		if (RJC_DBUG) MeedyaHelper::log('populateState', $input);
 
@@ -420,28 +421,6 @@ class MeedyaModelManage extends MeedyaModelMeedya
 		$aid = $input->get('album', 0, 'INT');
 		if (!$aid) { $aid = $input->get('aid', 0, 'INT'); }
 		$this->state->set('album.id', $aid);	//echo'<xmp>';var_dump($this->state);echo'</xmp>';
-
-
-		// List state information
-//		$limit = $app->getUserStateFromRequest('global.list.limit', 'limit', $app->getCfg('list_limit'), 'uint');
-//		$this->setState('list.limit', $limit);
-
-//		$limitstart = JRequest::getUInt('limitstart', 0);
-//		$this->setState('list.start', $limitstart);
-
-		// List state information
-//		$value = $app->input->get('limit', $app->get('list_limit', 0), 'uint');
-//		$this->setState('list.limit', $value);
-
-//		$value = $app->input->get('start', 0, 'uint');
-//		$this->setState('list.start', $value);
-
-		// List state information
-	//	$limit = $app->getUserStateFromRequest('global.list.limit', 'limit', $app->getCfg('list_limit'));
-	//	$this->setState('list.limit'.$aid, $limit);
-
-	//	$limitstart = $input->getInt('limitstart', 0);
-	//	$this->setState('list.start'.$aid, $limitstart);
 
 		$search = $this->getUserStateFromRequest($this->context . '.filter.search', 'filter_search');
 		$this->setState('filter.search', $search);
@@ -465,7 +444,7 @@ class MeedyaModelManage extends MeedyaModelMeedya
 		} else {
 			return $this->albumsListQuery();
 		}
-		echo $this->context;
+//		echo $this->context;
 		$db = $this->getDbo();
 		$query = $db->getQuery(true);
 		$query->select('*');
@@ -512,7 +491,7 @@ class MeedyaModelManage extends MeedyaModelMeedya
 
 	private function itemsListQuery ()
 	{
-		//echo '<xmp>';var_dump($this->state);echo'</xmp>';
+//echo '<xmp>';var_dump($this->state);echo'</xmp>';
 		if ($this->filterFormName !== 'filter_images') {
 			$db = $this->getDbo();
 			$query = $db->getQuery(true);

@@ -62,6 +62,7 @@ class MeedyaViewManage extends MeedyaView
 				$this->total = count($this->iids);
 		//		$this->items = $this->get('Items');
 				$this->filterForm = $this->get('FilterForm');	//var_dump('FilterForm',$this->filterForm);jexit();
+//				$this->filterForm->setFieldAttribute('limit', 'default', 50, 'list');
 				$albs = json_encode($this->get('AllAlbums'));
 				$r = $this->filterForm->setFieldAttribute('album', 'albums', $albs, 'filter');	//echo'<xmp>';var_dump('FilterForm',$r,$this->filterForm);jexit();
 				$this->activeFilters = $this->get('ActiveFilters');

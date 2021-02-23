@@ -208,14 +208,16 @@ class MeedyaModelMeedya extends JModelList
 		$this->state->set('parent.id', $pid);
 
 		// List state information
-		$limit = $app->getUserStateFromRequest('global.list.limit', 'limit', $app->getCfg('list_limit'));
-		$this->setState('list.limit'.$pid, $limit);
+//		$limit = $app->getUserStateFromRequest('global.list.limit', 'limit', $app->getCfg('list_limit'));
+//		$this->setState('list.limit'.$pid, $limit);
 
-		$limitstart = $input->getInt('limitstart', 0);
-		$this->setState('list.start'.$pid, $limitstart);
+//		$limitstart = $input->getInt('limitstart', 0);
+//		$this->setState('list.start'.$pid, $limitstart);
 
 		// Load the parameters.
 		$this->setState('cparams', $params);
+
+		parent::populateState($ordering, $direction);
 	}
 
 
