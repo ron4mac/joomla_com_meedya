@@ -512,7 +512,7 @@ class MeedyaModelManage extends MeedyaModelMeedya
 
 		$db = $this->getDbo();
 		$query = $db->getQuery(true);
-		$query->select('*');
+		$query->select('*, strftime(\'%s\',timed) AS timeduts');
 		$query->from('meedyaitems');
 		$aid = $this->state->get('filter.album', 0);
 		if ($aid) {
