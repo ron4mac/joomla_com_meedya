@@ -7,6 +7,7 @@
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
 
 class MeedyaControllerSearch extends JControllerLegacy
 {
@@ -25,7 +26,7 @@ class MeedyaControllerSearch extends JControllerLegacy
 		$sterm = $this->input->post->getString('sterm', '');
 		$sterm = str_replace('#','\#',$sterm);
 		if (@preg_match('#'.$sterm.'#', null)===false) {
-			Factory::getApplication()->enqueueMessage(JText::_('COM_MEEDYA_INVALID_SEARCH'), 'error');
+			Factory::getApplication()->enqueueMessage(Text::_('COM_MEEDYA_INVALID_SEARCH'), 'error');
 			$this->setRedirect($this->input->server->getString('HTTP_REFERER', 'index.php?Itemid='.$this->mnuItm));
 		} else {
 			$view = $this->getView('search','html');

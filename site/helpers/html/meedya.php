@@ -8,6 +8,7 @@ defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Router\Route;
+use Joomla\CMS\Language\Text;
 
 abstract class JHtmlMeedya
 {
@@ -56,18 +57,18 @@ EOD;
 		$itmid = $Itemid ? ('&Itemid='.$Itemid) : '';
 		$html = '<div class="btn-group mgmenu">
 	<a class="btn btn-small dropdown-toggle" data-toggle="dropdown" href="#">
-		<i class="icon-pencil"></i>'.JText::_('COM_MEEDYA_MENU_MANAGE').' <span class="caret"></span>
+		<i class="icon-pencil"></i>'.Text::_('COM_MEEDYA_MENU_MANAGE').' <span class="caret"></span>
 	</a>
 	<ul class="dropdown-menu">';
 		if ($perms->canAdmin || $perms->canUpload) {
 			$html .= '<li><a href="' . Route::_('index.php?option=com_meedya&task=manage.doUpload'.($aid?('&aid='.$aid):'') . $itmid, false) . '">
-				<i class="icon-upload"></i>'.JText::_('COM_MEEDYA_MENU_UPLOAD').'</a></li>';
+				<i class="icon-upload"></i>'.Text::_('COM_MEEDYA_MENU_UPLOAD').'</a></li>';
 		}
 		if ($perms->canAdmin) {
 			$html .= '
-		<li><a href="' . Route::_('index.php?option=com_meedya&view=manage'.$itmid, false) . '"><i class="icon-grid"></i>'.JText::_('COM_MEEDYA_MENU_EDALBS').'</a></li>
-		<li><a href="' . Route::_('index.php?option=com_meedya&task=manage.editImgs'.$itmid, false) . '"><i class="icon-images"></i>'.JText::_('COM_MEEDYA_MENU_EDIMGS').'</a></li>';
-//		<li><a href="' . Route::_('index.php?option=com_meedya&task=manage.doConfig'.$itmid, false) . '"><i class="icon-options"></i>'.JText::_('COM_MEEDYA_MENU_CONFIG').'</a></li>';
+		<li><a href="' . Route::_('index.php?option=com_meedya&view=manage'.$itmid, false) . '"><i class="icon-grid"></i>'.Text::_('COM_MEEDYA_MENU_EDALBS').'</a></li>
+		<li><a href="' . Route::_('index.php?option=com_meedya&task=manage.editImgs'.$itmid, false) . '"><i class="icon-images"></i>'.Text::_('COM_MEEDYA_MENU_EDIMGS').'</a></li>';
+//		<li><a href="' . Route::_('index.php?option=com_meedya&task=manage.doConfig'.$itmid, false) . '"><i class="icon-options"></i>'.Text::_('COM_MEEDYA_MENU_CONFIG').'</a></li>';
 		}
 		$html .= '</ul>
 </div>
@@ -90,8 +91,8 @@ EOD;
 	public static function submissionButtons ($save='save')
 	{
 		$html = '<div class="subbuts">';
-		$html .= '<button type="submit" name="cancel" value="1" class="btn">'.JText::_('cancel').'</button>';
-		$html .= '<button type="submit" name="save" value="1" class="btn btn-primary">'.JText::_($save).'</button>';
+		$html .= '<button type="submit" name="cancel" value="1" class="btn">'.Text::_('cancel').'</button>';
+		$html .= '<button type="submit" name="save" value="1" class="btn btn-primary">'.Text::_($save).'</button>';
 		$html .= '</div>';
 		return $html;
 	}
@@ -102,22 +103,22 @@ EOD;
 		foreach ($whch as $but) {
 			switch ($but) {
 			case 'sela':
-				$html[] = '<button class="btn btn-mini" onclick="selAllImg(event, true)">'.JText::_('COM_MEEDYA_MANAGE_SELECT_ALL').'</button>';
+				$html[] = '<button class="btn btn-mini" onclick="selAllImg(event, true)">'.Text::_('COM_MEEDYA_MANAGE_SELECT_ALL').'</button>';
 				break;
 			case 'seln':
-				$html[] = '<button class="btn btn-mini" onclick="selAllImg(event, false)">'.JText::_('COM_MEEDYA_MANAGE_SELECT_NONE').'</button>';
+				$html[] = '<button class="btn btn-mini" onclick="selAllImg(event, false)">'.Text::_('COM_MEEDYA_MANAGE_SELECT_NONE').'</button>';
 				break;
 			case 'edts':
-				$html[] = '<button class="btn btn-mini" onclick="editSelected(event)">'.'<i class="icon-pencil"></i> '.JText::_('COM_MEEDYA_MANAGE_EDIT_ITEMS').'</button>';
+				$html[] = '<button class="btn btn-mini" onclick="editSelected(event)">'.'<i class="icon-pencil"></i> '.Text::_('COM_MEEDYA_MANAGE_EDIT_ITEMS').'</button>';
 				break;
 			case 'adds':
-				$html[] = '<button class="btn btn-mini" onclick="return addSelected(event);">'.'<i class="icon-plus-circle"></i> '.JText::_('COM_MEEDYA_MANAGE_ADD2ALBUM').'</button>';
+				$html[] = '<button class="btn btn-mini" onclick="return addSelected(event);">'.'<i class="icon-plus-circle"></i> '.Text::_('COM_MEEDYA_MANAGE_ADD2ALBUM').'</button>';
 				break;
 			case 'rems':
-				$html[] = '<button class="btn btn-mini" onclick="removeSelected(event)">'.'<i class="icon-minus-circle"></i> '.JText::_('COM_MEEDYA_MANAGE_REMOVE').'</button>';
+				$html[] = '<button class="btn btn-mini" onclick="removeSelected(event)">'.'<i class="icon-minus-circle"></i> '.Text::_('COM_MEEDYA_MANAGE_REMOVE').'</button>';
 				break;
 			case 'dels':
-				$html[] = '<button class="btn btn-mini" onclick="deleteSelected(event)">'.'<i class="icon-minus-circle"></i> '.JText::_('COM_MEEDYA_MANAGE_TOTAL_DEL').'</button>';
+				$html[] = '<button class="btn btn-mini" onclick="deleteSelected(event)">'.'<i class="icon-minus-circle"></i> '.Text::_('COM_MEEDYA_MANAGE_TOTAL_DEL').'</button>';
 				break;
 			default:
 				$html[] = 'NOACTION';
@@ -138,13 +139,14 @@ EOD;
 	}
 
 	if ($edt) {
-		$acts = '<i class="icon-expand" onclick="lboxPimg(\''.$escfn.'\',\''.substr($item->mtype, 0, 1).'\')"></i>
+		$acts = '<i class="icon-expand" onclick="iZoomOpen('.$id.')"></i>
 			<i class="icon-info-2 pull-left"></i>
 			<i class="icon-edit pull-right" onclick="editImg('.$id.')"></i>';
 	} else {
 		$acts = '<i class="icon-info-2 pull-left"></i>
-			<i class="icon-expand pull-right" onclick="lboxPimg(\''.$escfn.'\',\''.substr($item->mtype, 0, 1).'\')"></i>';
+			<i class="icon-expand pull-right" onclick="iZoomOpen('.$id.')"></i>';
 	}
+
 	$nah = $item->album ? '' : ' style="opacity:0.4"';
 	return '
 	<div class="'.$iclss.'" data-id="'.$id.'">
@@ -161,12 +163,12 @@ EOD;
 
 	public static function modalButtons ($verb, $script, $id, $disab=true)
 	{
-		$html = '<button type="button" class="btn" data-dismiss="modal">'.JText::_('JCANCEL').'</button>';
+		$html = '<button type="button" class="btn" data-dismiss="modal">'.Text::_('JCANCEL').'</button>';
 		$html .= '<button type="button" id="'.$id.'" class="btn';
 		$html .= $disab ? ' btn-disabled' : ' btn-primary';
 		$html .= '" onclick="'.$script.';"';
 		if ($disab) $html .= ' disabled';
-		$html .= '>'.JText::_($verb).'</button>';
+		$html .= '>'.Text::_($verb).'</button>';
 		return $html;
 	}
 

@@ -489,24 +489,70 @@ function addSelected (e) {
 	}
 }
 
-var blbI = null;
-function blbEscape (e) {
-	if (e.keyCode == 27) {
-		e.preventDefault();
-		blbI.close(function () { document.removeEventListener("keydown", blbEscape); });
-	}
-}
-
-function lboxPimg (iFile, mTyp) {
-	const src = blb_path + iFile;
-	const srcV = blb_pathV + iFile;
-	const html = mTyp=="v" ? ('<video controls><source src="'+srcV+'"></video>') : ('<img src="'+src+'">');
-	blbI = basicLightbox.create(html);
-	blbI.show();
-	document.addEventListener("keydown", blbEscape);
-}
-
 function saveAlbum () {
 	document.albForm.thmord.value = Arrange.iord();
 	document.albForm.submit();
 }
+
+
+// iZoom action to expand individual image
+(function ($, w) {
+	var back, area;
+
+	function doKeyAction (e,code) {
+		if (e.preventDefault) e.preventDefault();
+		if (e.stopPropagation) e.stopPropagation();
+		close();
+	}
+
+	function keyPressed (e) {
+		switch (e.charCode) {
+			case 32:
+			case 13:
+			case 27:
+				doKeyAction(e,e.charCode);
+				break;
+			default:
+				break;
+		}
+	}
+
+	function keyDowned (e) {
+		switch (e.keyCode) {
+			case 32:
+			case 13:
+			case 27:
+				doKeyAction(e,e.keyCode);
+				break;
+			default:
+				break;
+		}
+	}
+
+	function open (pID) {
+		area = document.createElement('div');
+		$.post(iZoomURL, {format: 'raw', task: 'manage.getZoomItem', iid: pID},
+			function (data) {
+				area.innerHTML = data + '<div class="zoom-closex" onclick="iZoomClose(event)">X</div>';
+			});
+		area.className = 'zoom-area';
+		area.tabIndex = "-1";
+		back = document.createElement('div');
+		back.className = 'zoom-back';
+		back.appendChild(area);
+		document.body.appendChild(back);
+		area.addEventListener('keypress', keyPressed, false);
+		area.addEventListener('keydown', keyDowned, false);
+		area.focus();
+		back.addEventListener('click', close, false);
+	}
+
+	function close (evt) {
+		console.log(evt);
+		document.body.removeChild(back);
+	}
+
+	w.iZoomOpen = open;
+	w.iZoomClose = close;
+
+})(jQuery, window);

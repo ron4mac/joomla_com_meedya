@@ -7,19 +7,22 @@
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Router\Route;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Session\Session;
 
-JText::script('COM_MEEDYA_MOVE_FAIL');
-JText::script('COM_MEEDYA_IMPORT');
+Text::script('COM_MEEDYA_MOVE_FAIL');
+Text::script('COM_MEEDYA_IMPORT');
 
 MeedyaHelper::addStyle('gallery');
 MeedyaHelper::addStyle('manage');
-JHtml::_('jquery.framework');
-//JHtml::_('jquery.framework', false);
-//JHtml::_('bootstrap.modal');
+HTMLHelper::_('jquery.framework');
+//HTMLHelper::_('jquery.framework', false);
+//HTMLHelper::_('bootstrap.modal');
 MeedyaHelper::addScript('manage');
 $this->jDoc->addScriptDeclaration('
 var myBaseURL = "'.Route::_('index.php?option=com_meedya&Itemid='.$this->itemId, false).'";
-var formTokn = "'.JSession::getFormToken().'";
+var formTokn = "'.Session::getFormToken().'";
 ');
 
 function buildTree(array $albums, &$html, $paid = 0) {
@@ -47,7 +50,7 @@ function buildTree(array $albums, &$html, $paid = 0) {
 
 $html = [];
 buildTree($this->galStruct, $html);
-//JHtml::_('meedya.buildTree', $this->galStruct, $html);	echo'<xmp>';var_dump($html);echo'</xmp>';
+//HTMLHelper::_('meedya.buildTree', $this->galStruct, $html);	echo'<xmp>';var_dump($html);echo'</xmp>';
 $this->btmscript[] = 'var albStruct = '. json_encode($this->galStruct).';';
 $this->btmscript[] = 'jQuery("#gstruct .icon-edit").on("click", function (e) { albEdtAction(e,this); });';
 $this->btmscript[] = 'jQuery("#gstruct .icon-upload").on("click", function (e) { albUpldAction(e,this); });';
@@ -106,8 +109,8 @@ $hasImport = JFolder::exists($this->gallpath.'/import');
 #myBar { width:0; background-color:#4CAF50; font-size:larger; padding:3px 0; }
 </style>
 <div class="meedya-gallery">
-	<?php if ($this->manage) echo JHtml::_('meedya.manageMenu', $this->userPerms, 0, $this->itemId); ?>
-	<?php echo JHtml::_('meedya.pageHeader', $this->params, $this->action/*.'XXXX'*/); ?>
+	<?php if ($this->manage) echo HTMLHelper::_('meedya.manageMenu', $this->userPerms, 0, $this->itemId); ?>
+	<?php echo HTMLHelper::_('meedya.pageHeader', $this->params, $this->action/*.'XXXX'*/); ?>
 	<div id="toolbar">
 		<!-- <a href="#" onclick="goUpload(event)" title="Upload Files">Upload</a> -->
 		<!-- <a href="<?php echo Route::_('index.php?option=com_meedya&task=manage.doUpload&aid=0&Itemid='.$this->itemId, false); ?>">Upload Items</a> -->
@@ -127,29 +130,29 @@ $hasImport = JFolder::exists($this->gallpath.'/import');
 </div>
 <div id="delact" tabindex="-1" class="modal hide fade jviewport-width30">
 	<div class="modal-body">
-		<?php echo JText::_('COM_MEEDYA_CREATE_DELETE_ALBUM_BLURB'); ?><br /><br />
-		<input type="checkbox" name="trashall" id="trashall" value="true" /><label for="trashall"><?php echo JText::_('COM_MEEDYA_CREATE_DELETE_ALL_IMAGES'); ?></label>
+		<?php echo Text::_('COM_MEEDYA_CREATE_DELETE_ALBUM_BLURB'); ?><br /><br />
+		<input type="checkbox" name="trashall" id="trashall" value="true" /><label for="trashall"><?php echo Text::_('COM_MEEDYA_CREATE_DELETE_ALL_IMAGES'); ?></label>
 	</div>
 	<div class="modal-footer">
-		<?php echo JHtml::_('meedya.modalButtons', 'COM_MEEDYA_CREATE_DELETE_ALBUM','deleteAlbum(this)', 'deliB', false); ?>
+		<?php echo HTMLHelper::_('meedya.modalButtons', 'COM_MEEDYA_CREATE_DELETE_ALBUM','deleteAlbum(this)', 'deliB', false); ?>
 	</div>
 </div>
 <?php
-echo JHtml::_(
+echo HTMLHelper::_(
 	'bootstrap.renderModal',
 	'newalbdlg',
-	['title' => JText::_('COM_MEEDYA_CREATE_NEW_ALBUM'),
-	'footer' => JHtml::_('meedya.modalButtons', 'COM_MEEDYA_H5U_CREALBM','ae_createAlbum(this)', 'creab'),
+	['title' => Text::_('COM_MEEDYA_CREATE_NEW_ALBUM'),
+	'footer' => HTMLHelper::_('meedya.modalButtons', 'COM_MEEDYA_H5U_CREALBM','ae_createAlbum(this)', 'creab'),
 	'modalWidth' => '40'],
 	$this->loadTemplate('newalb')
 	);
 ?>
 <?php if ($hasImport):
-echo JHtml::_(
+echo HTMLHelper::_(
 	'bootstrap.renderModal',
 	'importdlg',
-	['title' => JText::_('COM_MEEDYA_IMPORT_ITEMS'),
-	'footer' => JHtml::_('meedya.modalButtons', JText::_('COM_MEEDYA_IMPORT'),'importItems(this)', 'imporb'),
+	['title' => Text::_('COM_MEEDYA_IMPORT_ITEMS'),
+	'footer' => HTMLHelper::_('meedya.modalButtons', Text::_('COM_MEEDYA_IMPORT'),'importItems(this)', 'imporb'),
 	'modalWidth' => '40'],
 	$this->loadTemplate('import')
 	);

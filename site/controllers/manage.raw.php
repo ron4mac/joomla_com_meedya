@@ -7,6 +7,9 @@
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Session\Session;
 
 JLoader::register('JHtmlMeedya', JPATH_COMPONENT . '/helpers/html/meedya.php');
 
@@ -29,9 +32,9 @@ class MeedyaControllerManage extends JControllerLegacy
 	public function upfile ()
 	{
 	//	if (RJC_DBUG) MeedyaHelper::log('upfile:', $this->input);
-		if (!JSession::checkToken()) {
+		if (!Session::checkToken()) {
 			header('HTTP/1.1 403 Not Allowed');
-			jexit(JText::_('JINVALID_TOKEN'));
+			jexit(Text::_('JINVALID_TOKEN'));
 		}
 
 		require_once JPATH_COMPONENT.'/classes/uplodr.php';
@@ -47,7 +50,7 @@ class MeedyaControllerManage extends JControllerLegacy
 	// task to create a new album
 	public function newAlbum ()
 	{
-		if (JSession::checkToken()) {
+		if (Session::checkToken()) {
 			$a = $this->input->post->get('albnam', 'A NEW ALBUM', 'string');
 			$p = $this->input->post->get('paralb', 0, 'int');
 			$d = $this->input->post->get('albdesc', null, 'string');
@@ -57,36 +60,36 @@ class MeedyaControllerManage extends JControllerLegacy
 				header("HTTP/1.0 400 Could not create album: {$a}");
 			} elseif ($this->input->post->get('o', 0, 'int')) {
 				$albs = $m->getAlbumsList();
-				echo JHtml::_('meedya.albumsHierOptions', $albs, $aid);
+				echo HTMLHelper::_('meedya.albumsHierOptions', $albs, $aid);
 			}
 		} else {
-			echo JText::_('JINVALID_TOKEN');
+			echo Text::_('JINVALID_TOKEN');
 		}
 	}
 
 	// task to remove items from an album
 	public function removeItems ()
 	{
-		if (JSession::checkToken()) {
+		if (Session::checkToken()) {
 			$aid = $this->input->post->get('aid','','int');
 			$parm = $this->input->post->get('items','','string');
 			$items = explode('|',$parm);
 			$m = $this->getModel('manage');
 			$m->removeItems($aid, $items);
 		} else {
-			echo JText::_('JINVALID_TOKEN');
+			echo Text::_('JINVALID_TOKEN');
 		}
 	}
 
 	public function adjustAlbPaid ()
 	{
-		if (JSession::checkToken()) {
+		if (Session::checkToken()) {
 			$aid = $this->input->post->get('aid','','int');
 			$paid = $this->input->post->get('paid','','int');
 			$m = $this->getModel('manage');
 			$m->setAlbumPaid($aid, $paid);
 		} else {
-			echo JText::_('JINVALID_TOKEN');
+			echo Text::_('JINVALID_TOKEN');
 		}
 	}
 
@@ -120,6 +123,27 @@ class MeedyaControllerManage extends JControllerLegacy
 				break;
 			case 'pa';
 				break;
+		}
+	}
+
+	public function getZoomItem ()
+	{
+		$iid = $this->input->post->getInt('iid', 0);
+		if (!$iid) return;
+		$url = $this->gallPath;
+		$m = $this->getModel('manage');
+		$item = $m->getItem($iid);
+		$mime = explode('/',$item['mtype']);
+		switch ($mime[0]) {
+			case 'image':
+				echo '<img class="zoom-zimg" src="'.$url.'/med/'.$item['file'].'" onload="this.style.opacity=1" />';
+				break;
+			case 'video':
+				//return '<video class="zoom-zvid" autoplay><source src="'.$url.'" type="'.$ftyp['mime'].'"></video>';
+				echo '<video class="zoom-zvid" controls autoplay><source src="'.$url.'/img/'.$item['file'].'"></video>';
+				break;
+			default:
+				echo '<div style="color:white">UNSUPPORTED FILE TYPE #'.$item['mtype'].'# '.$item['file'].'</div>';
 		}
 	}
 

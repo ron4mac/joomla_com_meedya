@@ -9,6 +9,7 @@ defined('_JEXEC') or die;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Session\Session;
 
 JLoader::register('JHtmlMeedya', JPATH_COMPONENT . '/helpers/html/meedya.php');
 
@@ -95,7 +96,7 @@ class MeedyaControllerManage extends JControllerLegacy
 
 	public function addItemsToAlbum ()
 	{
-		if (!JSession::checkToken()) {
+		if (!Session::checkToken()) {
 			$this->_nqMsg(Text::_('JINVALID_TOKEN'),'error');
 			return;
 		}
@@ -123,7 +124,7 @@ class MeedyaControllerManage extends JControllerLegacy
 	{
 		$this->setRedirect($_SERVER['HTTP_REFERER']);
 
-		if (!JSession::checkToken()) {
+		if (!Session::checkToken()) {
 			$this->_nqMsg(Text::_('JINVALID_TOKEN'),'error');
 			return;
 		}
@@ -142,7 +143,7 @@ class MeedyaControllerManage extends JControllerLegacy
 	public function deleteItems ()
 	{
 		$this->setRedirect($_SERVER['HTTP_REFERER']);
-		if (!JSession::checkToken()) {
+		if (!Session::checkToken()) {
 			$this->_nqMsg(Text::_('JINVALID_TOKEN'),'error');
 			return;
 		}
@@ -218,7 +219,7 @@ class MeedyaControllerManage extends JControllerLegacy
 
 	//	echo'<xmp>';var_dump($vals);echo'</xmp>';jexit();
 		if ($this->input->post->get('save',0,'int')) {
-			if (!JSession::checkToken()) {
+			if (!Session::checkToken()) {
 				echo Text::_('JINVALID_TOKEN');
 				return;
 			}

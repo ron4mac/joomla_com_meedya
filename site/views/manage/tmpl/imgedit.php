@@ -6,27 +6,20 @@
  */
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Router\Route;
+
 JHtml::_('jquery.framework');
 
+MeedyaHelper::addScript('manage');
 MeedyaHelper::addStyle('jquery.tagsinput', 'vendor/tags/');
 MeedyaHelper::addScript('jquery.tagsinput', 'vendor/tags/');
 
-JHtml::stylesheet('components/com_meedya/static/vendor/blb/basicLightbox.min.css');
 JHtml::stylesheet('components/com_meedya/static/css/manage.css');
 //echo'<pre>';var_dump($this->iids);echo'</pre>';
+$this->jDoc->addScriptDeclaration('
+var iZoomURL = "'.Route::_('index.php?option=com_meedya&format=raw&task=manage.getZoomItem&Itemid='.$this->itemId, false).'";
+');
 ?>
-<script src="components/com_meedya/static/vendor/blb/basicLightbox.min.js"></script>
-<script>
-var blb_path = "<?=JUri::root(true).'/'.$this->gallpath?>/med/";
-var blb_pathV = "<?=JUri::root(true).'/'.$this->gallpath?>/img/";
-function lboxPimg (evt, elm, mTyp) {
-	const pimg = elm.parentElement.previousElementSibling;	console.log(pimg);
-	const src = blb_path + pimg.getAttribute('data-img');	console.log(src);
-	const srcV = blb_pathV + pimg.getAttribute('data-img');	console.log(src);
-	const html = mTyp=="v" ? ('<video controls><source src="'+srcV+'"></video>') : ('<img src="'+src+'">');
-//	const html = '<img src="' + src + '">';
-	basicLightbox.create(html).show();
-}
 </script>
 <form name="adminform" method="POST">
 <?=JHtml::_('meedya.submissionButtons')?>
@@ -49,7 +42,7 @@ function lboxPimg (evt, elm, mTyp) {
 	<div class="eitem">
 		<img src="<?=$tPath?>" data-img="<?=$iFile?>" class="mitem" />
 		<div class="item-overlay top">
-			<i class="icon-expand" title="expand image" onclick="lboxPimg(event,this,'<?=$mTyp?>')"></i>
+			<i class="icon-expand" title="expand image" onclick="iZoomOpen(<?=$namx?>)"></i>
 			<i class="icon-info-2 pull-left" title="image info"></i>
 			<i class="icon-upload pull-right" title="replace image" onclick="editImg(event, this)"></i>
 		</div>

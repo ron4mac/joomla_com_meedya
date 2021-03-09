@@ -6,6 +6,9 @@
  */
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\HTML\HTMLHelper;
+
 $ajaxlink = JUri::base().'index.php?option=com_meedya&format=raw';
 ?>
 <div id="crealbm">
@@ -21,9 +24,9 @@ $ajaxlink = JUri::base().'index.php?option=com_meedya&format=raw';
 	<dt><label for="h5u_palbum">Album Parent</label></dt>
 	<dd>
 		<select id="h5u_palbum" name="h5u_palbum">
-			<!-- <option value=""><?=JText::_('COM_MEEDYA_H5U_SELPAR')?></option> -->
-			<option value="0"><?=JText::_('COM_MEEDYA_H5U_NONE')?></option>
-			<?=JHtml::_('meedya.albumsHierOptions', $this->albums)?>
+			<!-- <option value=""><?=Text::_('COM_MEEDYA_H5U_SELPAR')?></option> -->
+			<option value="0"><?=Text::_('COM_MEEDYA_H5U_NONE')?></option>
+			<?=HTMLHelper::_('meedya.albumsHierOptions', $this->albums)?>
 		</select>
 	</dd>
 	</dl>
@@ -33,17 +36,9 @@ $ajaxlink = JUri::base().'index.php?option=com_meedya&format=raw';
 	<dt><label for="albdesc">Album Description</label></dt>
 	<dd>
 <?php
-//$editor = JEditor::getInstance(JFactory::getConfig()->get('editor'));
-//$params = array('smilies'=>0,'style'=>1,'layer'=>0,'table'=>0,'clear_entities'=>0,'mode'=>0);
-//echo $editor->display('albdesc', '', '85%', 100, 80, 10, false, null, null, null, $params);
 echo '<textarea id="albdesc" name="albdesc" class="nualbdsc form-control" rows="5"></textarea>';
 ?>
 	</dd>
-<!--	<dt>
-	<button type="button" id="cccreab" class="btn btn-primary" onclick="createAlbum(this)" style="vertical-align:text-bottom"><?=JText::_('COM_MEEDYA_H5U_CREALBM')?></button>
-	<img src="<?=JUri::base(true)?>/components/com_meedya/static/css/process.gif" style="vertical-align:baseline;visibility:hidden;" />
-	</dt>
-	<dd></dd>	-->
 	</dl>
 </div>
 <script>
@@ -56,14 +51,10 @@ function watchAlbNam (elm) {
 	var creab = $id('creab');	console.log(creab,elm.value);
 	var classes = creab.classList;
 	if (elm.value.trim()) {
-		//creab.disabled = false;
-		//creab.removeClass("btn-disabled").addClass("btn-primary");
 		classes.remove("btn-disabled");
 		classes.add("btn-primary");
 		creab.disabled = false;
 	} else {
-		//creab.disabled = true;
-		//creab.removeClass("btn-primary").addClass("btn-disabled");
 		classes.remove("btn-primary");
 		classes.add("btn-disabled");
 		creab.disabled = true;

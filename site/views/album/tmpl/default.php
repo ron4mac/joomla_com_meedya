@@ -9,23 +9,23 @@ defined('_JEXEC') or die;
 /* ========== NOTICE! THIS TEMPLATE IS REUSED BY SEARCH DISPLAY ========== */
 
 use Joomla\CMS\Router\Route;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\HTML\HTMLHelper;
 
-JHtml::_('jquery.framework');
+HTMLHelper::_('jquery.framework');
 MeedyaHelper::addStyle('album');
-MeedyaHelper::addStyle('basicLightbox', 'vendor/blb/');
-MeedyaHelper::addStyle('manage');
 MeedyaHelper::addStyle('each');
 MeedyaHelper::addScript('meedya');
 MeedyaHelper::addScript('vuesld');
 
 $jslang = [
-		'no_sterm' => JText::_('COM_MEEDYA_MSG_STERM'),
-		'ru_sure' => JText::_('COM_USERNOTES_RU_SURE')
+		'no_sterm' => Text::_('COM_MEEDYA_MSG_STERM'),
+		'ru_sure' => Text::_('COM_USERNOTES_RU_SURE')
 	];
 $this->jDoc->addScriptDeclaration('Meedya.L = '.json_encode($jslang).';
 ');
 
-JHtml::_('bootstrap.tooltip', '.hasTip', ['fixed'=>true]);
+HTMLHelper::_('bootstrap.tooltip', '.hasTip', ['fixed'=>true]);
 
 $filelist = [];
 if ($this->items) {
@@ -47,7 +47,7 @@ if ($this->items) {
 $ttscript = '
 	var baseUrl = "'.JUri::root(true).'/'.$this->gallpath.'/med/";
 	var baseUrlV = "'.JUri::root(true).'/'.$this->gallpath.'/img/";
-	var imgerror = "'.JText::_('COM_MEEDYA_SS_IMGERROR').'";
+	var imgerror = "'.Text::_('COM_MEEDYA_SS_IMGERROR').'";
 	var imagelist = '.json_encode($filelist).';
 	var startx = '.$this->six.';
 	var _imgP = "components/com_meedya/static/img/";
@@ -69,7 +69,7 @@ $this->jDoc->addScriptDeclaration($ttscript);
 
 ///<form>
 ///<div class="display-limit">
-///	<?php echo JText::_('JGLOBAL_DISPLAY_NUM'); ?&#160;
+///	<?php echo Text::_('JGLOBAL_DISPLAY_NUM'); ?&#160;
 ///	<?php echo $this->pagination->getLimitBox(); ?
 ///</div>
 ///</form>
@@ -151,7 +151,7 @@ $this->jDoc->addScriptDeclaration($ttscript);
 }
 .slideback {
 	position: fixed;
-	background-color: rgba(0, 0, 0, 0.7);
+	background-color: rgba(0, 0, 0, 0.9);
 	left: 0;
 	top: 0;
 	width: 100%;
@@ -166,8 +166,8 @@ $this->jDoc->addScriptDeclaration($ttscript);
 }
 </style>
 <div class="meedya-gallery">
-<?php echo JHtml::_('meedya.pageHeader', $this->params); ?>
-<?php if (!$this->isSearch) echo JHtml::_('meedya.searchField', $this->aid); ?>
+<?php echo HTMLHelper::_('meedya.pageHeader', $this->params); ?>
+<?php if (!$this->isSearch) echo HTMLHelper::_('meedya.searchField', $this->aid); ?>
 	<div class="crumbs">
 	<?php
 		foreach ($this->pathWay as $crm) {
@@ -176,7 +176,7 @@ $this->jDoc->addScriptDeclaration($ttscript);
 		echo '<span class="albttl">'.$this->title.'</span>';
 	?>
 	<?php if (!$this->isSearch && count($this->items)>1): ?>
-		<a href="<?=Route::_('index.php?option=com_meedya&view=slides&tmpl=component&aid='.$this->aid.'&Itemid='.$this->itemId, false) ?>" title="<?=JText::_('COM_MEEDYA_SLIDESHOW')?>">
+		<a href="<?=Route::_('index.php?option=com_meedya&view=slides&tmpl=component&aid='.$this->aid.'&Itemid='.$this->itemId, false) ?>" title="<?=Text::_('COM_MEEDYA_SLIDESHOW')?>">
 			<img src="components/com_meedya/static/img/slideshow.png" alt="" />
 		</a>
 	<?php endif; ?>
@@ -197,10 +197,14 @@ $this->jDoc->addScriptDeclaration($ttscript);
 	$itemImg = new HtmlElementObject('img');
 	$itemImgD = new HtmlElementObject('div', null, $itemImg);
 	$itemImgD->setAttr(['data-toggle'=>'tooltip', 'data-placement'=>'bottom']);
-	$itemLnk = new HtmlElementObject('a', null, $itemImgD);
-	$itemLnk->setAttr('class','itm-thumb');
-	$itemDiv = new HtmlElementObject('div', null, $itemLnk);
+	$itemZoom = new HtmlElementObject('div', null, $itemImgD);
+	$itemZoom->setAttr('class','itm-thumb');
+	$itemDiv = new HtmlElementObject('div', null, $itemZoom);
 	$itemDiv->setAttr('class','anitem');
+//	$itemDiv->setAttr('onclick','alert(\'YYYYYY\')');
+//	$itemInf = new HtmlElementObject('div');
+//	$itemInf->setAttr('class','iteminf');
+//	$itemDiv->addCont($itemInf);
 
 	foreach ($this->items as $ix=>$item) {
 		if (!$item) continue;
@@ -218,8 +222,7 @@ $this->jDoc->addScriptDeclaration($ttscript);
 		}
 		$itemImg->setAttr('src', 'components/com_meedya/static/img/'.$thmsrc);
 		$itemImgD->setAttr('title', $ttip);
-		$itemLnk->setAttr('href', Route::_('index.php?option=com_meedya&view=album&layout=each&aid='.$this->aid.'&iid='.$item['id'].'&Itemid='.$this->itemId, false));
-		$itemLnk->setAttr('onclick', 'showSlides(event,'.$ix.')');
+		$itemZoom->setAttr('onclick', 'showSlides(event,'.$ix.')');
 		echo $itemDiv->render();
 	}
 	?>
@@ -230,22 +233,7 @@ $this->jDoc->addScriptDeclaration($ttscript);
 	<?php echo $this->pagination->getListFooter(); ?>
 </div>
 
-<script src="components/com_meedya/static/vendor/blb/basicLightbox.min.js"></script>
 <script>
-	var blb_path = "<?=JUri::root(true).'/'.$this->gallpath?>/med/";
-	var blb_pathV = "<?=JUri::root(true).'/'.$this->gallpath?>/img/";
-	document.querySelectorAll('.itm-thm-ttl').forEach(function(elem) {
-		elem.onclick = function(e) {
-			const src = blb_path + elem.getAttribute('data-src');
-			const html = '<img src="' + src + '">';
-			basicLightbox.create(html).show();
-			return false;
-		}
-	});
-
-	//initArrange();
-//	jquvb = "<?=JUri::root(true).'/'.$this->gallpath?>/";
-//	$("#area img").unveil();
 	echo.init({
 		baseUrl: "<?=JUri::root(true).'/'.$this->gallpath?>/",
 		offset: 200,

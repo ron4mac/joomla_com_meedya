@@ -11,6 +11,7 @@
 	margin: 1px;
 	min-width: 130px;
 	min-height: 130px;
+	position: relative;
 /*	width: 60px;
 	height: 60px;
 	border: 1px solid #BBB;
@@ -32,15 +33,26 @@
 	border: 1px solid #CCC;
 	padding: 3px;
 	transition: all .4s ease-in-out;
+	cursor: pointer;
 }
 .itm-thumb:hover {
 	border: 1px solid #000;
 }
-.itm-thm-ttl {
-	text-align: center;
-	max-width: 120px;
-	white-space: nowrap;
-	overflow-x: hidden;
+
+.iteminf {
+	width: 128px;
+	height: 128px;
+	box-sizing: border-box;
+	position: absolute;
+	top: 0;
+	border: 1px transparent;
+	background-color: rgba(0,0,0,0.5);
+	opacity: 0;
+	transition: opacity .4s ease-in-out;
+	cursor: pointer;
+}
+.iteminf:hover {
+	opacity: 1;
 }
 
 .falbum {

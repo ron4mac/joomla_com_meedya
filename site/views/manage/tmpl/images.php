@@ -7,24 +7,29 @@
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Router\Route;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Session\Session;
+use Joomla\CMS\Layout\LayoutHelper;
 
-JHtml::_('bootstrap.framework');
-//JHtml::_('behavior.multiselect');
-JHtml::_('formbehavior.chosen', 'select');
-//JHtml::_('bootstrap.tooltip');
+HTMLHelper::_('bootstrap.framework');
+//HTMLHelper::_('behavior.multiselect');
+HTMLHelper::_('formbehavior.chosen', 'select');
+//HTMLHelper::_('bootstrap.tooltip');
 
-MeedyaHelper::addStyle('basicLightbox', 'vendor/blb/');
 MeedyaHelper::addStyle('gallery');
 MeedyaHelper::addStyle('manage');
 MeedyaHelper::addStyle('jquery.tagsinput', 'vendor/tags/');
 MeedyaHelper::addScript('manage');
-MeedyaHelper::addScript('basicLightbox', 'vendor/blb/');
 MeedyaHelper::addScript('bootbox');
 MeedyaHelper::addScript('jquery.tagsinput', 'vendor/tags/');
+$this->jDoc->addScriptDeclaration('
+var iZoomURL = "'.Route::_('index.php?option=com_meedya&format=raw&task=manage.getZoomItem&Itemid='.$this->itemId, false).'";
+');
 
-JText::script('COM_MEEDYA_PERM_DELETE');
-JText::script('JCANCEL');
-JText::script('JACTION_DELETE');
+Text::script('COM_MEEDYA_PERM_DELETE');
+Text::script('JCANCEL');
+Text::script('JACTION_DELETE');
 
 function dateF ($dt)
 {
@@ -37,7 +42,7 @@ function editImg (iid) {
 	window.location = "<?=Route::_('index.php?option=com_meedya&task=manage.imgEdit&Itemid='.$this->itemId)?>&items="+iid;
 }
 var myBaseURL = "<?= Route::_('index.php?option=com_meedya&Itemid='.$this->itemId, false); ?>";
-var formTokn = "<?= JSession::getFormToken(); ?>";
+var formTokn = "<?= Session::getFormToken(); ?>";
 </script>
 
 <style>
@@ -66,8 +71,8 @@ var formTokn = "<?= JSession::getFormToken(); ?>";
 </style>
 
 <div class="meedya-gallery">
-	<?php if ($this->manage) echo JHtml::_('meedya.manageMenu', $this->userPerms, 0, $this->itemId); ?>
-	<?php echo JHtml::_('meedya.pageHeader', $this->params, $this->action/*.'XXXX'*/); ?>
+	<?php if ($this->manage) echo HTMLHelper::_('meedya.manageMenu', $this->userPerms, 0, $this->itemId); ?>
+	<?php echo HTMLHelper::_('meedya.pageHeader', $this->params, $this->action/*.'XXXX'*/); ?>
 	<form action="<?=Route::_('index.php?option=com_meedya&view=manage&Itemid='.$this->itemId)?>" method="post" name="adminForm" id="adminForm">
 		<?php
 			if ($this->mode == 'L') {
@@ -79,10 +84,10 @@ var formTokn = "<?= JSession::getFormToken(); ?>";
 			}
 		?>
 		<?php $fOpts = array('filterButton' => true); ?>
-		<?php echo JLayoutHelper::render('search', array('view' => $this, 'options' => $fOpts), JPATH_ROOT.'/components/com_meedya/layouts'); ?>
+		<?php echo LayoutHelper::render('search', array('view' => $this, 'options' => $fOpts), JPATH_ROOT.'/components/com_meedya/layouts'); ?>
 		<?php if ($this->iids): ?>
 		<div class="actbuts">
-			<?php echo JHtml::_('meedya.actionButtons', array('sela','seln','edts','adds','dels')); ?>
+			<?php echo HTMLHelper::_('meedya.actionButtons', array('sela','seln','edts','adds','dels')); ?>
 		</div>
 		<?php endif; ?>
 		<?php echo $this->loadTemplate($this->mode == 'G' ? 'grid' : 'list'); ?>
@@ -92,7 +97,7 @@ var formTokn = "<?= JSession::getFormToken(); ?>";
 		<input type="hidden" name="nualbpar" value="" />
 		<input type="hidden" name="nualbdesc" value="" />
 		<input type="hidden" name="mode" value="<?=$this->mode?>" />
-		<?php echo JHtml::_('form.token'); ?>
+		<?php echo HTMLHelper::_('form.token'); ?>
 	</form>
 </div>
 <div class="page-footer">
@@ -100,12 +105,12 @@ var formTokn = "<?= JSession::getFormToken(); ?>";
 </div>
 
 <?php
-echo JHtml::_(
+echo HTMLHelper::_(
 	'bootstrap.renderModal',
 	'add2albdlg',
 	array(
-		'title' => JText::_('COM_MEEDYA_ADD_ALBUM_ITEMS'),
-		'footer' => JHtml::_('meedya.modalButtons', 'COM_MEEDYA_ADD2ALBUM', 'addItems2Album(this)', 'creab'),
+		'title' => Text::_('COM_MEEDYA_ADD_ALBUM_ITEMS'),
+		'footer' => HTMLHelper::_('meedya.modalButtons', 'COM_MEEDYA_ADD2ALBUM', 'addItems2Album(this)', 'creab'),
 		'modalWidth' => '40'
 	),
 	$this->loadTemplate('add2alb')
@@ -114,8 +119,6 @@ echo JHtml::_(
 
 <script>
 jQuery('#system-message-container').delay(5000).slideUp("slow");
-var blb_path = "<?=JUri::root(true).'/'.$this->gallpath?>/med/";
-var blb_pathV = "<?=JUri::root(true).'/'.$this->gallpath?>/img/";
 echo.init({
 	baseUrl: "<?=JUri::root(true).'/'.$this->gallpath?>/",
 	offset: 200,

@@ -24,8 +24,7 @@ abstract class MeedyaHelper
 			'echo' => ['echo.js', 'echo.min.js'],
 			'slides' => ['slides.js', 'slides.min.js'],
 			'upload' => ['upload.js', 'upload.min.js'],
-			'each' => ['each.js', 'each.js'],
-			'basicLightbox' => ['basicLightbox.min.js', 'basicLightbox.min.js']
+			'each' => ['each.js', 'each.js']
 			];
 		if (isset($vray[$scr])) {
 			$s = $vray[$scr][$dbg ? 0 : 1];
@@ -50,8 +49,7 @@ abstract class MeedyaHelper
 			'echo' => ['echo.css', 'echo.min.css'],
 			'slides' => ['slides.css', 'slides.min.css'],
 			'upload' => ['upload.css', 'upload.min.css'],
-			'each' => ['each.css', 'each.css'],
-			'basicLightbox' => ['basicLightbox.min.css', 'basicLightbox.min.css']
+			'each' => ['each.css', 'each.css']
 			];
 		if (isset($vray[$css])) {
 			$s = $vray[$css][$dbg ? 0 : 1];

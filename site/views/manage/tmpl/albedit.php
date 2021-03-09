@@ -8,20 +8,17 @@ defined('_JEXEC') or die;
 
 use Joomla\CMS\Router\Route;
 
-MeedyaHelper::addStyle('basicLightbox', 'vendor/blb/');
 MeedyaHelper::addStyle('gallery');
 MeedyaHelper::addStyle('manage');
 MeedyaHelper::addStyle('pell.min', 'vendor/pell/');
 JHtml::_('jquery.framework');
 MeedyaHelper::addScript('manage');
-MeedyaHelper::addScript('basicLightbox', 'vendor/blb/');
 MeedyaHelper::addScript('bootbox');
 MeedyaHelper::addScript('pell.min', 'vendor/pell/');
 
 $this->jDoc->addScriptDeclaration('
 var albumID = '.$this->aid.';
-var blb_path = "'.JUri::root(true).'/'.$this->gallpath.'/med/";
-var blb_pathV = "'.JUri::root(true).'/'.$this->gallpath.'/img/";
+var iZoomURL = "'.Route::_('index.php?option=com_meedya&format=raw&task=manage.getZoomItem&Itemid='.$this->itemId, false).'";
 ');
 
 JText::script('COM_MEEDYA_REMOVE');
@@ -60,19 +57,14 @@ JText::script('COM_MEEDYA_VRB_REMOVE');
 	<input type="hidden" name="referer" value="<?=base64_encode($this->referer)?>" />
 	<?=JHtml::_('form.token')?>
 </form>
+
 <?php if ($this->params->def('show_page_heading', 1)) : ?>
 <h1>
 	<?php echo $this->escape($this->params->get('page_heading')); ?>
 </h1>
 <?php endif; ?>
-<!-- <p>
-	<?php //var_dump($this->items); ?>
-</p> -->
+
 <div class="actbuts">
-	<!-- <button class="btn btn-mini" title="select all images" onclick="selAllImg(event, true)">Select All</button>
-	<button class="btn btn-mini" title="un-select all images" onclick="selAllImg(event, false)">Select None</button>
-	<button class="btn btn-mini" title="edit selected images" onclick="editSelected(event)"><i class="icon-pencil"></i> Edit selected images</button>
-	<button class="btn btn-mini" title="remove selected from album" onclick="removeSelected(event)"><i class="icon-minus-circle"></i> Remove selected images from album</button> -->
 	<?php echo JHtml::_('meedya.actionButtons', ['sela','seln','edts','rems']); ?>
 </div>
 <form id="actform" method="POST" action="<?=Route::_('index.php?option=com_meedya&Itemid='.$this->itemId)?>" style="display:none">
@@ -93,42 +85,11 @@ JText::script('COM_MEEDYA_VRB_REMOVE');
 </form>
 </div>
 
-
-<!--
-  <style>
-  #sortable { list-style-type: none; margin: 0; padding: 0; /*width: 450px;*/ }
-  #sortable li { margin: 3px 3px 3px 0; padding: 1px; float: left; width: 100px; height: 90px; font-size: 5em; text-align: center; border: 1px solid #EEE; line-height: normal; background-color: #EEF; }
-  </style>
-<ul id="sortable">
-  <li class="ui-state-default">1</li>
-  <li class="ui-state-default">2</li>
-  <li class="ui-state-default">3</li>
-  <li class="ui-state-default">4</li>
-  <li class="ui-state-default">5</li>
-  <li class="ui-state-default">6</li>
-  <li class="ui-state-default">7</li>
-  <li class="ui-state-default">8</li>
-  <li class="ui-state-default">9</li>
-  <li class="ui-state-default">10</li>
-  <li class="ui-state-default">11</li>
-  <li class="ui-state-default">12</li>
-</ul>
--->
-
-
 <div class="page-footer">
 	<?php echo $this->pagination->getListFooter(); ?>
 </div>
+
 <script>
-
-//  jQuery( function() {
-//    jQuery( "#sortable" ).sortable();
-//    jQuery( "#sortable" ).disableSelection();
-//  } );
-
-
-
-
 
 function cancelEdt () {
 	window.location = atob(document.albForm.referer.value);

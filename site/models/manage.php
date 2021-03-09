@@ -171,6 +171,14 @@ class MeedyaModelManage extends MeedyaModelMeedya
 		return $rowid;
 	}
 
+	public function getItem ($iid)
+	{
+		$db = $this->getDbo();
+		$db->setQuery('SELECT * FROM `meedyaitems` WHERE `id`=' . $iid);
+		$r = $db->loadAssoc();
+		return $r;
+	}
+
 	public function getImages ($parm)
 	{
 		if (is_array($parm)) {

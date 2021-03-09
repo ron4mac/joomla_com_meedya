@@ -246,8 +246,8 @@ if (LR !== 0) { _titlelm.innerHTML = ""; }
 				fW = bW;
 				fH = Math.round(pH*fW/pW);
 			}
-			img.height = fH;
-			img.width = fW;
+//			img.height = pH;	//fH;
+//			img.width = pW;		//fW;
 			img.isSized = true;
 		} else {
 		}
@@ -257,11 +257,11 @@ if (LR !== 0) { _titlelm.innerHTML = ""; }
 	function positionImage (img, cb) {
 		if (!img.isSized) { _loading.style.display = "block"; setTimeout(function(){positionImage(img, cb)},100); return; }
 		_loading.style.display = "none";
-		var bW = _iarea.offsetWidth,	//_iarea.innerWidth,
-			fW = img.width;
-			if (fW<bW) {
-				img.style.left = Math.floor((bW-fW)/2)+"px";
-			} else img.style.left = '0px';
+//		var bW = _iarea.offsetWidth,	//_iarea.innerWidth,
+//			fW = img.width;
+//			if (fW<bW) {
+//				img.style.left = Math.floor((bW-fW)/2)+"px";
+//			} else img.style.left = '0px';
 		if (cb) cb();
 	}
 
@@ -452,7 +452,7 @@ if (LR !== 0) { _titlelm.innerHTML = ""; }
 		for (i=0; i<_iecnt; i++) {
 			ielm = document.createElement("IMG");
 			ielm.onerror = imgError;
-			ielm.style.left = (window.innerWidth+2)+"px";
+//			ielm.style.left = (window.innerWidth+2)+"px";
 			ielm.className = _iniClass;
 			_ielms.push(ielm);
 			_iarea.appendChild(ielm);
@@ -487,7 +487,7 @@ if (LR !== 0) { _titlelm.innerHTML = ""; }
 		_slideDur = this.slideDur;
 		goToSlide(startx);
 		nextFrame(0);
-		window.onresize = winResized;
+//		window.onresize = winResized;
 	};
 
 	return mySC;

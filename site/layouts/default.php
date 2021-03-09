@@ -6,7 +6,10 @@
  */
 defined('JPATH_BASE') or die;
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Layout\LayoutHelper;
 
 $data = $displayData;
 
@@ -50,7 +53,7 @@ if (isset($data['view']->filterForm) && !empty($data['view']->filterForm))
 		$noResults = $data['view']->filterForm->getFieldAttribute('search', 'noresults', '', 'filter');
 		if (!empty($noResults))
 		{
-			$noResultsText = JText::_($noResults);
+			$noResultsText = Text::_($noResults);
 		}
 	}
 }
@@ -59,7 +62,7 @@ if (isset($data['view']->filterForm) && !empty($data['view']->filterForm))
 $customOptions = [
 	'filtersHidden'       => isset($data['options']['filtersHidden']) && $data['options']['filtersHidden'] ? $data['options']['filtersHidden'] : $hideActiveFilters,
 	'filterButton'        => isset($data['options']['filterButton']) && $data['options']['filterButton'] ? $data['options']['filterButton'] : $showFilterButton,
-	'defaultLimit'        => isset($data['options']['defaultLimit']) ? $data['options']['defaultLimit'] : JFactory::getApplication()->get('list_limit', 20),
+	'defaultLimit'        => isset($data['options']['defaultLimit']) ? $data['options']['defaultLimit'] : Factory::getApplication()->get('list_limit', 20),
 	'searchFieldSelector' => '#filter_search',
 	'selectorFieldName'   => $selectorFieldName,
 	'showSelector'        => $showSelector,
@@ -82,7 +85,7 @@ HTMLHelper::_('searchtools.form', $data['options']['formSelector'], $data['optio
 	<div class="clearfix">
 		<?php if ($data['options']['showSelector']) : ?>
 		<div class="js-stools-container-selector">
-			<?php echo JLayoutHelper::render('joomla.searchtools.default.selector', $data); ?>
+			<?php echo LayoutHelper::render('joomla.searchtools.default.selector', $data); ?>
 		</div>
 		<?php endif; ?>
 		<div class="js-stools-container-bar">

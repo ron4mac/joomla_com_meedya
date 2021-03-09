@@ -8,6 +8,7 @@ defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Router\Route;
+use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
 
 //jimport('joomla.application.component.helper');
@@ -26,9 +27,9 @@ class JHtmlIcon
 		$uri = Factory::getURI();
 
 		$url = Route::_(MeedyaHelperRoute::getFormRoute(0, base64_encode($uri)), false);
-		$text = HTMLHelper::_('image','system/new.png', JText::_('JNEW'), NULL, true);
+		$text = HTMLHelper::_('image','system/new.png', Text::_('JNEW'), NULL, true);
 		$button = HTMLHelper::_('link',$url, $text);
-		$output = '<span class="hasTip" title="'.JText::_('COM_MEEDYA_FORM_CREATE_MEEDYAITEM').'">'.$button.'</span>';
+		$output = '<span class="hasTip" title="'.Text::_('COM_MEEDYA_FORM_CREATE_MEEDYAITEM').'">'.$button.'</span>';
 		return $output;
 	}
 
@@ -49,13 +50,13 @@ class JHtmlIcon
 		HTMLHelper::_('behavior.tooltip');
 		$url	= MeedyaHelperRoute::getFormRoute($meedyaitem->id, base64_encode($uri));
 		$icon	= $meedyaitem->state ? 'edit.png' : 'edit_unpublished.png';
-		$text	= HTMLHelper::_('image','system/'.$icon, JText::_('JGLOBAL_EDIT'), NULL, true);
+		$text	= HTMLHelper::_('image','system/'.$icon, Text::_('JGLOBAL_EDIT'), NULL, true);
 
 		if ($meedyaitem->state == 0) {
-			$overlib = JText::_('JUNPUBLISHED');
+			$overlib = Text::_('JUNPUBLISHED');
 		}
 		else {
-			$overlib = JText::_('JPUBLISHED');
+			$overlib = Text::_('JPUBLISHED');
 		}
 
 		$date = HTMLHelper::_('date',$meedyaitem->created);
@@ -68,7 +69,7 @@ class JHtmlIcon
 
 		$button = HTMLHelper::_('link',Route::_($url, false), $text);
 
-		$output = '<span class="hasTip" title="'.JText::_('COM_MEEDYA_EDIT').' :: '.$overlib.'">'.$button.'</span>';
+		$output = '<span class="hasTip" title="'.Text::_('COM_MEEDYA_EDIT').' :: '.$overlib.'">'.$button.'</span>';
 
 		return $output;
 	}

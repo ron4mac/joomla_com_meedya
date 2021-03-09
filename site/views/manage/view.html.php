@@ -7,6 +7,8 @@
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\Registry\Registry;
 
 include_once JPATH_COMPONENT.'/views/meedyaview.php';
 
@@ -30,7 +32,7 @@ class MeedyaViewManage extends MeedyaView
 //		$this->user = Factory::getUser();
 //		$this->items = $this->get('Items');
 
-		$this->mparams = !empty($this->itemId) ? Factory::getApplication()->getMenu()->getItem($this->itemId)->getParams() : new JRegistry();
+		$this->mparams = !empty($this->itemId) ? Factory::getApplication()->getMenu()->getItem($this->itemId)->getParams() : new Registry();
 		//echo'<xmp>';var_dump($this->mparams);echo'</xmp>';
 
 	//	if (RJC_DBUG) MeedyaHelper::log('ViewManage state', $this->state);
@@ -45,9 +47,9 @@ class MeedyaViewManage extends MeedyaView
 
 	//	if (RJC_DBUG) MeedyaHelper::log('layout='.$this->getLayout());
 
-		JText::script('JACTION_DELETE');
-		JText::script('JCANCEL');
-		JText::script('COM_MEEDYA_SELECT_SOME');
+		Text::script('JACTION_DELETE');
+		Text::script('JCANCEL');
+		Text::script('COM_MEEDYA_SELECT_SOME');
 
 		switch ($this->getLayout()) {
 

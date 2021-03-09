@@ -35,14 +35,6 @@ class MeedyaViewAlbum extends MeedyaView
 		$this->isSearch = false;
 		$this->six = 0;
 
-		// setup the 'files' array with all the needed data
-//		$this->files = [];
-//		if ($this->items)
-//			foreach ($this->items as $item) {
-//				if ($item == $iid) $this->six = count($this->files);
-//				$this->files[] = $m->getItemFile($item);
-//			}
-
 		// build the bread crumbs
 		$pw = $app->getPathWay();
 		$pw->setItemName(0, '<i class="icon-home-2" title="Gallery Home"></i>');

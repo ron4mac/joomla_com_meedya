@@ -6,25 +6,29 @@
  */
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Factory;
 use Joomla\CMS\Router\Route;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Session\Session;
 
-JHtml::addIncludePath(JPATH_COMPONENT.'/helpers');
+HTMLHelper::addIncludePath(JPATH_COMPONENT.'/helpers');
 
 $script = 'var kkkkk = "YYYYY";
 var js_vars = {concurrent: 3};
 js_vars.h5uM = {
-	selAlb: "'.JText::_('COM_MEEDYA_H5U_ALBMSELMSG').'",
-	aborted: "'.JText::_('COM_MEEDYA_H5U_ABORTED').'",
-	type_err: "'.JText::_('COM_MEEDYA_H5U_TYPE_ERR').'",
-	size_err: "'.JText::_('COM_MEEDYA_H5U_SIZE_ERR').'",
-	extallow: "'.JText::_('COM_MEEDYA_H5U_EXTALLOW').'",
-	q_stop: "'.JText::_('COM_MEEDYA_H5U_Q_STOP').'",
-	q_go: "'.JText::_('COM_MEEDYA_H5U_Q_RESUME').'",
-	q_can: "'.JText::_('COM_MEEDYA_H5U_Q_CANCEL').'"
+	selAlb: "'.Text::_('COM_MEEDYA_H5U_ALBMSELMSG').'",
+	aborted: "'.Text::_('COM_MEEDYA_H5U_ABORTED').'",
+	type_err: "'.Text::_('COM_MEEDYA_H5U_TYPE_ERR').'",
+	size_err: "'.Text::_('COM_MEEDYA_H5U_SIZE_ERR').'",
+	extallow: "'.Text::_('COM_MEEDYA_H5U_EXTALLOW').'",
+	q_stop: "'.Text::_('COM_MEEDYA_H5U_Q_STOP').'",
+	q_go: "'.Text::_('COM_MEEDYA_H5U_Q_RESUME').'",
+	q_can: "'.Text::_('COM_MEEDYA_H5U_Q_CANCEL').'"
 };
 js_vars.timestamp = "'.$this->dbTime.'";
-js_vars.frmtkn = "'.JSession::getFormToken().'";
-js_vars.user_id = '.JFactory::getUser()->id.';
+js_vars.frmtkn = "'.Session::getFormToken().'";
+js_vars.user_id = '.Factory::getUser()->id.';
 js_vars.site_url = "'.JUri::base().'index.php?option=com_meedya&Itemid='.$this->itemId.'";
 js_vars.H5uPath = "'.JUri::base(true).'/components/com_meedya/static/";
 //js_vars.upLink = "'.JUri::base().'index.php?option=com_meedya&format=raw";
@@ -58,8 +62,8 @@ if ($this->uplodr == 'UL')
 	}
 ';
 
-//JHtml::_('bootstrap.loadCss', true);
-JHtml::_('jquery.framework');
+//HTMLHelper::_('bootstrap.loadCss', true);
+HTMLHelper::_('jquery.framework');
 
 $this->jDoc->addScriptDeclaration($script);
 //$this->jDoc->addCustomTag('<script src="'.JUri::base(true).'/'.MeedyaHelper::scriptVersion('upload').'" type="text/javascript"></script>');
@@ -74,7 +78,7 @@ $this->jDoc->addScript('components/com_meedya/static/vendor/tags/jquery.tagsinpu
 
 $this->jDoc->addStyleSheet('components/com_meedya/static/css/upload.css');
 
-JText::script('COM_MEEDYA_Q_STOPPED');
+Text::script('COM_MEEDYA_Q_STOPPED');
 
 $qcolors = ['#eeffee','#fff888','#ff8888'];
 $quota = MeedyaHelper::getStoreQuota($this->params);	//echo'<pre>';var_dump($this->params);echo'</pre>';
@@ -96,7 +100,7 @@ if ($quota) {
 		$bclas = 'success';
 	}
 }
-//JHtml::script(Juri::base() . 'components/com_meedya/static/js/uplodr.js');
+//HTMLHelper::script(Juri::base() . 'components/com_meedya/static/js/uplodr.js');
 ?>
 <script src="components/com_meedya/static/js/uplodr.js"></script>
 <?php if ($quota): ?>
@@ -126,8 +130,8 @@ if ($quota) {
 </style>
 <?php endif; ?>
 <div class="meedya-gallery">
-<?php echo JHtml::_('meedya.manageMenu', $this->userPerms, 0, $this->itemId); ?>
-<?php echo JHtml::_('meedya.pageHeader', $this->params, $this->action); ?>
+<?php echo HTMLHelper::_('meedya.manageMenu', $this->userPerms, 0, $this->itemId); ?>
+<?php echo HTMLHelper::_('meedya.pageHeader', $this->params, $this->action); ?>
 <?php if (false && $quota): ?>
 <h3>Storage Quota</h3>
 <div class="progress progress-<?=$bclas?>">
@@ -136,13 +140,13 @@ if ($quota) {
 	</div>
 </div>
 <?php endif; ?>
-<h4><?=JText::_('COM_MEEDYA_QUOTA_VALUE')?> <?=MeedyaHelper::formatBytes($quota)?></h4>
+<h4><?=Text::_('COM_MEEDYA_QUOTA_VALUE')?> <?=MeedyaHelper::formatBytes($quota)?></h4>
 <div id="quotaBar"><div id="qBar"><?=$qper?>%</div></div>
 <!-- <p><big>== UPLOADS HERE ==</big></p>
 <p>--@@-- STORAGE QUOTA: <?=MeedyaHelper::formatBytes($quota)?></p>
 <p>--@@-- STORAGE USED: <?=MeedyaHelper::formatBytes($this->totStore)?></p> -->
 <?php if ($this->totStore < $quota): ?>
-<h4><?=JText::_('COM_MEEDYA_MAX_UPLD_SIZE')?> <?=$this->maxupld?></h4>
+<h4><?=Text::_('COM_MEEDYA_MAX_UPLD_SIZE')?> <?=$this->maxupld?></h4>
 <p>
 	<!-- <?php var_dump($this->params); ?> -->
 </p>
@@ -153,11 +157,11 @@ if (RJC_DBUG) {
 }
 ?>
 <div class="albctl">
-	<label for="h5u_album"><?=JText::_('COM_MEEDYA_H5U_ALB_SELECT')?></label>
+	<label for="h5u_album"><?=Text::_('COM_MEEDYA_H5U_ALB_SELECT')?></label>
 	<select id="h5u_album" name="h5u_album" onchange="album_select(this)">
-		<option value="-1"><?=JText::_('COM_MEEDYA_H5U_NEWALBUM')?></option>
-		<option value=""<?=($this->aid?'':' selected')?>><?=JText::_('COM_MEEDYA_H5U_SELECT')?></option>
-		<?=JHtml::_('meedya.albumsHierOptions', $this->albums, $this->aid)?>
+		<option value="-1"><?=Text::_('COM_MEEDYA_H5U_NEWALBUM')?></option>
+		<option value=""<?=($this->aid?'':' selected')?>><?=Text::_('COM_MEEDYA_H5U_SELECT')?></option>
+		<?=HTMLHelper::_('meedya.albumsHierOptions', $this->albums, $this->aid)?>
 	</select>
 </div>
 <div class="row-fluid">
@@ -173,11 +177,11 @@ if (RJC_DBUG) {
 <?php endif; ?>
 </div>
 <?php
-echo JHtml::_(
+echo HTMLHelper::_(
 	'bootstrap.renderModal',
 	'newalbdlg',
-	['title' => JText::_('COM_MEEDYA_CREATE_NEW_ALBUM'),
-	'footer' => JHtml::_('meedya.modalButtons', 'COM_MEEDYA_H5U_CREALBM','createAlbum(this)', 'creab'),
+	['title' => Text::_('COM_MEEDYA_CREATE_NEW_ALBUM'),
+	'footer' => HTMLHelper::_('meedya.modalButtons', 'COM_MEEDYA_H5U_CREALBM','createAlbum(this)', 'creab'),
 	'modalWidth' => '40'],
 	$this->loadTemplate('newalb')
 	);

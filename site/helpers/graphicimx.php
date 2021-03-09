@@ -159,7 +159,7 @@ class ImageProcessor extends ImageProc
 		$osize = filesize(realpath($this->src));
 		$exif = @exif_read_data(realpath($this->src));		//file_put_contents('exif.txt', print_r($exif,true), FILE_APPEND);
 		if (!$exif) return;
-		$ort = $exif['Orientation'];
+		$ort = isset($exif['Orientation']) ? $exif['Orientation'] : 0;
 		switch ($ort) {
 			case 1: // nothing
 				break;
