@@ -39,6 +39,7 @@ var	ssCtl = (function() {
 		_fle = 0,			// left edge of view frame relative to imagelist
 		_ielms = Array(),	// elements associated with the view frame
 		_vELm = null,		// reusable video element
+		_fELm = null,		// current front element
 		_iarea = null,		// image area
 		_iniClass,
 		_onClass,
@@ -201,8 +202,10 @@ if (LR !== 0) { _titlelm.innerHTML = ""; }
 		if (tElm.ism) {
 			_vElm.src = baseUrlV + imagelist[tElm.slidnum].fpath;
 //			_sldnumelm.innerHTML = tElm.slidnum + 1;
+			_fElm = _vElm;
 		} else {
 			positionImage(tElm, function(){ imgPlaced(tElm); /*tElm.className = _onClass;*/});
+			_fElm = tElm;
 		}
 //		_sldnumelm.innerHTML = tElm.slidnum + 1;
 		return true;
@@ -375,6 +378,7 @@ if (LR !== 0) { _titlelm.innerHTML = ""; }
 	}
 
 	function swipe (e) {
+		_fElm.style.left = "0px";
 		var te = e.changedTouches[0];
 		var	dx = _tstartx - te.clientX,
 			dy = _tstarty - te.clientY;
@@ -397,6 +401,11 @@ if (LR !== 0) { _titlelm.innerHTML = ""; }
 		_tstartx = ts.clientX;
 		_tstarty = ts.clientY;
 		_tstartt = e.timeStamp;
+	}
+	function move (e) {
+		var ts = e.changedTouches[0];
+		var diff = ts.clientX - _tstartx;
+		_fElm.style.left = diff+"px";
 	}
 
 	function winResized () {
@@ -473,7 +482,7 @@ if (LR !== 0) { _titlelm.innerHTML = ""; }
 
 		// watch for swipes
 		_iarea.addEventListener('touchstart', touch, false);
-		_iarea.addEventListener('touchmove', function(e){e.preventDefault();}, false);
+		_iarea.addEventListener('touchmove', move, false);
 		_iarea.addEventListener('touchend', swipe, false);
 
 		_iarea.addEventListener("keypress", keyPressed, false);
