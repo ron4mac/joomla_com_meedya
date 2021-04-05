@@ -248,7 +248,9 @@ class MeedyaModelManage extends MeedyaModelMeedya
 
 		// make sure to keep video files
 		if (substr($mtype, 0, 5) == 'video') {
-			$keep = true;
+			$fsize = filesize($fpath);
+			$this->addItem($fname, $mtype, $ittl, $itgs, $alb, $fsize, $fsize, null);
+			return;
 		}
 
 		$fsize = $keep ? filesize($fpath) : 0;

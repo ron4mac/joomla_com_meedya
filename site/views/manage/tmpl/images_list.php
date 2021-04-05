@@ -6,6 +6,8 @@
  */
 defined('_JEXEC') or die;
 
+use Joomla\CMS\HTML\HTMLHelper;
+
 echo '<style>
 #imglist table, #imglist th, #imglist td {
 	border: 1px solid #DDD;
@@ -41,7 +43,7 @@ foreach ($this->iids as $item) {
 	echo '<tr>';
 	//echo'<xmp>';var_dump($item);echo'</xmp>';
 	echo '<td><div class="lstItem row-fluid">';
-	echo JHtml::_('meedya.imageThumbElement', $item, false, 'item');
+	echo HTMLHelper::_('meedya.imageThumbElement', $item, false, 'item');
 	echo '</div></td>';
 	echo '<td><div class="lstText row-fluid"><dl>';
 	if ($item->title) echo '<dt>Title:</dt><dd>'.$item->title.'</dd>';

@@ -83,11 +83,11 @@ var formTokn = "<?= Session::getFormToken(); ?>";
 				echo '<a href="'.$this->linkUrl.'&mode=L"><span class="icon-list-2 action-icon inaicon" title="List View"> </span></a>';
 			}
 		?>
-		<?php $fOpts = array('filterButton' => true); ?>
-		<?php echo LayoutHelper::render('search', array('view' => $this, 'options' => $fOpts), JPATH_ROOT.'/components/com_meedya/layouts'); ?>
+		<?php $fOpts = ['filterButton' => true]; ?>
+		<?php echo LayoutHelper::render('search', ['view' => $this, 'options' => $fOpts], JPATH_ROOT.'/components/com_meedya/layouts'); ?>
 		<?php if ($this->iids): ?>
 		<div class="actbuts">
-			<?php echo HTMLHelper::_('meedya.actionButtons', array('sela','seln','edts','adds','dels')); ?>
+			<?php echo HTMLHelper::_('meedya.actionButtons', ['sela','seln','edts','adds','dels']); ?>
 		</div>
 		<?php endif; ?>
 		<?php echo $this->loadTemplate($this->mode == 'G' ? 'grid' : 'list'); ?>
@@ -108,11 +108,11 @@ var formTokn = "<?= Session::getFormToken(); ?>";
 echo HTMLHelper::_(
 	'bootstrap.renderModal',
 	'add2albdlg',
-	array(
+	[
 		'title' => Text::_('COM_MEEDYA_ADD_ALBUM_ITEMS'),
 		'footer' => HTMLHelper::_('meedya.modalButtons', 'COM_MEEDYA_ADD2ALBUM', 'addItems2Album(this)', 'creab'),
 		'modalWidth' => '40'
-	),
+	],
 	$this->loadTemplate('add2alb')
 	);
 ?>

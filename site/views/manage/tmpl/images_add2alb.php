@@ -6,6 +6,9 @@
  */
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\HTML\HTMLHelper;
+
 $ajaxlink = JUri::base().'index.php?option=com_meedya&format=raw';
 ?>
 <div id="crealbm">
@@ -16,8 +19,8 @@ $ajaxlink = JUri::base().'index.php?option=com_meedya&format=raw';
 		<dd>
 			<select id="h5u_album" name="h5u_album" onchange="watchAlb(this)">
 				<option value="-1">[ NEW ALBUM ]</option>
-				<option value="0" selected="selected"><?=JText::_('COM_MEEDYA_H5U_SELECT')?></option>
-				<?=JHtml::_('meedya.albumsHierOptions', $this->albums)?>
+				<option value="0" selected="selected"><?=Text::_('COM_MEEDYA_H5U_SELECT')?></option>
+				<?=HTMLHelper::_('meedya.albumsHierOptions', $this->albums)?>
 			</select>
 		</dd>
 		</dl>
@@ -36,9 +39,9 @@ $ajaxlink = JUri::base().'index.php?option=com_meedya&format=raw';
 		<dt><label for="h5u_palbum">Album Parent</label></dt>
 		<dd>
 			<select id="h5u_palbum" name="h5u_palbum">
-				<!-- <option value=""><?=JText::_('COM_MEEDYA_H5U_SELPAR')?></option> -->
-				<option value="0"><?=JText::_('COM_MEEDYA_H5U_NONE')?></option>
-				<?=JHtml::_('meedya.albumsHierOptions', $this->albums)?>
+				<!-- <option value=""><?=Text::_('COM_MEEDYA_H5U_SELPAR')?></option> -->
+				<option value="0"><?=Text::_('COM_MEEDYA_H5U_NONE')?></option>
+				<?=HTMLHelper::_('meedya.albumsHierOptions', $this->albums)?>
 			</select>
 		</dd>
 		</dl>

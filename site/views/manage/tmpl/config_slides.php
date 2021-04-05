@@ -1,14 +1,16 @@
 <?php
 /**
  * @package		com_meedya
- * @copyright	Copyright (C) 2020 RJCreations. All rights reserved.
+ * @copyright	Copyright (C) 2021 RJCreations. All rights reserved.
  * @license		GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
 
+use Joomla\CMS\HTML\HTMLHelper;
+
 jimport('joomla.filesystem.folder');
 
-JHtml::_('jquery.framework', false);
+HTMLHelper::_('jquery.framework', false);
 
 MeedyaHelper::addScript('slide_config');
 MeedyaHelper::addScript('spectrum.min');
@@ -76,9 +78,9 @@ foreach ($iconsets as $value) {
 	$ichoices .= "<option value=\"$value\" $selected>$value</option>";
 }
 
-$sizeSel = array('','','');
+$sizeSel = ['','',''];
 $sizeSel[$cfg['pS']] = ' selected="selected"';
-$tranSel = array('n'=>'','d'=>'','s'=>'');
+$tranSel = ['n'=>'','d'=>'','s'=>''];
 $tranSel[$cfg['tT']] = ' selected="selected"';
 
 $newWin_checked = $cfg['nW'] ? 'checked="checked"' : '';
@@ -250,7 +252,7 @@ if ($this->album) echo "<input type=\"hidden\" name=\"album\" value=\"{$album}\"
 ?>
 	<input type="hidden" name="task" value="manage.saveConfig" />
 	<input type="hidden" name="return" value="<?=base64_encode($_SERVER['REQUEST_URI'])?>" />
-	<?=JHtml::_('form.token')?>
+	<?=HTMLHelper::_('form.token')?>
 </form>
 <script>
 jQuery(document).ready(function() {

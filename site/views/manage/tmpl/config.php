@@ -25,7 +25,7 @@ echo '<div class="meedya-config">';
 if ($this->manage) echo HTMLHelper::_('meedya.manageMenu', $this->userPerms, 0, $this->itemId);
 echo HTMLHelper::_('meedya.pageHeader', $this->params, $this->action/*.'XXXX'*/);
 
-echo HTMLHelper::_('bootstrap.startTabSet', 'mdya_tabs', array('active'=>'cfg-ah'))
+echo HTMLHelper::_('bootstrap.startTabSet', 'mdya_tabs', ['active'=>'cfg-ah'])
 	,HTMLHelper::_('bootstrap.addTab', 'mdya_tabs', 'cfg-ah', Text::_('Panel Title 1'))
 	,$this->loadTemplate('gallery')
 	,HTMLHelper::_('bootstrap.endTab')

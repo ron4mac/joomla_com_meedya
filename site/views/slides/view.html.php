@@ -1,7 +1,7 @@
 <?php
 /**
  * @package		com_meedya
- * @copyright	Copyright (C) 2020 RJCreations. All rights reserved.
+ * @copyright	Copyright (C) 2021 RJCreations. All rights reserved.
  * @license		GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
@@ -10,7 +10,7 @@ include_once JPATH_COMPONENT.'/views/meedyaview.php';
 
 class MeedyaViewSlides extends MeedyaView
 {
-	protected $slides = array();
+	protected $slides = [];
 	protected $album;
 
 	function display ($tpl = null)

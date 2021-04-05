@@ -85,7 +85,7 @@ var	ssCtl = (function() {
 		_iecnt = 5,			// max number of elements in the view frame
 		_ffv = 2,			// frame focus view - generally the middle view of the frame
 		_fle = 0,			// left edge of view frame relative to imagelist
-		_ielms = Array(),	// elements associated with the view frame
+		_ielms = [],		// elements associated with the view frame
 		_vELm = null,		// reusable video element
 		_iniClass,
 		_onClass,
@@ -508,7 +508,7 @@ if (LR !== 0) { _titlelm.innerHTML = ""; }
 
 	function medEnded (elm) {
 		if (_running) {
-			nextSlide();
+			setTimeout(function(){ nextSlide(); }, 1000);
 		}
 	}
 
@@ -519,7 +519,7 @@ if (LR !== 0) { _titlelm.innerHTML = ""; }
 
 	function medError (evt) {
 		_titlelm.innerHTML += '<p class="errMsg">'+viderror+this.src+'</p>';
-		if (_running) { _sTimer = setTimeout(function(){nextSlide()}, _slideDur); }
+		if (_running) { _sTimer = setTimeout(function(){ nextSlide(); }, _slideDur); }
 	}
 
 	mySC.sdur = function(up) {
@@ -566,7 +566,10 @@ if (LR !== 0) { _titlelm.innerHTML = ""; }
 		_vElm.id = "medsld";
 		_vElm.controls = true;
 		_vElm.onended = function(){medEnded(this);};
-		_vElm.oncanplay = function(){this.style.display="block";this.play()};
+	//	_vElm.autoplay=true;
+	//	_vElm.muted=true;
+		_vElm.playsinline=true;
+		_vElm.onloadedmetadata = function(){this.style.display="block";this.play();};
 		iarea.appendChild(_vElm);
 
 		// get the middle element of the image frame

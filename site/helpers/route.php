@@ -20,9 +20,7 @@ abstract class MeedyaHelperRoute
 	 */
 	public static function getMeedyaItemRoute($id, $catid)
 	{
-		$needles = array(
-			'meedyaitem'  => array((int) $id)
-		);
+		$needles = ['meedyaitem'  => [(int) $id]];
 
 		//Create the link
 		$link = 'index.php?option=com_meedya&view=meedyaitem&id='. $id;
@@ -83,9 +81,7 @@ abstract class MeedyaHelperRoute
 			$link = '';
 		}
 		else {
-			$needles = array(
-				'category' => array($id)
-			);
+			$needles = ['category' => [$id]];
 
 			if ($item = self::_findItem($needles)) {
 				$link = 'index.php?Itemid='.$item;
@@ -96,10 +92,10 @@ abstract class MeedyaHelperRoute
 
 				if ($category) {
 					$catids = array_reverse($category->getPath());
-					$needles = array(
+					$needles = [
 						'category' => $catids,
 						'categories' => $catids
-					);
+					];
 
 					if ($item = self::_findItem($needles)) {
 						$link .= '&Itemid='.$item;
@@ -121,7 +117,7 @@ abstract class MeedyaHelperRoute
 
 		// Prepare the reverse lookup array.
 		if (self::$lookup === null) {
-			self::$lookup = array();
+			self::$lookup = [];
 
 			$component	= ComponentHelper::getComponent('com_meedya');
 			$items		= $menus->getItems('component_id', $component->id);
@@ -131,7 +127,7 @@ abstract class MeedyaHelperRoute
 					$view = $item->query['view'];
 
 					if (!isset(self::$lookup[$view])) {
-						self::$lookup[$view] = array();
+						self::$lookup[$view] = [];
 					}
 
 					if (isset($item->query['id'])) {

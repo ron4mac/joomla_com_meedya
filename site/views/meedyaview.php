@@ -12,7 +12,7 @@ defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
 
-// provide all views with a JHtml helper class
+// provide all views with a HTMLHelper class
 JLoader::register('JHtmlMeedya', JPATH_COMPONENT . '/helpers/html/meedya.php');
 // and our htmlobject class
 JLoader::register('HtmlElementObject', JPATH_COMPONENT . '/classes/HtmlObject.php');
@@ -32,7 +32,7 @@ class MeedyaView extends JViewLegacy
 	protected $instance;
 	protected $jDoc;
 
-	public function __construct ($config = array())
+	public function __construct ($config = [])
 	{
 		if (RJC_DBUG) {
 			MeedyaHelper::log('MeedyaView');
@@ -75,7 +75,7 @@ class MeedyaView extends JViewLegacy
 
 	protected function getAlbumThumb ($albrec)
 	{
-		$pics = $albrec->items ? explode('|', $albrec->items) : array();
+		$pics = $albrec->items ? explode('|', $albrec->items) : [];
 		if (!$albrec->thumb) {
 		//	$albrec->thumb = $pics ? $this->getItemThumb($pics[0]) : false;
 			$albrec->thumb = $pics ? $pics[0] : false;

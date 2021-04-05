@@ -17,12 +17,12 @@ abstract class MeedyaHelper
 
 	public static function scriptVersion ($scr, $path='js/')
 	{
-		$dbg = RJC_DBUG;
+		$dbg = true || RJC_DBUG;
 		$sfx = $dbg ? ('?'.time()) : '';
 		$vray = [
 			'manage' => ['manage.js', 'manage.js'],
 			'echo' => ['echo.js', 'echo.min.js'],
-			'slides' => ['slides.js', 'slides.min.js'],
+			'slides' => ['slides.js', 'slides.js' /*'slides.min.js'*/],
 			'upload' => ['upload.js', 'upload.min.js'],
 			'each' => ['each.js', 'each.js']
 			];
@@ -42,7 +42,7 @@ abstract class MeedyaHelper
 
 	public static function styleVersion ($css, $path='css/')
 	{
-		$dbg = RJC_DBUG;
+		$dbg = true || RJC_DBUG;
 		$sfx = $dbg ? ('?'.time()) : '';
 		$vray = [
 			'manage' => ['manage.css', 'manage.css'],

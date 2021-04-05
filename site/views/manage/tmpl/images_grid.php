@@ -6,11 +6,13 @@
  */
 defined('_JEXEC') or die;
 
+use Joomla\CMS\HTML\HTMLHelper;
+
 echo '<div id="imggrid">
 ';
 
 foreach ($this->iids as $item) {
-	echo JHtml::_('meedya.imageThumbElement', $item);
+	echo HTMLHelper::_('meedya.imageThumbElement', $item);
 }
 
 echo '</div>

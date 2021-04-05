@@ -19,7 +19,7 @@ if (RJC_DBUG) {
 		'text_file'=>'com_meedya.log.php',
 		'text_entry_format'=>'{DATETIME}			{PRIORITY}			{MESSAGE}'
 	];
-	JLog::addLogger($cml, JLog::ALL, array('com_meedya'));
+	JLog::addLogger($cml, JLog::ALL, ['com_meedya']);
 }
 
 $controller = BaseController::getInstance('Meedya');

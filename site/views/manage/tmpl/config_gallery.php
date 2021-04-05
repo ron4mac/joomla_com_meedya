@@ -1,8 +1,13 @@
 <?php
+/**
+ * @package		com_meedya
+ * @copyright	Copyright (C) 2021 RJCreations. All rights reserved.
+ * @license		GNU General Public License version 3 or later; see LICENSE.txt
+ */
 defined('_JEXEC') or die;
 
 function buildTree(array $albums, &$html, $paid = 0) {
-	$branch = array();
+	$branch = [];
 	foreach ($albums as $alb) {
 		if ($alb['paid'] == $paid) {
 		//	$itms = $alb['items'] ? count(explode('|',$alb['items'])) : 'no';

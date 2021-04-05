@@ -7,11 +7,13 @@
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Router\Route;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\HTML\HTMLHelper;
 
 MeedyaHelper::addStyle('gallery');
 MeedyaHelper::addStyle('manage');
 MeedyaHelper::addStyle('pell.min', 'vendor/pell/');
-JHtml::_('jquery.framework');
+HTMLHelper::_('jquery.framework');
 MeedyaHelper::addScript('manage');
 MeedyaHelper::addScript('bootbox');
 MeedyaHelper::addScript('pell.min', 'vendor/pell/');
@@ -21,8 +23,8 @@ var albumID = '.$this->aid.';
 var iZoomURL = "'.Route::_('index.php?option=com_meedya&format=raw&task=manage.getZoomItem&Itemid='.$this->itemId, false).'";
 ');
 
-JText::script('COM_MEEDYA_REMOVE');
-JText::script('COM_MEEDYA_VRB_REMOVE');
+Text::script('COM_MEEDYA_REMOVE');
+Text::script('COM_MEEDYA_VRB_REMOVE');
 
 //var_dump($this->album);
 ?>
@@ -33,7 +35,7 @@ JText::script('COM_MEEDYA_VRB_REMOVE');
 	.modal-footer {padding: 8px 10px}
 </style>
 <div class="meedya-gallery">
-<?php if ($this->manage) echo JHtml::_('meedya.manageMenu', $this->userPerms, 0, $this->itemId); ?>
+<?php if ($this->manage) echo HTMLHelper::_('meedya.manageMenu', $this->userPerms, 0, $this->itemId); ?>
 <h3>ALBUM EDIT: <?=$this->album['title']?></h3>
 <button class="btn btn-primary" onclick="saveAlbum()">Save Changes</button>
 <button class="btn" onclick="cancelEdt()">Cancel</button>
@@ -55,7 +57,7 @@ JText::script('COM_MEEDYA_VRB_REMOVE');
 	<input type="hidden" name="aid" value="<?=$this->aid?>" />
 	<input type="hidden" name="thmord" value="" />
 	<input type="hidden" name="referer" value="<?=base64_encode($this->referer)?>" />
-	<?=JHtml::_('form.token')?>
+	<?=HTMLHelper::_('form.token')?>
 </form>
 
 <?php if ($this->params->def('show_page_heading', 1)) : ?>
@@ -65,7 +67,7 @@ JText::script('COM_MEEDYA_VRB_REMOVE');
 <?php endif; ?>
 
 <div class="actbuts">
-	<?php echo JHtml::_('meedya.actionButtons', ['sela','seln','edts','rems']); ?>
+	<?php echo HTMLHelper::_('meedya.actionButtons', ['sela','seln','edts','rems']); ?>
 </div>
 <form id="actform" method="POST" action="<?=Route::_('index.php?option=com_meedya&Itemid='.$this->itemId)?>" style="display:none">
 	<input name="task" id="atask" type="hidden" value="manage.imgEdit" />
@@ -76,7 +78,7 @@ JText::script('COM_MEEDYA_VRB_REMOVE');
 <?php
 	foreach ($this->items as $item) {
 		if (!$item) continue;
-		echo JHtml::_('meedya.imageThumbElement', (object)$this->getItemFile($item), false, 'item');
+		echo HTMLHelper::_('meedya.imageThumbElement', (object)$this->getItemFile($item), false, 'item');
 	}
 ?>
 	<div id="itmend" class="noitem item"></div>

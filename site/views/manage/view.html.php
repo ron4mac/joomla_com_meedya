@@ -20,7 +20,7 @@ class MeedyaViewManage extends MeedyaView
 	protected $_defaultModel = 'manage';
 	protected $manage = 1;
 
-	public function __construct ($config = array())
+	public function __construct ($config = [])
 	{
 	//	if (RJC_DBUG) MeedyaHelper::log('MeedyaViewManage');
 		parent::__construct($config);
@@ -90,7 +90,7 @@ class MeedyaViewManage extends MeedyaView
 
 			case 'config':
 				$this->action = 'Configure Gallery';
-				$this->items = array();		// keep parent view from loading items
+				$this->items = [];		// keep parent view from loading items
 				if (!$this->html5slideshowCfg) {
 					$this->html5slideshowCfg = MeedyaHelper::$ssDefault;
 				}
@@ -115,7 +115,7 @@ class MeedyaViewManage extends MeedyaView
 				$this->maxUploadFS = MeedyaHelper::maxUpload($this->mparams->get('maxUpload'));
 				$this->maxupld = MeedyaHelper::formatBytes($this->maxUploadFS);
 			//	$this->dbTime = $this->get('DbTime');
-				$this->items = array();		// keep parent view from loading items
+				$this->items = [];		// keep parent view from loading items
 				break;
 
 			default:

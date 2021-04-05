@@ -37,14 +37,14 @@ var	ssCtl = (function() {
 		_iecnt = 5,			// max number of elements in the view frame
 		_ffv = 2,			// frame focus view - generally the middle view of the frame
 		_fle = 0,			// left edge of view frame relative to imagelist
-		_ielms = Array(),	// elements associated with the view frame
+		_ielms = [],		// elements associated with the view frame
 		_vELm = null,		// reusable video element
-		_fELm = null,		// current front element
+		_fELm = null,		// current front image/video element
 		_iarea = null,		// image area
 		_iniClass,
 		_onClass,
 		_trzn,
-		_slideDur = 7000,	// display duration for eash image
+		_slideDur = 7000,	// display duration for each image
 		_sTimer = null,
 		_running = false,
 		_topMargin = 22,
@@ -200,10 +200,14 @@ var	ssCtl = (function() {
 //		if (tElm.eMsg) { _titlelm.innerHTML += tElm.eMsg; }
 if (LR !== 0) { _titlelm.innerHTML = ""; }
 		if (tElm.ism) {
+			// recover from prior swipe
+			_vElm.style.left = "0px";
 			_vElm.src = baseUrlV + imagelist[tElm.slidnum].fpath;
 //			_sldnumelm.innerHTML = tElm.slidnum + 1;
 			_fElm = _vElm;
 		} else {
+			// recover from prior swipe
+			tElm.style.left = "0px";
 			positionImage(tElm, function(){ imgPlaced(tElm); /*tElm.className = _onClass;*/});
 			_fElm = tElm;
 		}
@@ -304,7 +308,7 @@ if (LR !== 0) { _titlelm.innerHTML = ""; }
 				_iarea.blur();
 				$id('sstage').style.display = "none";
 				_ielms.forEach(function(itm){_iarea.removeChild(itm);});
-				_ielms = Array();
+				_ielms = [];
 				_iarea.removeChild(_vElm);
 				break;
 			case _rwnd:
@@ -377,12 +381,15 @@ if (LR !== 0) { _titlelm.innerHTML = ""; }
 		}
 	}
 
+	// see if there hase been a left or right swipe
 	function swipe (e) {
-		_fElm.style.left = "0px";
 		var te = e.changedTouches[0];
 		var	dx = _tstartx - te.clientX,
 			dy = _tstarty - te.clientY;
-		if ((e.timeStamp - _tstartt) > 400) { return; }
+		if ((e.timeStamp - _tstartt) > 700) {
+			_fElm.style.left = "0px";
+			return;
+		}
 		if (Math.abs(dx) > Math.abs(dy)) {
 			if (Math.abs(dx) > 100) {
 				e.preventDefault();
@@ -396,12 +403,14 @@ if (LR !== 0) { _titlelm.innerHTML = ""; }
 			}
 		}
 	}
+	// touch start
 	function touch (e) {
 		var ts = e.changedTouches[0];
 		_tstartx = ts.clientX;
 		_tstarty = ts.clientY;
 		_tstartt = e.timeStamp;
 	}
+	// provide some swipe feedback
 	function move (e) {
 		var ts = e.changedTouches[0];
 		var diff = ts.clientX - _tstartx;
@@ -474,7 +483,7 @@ if (LR !== 0) { _titlelm.innerHTML = ""; }
 		_vElm.id = "medsld";
 		_vElm.controls = true;
 		_vElm.onended = function(){medEnded(this);};
-		_vElm.oncanplay = function(){this.style.display="block";this.play()};
+		_vElm.onloadedmetadata = function(){this.style.display="block";this.play()};
 		_iarea.appendChild(_vElm);
 
 		// get the middle element of the image frame

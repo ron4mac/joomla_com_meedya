@@ -1,7 +1,7 @@
 <?php
 /**
  * @package		com_meedya
- * @copyright	Copyright (C) 2020 RJCreations. All rights reserved.
+ * @copyright	Copyright (C) 2021 RJCreations. All rights reserved.
  * @license		GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
@@ -18,7 +18,7 @@ MeedyaHelper::addScript('slides');
 $H5ss_cfg = $this->html5slideshowCfg;
 
 $errmsg = '';
-$filelist = array();
+$filelist = [];
 $usrisown = false;
 
 $fprefix = $H5ss_cfg['pS'] == 1 ? 'normal_' : '';
@@ -31,11 +31,11 @@ if ($this->slides) {
 		$txtinfo = '';
 		if ($H5ss_cfg['vT']) $txtinfo = trim($slide['title']);
 		if ($H5ss_cfg['vD'] && trim($slide['desc'])) $txtinfo .= ($txtinfo ? ' ... ' : '') . trim($slide['desc']);
-		$fileentry = array(
+		$fileentry = [
 				'fpath' => $slide['file'],
 				'title' => $txtinfo,
 				'mTyp' => substr($slide['mtype'], 0, 1)
-				);
+				];
 		$filelist[] = $fileentry;
 	}
 } else {
@@ -53,7 +53,7 @@ $dcolors = $H5ss_cfg['dC'];		//explode(',', $H5ss_cfg['dC']);
 	body { background-color:<?=$dcolors[4]?>; width:100%; height:100%; overflow:hidden }
 	div#controls { background-color:<?=$dcolors[0]?>; color:<?=$dcolors[1]?>; }
 	div#ptext { background-color:<?=$dcolors[2]?>; color:<?=$dcolors[3]?>; }
-	div#screen { background-color:<?=$dcolors[4]?>;}
+	div#screen { background-color:<?=$dcolors[4]?>;padding-left:12px;padding-right:12px;}
 	div.spribut { background: url('<?=JUri::root(true)?>/components/com_meedya/static/css/icons/<?=$icons?>.png') no-repeat; }
 </style>
 <script type="text/javascript">

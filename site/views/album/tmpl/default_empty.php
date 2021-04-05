@@ -6,11 +6,14 @@
  */
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\HTML\HTMLHelper;
+
 MeedyaHelper::addStyle('album');
 ?>
 
 <div class="meedya-gallery">
-<?php echo JHtml::_('meedya.pageHeader', $this->params); ?>
+<?php echo HTMLHelper::_('meedya.pageHeader', $this->params); ?>
 	<div class="crumbs">
 	<?php
 		foreach ($this->pathWay as $crm) {
@@ -23,7 +26,7 @@ MeedyaHelper::addStyle('album');
 	<div id="area">
 	<?php
 		$msg = $this->isSearch ? 'COM_MEEDYA_EMPTY_RESULTS' : 'COM_MEEDYA_NO_ITEMS';
-		echo '<p style="text-align:center;font-size:large">'.JText::_($msg).'</p>';
+		echo '<p style="text-align:center;font-size:large">'.Text::_($msg).'</p>';
 	?>
 	</div>
 </div>

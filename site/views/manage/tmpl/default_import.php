@@ -6,9 +6,11 @@
  */
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Language\Text;
+
 echo '<div id="impcbs">';
-echo '<input type="checkbox" name="fast" id="fast" value="1"><label for="fast">'.JText::_('COM_MEEDYA_FILEASTITLE').'</label><br><br>';
-echo '<span>'.JText::_('COM_MEEDYA_IMPSELECT').'</span><br>';
+echo '<input type="checkbox" name="fast" id="fast" value="1"><label for="fast">'.Text::_('COM_MEEDYA_FILEASTITLE').'</label><br><br>';
+echo '<span>'.Text::_('COM_MEEDYA_IMPSELECT').'</span><br>';
 $folds = JFolder::folders($this->gallpath.'/import');
 foreach ($folds as $k => $fold) {
 	echo '<div class="impfld"><input type="checkbox" id="infld'.$k.'" name="impflds[]" value="'.$fold.'" class="impflds" onchange="watchFolders()">';

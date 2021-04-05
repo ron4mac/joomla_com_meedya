@@ -15,7 +15,7 @@ class MeedyaViewAlbum extends MeedyaView
 {
 	protected $aid;
 
-	public function __construct ($config = array())
+	public function __construct ($config = [])
 	{
 		if (RJC_DBUG) { MeedyaHelper::log('MeedyaViewAlbum'); }
 		parent::__construct($config);

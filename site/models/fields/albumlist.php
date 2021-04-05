@@ -6,6 +6,7 @@
  */
 defined('JPATH_BASE') or die;
 
+use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Form\FormHelper;
 
 FormHelper::loadFieldClass('list');
@@ -23,7 +24,7 @@ class JFormFieldAlbumList extends JFormFieldList
 		// Build the options array.
 		foreach ($albs as $alb) {
 			$d = count(explode('.', $alb->hord));
-			$options[] = JHtml::_('select.option', $alb->aid, str_repeat('_ ',$d-1).$alb->title);
+			$options[] = HTMLHelper::_('select.option', $alb->aid, str_repeat('_ ',$d-1).$alb->title);
 		}
 
 		return $options;

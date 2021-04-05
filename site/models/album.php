@@ -17,7 +17,7 @@ class MeedyaModelAlbum extends MeedyaModelMeedya
 	protected $_total = null;
 	protected $_pagination = null;
 
-	public function __construct ($config = array())
+	public function __construct ($config = [])
 	{
 		if (RJC_DBUG) { MeedyaHelper::log('MeedyaModelAlbum'); }
 		parent::__construct($config);

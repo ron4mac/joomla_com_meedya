@@ -7,14 +7,15 @@
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Router\Route;
+use Joomla\CMS\HTML\HTMLHelper;
 
-JHtml::_('jquery.framework');
+HTMLHelper::_('jquery.framework');
 
 MeedyaHelper::addScript('manage');
 MeedyaHelper::addStyle('jquery.tagsinput', 'vendor/tags/');
 MeedyaHelper::addScript('jquery.tagsinput', 'vendor/tags/');
 
-JHtml::stylesheet('components/com_meedya/static/css/manage.css');
+HTMLHelper::stylesheet('components/com_meedya/static/css/manage.css');
 //echo'<pre>';var_dump($this->iids);echo'</pre>';
 $this->jDoc->addScriptDeclaration('
 var iZoomURL = "'.Route::_('index.php?option=com_meedya&format=raw&task=manage.getZoomItem&Itemid='.$this->itemId, false).'";
@@ -22,7 +23,7 @@ var iZoomURL = "'.Route::_('index.php?option=com_meedya&format=raw&task=manage.g
 ?>
 </script>
 <form name="adminform" method="POST">
-<?=JHtml::_('meedya.submissionButtons')?>
+<?=HTMLHelper::_('meedya.submissionButtons')?>
 <input type="hidden" name="task" value="manage.iedSave" />
 <input type="hidden" name="referer" value="<?=base64_encode($this->referer)?>" />
 <?php foreach ($this->iids as $iid): ?>
@@ -56,7 +57,7 @@ var iZoomURL = "'.Route::_('index.php?option=com_meedya&format=raw&task=manage.g
 	</div>
 </div>
 <?php endforeach; ?>
-<?=JHtml::_('meedya.submissionButtons')?>
+<?=HTMLHelper::_('meedya.submissionButtons')?>
 </form>
 <script>
 	jQuery(".itmtags").tagsInput();

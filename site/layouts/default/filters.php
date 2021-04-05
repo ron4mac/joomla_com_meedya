@@ -19,7 +19,7 @@ $filters = $data['view']->filterForm->getGroup('filter');
 			<?php $dataShowOn = ''; ?>
 			<?php if ($field->showon) : ?>
 				<?php HTMLHelper::_('jquery.framework'); ?>
-				<?php HTMLHelper::_('script', 'jui/cms.js', array('version' => 'auto', 'relative' => true)); ?>
+				<?php HTMLHelper::_('script', 'jui/cms.js', ['version' => 'auto', 'relative' => true]); ?>
 				<?php $dataShowOn = " data-showon='" . json_encode(FormHelper::parseShowOnConditions($field->showon, $field->formControl, $field->group)) . "'"; ?>
 			<?php endif; ?>
 			<div class="js-stools-field-filter"<?php echo $dataShowOn; ?>>
