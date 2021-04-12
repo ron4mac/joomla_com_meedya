@@ -74,7 +74,11 @@ if ($this->useFanCB) {
 		function showSlides (e, iid) {
 			e.preventDefault();
 			startx = iid;
-			jQuery.fancybox.open(imagelist, {loop:false, buttons:["zoom","slideShow","fullScreen","close"]}, startx);
+			jQuery.fancybox.open(imagelist, {loop:false, buttons:["zoom","slideShow","fullScreen","close"], slideShow:{speed:6000}}, startx);
+		}
+		function slideShow (e) {
+			e.preventDefault();
+			jQuery.fancybox.open(imagelist, {loop:false, buttons:["fullScreen","close"], slideShow:{autoStart:true, speed:6000}});
 		}
 	';
 } else {
@@ -210,7 +214,11 @@ $this->jDoc->addScriptDeclaration($ttscript);
 		}
 		echo '<span class="albttl">'.$this->title.'</span>';
 	?>
-	<?php if (!$this->isSearch && count($this->items)>1): ?>
+	<?php if ($this->useFanCB && !$this->isSearch && count($this->items)>1): ?>
+		<a href="#" title="<?=Text::_('COM_MEEDYA_SLIDESHOW')?>" onclick="slideShow(event);return false">
+			<img src="components/com_meedya/static/img/slideshow.png" alt="" />
+		</a>
+	<?php elseif (!$this->isSearch && count($this->items)>1): ?>
 		<a href="<?=Route::_('index.php?option=com_meedya&view=slides&tmpl=component&aid='.$this->aid.'&Itemid='.$this->itemId, false) ?>" title="<?=Text::_('COM_MEEDYA_SLIDESHOW')?>">
 			<img src="components/com_meedya/static/img/slideshow.png" alt="" />
 		</a>
