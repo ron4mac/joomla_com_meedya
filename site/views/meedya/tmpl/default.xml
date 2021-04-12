@@ -125,6 +125,19 @@
 				default="0"
 				compdef="120/thm_height" />
 
+			<field
+				name="use_fancb"
+				type="radio"
+				class="btn-group btn-group-yesno"
+				default="0"
+				label="COM_MEEDYA_CONFIG_USEFANCB_LABEL"
+				description="COM_MEEDYA_CONFIG_USEFANCB_DESC"
+			>
+				<option value="">JDEFAULT</option>
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+
 		</fieldset>
 
 		<fieldset name="other" label="Other Parameters">

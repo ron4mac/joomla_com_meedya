@@ -14,9 +14,14 @@ use Joomla\CMS\HTML\HTMLHelper;
 
 HTMLHelper::_('jquery.framework');
 MeedyaHelper::addStyle('album');
-MeedyaHelper::addStyle('each');
 MeedyaHelper::addScript('meedya');
-MeedyaHelper::addScript('vuesld');
+if ($this->useFanCB) {
+	$this->jDoc->addStyleSheet('https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css');
+	$this->jDoc->addScript('https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js');
+} else {
+	MeedyaHelper::addStyle('each');
+	MeedyaHelper::addScript('vuesld');
+}
 
 $jslang = [
 		'no_sterm' => Text::_('COM_MEEDYA_MSG_STERM'),
@@ -35,35 +40,65 @@ if ($this->items) {
 		$txtinfo = '';
 		$txtinfo .= trim($file['title']);
 		$txtinfo .= ($txtinfo ? ' ... ' : '') . trim($file['desc']);
+if ($this->useFanCB) {
+		$mTyp = substr($file['mtype'], 0, 5);
+		$murl = JUri::root(true).'/'.$this->gallpath.($mTyp=='image' ? '/med/' : '/img/').$file['file'];
 		$fileentry = [
-				'fpath' => $file['file'],
-				'title' => $txtinfo,
-				'mTyp' => substr($file['mtype'], 0, 1)
-				];
+			'src' => $murl,
+			'title' => $txtinfo,
+			'type' => $mTyp
+			];
+} else {
+		$fileentry = [
+			'fpath' => $file['file'],
+			'title' => $txtinfo,
+			'mTyp' => substr($file['mtype'], 0, 1)
+			];
+}
 		$filelist[] = $fileentry;
 	}
 }
 
-$ttscript = '
-	var baseUrl = "'.JUri::root(true).'/'.$this->gallpath.'/med/";
-	var baseUrlV = "'.JUri::root(true).'/'.$this->gallpath.'/img/";
-	var imgerror = "'.Text::_('COM_MEEDYA_SS_IMGERROR').'";
-	var imagelist = '.json_encode($filelist).';
-	var startx = '.$this->six.';
-	var _imgP = "components/com_meedya/static/img/";
-	var viderror = "COULD NOT PLAY VIDEO";
-	ssCtl.repeat = true;
-	jQuery(document).ready(function() {
-		jQuery(\'[data-toggle="tooltip"]\').tooltip();
-	});
-	function showSlides (e, iid) {
-		e.preventDefault();
-		startx = iid;
-	//	jQuery(\'<div class="slideback"></div>\').appendTo(\'body\');
-		jQuery(\'#sstage\').appendTo(\'body\').show();
-		ssCtl.init();
-	}
-';
+if ($this->useFanCB) {
+	$ttscript = '
+		var baseUrl = "'.JUri::root(true).'/'.$this->gallpath.'/med/";
+		var baseUrlV = "'.JUri::root(true).'/'.$this->gallpath.'/img/";
+		var imgerror = "'.Text::_('COM_MEEDYA_SS_IMGERROR').'";
+		var imagelist = '.json_encode($filelist).';
+		var startx = '.$this->six.';
+		var _imgP = "components/com_meedya/static/img/";
+		var viderror = "COULD NOT PLAY VIDEO";
+		jQuery(document).ready(function() {
+			jQuery(\'[data-toggle="tooltip"]\').tooltip();
+		});
+		function showSlides (e, iid) {
+			e.preventDefault();
+			startx = iid;
+			jQuery.fancybox.open(imagelist, {loop:false, buttons:["zoom","slideShow","fullScreen","close"]}, startx);
+		}
+	';
+} else {
+	$ttscript = '
+		var baseUrl = "'.JUri::root(true).'/'.$this->gallpath.'/med/";
+		var baseUrlV = "'.JUri::root(true).'/'.$this->gallpath.'/img/";
+		var imgerror = "'.Text::_('COM_MEEDYA_SS_IMGERROR').'";
+		var imagelist = '.json_encode($filelist).';
+		var startx = '.$this->six.';
+		var _imgP = "components/com_meedya/static/img/";
+		var viderror = "COULD NOT PLAY VIDEO";
+		ssCtl.repeat = true;
+		jQuery(document).ready(function() {
+			jQuery(\'[data-toggle="tooltip"]\').tooltip();
+		});
+		function showSlides (e, iid) {
+			e.preventDefault();
+			startx = iid;
+		//	jQuery(\'<div class="slideback"></div>\').appendTo(\'body\');
+			jQuery(\'#sstage\').appendTo(\'body\').show();
+			ssCtl.init();
+		}
+	';
+}
 
 $this->jDoc->addScriptDeclaration($ttscript);
 
@@ -241,9 +276,12 @@ $this->jDoc->addScriptDeclaration($ttscript);
 		debounce: false
 	});
 </script>
+<?php if (!$this->useFanCB): ?>
 <div id="sstage" class="slideback" style="display:none">
 	<div id="iarea" tabindex="0" onclick="ssCtl.doMnu(0);">
 		<div id="ptext"></div>
 		<p id="loading" style="display:none">∙∙∙LOADING∙∙∙</p>
 	</div>
 </div>
+<?php endif; ?>
+
