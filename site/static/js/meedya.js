@@ -1,8 +1,62 @@
-Meedya = {};	// a namespace for utility objects
+Meedya = {};	// a namespace for com_meedya
 
 (function($) {
 
-	Meedya.performSearch = function(aform) {
+	//var itemslist = [];
+
+	var viewer = {
+		// video player options
+		vopts: {
+			video: {
+				tpl:
+					'<video class="fancybox-video" controls controlsList="nodownload" poster="{{poster}}" playsinline >' +
+					'<source src="{{src}}" type="{{format}}" />' +
+					'Sorry, your browser does not support embedded videos, <a href="{{src}}">download</a> and watch with your favorite video player!' +
+					"</video>",
+				autoStart: true
+			}
+		},
+		// standard options
+		sopts: {
+			loop: false,
+			slideShow: {speed: 5000},
+		},
+		// image view buttons
+		ivbuts: {
+			buttons: ["zoom","slideShow","fullScreen","close"]
+		},
+		// slideshow buttons
+		ssbuts: {
+			buttons: ["fullScreen","close"],
+			slideShow: {autoStart: true}
+		},
+		// the following functions need to make copies of the itemslist
+		// to make possible multiple invocations on the same page (without reload)
+		showSlide: function (e, iid) {
+			e.preventDefault();
+			var imgl = JSON.parse(JSON.stringify(Meedya.items));	//copy
+			$.fancybox.open(imgl, {...this.sopts, ...this.vopts, ...this.ivbuts}, iid);
+		},
+		slideShow: function (e) {
+			e.preventDefault();
+			var imgl = JSON.parse(JSON.stringify(Meedya.items));	//copy
+			$.fancybox.open(imgl, {...this.sopts, ...this.vopts, ...this.ssbuts});
+		}
+	};
+
+	var old_viewer = {
+		showSlide: function (e, iid) {
+			e.preventDefault();
+			jQuery('#sstage').appendTo('body').show();
+			ssCtl.init(Meedya.items, iid);
+		}
+	};
+
+	Meedya.initIV = function (old=false) {
+		Meedya.viewer = old ? old_viewer : viewer;
+	};
+
+	Meedya.performSearch = function (aform) {
 		var sterm = $.trim(aform.sterm.value);
 		if (sterm==='') {
 			alert(this.L.no_sterm);
@@ -12,46 +66,20 @@ Meedya = {};	// a namespace for utility objects
 		return false;
 	};
 
-	Meedya.aj_detach = function (cid,fn) {
-		var bURL = this.V.aBaseURL;
-		if (!confirm(this.L.sure_del_att)) return;
-		$.post(bURL+"detach", { contentID: cid, file: fn },
-			function (data,status,xhr) {
-				//console.log(xhr);
-				if (data) { alert(data); }
-				else { $("#attachments").load(bURL+"attlist&inedit=1",{ contentID: cid }); }
-			}
-		);
-	};
-
+	// CURRENTLY UNUSED
 	Meedya.sprintf = function (format) {
 		for (var i = 1; i < arguments.length; i++) {
 			format = format.replace( /%s/, arguments[i] );
 		}
 		return format;
 	};
-/*
+
+	function _t (tid) {
+		return Meedya.L[tid] ? Meedya.L[tid] : tid;
+	}
+
 	$(document).ready(function() {
-		$(document).on("touchstart touchmove touchend click", "a.nav", function(ev) {	console.log(ev.type+':'+this.pending);
-			if (ev.type == 'touchmove') {
-				if (this.pending) --this.pending;
-				return true;
-			}
-			if (ev.handled !== true) {
-				if (ev.type == 'click' || (ev.type == 'touchend' && this.pending)) {
-					ev.stopPropagation();
-					ev.preventDefault();
-					this.pending = 0;
-					ev.handled = true;
-					if ($(this).hasClass('sure') && !confirm(Oopim.sprintf(Oopim.L.ru_sure, $(this).attr('data-suremsg')))) return false;
-					location.href = this.href;
-				} else {
-					if (ev.type == 'touchstart') this.pending = 10;
-				}
-			} else {
-				return false;
-			}
-		});
+		$('[data-toggle="tooltip"]').tooltip();
 	});
-*/
+
 })(jQuery);

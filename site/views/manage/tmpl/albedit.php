@@ -19,8 +19,7 @@ MeedyaHelper::addScript('bootbox');
 MeedyaHelper::addScript('pell.min', 'vendor/pell/');
 
 $this->jDoc->addScriptDeclaration('
-var albumID = '.$this->aid.';
-var iZoomURL = "'.Route::_('index.php?option=com_meedya&format=raw&task=manage.getZoomItem&Itemid='.$this->itemId, false).'";
+Meedya.rawURL = "'.Route::_('index.php?option=com_meedya&format=raw&Itemid='.$this->itemId, false).'";
 ');
 
 Text::script('COM_MEEDYA_REMOVE');

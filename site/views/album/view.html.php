@@ -52,7 +52,7 @@ class MeedyaViewAlbum extends MeedyaView
 		$this->pagination = $this->get('Pagination');
 
 		if ($this->items || $this->albums) {
-			$this->useFanCB = true;
+			$this->useFanCB = false;
 			parent::display($tpl);
 		} else {
 			parent::display('empty');

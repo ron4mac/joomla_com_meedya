@@ -59,48 +59,22 @@ if ($this->useFanCB) {
 	}
 }
 
+$ttscript = '
+	Meedya.items = '.json_encode($filelist).';
+	var imgerror = "'.Text::_('COM_MEEDYA_SS_IMGERROR').'";
+	var viderror = "COULD NOT PLAY VIDEO";
+	';
 if ($this->useFanCB) {
-	$ttscript = '
-		var baseUrl = "'.JUri::root(true).'/'.$this->gallpath.'/med/";
-		var baseUrlV = "'.JUri::root(true).'/'.$this->gallpath.'/img/";
-		var imgerror = "'.Text::_('COM_MEEDYA_SS_IMGERROR').'";
-		var imagelist = '.json_encode($filelist).';
-		var startx = '.$this->six.';
-		var _imgP = "components/com_meedya/static/img/";
-		var viderror = "COULD NOT PLAY VIDEO";
-		jQuery(document).ready(function() {
-			jQuery(\'[data-toggle="tooltip"]\').tooltip();
-		});
-		function showSlides (e, iid) {
-			e.preventDefault();
-			startx = iid;
-			jQuery.fancybox.open(imagelist, {loop:false, buttons:["zoom","slideShow","fullScreen","close"], slideShow:{speed:6000}}, startx);
-		}
-		function slideShow (e) {
-			e.preventDefault();
-			jQuery.fancybox.open(imagelist, {loop:false, buttons:["fullScreen","close"], slideShow:{autoStart:true, speed:6000}});
-		}
+	$ttscript .= '
+	Meedya.initIV();
 	';
 } else {
-	$ttscript = '
-		var baseUrl = "'.JUri::root(true).'/'.$this->gallpath.'/med/";
-		var baseUrlV = "'.JUri::root(true).'/'.$this->gallpath.'/img/";
-		var imgerror = "'.Text::_('COM_MEEDYA_SS_IMGERROR').'";
-		var imagelist = '.json_encode($filelist).';
-		var startx = '.$this->six.';
-		var _imgP = "components/com_meedya/static/img/";
-		var viderror = "COULD NOT PLAY VIDEO";
-		ssCtl.repeat = true;
-		jQuery(document).ready(function() {
-			jQuery(\'[data-toggle="tooltip"]\').tooltip();
-		});
-		function showSlides (e, iid) {
-			e.preventDefault();
-			startx = iid;
-		//	jQuery(\'<div class="slideback"></div>\').appendTo(\'body\');
-			jQuery(\'#sstage\').appendTo(\'body\').show();
-			ssCtl.init();
-		}
+	$ttscript .= '
+	ssCtl.baseUrl = "'.JUri::root(true).'/'.$this->gallpath.'/med/";
+	ssCtl.baseUrlV = "'.JUri::root(true).'/'.$this->gallpath.'/img/";
+	ssCtl._imgP = "components/com_meedya/static/img/";
+	ssCtl.repeat = true;
+	Meedya.initIV(true);
 	';
 }
 
@@ -203,6 +177,10 @@ $this->jDoc->addScriptDeclaration($ttscript);
 	width: 100%;
 	height: 100%;
 }
+.fancybox-progress {
+	background: rgb(91 192 222 / 60%);
+	height: 4px;
+}
 </style>
 <div class="meedya-gallery">
 <?php echo HTMLHelper::_('meedya.pageHeader', $this->params); ?>
@@ -215,7 +193,7 @@ $this->jDoc->addScriptDeclaration($ttscript);
 		echo '<span class="albttl">'.$this->title.'</span>';
 	?>
 	<?php if ($this->useFanCB && !$this->isSearch && count($this->items)>1): ?>
-		<a href="#" title="<?=Text::_('COM_MEEDYA_SLIDESHOW')?>" onclick="slideShow(event);return false">
+		<a href="#" title="<?=Text::_('COM_MEEDYA_SLIDESHOW')?>" onclick="Meedya.viewer.slideShow(event);return false">
 			<img src="components/com_meedya/static/img/slideshow.png" alt="" />
 		</a>
 	<?php elseif (!$this->isSearch && count($this->items)>1): ?>
@@ -265,7 +243,7 @@ $this->jDoc->addScriptDeclaration($ttscript);
 		}
 		$itemImg->setAttr('src', 'components/com_meedya/static/img/'.$thmsrc);
 		$itemImgD->setAttr('title', $ttip);
-		$itemZoom->setAttr('onclick', 'showSlides(event,'.$ix.')');
+		$itemZoom->setAttr('onclick', 'Meedya.viewer.showSlide(event,'.$ix.')');
 		echo $itemDiv->render();
 	}
 	?>

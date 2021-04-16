@@ -81,6 +81,7 @@ class MeedyaControllerManage extends JControllerLegacy
 		}
 	}
 
+	// task to change the parent of an album
 	public function adjustAlbPaid ()
 	{
 		if (Session::checkToken()) {
@@ -134,6 +135,7 @@ class MeedyaControllerManage extends JControllerLegacy
 		$m = $this->getModel('manage');
 		$item = $m->getItem($iid);
 		$mime = explode('/',$item['mtype']);
+		echo '<div class="zoom-ctnr"><div class="zoom-closex" onclick="iZoomClose(event)">X</div>';
 		switch ($mime[0]) {
 			case 'image':
 				echo '<img class="zoom-zimg" src="'.$url.'/med/'.$item['file'].'" onload="this.style.opacity=1" />';
@@ -145,6 +147,7 @@ class MeedyaControllerManage extends JControllerLegacy
 			default:
 				echo '<div style="color:white">UNSUPPORTED FILE TYPE #'.$item['mtype'].'# '.$item['file'].'</div>';
 		}
+		echo '</div>';
 	}
 
 	private function placeImageFiles ($fpath, $aid, $fast)

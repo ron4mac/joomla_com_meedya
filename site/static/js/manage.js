@@ -1,7 +1,11 @@
+if (typeof Meedya === 'undefined') {
+	Meedya = {};	// a namespace for com_meedya
+}
+
 // simplify cancelling an event
-function _pd (e) {
+function _pd (e,sp=true) {
 	if (e.preventDefault) { e.preventDefault(); }
-	if (e.stopPropagation) { e.stopPropagation(); }
+	if (sp && e.stopPropagation) { e.stopPropagation(); }
 }
 
 // addEventListener
@@ -179,9 +183,9 @@ var AArrange = (function ($) {
 	//	func(''); alert("Actual album move is disabled"); return;
 
 	//	var prms = {'aid': aid, 'paid': paid};
-		var prms = {'format':'raw','task':'manage.adjustAlbPaid','aid': aid, 'paid': paid};
+		var prms = {task: 'manage.adjustAlbPaid', 'aid': aid, 'paid': paid};
 		prms[Joomla.getOptions('csrf.token', '')] = 1;
-		$.post(myBaseURL, prms, function (d) {
+		$.post(Meedya.rawURL, prms, function (d) {
 			if (d) {
 				console.log(d);
 			}
@@ -411,7 +415,7 @@ function hasSelections (sel, alrt=false) {
 }
 
 function deleteSelected (e) {
-	e.preventDefault();
+	_pd(e);
 	if (hasSelections("[name='slctimg[]']:checked", true)) {
 		bootbox.confirm({
 			message: Joomla.JText._('COM_MEEDYA_PERM_DELETE'),
@@ -436,7 +440,7 @@ function deleteSelected (e) {
 }
 
 function removeSelected (e) {
-	e.preventDefault();
+	_pd(e);
 	if (hasSelections("[name='slctimg[]']:checked", true)) {
 		bootbox.confirm({
 			message: Joomla.JText._('COM_MEEDYA_REMOVE'),
@@ -464,7 +468,7 @@ function removeSelected (e) {
 }
 
 function selAllImg (e, X) {
-	e.preventDefault();
+	_pd(e);
 	var ck = X?'checked':'';
 	var xbs = document.adminForm.elements["slctimg[]"];
 	// make up for no array returned if there is only one item
@@ -475,7 +479,7 @@ function selAllImg (e, X) {
 }
 
 function editSelected (e) {
-	e.preventDefault();
+	_pd(e);
 	if (hasSelections("input[name='slctimg[]']:checked",true)) {
 		document.adminForm.task.value = 'manage.imgsEdit';
 		document.adminForm.submit();
@@ -483,7 +487,7 @@ function editSelected (e) {
 }
 
 function addSelected (e) {
-	e.preventDefault();
+	_pd(e);
 	if (hasSelections("input[name='slctimg[]']:checked",true)) {
 		jQuery('#add2albdlg').modal('show');
 	}
@@ -499,18 +503,12 @@ function saveAlbum () {
 (function ($, w) {
 	var back, area;
 
-	function doKeyAction (e,code) {
-		if (e.preventDefault) e.preventDefault();
-		if (e.stopPropagation) e.stopPropagation();
-		close();
-	}
-
 	function keyPressed (e) {
 		switch (e.charCode) {
 			case 32:
 			case 13:
 			case 27:
-				doKeyAction(e,e.charCode);
+				close(e);
 				break;
 			default:
 				break;
@@ -522,7 +520,7 @@ function saveAlbum () {
 			case 32:
 			case 13:
 			case 27:
-				doKeyAction(e,e.keyCode);
+				close(e);
 				break;
 			default:
 				break;
@@ -531,9 +529,9 @@ function saveAlbum () {
 
 	function open (pID) {
 		area = document.createElement('div');
-		$.post(iZoomURL, {format: 'raw', task: 'manage.getZoomItem', iid: pID},
+		$.post(Meedya.rawURL, {task: 'manage.getZoomItem', iid: pID},
 			function (data) {
-				area.innerHTML = data + '<div class="zoom-closex" onclick="iZoomClose(event)">X</div>';
+				area.innerHTML = data;	// + '<div class="zoom-closex" onclick="iZoomClose(event)">X</div>';
 			});
 		area.className = 'zoom-area';
 		area.tabIndex = "-1";
@@ -547,8 +545,8 @@ function saveAlbum () {
 		back.addEventListener('click', close, false);
 	}
 
-	function close (evt) {
-		console.log(evt);
+	function close (e) {
+		_pd(e);
 		document.body.removeChild(back);
 	}
 

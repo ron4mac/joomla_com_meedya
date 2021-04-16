@@ -24,7 +24,7 @@ MeedyaHelper::addScript('manage');
 MeedyaHelper::addScript('bootbox');
 MeedyaHelper::addScript('jquery.tagsinput', 'vendor/tags/');
 $this->jDoc->addScriptDeclaration('
-var iZoomURL = "'.Route::_('index.php?option=com_meedya&format=raw&task=manage.getZoomItem&Itemid='.$this->itemId, false).'";
+Meedya.rawURL = "'.Route::_('index.php?option=com_meedya&format=raw&Itemid='.$this->itemId, false).'";
 ');
 
 Text::script('COM_MEEDYA_PERM_DELETE');
@@ -41,7 +41,7 @@ function dateF ($dt)
 function editImg (iid) {
 	window.location = "<?=Route::_('index.php?option=com_meedya&task=manage.imgEdit&Itemid='.$this->itemId)?>&items="+iid;
 }
-var myBaseURL = "<?= Route::_('index.php?option=com_meedya&Itemid='.$this->itemId, false); ?>";
+//var myBaseURL = "<?= Route::_('index.php?option=com_meedya&Itemid='.$this->itemId, false); ?>";
 var formTokn = "<?= Session::getFormToken(); ?>";
 </script>
 

@@ -18,7 +18,7 @@ MeedyaHelper::addScript('jquery.tagsinput', 'vendor/tags/');
 HTMLHelper::stylesheet('components/com_meedya/static/css/manage.css');
 //echo'<pre>';var_dump($this->iids);echo'</pre>';
 $this->jDoc->addScriptDeclaration('
-var iZoomURL = "'.Route::_('index.php?option=com_meedya&format=raw&task=manage.getZoomItem&Itemid='.$this->itemId, false).'";
+Meedya.rawURL = "'.Route::_('index.php?option=com_meedya&format=raw&Itemid='.$this->itemId, false).'";
 ');
 ?>
 </script>

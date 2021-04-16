@@ -48,6 +48,7 @@ class MeedyaViewSearch extends MeedyaView
 
 
 		$this->items = $m->search($this->sterm, $this->aid);
+		$this->useFanCB = true;
 
 		parent::display($this->items ? $tpl : 'empty');
 	}

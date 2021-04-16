@@ -21,7 +21,8 @@ HTMLHelper::_('jquery.framework');
 //HTMLHelper::_('bootstrap.modal');
 MeedyaHelper::addScript('manage');
 $this->jDoc->addScriptDeclaration('
-var myBaseURL = "'.Route::_('index.php?option=com_meedya&Itemid='.$this->itemId, false).'";
+////var myBaseURL = "'.Route::_('index.php?option=com_meedya&Itemid='.$this->itemId, false).'";
+Meedya.rawURL = "'.Route::_('index.php?option=com_meedya&format=raw&Itemid='.$this->itemId, false).'";
 var formTokn = "'.Session::getFormToken().'";
 ');
 
@@ -194,9 +195,9 @@ endif;
 	function importItems (dlg) {
 	//	jQuery("#importdlg input:checked").each(function(){console.log(jQuery(this).val())});
 		var fld = jQuery("#importdlg .impfld input:checked").val();
-		var prms = {'format':'raw','task':'manage.impstps','fld':fld};
+		var prms = {task:'manage.impstps', 'fld':fld};
 		var fast = jQuery("#fast").prop('checked');
-		jQuery.post(myBaseURL, prms, function(data) {
+		jQuery.post(Meedya.rawURL, prms, function(data) {
 			console.log(data);
 			meedya_importer.init(data, AArrange.selalb(), fast);
 		},'json');
@@ -214,8 +215,8 @@ endif;
 		// post and get response
 		function pagr (dat, cb) {
 			dat.task = 'manage.impact';
-			dat.format = 'raw';	console.log(dat);
-			$.post(myBaseURL, dat, function(d,t){ cb(d); }, 'json');
+//			dat.format = 'raw';	console.log(dat);
+			$.post(Meedya.rawURL, dat, function(d,t){ cb(d); }, 'json');
 		}
 
 		function _L (v)

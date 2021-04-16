@@ -66,9 +66,9 @@ function ae_createAlbum (elm) {
 	var albParFld = $id('h5u_palbum');
 	var albDscFld = $id('albdesc');
 	var nualbnam = albNamFld.value.trim();
-	var ajd = {format: 'raw', task: 'manage.newAlbum', albnam: nualbnam, paralb: (albParFld ? albParFld.value : 0), albdesc: albDscFld.value};
+	var ajd = {task: 'manage.newAlbum', albnam: nualbnam, paralb: (albParFld ? albParFld.value : 0), albdesc: albDscFld.value};
 	ajd[formTokn] = 1;
-	jQuery.post(myBaseURL, ajd,
+	jQuery.post(Meedya.rawURL, ajd,
 		function (response, status, xhr) {
 			console.log(response, status, xhr);
 			if (status=="success") {

@@ -284,6 +284,7 @@ td.tac {
 	height: 100%;
 	position: relative;
 	text-align: center;
+	display: inline-flex;
 }
 .zoom-area:focus {
 	outline: none;
@@ -293,7 +294,8 @@ td.tac {
 	max-width: 100%;
 	max-height: 100%;
 	transition: 0.25s opacity;
-	transition-timing-function: ease;
+/*	transition-timing-function: ease;*/
+	margin: auto;
 }
 .zoom-zvid {
 	max-width: 100%;
@@ -303,16 +305,22 @@ td.tac {
 .zoom-zvid:focus {
 	outline: none;
 }
+.zoom-ctnr {
+	position: relative;
+	text-align: center;
+	display: contents;
+}
 .zoom-closex {
 	position: absolute;
 	width: 30px;
 	height: 30px;
-	top: -14px;
-	right: -14px;
+	top: 0;
+	right: 0;
 	background-color: #FFF;
 	font-size: 24px;
-	border-radius: 10px;
+	border-radius: 50%;
 	cursor: pointer;
+	line-height: 1.2em;
 }
 
 

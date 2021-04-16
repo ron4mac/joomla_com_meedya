@@ -27,12 +27,12 @@ class MeedyaController extends JControllerLegacy
 
 	public function display ($cachable = false, $urlparams = false)
 	{
-		if (!file_exists(MeedyaHelper::userDataPath())) {
+		if (file_exists(MeedyaHelper::userDataPath())) {
+			$view = $this->getView('meedya','html');
+		} else {
 			//set to a view that has no model
 			$this->input->set('view', 'startup');
 			$view = $this->getView('startup','html');
-		} else {
-			$view = $this->getView('meedya','html');
 		}
 		$view->itemId = $this->mnuItm;
 		return parent::display($cachable, $urlparams);
