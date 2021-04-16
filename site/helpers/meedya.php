@@ -71,9 +71,14 @@ abstract class MeedyaHelper
 		return base64_encode(self::$instanceType.':'.self::$ownerID);
 	}
 
-	public static function userDataPath ()
+	public static function userDataPath ($mnuid=0)
 	{
 		if (self::$udp) return self::$udp;
+
+		if (!$mnuid) {
+			$mnuid = Factory::getApplication()->input->getInt('Itemid', 0);
+		}
+
 		self::getTypeOwner();
 		if (self::$ownerID < 0 && self::$instanceType < 2) return '';	//throw new Exception('ACCESS NOT ALLOWED');
 		$cmp = JApplicationHelper::getComponentName();
@@ -92,7 +97,7 @@ abstract class MeedyaHelper
 		$result = Factory::getApplication()->triggerEvent('onRjuserDatapath');
 		$sdp = isset($result[0]) ? trim($result[0]) : 'userstor';
 
-		self::$udp = $sdp.'/'.$ndir.'/'.$cmp;
+		self::$udp = $sdp.'/'.$ndir.'/'.$cmp.'_'.$mnuid;
 		return self::$udp;
 	}
 

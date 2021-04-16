@@ -39,18 +39,18 @@ class MeedyaView extends JViewLegacy
 		}
 		parent::__construct($config);
 		$this->user = Factory::getUser();
-		$this->params = Factory::getApplication()->getParams();
+		$app = Factory::getApplication();
+		$this->params = $app->getParams();
+		if (empty($this->itemId)) {
+			$this->itemId = $app->input->getInt('Itemid', 0);
+		}
 		$this->userPerms = MeedyaHelper::getUserPermissions($this->user, $this->params);
 //		$this->state = $this->get('State');
 		$this->meedyaID = MeedyaHelper::getInstanceID();
-		$this->gallpath = MeedyaHelper::userDataPath();
+		$this->gallpath = MeedyaHelper::userDataPath($this->itemId);
 //		$this->pagination = $this->get('Pagination');
 
-		if (empty($this->itemId)) {
-			$this->itemId = Factory::getApplication()->input->getInt('Itemid', 0);
-		}
-
-		$this->instance = Factory::getApplication()->getUserState('com_meedya.instance', '::');
+		$this->instance = $app->getUserState('com_meedya.instance', '::');
 		$this->jDoc = Factory::getDocument();
 	}
 

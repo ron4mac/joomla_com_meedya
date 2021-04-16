@@ -233,7 +233,7 @@ class MeedyaControllerManage extends JControllerLegacy
 
 	public function importMeedya ()
 	{
-		$bpath = realpath(MeedyaHelper::userDataPath()).'/import/';
+		$bpath = realpath(MeedyaHelper::userDataPath($this->mnuItm)).'/import/';
 		$this->importDir($bpath, 0, $this->getModel('manage'));
 	}
 

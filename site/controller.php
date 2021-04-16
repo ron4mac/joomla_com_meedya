@@ -27,7 +27,7 @@ class MeedyaController extends JControllerLegacy
 
 	public function display ($cachable = false, $urlparams = false)
 	{
-		if (file_exists(MeedyaHelper::userDataPath())) {
+		if (file_exists(MeedyaHelper::userDataPath($this->mnuItm))) {
 			$view = $this->getView('meedya','html');
 		} else {
 			//set to a view that has no model
@@ -42,7 +42,7 @@ class MeedyaController extends JControllerLegacy
 	{
 		if (!$this->uid) return;
 		$htm = '<!DOCTYPE html><title></title>';
-		$udp = MeedyaHelper::userDataPath();
+		$udp = MeedyaHelper::userDataPath($this->mnuItm);
 		mkdir($udp.'/img', 0777, true);
 		mkdir($udp.'/thm', 0777, true);
 		mkdir($udp.'/med', 0777, true);
