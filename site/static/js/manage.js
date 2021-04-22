@@ -2,19 +2,268 @@ if (typeof Meedya === 'undefined') {
 	Meedya = {};	// a namespace for com_meedya
 }
 
+/* a few utility functions to avoid using jquery and assist in minification */
+// getElementById
+function _id (id) {
+	return document.getElementById(id);
+}
 // simplify cancelling an event
 function _pd (e,sp=true) {
 	if (e.preventDefault) { e.preventDefault(); }
 	if (sp && e.stopPropagation) { e.stopPropagation(); }
 }
-
 // addEventListener
 function _ae (elem, evnt, func, capt=false) {
 	elem.addEventListener(evnt, func, capt);
 }
 
 
-var Arrange = (function ($) {
+(function($) {
+
+	Meedya.setDlgParAlb = function () {
+		_id('h5u_palbum').value = Meedya.AArrange.selalb();
+	}
+
+	Meedya.setAlbumDanD = function () {
+		var albthm = _id("albthm");
+		_ae(albthm, 'dragover', handleAlbthmDragOver, false);
+		_ae(albthm, 'drop', handleAlbthmDrop, false);
+		_ae(albthm, 'dragenter', function () { this.style.opacity = '0.5'; }, false);
+		_ae(albthm, 'dragleave', function () { this.style.opacity = '1.0'; }, false);
+		var albfrm = _id("albForm");
+		_ae(albfrm, 'dragstart', function(e){ e.dataTransfer.setData('albthm','X'); }, false);
+		_ae(albfrm, 'dragover', function(e){ if (e.dataTransfer.types.indexOf('albthm')>0) { _pd(e);e.dataTransfer.dropEffect = 'move'; } }, false);
+		_ae(albfrm, 'dragenter', function(e){ if (e.dataTransfer.types.indexOf('albthm')>0) { _pd(e);e.dataTransfer.dropEffect = 'move'; } }, false);
+		_ae(albfrm, 'drop', function(e){ _pd(e); removeAlbThm(); }, false);
+	}
+
+	Meedya.deleteSelected = function (e) {
+		_pd(e);
+		if (hasSelections("[name='slctimg[]']:checked", true)) {
+			bootbox.confirm({
+				message: Joomla.JText._('COM_MEEDYA_PERM_DELETE'),
+				buttons: {
+						confirm: {
+							label: Joomla.JText._('JACTION_DELETE'),
+							className: 'btn-danger'
+						},
+						cancel: {
+							label: Joomla.JText._('JCANCEL')
+						//	className: 'btn-standard'
+						}
+					},
+					callback: function(c){
+					if (c) {
+						document.adminForm.task.value = 'manage.deleteItems';
+						document.adminForm.submit();
+					}
+				}
+			});
+		}
+	}
+
+	Meedya.removeSelected = function (e) {
+		_pd(e);
+		if (hasSelections("[name='slctimg[]']:checked", true)) {
+			bootbox.confirm({
+				message: Joomla.JText._('COM_MEEDYA_REMOVE'),
+				buttons: {
+						confirm: {
+							label: Joomla.JText._('COM_MEEDYA_VRB_REMOVE'),
+							className: 'btn-primary'
+						},
+						cancel: {
+							label: Joomla.JText._('JCANCEL')
+						//	className: 'btn-standard'
+						}
+					},
+					callback: function(c){
+					if (c) {
+						var items = document.querySelectorAll("[name='slctimg[]']:checked");
+						var pnode = items[0].parentNode.parentNode;
+						for (var i=0; i<items.length; i++) {
+							pnode.removeChild(items[i].parentNode);
+						}
+					}
+				}
+			});
+		}
+	}
+
+	Meedya.selAllImg = function (e, X) {
+		_pd(e);
+		var ck = X?'checked':'';
+		var xbs = document.adminForm.elements["slctimg[]"];
+		// make up for no array returned if there is only one item
+		if (!xbs.length) xbs = [xbs];
+		for (var i = 0; i < xbs.length; i++) {
+			xbs[i].checked = ck;
+		}
+	}
+
+	Meedya.editSelected = function (e) {
+		_pd(e);
+		if (hasSelections("input[name='slctimg[]']:checked",true)) {
+			document.adminForm.task.value = 'manage.imgsEdit';
+			document.adminForm.submit();
+		}
+	}
+
+	Meedya.addSelected = function (e) {
+		_pd(e);
+		if (hasSelections("input[name='slctimg[]']:checked",true)) {
+			$('#add2albdlg').modal('show');
+		}
+	}
+
+	Meedya.saveAlbum = function () {
+		document.albForm.thmord.value = Meedya.Arrange.iord();
+		document.albForm.submit();
+	}
+
+
+
+
+	// watch for selection of album; enable create button when there is one
+	Meedya.watchAlb = function (elm) {
+		var creab = _id('creab');
+		var classes = creab.classList;
+		if (elm.value > 0) {
+			_id('creanualb').style.display = "none";
+			classes.remove("btn-disabled");
+			classes.add("btn-primary");
+			creab.disabled = false;
+		} else {
+			classes.remove("btn-primary");
+			classes.add("btn-disabled");
+			creab.disabled = true;
+			if (elm.value == -1) {
+				_id('creanualb').style.display = "block";
+			} else {
+				_id('creanualb').style.display = "none";
+			}
+		}
+	}
+
+	// watch for entry of album name; enable create button when there is a name
+	Meedya.watchAlbNam = function (elm) {
+		//var creab = _id('creab');	console.log(creab,elm.value);
+		var creab = _id('creab');
+		var classes = creab.classList;
+		if (elm.value.trim()) {
+			classes.remove("btn-disabled");
+			classes.add("btn-primary");
+			creab.disabled = false;
+		} else {
+			classes.remove("btn-primary");
+			classes.add("btn-disabled");
+			creab.disabled = true;
+		}
+	}
+
+	Meedya.addItems2Album = function (elm) {
+		elm.disabled = true;
+		document.adminForm.albumid.value = _id('h5u_album').value;
+		document.adminForm.nualbnam.value = _id('nualbnam').value;
+		document.adminForm.nualbpar.value = _id('h5u_palbum').value;
+		document.adminForm.nualbdesc.value = _id('albdesc').value;
+		document.adminForm.task.value = 'manage.addItemsToAlbum';
+		document.adminForm.submit();
+	}
+
+	Meedya.aj_addItems2Album = function (elm) {
+		elm.disabled = true;
+		var albNamFld = _id('nualbnam');
+		var albParFld = _id('h5u_palbum');
+		var albDscFld = _id('albdesc');
+		var nualbnam = albNamFld.value.trim();
+		var ajd = {task: 'manage.addItemsToAlbum', albnam: nualbnam, paralb: (albParFld ? albParFld.value : 0), albdesc: albDscFld.value};
+		ajd[Meedya.formTokn] = 1;
+		$.post(Meedya.rawURL, ajd,
+			function (response, status, xhr) {
+				console.log(response, status, xhr);
+				if (status=="success") {
+					if (response) {
+						alert(response);
+					} else {
+						window.location.reload(true);
+					}
+				} else {
+					alert(xhr.statusText);
+				}
+				elm.disabled = false;
+			}
+		);
+	}
+
+	// request creation of new album
+	Meedya.ae_createAlbum = function (elm) {
+		elm.disabled = true;
+		var albNamFld = _id('nualbnam');
+		var albParFld = _id('h5u_palbum');
+		var albDscFld = _id('albdesc');
+		var nualbnam = albNamFld.value.trim();
+		var ajd = {task: 'manage.newAlbum', albnam: nualbnam, paralb: (albParFld ? albParFld.value : 0), albdesc: albDscFld.value};
+		ajd[Meedya.formTokn] = 1;
+		$.post(Meedya.rawURL, ajd,
+			function (response, status, xhr) {
+				console.log(response, status, xhr);
+				if (status=="success") {
+					jQuery('#newalbdlg').modal('hide');
+					if (response) {
+						alert(response);
+					} else {
+						window.location.reload(true);
+					}
+				} else {
+					alert(xhr.statusText);
+				}
+				elm.disabled = false;
+			}
+		);
+	}
+
+
+
+
+	// %%% private functions %%%
+
+	function removeAlbThm () {
+		_id('albthmimg').src = 'components/com_meedya/static/img/img.png';
+		_id('albthmid').value = 0;
+	}
+
+	function handleAlbthmDragOver (e) {
+		if (e.dataTransfer.types.indexOf('imgsrc') < 0) return;
+		_pd(e);		 // Necessary. Allows us to drop.
+		e.dataTransfer.dropEffect = 'copy';  // See the section on the DataTransfer object.
+		return false;
+	}
+
+	function handleAlbthmDrop (e) {
+		_pd(e);		// stops the browser from redirecting.
+		var src = e.dataTransfer.getData('imgsrc');
+		if (src) {
+			this.getElementsByTagName("IMG")[0].src = src;
+			var atv = _id('albthmid');
+			atv.value = e.dataTransfer.getData('meeid');
+		}
+		this.style.opacity = '1.0';
+	}
+
+	function hasSelections (sel, alrt=false) {
+		if (document.querySelectorAll(sel).length) {
+			return true;
+		} else {
+			if (alrt) bootbox.alert(Joomla.JText._('COM_MEEDYA_SELECT_SOME'));
+			return false;
+		}
+	}
+
+})(jQuery);
+
+
+Meedya.Arrange = (function ($) {
 	var dragSrcEl = null,
 		iSlctd = null,
 		stop = true,
@@ -79,7 +328,7 @@ var Arrange = (function ($) {
 		if (/*e.dataTransfer.types.contains(meeid) &&*/ dragSrcEl != this) {
 //			console.log(dragSrcEl);
 //			console.log(e);
-			var area = document.getElementById(ctnr);
+			var area = _id(ctnr);
 			// Set the source item's HTML to the HTML of the item we dropped on.
 		//	dragSrcEl.innerHTML = this.innerHTML;
 		//	this.innerHTML = e.dataTransfer.getData('text/html');
@@ -167,7 +416,7 @@ var Arrange = (function ($) {
 
 // Need to have a separate Drag and Drop arranger for the gallery album hierarchy
 
-var AArrange = (function ($) {
+Meedya.AArrange = (function ($) {
 	var dragSrcEl = null,
 		deTarg = null,
 		iSlctd = null,
@@ -254,7 +503,7 @@ var AArrange = (function ($) {
 			}
 		});
 //		e.target.append(dragSrcEl);
-//			var area = document.getElementById(ctnr);
+//			var area = _id(ctnr);
 			// Set the source item's HTML to the HTML of the item we dropped on.
 		//	dragSrcEl.innerHTML = this.innerHTML;
 		//	this.innerHTML = e.dataTransfer.getData('text/html');
@@ -344,161 +593,6 @@ var AArrange = (function ($) {
 }(jQuery));
 
 
-function setDlgParAlb () {
-	document.getElementById('h5u_palbum').value = AArrange.selalb();
-}
-
-
-function allow_group_select_checkboxes (checkbox_wrapper_id) {
-	var lastChecked = null;
-	var checkboxes = document.querySelectorAll('#'+checkbox_wrapper_id+' input[type="checkbox"]');
-
-	//I'm attaching an index attribute because it's easy, but you could do this other ways
-	for (var i=0; i<checkboxes.length; i++) {
-		checkboxes[i].setAttribute('data-index', i);
-	}
-
-	for (i=0; i<checkboxes.length; i++) {
-		checkboxes[i].addEventListener("click",function(e){
-
-			if (lastChecked && e.shiftKey) {
-				var i = parseInt(lastChecked.getAttribute('data-index'));
-				var j = parseInt(this.getAttribute('data-index'));
-				var check_or_uncheck = this.checked;
-
-				var low = i; var high = j;
-				if (i > j) {
-					low = j; high=i;
-				}
-
-				for (var c=0; c<checkboxes.length; c++) {
-					if (low <= c && c <=high){
-						checkboxes[c].checked = check_or_uncheck;
-					}
-				}
-			}
-			lastChecked = this;
-		});
-	}
-}
-
-function handleAlbthmDragOver (e) {
-	if (e.dataTransfer.types.indexOf('imgsrc') < 0) return;
-	_pd(e);		 // Necessary. Allows us to drop.
-	e.dataTransfer.dropEffect = 'copy';  // See the section on the DataTransfer object.
-	return false;
-}
-
-function handleAlbthmDrop (e) {
-	_pd(e);		// stops the browser from redirecting.
-	var src = e.dataTransfer.getData('imgsrc');
-	if (src) {
-		this.getElementsByTagName("IMG")[0].src = src;
-		var atv = document.getElementById('albthmid');
-		atv.value = e.dataTransfer.getData('meeid');
-	}
-	this.style.opacity = '1.0';
-}
-
-function removeAlbThm () {
-	document.getElementById('albthmimg').src = 'components/com_meedya/static/img/img.png';
-	document.getElementById('albthmid').value = 0;
-}
-
-function hasSelections (sel, alrt=false) {
-	if (document.querySelectorAll(sel).length) {
-		return true;
-	} else {
-		if (alrt) bootbox.alert(Joomla.JText._('COM_MEEDYA_SELECT_SOME'));
-		return false;
-	}
-}
-
-function deleteSelected (e) {
-	_pd(e);
-	if (hasSelections("[name='slctimg[]']:checked", true)) {
-		bootbox.confirm({
-			message: Joomla.JText._('COM_MEEDYA_PERM_DELETE'),
-			buttons: {
-					confirm: {
-						label: Joomla.JText._('JACTION_DELETE'),
-						className: 'btn-danger'
-					},
-					cancel: {
-						label: Joomla.JText._('JCANCEL')
-					//	className: 'btn-standard'
-					}
-				},
-				callback: function(c){
-				if (c) {
-					document.adminForm.task.value = 'manage.deleteItems';
-					document.adminForm.submit();
-				}
-			}
-		});
-	}
-}
-
-function removeSelected (e) {
-	_pd(e);
-	if (hasSelections("[name='slctimg[]']:checked", true)) {
-		bootbox.confirm({
-			message: Joomla.JText._('COM_MEEDYA_REMOVE'),
-			buttons: {
-					confirm: {
-						label: Joomla.JText._('COM_MEEDYA_VRB_REMOVE'),
-						className: 'btn-primary'
-					},
-					cancel: {
-						label: Joomla.JText._('JCANCEL')
-					//	className: 'btn-standard'
-					}
-				},
-				callback: function(c){
-				if (c) {
-					var items = document.querySelectorAll("[name='slctimg[]']:checked");
-					var pnode = items[0].parentNode.parentNode;
-					for (var i=0; i<items.length; i++) {
-						pnode.removeChild(items[i].parentNode);
-					}
-				}
-			}
-		});
-	}
-}
-
-function selAllImg (e, X) {
-	_pd(e);
-	var ck = X?'checked':'';
-	var xbs = document.adminForm.elements["slctimg[]"];
-	// make up for no array returned if there is only one item
-	if (!xbs.length) xbs = [xbs];
-	for (var i = 0; i < xbs.length; i++) {
-		xbs[i].checked = ck;
-	}
-}
-
-function editSelected (e) {
-	_pd(e);
-	if (hasSelections("input[name='slctimg[]']:checked",true)) {
-		document.adminForm.task.value = 'manage.imgsEdit';
-		document.adminForm.submit();
-	}
-}
-
-function addSelected (e) {
-	_pd(e);
-	if (hasSelections("input[name='slctimg[]']:checked",true)) {
-		jQuery('#add2albdlg').modal('show');
-	}
-}
-
-function saveAlbum () {
-	document.albForm.thmord.value = Arrange.iord();
-	document.albForm.submit();
-}
-
-
 // iZoom action to expand individual image
 (function ($, w) {
 	var back, area;
@@ -539,10 +633,10 @@ function saveAlbum () {
 		back.className = 'zoom-back';
 		back.appendChild(area);
 		document.body.appendChild(back);
-		area.addEventListener('keypress', keyPressed, false);
-		area.addEventListener('keydown', keyDowned, false);
+		_ae(area, 'keypress', keyPressed, false);
+		_ae(area, 'keydown', keyDowned, false);
 		area.focus();
-		back.addEventListener('click', close, false);
+		_ae(back, 'click', close, false);
 	}
 
 	function close (e) {

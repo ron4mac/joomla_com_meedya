@@ -21,9 +21,8 @@ HTMLHelper::_('jquery.framework');
 //HTMLHelper::_('bootstrap.modal');
 MeedyaHelper::addScript('manage');
 $this->jDoc->addScriptDeclaration('
-////var myBaseURL = "'.Route::_('index.php?option=com_meedya&Itemid='.$this->itemId, false).'";
 Meedya.rawURL = "'.Route::_('index.php?option=com_meedya&format=raw&Itemid='.$this->itemId, false).'";
-var formTokn = "'.Session::getFormToken().'";
+Meedya.formTokn = "'.Session::getFormToken().'";
 ');
 
 function buildTree(array $albums, &$html, $paid = 0) {
@@ -52,11 +51,11 @@ function buildTree(array $albums, &$html, $paid = 0) {
 $html = [];
 buildTree($this->galStruct, $html);
 //HTMLHelper::_('meedya.buildTree', $this->galStruct, $html);	echo'<xmp>';var_dump($html);echo'</xmp>';
-$this->btmscript[] = 'var albStruct = '. json_encode($this->galStruct).';';
-$this->btmscript[] = 'jQuery("#gstruct .icon-edit").on("click", function (e) { albEdtAction(e,this); });';
-$this->btmscript[] = 'jQuery("#gstruct .icon-upload").on("click", function (e) { albUpldAction(e,this); });';
-$this->btmscript[] = 'jQuery("#gstruct .icon-delete").on("click", function (e) { albDelAction(e,this); });';
-$this->btmscript[] = 'AArrange.init("gstruct","album");';
+//$this->btmscript[] = 'var albStruct = '. json_encode($this->galStruct).';';
+$this->btmscript[] = 'jQuery("#gstruct .icon-edit").on("click", function (e) { Meedya.albEdtAction(e,this); });';
+$this->btmscript[] = 'jQuery("#gstruct .icon-upload").on("click", function (e) { Meedya.albUpldAction(e,this); });';
+$this->btmscript[] = 'jQuery("#gstruct .icon-delete").on("click", function (e) { Meedya.albDelAction(e,this); });';
+$this->btmscript[] = 'Meedya.AArrange.init("gstruct","album");';
 
 $hasImport = JFolder::exists($this->gallpath.'/import');
 ?>
@@ -113,9 +112,9 @@ $hasImport = JFolder::exists($this->gallpath.'/import');
 	<?php if ($this->manage) echo HTMLHelper::_('meedya.manageMenu', $this->userPerms, 0, $this->itemId); ?>
 	<?php echo HTMLHelper::_('meedya.pageHeader', $this->params, $this->action/*.'XXXX'*/); ?>
 	<div id="toolbar">
-		<!-- <a href="#" onclick="goUpload(event)" title="Upload Files">Upload</a> -->
+		<!-- <a href="#" onclick="Meedya.goUpload(event)" title="Upload Files">Upload</a> -->
 		<!-- <a href="<?php echo Route::_('index.php?option=com_meedya&task=manage.doUpload&aid=0&Itemid='.$this->itemId, false); ?>">Upload Items</a> -->
-		<a href="#newalbdlg" data-toggle="modal" onclick="setDlgParAlb();">New Album</a>
+		<a href="#newalbdlg" data-toggle="modal" onclick="Meedya.setDlgParAlb();">New Album</a>
 	<?php if ($hasImport): ?>
 		<a href="#importdlg" data-toggle="modal">Import Items</a>
 	<?php endif; ?>
@@ -135,7 +134,7 @@ $hasImport = JFolder::exists($this->gallpath.'/import');
 		<input type="checkbox" name="trashall" id="trashall" value="true" /><label for="trashall"><?php echo Text::_('COM_MEEDYA_CREATE_DELETE_ALL_IMAGES'); ?></label>
 	</div>
 	<div class="modal-footer">
-		<?php echo HTMLHelper::_('meedya.modalButtons', 'COM_MEEDYA_CREATE_DELETE_ALBUM','deleteAlbum(this)', 'deliB', false); ?>
+		<?php echo HTMLHelper::_('meedya.modalButtons', 'COM_MEEDYA_CREATE_DELETE_ALBUM','Meedya.deleteAlbum(this)', 'deliB', false); ?>
 	</div>
 </div>
 <?php
@@ -143,7 +142,7 @@ echo HTMLHelper::_(
 	'bootstrap.renderModal',
 	'newalbdlg',
 	['title' => Text::_('COM_MEEDYA_CREATE_NEW_ALBUM'),
-	'footer' => HTMLHelper::_('meedya.modalButtons', 'COM_MEEDYA_H5U_CREALBM','ae_createAlbum(this)', 'creab'),
+	'footer' => HTMLHelper::_('meedya.modalButtons', 'COM_MEEDYA_H5U_CREALBM','Meedya.ae_createAlbum(this)', 'creab'),
 	'modalWidth' => '40'],
 	$this->loadTemplate('newalb')
 	);
@@ -160,36 +159,33 @@ echo HTMLHelper::_(
 endif;
 ?>
 <script>
-	var alb2delete = 0;
-	function selAlbum (evt, elm) {
-		jQuery(elm).toggleClass('aselect');
-	}
-	function deleteAlbum (elm) {
+	Meedya.alb2delete = 0;
+	Meedya.deleteAlbum = function (elm) {
 		//alert(jQuery(elm).parent().attr('data-aid'));
-		var wipe = document.getElementById('trashall').checked ? '&wipe=1' : '';
-		window.location = '<?=Route::_('index.php?option=com_meedya&task=manage.delAlbum&Itemid='.$this->itemId.'&aid=', false)?>' + alb2delete + wipe;
+		var wipe = _id('trashall').checked ? '&wipe=1' : '';
+		window.location = '<?=Route::_('index.php?option=com_meedya&task=manage.delAlbum&Itemid='.$this->itemId.'&aid=', false)?>' + this.alb2delete + wipe;
 	}
-	function albEdtAction (e, elm) {
+	Meedya.albEdtAction = function (e, elm) {
 		_pd(e);
 		var alb2edit = jQuery(elm).parent().attr('data-aid');
 		//window.location = '<?=Route::_('index.php?option=com_meedya&view=manage&layout=albedit&aid=', false)?>' + alb2edit;
 		window.location = '<?=Route::_('index.php?option=com_meedya&task=manage.editAlbum&Itemid='.$this->itemId.'&aid=', false)?>' + alb2edit;
 	}
-	function albUpldAction (e, elm) {
+	Meedya.albUpldAction = function (e, elm) {
 		_pd(e);
 		var alb2upld = jQuery(elm).parent().attr('data-aid');
 		//window.location = '<?=Route::_('index.php?option=com_meedya&view=manage&layout=albedit&aid=', false)?>' + alb2edit;
 		window.location = '<?=Route::_('index.php?option=com_meedya&task=manage.doUpload&Itemid='.$this->itemId.'&aid=', false)?>' + alb2upld;
 	}
-	function albDelAction (e, elm) {
+	Meedya.albDelAction = function (e, elm) {
 		_pd(e);
 		//alert(jQuery(elm).parent().attr('data-aid'));
-		alb2delete = jQuery(elm).parent().attr('data-aid');
+		Meedya.alb2delete = jQuery(elm).parent().attr('data-aid');
 		jQuery("#delact").modal();
 	}
-	function goUpload (e) {
+	Meedya.goUpload = function (e) {
 		_pd(e);
-		window.location = '<?=Route::_('index.php?option=com_meedya&task=manage.doUpload&Itemid='.$this->itemId.'&aid=', false)?>' + AArrange.selalb();
+		window.location = '<?=Route::_('index.php?option=com_meedya&task=manage.doUpload&Itemid='.$this->itemId.'&aid=', false)?>' + Meedya.AArrange.selalb();
 	}
 <?php if ($hasImport): ?>
 	function importItems (dlg) {
@@ -199,7 +195,7 @@ endif;
 		var fast = jQuery("#fast").prop('checked');
 		jQuery.post(Meedya.rawURL, prms, function(data) {
 			console.log(data);
-			meedya_importer.init(data, AArrange.selalb(), fast);
+			meedya_importer.init(data, Meedya.AArrange.selalb(), fast);
 		},'json');
 	}
 

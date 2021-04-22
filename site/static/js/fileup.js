@@ -1,11 +1,11 @@
 /* a couple of utility functions to avoid using jquery and assist in minification */
 // getElementById
-function $id(id) {
+function _id(id) {
 	return document.getElementById(id);
 }
 
 function up_watchAlbNam (elm) {
-	var creab = $id('creab');
+	var creab = _id('creab');
 	if (elm.value.trim()) {
 		creab.disabled = false;
 	} else {
@@ -20,19 +20,19 @@ function album_select (elm) {
 		jQuery('#newalbdlg').modal();
 		return;
 	}
-	var crea = $id("crealbm");
+	var crea = _id("crealbm");
 	crea.style.display = asel==-1 ? "inline-block" : "none";
 	if (asel==-1) {
-		var nam = $id("nualbnam");
+		var nam = _id("nualbnam");
 		nam.focus();
 	}
-	$id("dzupui").style.display = asel<1 ? "none" : "block";
+	_id("dzupui").style.display = asel<1 ? "none" : "block";
 }
 
 function createAlbum (elm) {
 	elm.disabled = true;
-	var albNamFld = $id('nualbnam');
-	var albParFld = $id('h5u_palbum');
+	var albNamFld = _id('nualbnam');
+	var albParFld = _id('h5u_palbum');
 	var nualbnam = albNamFld.value.trim();
 	var ajd = {
 		task: 'manage.newAlbum',
@@ -46,7 +46,7 @@ function createAlbum (elm) {
 			console.log(response, status, xhr);
 			if (status=="success") {
 				jQuery('#newalbdlg').modal('hide');
-				album_select($id("h5u_album"));
+				album_select(_id("h5u_album"));
 			} else {
 				alert(xhr.statusText);
 			}

@@ -91,11 +91,11 @@ class MeedyaModelManage extends MeedyaModelMeedya
 		$this->updateAlbum(['items'=>$items]);
 	}
 
-	public function addItems2Album ($items, $album)
+	public function addItems2Album ($items, $album, $pot=false)
 	{
 		if (RJC_DBUG) MeedyaHelper::log('addItems', ['album'=>$album,'items'=>$items]);
 		$db = $this->getDbo();
-		$db->transactionStart(true);
+		$db->transactionStart($pot);
 		$db->setQuery('SELECT `items` FROM `albums` WHERE `aid`='.$album);
 		$r = $db->loadResult();
 		if ($r!==false || is_null($r)) {
@@ -111,15 +111,15 @@ class MeedyaModelManage extends MeedyaModelMeedya
 			$db->execute();
 			$album = $db->insertid();
 		}
-		$db->transactionCommit(true);
-		$this->addAlbum2Items($album, $items);
+		$db->transactionCommit($pot);
+		$this->addAlbum2Items($album, $items, $pot);
 	}
 
-	public function addAlbum2Items ($album, $items)
+	public function addAlbum2Items ($album, $items, $pot=false)
 	{
 		if (!is_array($album)) $album = [$album];
 		$db = $this->getDbo();
-		$db->transactionStart(true);
+		$db->transactionStart($pot);
 		$db->setQuery('SELECT `id`,`album` FROM `meedyaitems` WHERE `id` IN ('.implode(',',$items).')');
 		$itms = $db->loadAssocList();
 		foreach ($itms as $itm) {
@@ -129,7 +129,7 @@ class MeedyaModelManage extends MeedyaModelMeedya
 			$db->setQuery($q);
 			$db->execute();
 		}
-		$db->transactionCommit(true);
+		$db->transactionCommit($pot);
 	}
 
 	public function addItem ($fnam, $mtype, $ittl, $itgs, $albm, $fsize, $tsize, $xpdt)
@@ -144,7 +144,7 @@ class MeedyaModelManage extends MeedyaModelMeedya
 		try {
 			$db->execute();
 			$iid = $db->insertid();
-			$this->addItems2Album((array)$iid, $albm);
+			$this->addItems2Album((array)$iid, $albm, true);
 		} catch (RuntimeException $e) {
 			if (RJC_DBUG) MeedyaHelper::log('addItem error: '.$e->getMessage());
 			JError::raiseError(500, $e->getMessage());

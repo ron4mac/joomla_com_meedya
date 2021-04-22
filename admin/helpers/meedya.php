@@ -59,7 +59,7 @@ abstract class MeedyaAdminHelper
 		return $list;
 	}
 
-	public static function userDataPath ()
+	public static function sv_userDataPath ()
 	{
 		if (self::$udp) return self::$udp;
 		self::getTypeOwner();

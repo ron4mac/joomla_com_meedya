@@ -42,7 +42,7 @@ function editImg (iid) {
 	window.location = "<?=Route::_('index.php?option=com_meedya&task=manage.imgEdit&Itemid='.$this->itemId)?>&items="+iid;
 }
 //var myBaseURL = "<?= Route::_('index.php?option=com_meedya&Itemid='.$this->itemId, false); ?>";
-var formTokn = "<?= Session::getFormToken(); ?>";
+Meedya.formTokn = "<?= Session::getFormToken(); ?>";
 </script>
 
 <style>
@@ -110,7 +110,7 @@ echo HTMLHelper::_(
 	'add2albdlg',
 	[
 		'title' => Text::_('COM_MEEDYA_ADD_ALBUM_ITEMS'),
-		'footer' => HTMLHelper::_('meedya.modalButtons', 'COM_MEEDYA_ADD2ALBUM', 'addItems2Album(this)', 'creab'),
+		'footer' => HTMLHelper::_('meedya.modalButtons', 'COM_MEEDYA_ADD2ALBUM', 'Meedya.addItems2Album(this)', 'creab'),
 		'modalWidth' => '40'
 	],
 	$this->loadTemplate('add2alb')

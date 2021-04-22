@@ -9,7 +9,7 @@ defined('_JEXEC') or die;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Router\Route;
 
-class MeedyaController extends JControllerLegacy
+class MeedyaControllerPublic extends JControllerLegacy
 {
 	protected $uid = 0;
 	protected $mnuItm;
@@ -24,10 +24,9 @@ class MeedyaController extends JControllerLegacy
 			Factory::getApplication()->setUserState('com_meedya.instance', $this->mnuItm.':'.MeedyaHelper::getInstanceID().':'.$this->uid);
 		}
 	}
-
+/*
 	public function display ($cachable = false, $urlparams = false)
 	{
-		if ($this->input->getString('view') == 'public') return parent::display($cachable, $urlparams);
 		if (file_exists(MeedyaHelper::userDataPath($this->mnuItm))) {
 			$view = $this->getView('meedya','html');
 		} else {
@@ -53,5 +52,5 @@ class MeedyaController extends JControllerLegacy
 		file_put_contents($udp.'/med/index.html', $htm);
 		$this->setRedirect(Route::_('index.php?option=com_meedya&Itemid='.$this->mnuItm, false));
 	}
-
+*/
 }

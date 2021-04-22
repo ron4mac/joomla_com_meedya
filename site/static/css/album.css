@@ -1,6 +1,9 @@
 .meedya-gallery .search {
 	float: right;
 }
+.meedya-gallery .search form, .meedya-gallery .search input {
+	margin: 0;
+}
 
 .crumbs {
 	font-size: large;

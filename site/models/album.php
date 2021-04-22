@@ -63,6 +63,9 @@ class MeedyaModelAlbum extends MeedyaModelMeedya
 		$db = $this->getDbo();
 		$db->setQuery('SELECT * FROM `albums` WHERE `paid`='.$aid);
 		$albs = $db->loadObjectList();
+		foreach ($albs as $k => $alb) {
+			$albs[$k]->link = '&view=album&aid='.$alb->aid;
+		}
 		return $albs;
 	}
 

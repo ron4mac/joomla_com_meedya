@@ -209,7 +209,7 @@ function $ae (elem, evnt, func) {
 		$.chnkNum = 0;
 		$.fData = null;
 		$.palod = opts.payload();
-		$.upForm = {task: "manage.upfile", [js_vars.frmtkn]: 1};				// extra data can be added
+		$.upForm = {task: "manage.upfile", [opts.frmtkn]: 1};				// extra data can be added
 		$.xhr = new XMLHttpRequest();
 
 		var endup = function (all) {
@@ -458,5 +458,5 @@ console.log(file);
 	w.fupQadd2 = FileSelectHandler;
 
 
-})(window, [], h5uOptions||{});
+})(window, [], Meedya.h5uOptions||{});
 

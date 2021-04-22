@@ -14,7 +14,9 @@ use Joomla\CMS\Session\Session;
 
 HTMLHelper::addIncludePath(JPATH_COMPONENT.'/helpers');
 
-$script = 'var kkkkk = "YYYYY";
+$script = '
+Meedya = {};
+
 var js_vars = {concurrent: 3};
 js_vars.h5uM = {
 	selAlb: "'.Text::_('COM_MEEDYA_H5U_ALBMSELMSG').'",
@@ -39,7 +41,8 @@ js_vars.maxfilesize = '.($this->maxUploadFS/1048576).';';
 $chnksize = MeedyaHelper::phpMaxUp() - 262144;
 if ($this->uplodr == 'UL')
 	$script .= '
-	const h5uOptions = {
+	Meedya.h5uOptions = {
+		frmtkn: "'.Session::getFormToken().'",
 		upURL: js_vars.upLink,
 		payload: function() { return {album: jQuery("#h5u_album").val(), kywrd: jQuery("#h5u_keywords").val()}; },
 		dropMessage: "Please drop files here to upload<br>(or click to select)",

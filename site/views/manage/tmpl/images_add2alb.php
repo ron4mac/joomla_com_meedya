@@ -9,7 +9,6 @@ defined('_JEXEC') or die;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
 
-$ajaxlink = JUri::base().'index.php?option=com_meedya&format=raw';
 ?>
 <div id="crealbm">
 	<?php if ($this->albums): ?>
@@ -17,7 +16,7 @@ $ajaxlink = JUri::base().'index.php?option=com_meedya&format=raw';
 		<dl>
 		<dt><label for="h5u_album">Select Album</label></dt>
 		<dd>
-			<select id="h5u_album" name="h5u_album" onchange="watchAlb(this)">
+			<select id="h5u_album" name="h5u_album" onchange="Meedya.watchAlb(this)">
 				<option value="-1">[ NEW ALBUM ]</option>
 				<option value="0" selected="selected"><?=Text::_('COM_MEEDYA_H5U_SELECT')?></option>
 				<?=HTMLHelper::_('meedya.albumsHierOptions', $this->albums)?>
@@ -30,7 +29,7 @@ $ajaxlink = JUri::base().'index.php?option=com_meedya&format=raw';
 		<div class="nualbtop">
 		<dl>
 		<dt><label for="nualbnam">Album Name</label></dt>
-		<dd><input type="text" name="nualbnam" id="nualbnam" value="" onkeyup="watchAlbNam(this)" /></dd>
+		<dd><input type="text" name="nualbnam" id="nualbnam" value="" onkeyup="Meedya.watchAlbNam(this)" /></dd>
 		</dl>
 		</div>
 	<?php if ($this->albums): ?>
@@ -57,79 +56,3 @@ $ajaxlink = JUri::base().'index.php?option=com_meedya&format=raw';
 		</dl>
 	</div>
 </div>
-<script>
-function $id (id) {
-	return document.getElementById(id);
-	//return jQuery('#'+id);
-}
-function watchAlb (elm) {
-	var creab = $id('creab');
-	var classes = creab.classList;
-	if (elm.value > 0) {
-		$id('creanualb').style.display = "none";
-		classes.remove("btn-disabled");
-		classes.add("btn-primary");
-		creab.disabled = false;
-	} else {
-		classes.remove("btn-primary");
-		classes.add("btn-disabled");
-		creab.disabled = true;
-		if (elm.value == -1) {
-			$id('creanualb').style.display = "block";
-		} else {
-			$id('creanualb').style.display = "none";
-		}
-	}
-}
-function watchAlbNam (elm) {
-	//var creab = $id('creab');	console.log(creab,elm.value);
-	var creab = $id('creab');
-	var classes = creab.classList;
-	if (elm.value.trim()) {
-		//creab.disabled = false;
-		//creab.removeClass("btn-disabled").addClass("btn-primary");
-		classes.remove("btn-disabled");
-		classes.add("btn-primary");
-		creab.disabled = false;
-	} else {
-		//creab.disabled = true;
-		//creab.removeClass("btn-primary").addClass("btn-disabled");
-		classes.remove("btn-primary");
-		classes.add("btn-disabled");
-		creab.disabled = true;
-	}
-}
-function addItems2Album (elm) {
-	elm.disabled = true;
-	document.adminForm.albumid.value = $id('h5u_album').value;
-	document.adminForm.nualbnam.value = $id('nualbnam').value;
-	document.adminForm.nualbpar.value = $id('h5u_palbum').value;
-	document.adminForm.nualbdesc.value = $id('albdesc').value;
-	document.adminForm.task.value = 'manage.addItemsToAlbum';
-	document.adminForm.submit();
-}
-function aj_addItems2Album (elm) {
-	elm.disabled = true;
-	var albNamFld = $id('nualbnam');
-	var albParFld = $id('h5u_palbum');
-	var albDscFld = $id('albdesc');
-	var nualbnam = albNamFld.value.trim();
-	var ajd = {task: 'manage.addItemsToAlbum', albnam: nualbnam, paralb: (albParFld ? albParFld.value : 0), albdesc: albDscFld.value};
-	ajd[formTokn] = 1;
-	jQuery.post(Meedya.rawURL, ajd,
-		function (response, status, xhr) {
-			console.log(response, status, xhr);
-			if (status=="success") {
-				if (response) {
-					alert(response);
-				} else {
-					window.location.reload(true);
-				}
-			} else {
-				alert(xhr.statusText);
-			}
-			elm.disabled = false;
-		}
-	);
-}
-</script>

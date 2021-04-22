@@ -115,6 +115,7 @@ $this->jDoc->addScriptDeclaration($ttscript);
 #albdesc {
 	font-size: large;
 	padding: 4px;
+	clear: both;
 }
 #area {
 	clear: both;
@@ -207,7 +208,7 @@ $this->jDoc->addScriptDeclaration($ttscript);
 	<?php if ($this->state->get('list.start'.$this->state->get('album.id')) == 0): ?>
 	<?php foreach ($this->albums as $alb): ?>
 		<div class="anitem falbum">
-			<a href="<?=Route::_('index.php?option=com_meedya&view=album&aid='.$alb->aid.'&Itemid='.$this->itemId, false) ?>" class="itm-thumb">
+			<a href="<?=Route::_('index.php?option=com_meedya'.$alb->link.'&Itemid='.$this->itemId, false) ?>" class="itm-thumb">
 				<div><img src="<?=$this->getAlbumThumb($alb)?>" class="falbumi" /></div>
 				<div class="itm-alb-ttl"><?=$alb->title?></div>
 			</a>

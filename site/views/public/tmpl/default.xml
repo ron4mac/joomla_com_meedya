@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata>
+	<layout title="COM_MEEDYA_PUBLIC_VIEW_TITLE" option="COM_MEEDYA_PUBLIC_VIEW_OPTION">
+		<help
+			key="JHELP_MENUS_MENU_ITEM_MEEDYA_GALLERY"
+		/>
+		<message>
+			<![CDATA[COM_MEEDYA_PUBLIC_VIEW_DESC]]>
+		</message>
+	</layout>
+
+	<!-- Add fields to the request variables for the layout. -->
+	<fields name="params">
+
+		<fieldset name="request">
+
+			<field
+				name="owner_group"
+				type="usergroup"
+				label="COM_MEEDYA_FIELD_GROUP_LABEL"
+				description="COM_MEEDYA_FIELD_GROUP_DESC"
+				default="0" />
+
+		</fieldset>
+
+		<fieldset name="perms" label="Permissions">
+
+			<field
+				name="upload_group"
+				type="optgrouplist"
+				multiple="multiple"
+				label="COM_MEEDYA_FIELD_UPGROUP_LABEL"
+				description="COM_MEEDYA_FIELD_UPGROUP_DESC"
+				default="" />
+
+		</fieldset>
+
+	</fields>
+</metadata>

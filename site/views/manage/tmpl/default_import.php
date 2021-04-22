@@ -18,7 +18,6 @@ foreach ($folds as $k => $fold) {
 }
 echo '</div>';
 
-$ajaxlink = JUri::base().'index.php?option=com_meedya&format=raw';
 ?>
 <script>
 function $id (id) {
@@ -46,7 +45,7 @@ function createAlbum (elm) {
 	var nualbnam = albNamFld.value.trim();
 //	elm.nextElementSibling.style.visibility = 'visible';
 	var ajd = {task: 'manage.newAlbum', albnam: nualbnam, paralb: (albParFld ? albParFld.value : 0), albdesc: albDscFld.value};
-	ajd[formTokn] = 1;
+	ajd[Meedya.formTokn] = 1;
 	jQuery.post(Meedya.rawURL, ajd,
 		function (response, status, xhr) {
 			console.log(response, status, xhr);
