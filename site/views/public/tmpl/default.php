@@ -15,7 +15,7 @@ MeedyaHelper::addStyle('gallery');
 MeedyaHelper::addScript('meedya');
 $jslang = [
 		'no_sterm' => Text::_('COM_MEEDYA_MSG_STERM'),
-		'ru_sure' => Text::_('COM_USERNOTES_RU_SURE')
+		'ru_sure' => Text::_('COM_MEEDYA_RU_SURE')
 	];
 $this->jDoc->addScriptDeclaration('Meedya.L = '.json_encode($jslang).';
 ');

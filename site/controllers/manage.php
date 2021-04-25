@@ -283,6 +283,7 @@ class MeedyaControllerManage extends JControllerLegacy
 		$flds['title'] = $this->input->post->get('albttl','','string');
 		$flds['desc'] = $this->input->post->get('albdsc','','raw');
 		$flds['items'] = $this->input->post->get('thmord','','string');
+		$flds['visib'] = $this->input->post->get('pubalb',0,'int');
 
 		$m = $this->getModel('manage');
 		$m->saveAlbum($aid, $flds);

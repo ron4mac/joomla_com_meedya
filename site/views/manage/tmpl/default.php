@@ -114,13 +114,13 @@ $hasImport = JFolder::exists($this->gallpath.'/import');
 	<div id="toolbar">
 		<!-- <a href="#" onclick="Meedya.goUpload(event)" title="Upload Files">Upload</a> -->
 		<!-- <a href="<?php echo Route::_('index.php?option=com_meedya&task=manage.doUpload&aid=0&Itemid='.$this->itemId, false); ?>">Upload Items</a> -->
-		<a href="#newalbdlg" data-toggle="modal" onclick="Meedya.setDlgParAlb();">New Album</a>
+		<a href="#newalbdlg" data-toggle="modal" onclick="Meedya.setDlgParAlb();"><?=Text::_('COM_MEEDYA_NEW_ALBUM')?></a>
 	<?php if ($hasImport): ?>
-		<a href="#importdlg" data-toggle="modal">Import Items</a>
+		<a href="#importdlg" data-toggle="modal"><?=Text::_('COM_MEEDYA_IMPORT')?></a>
 	<?php endif; ?>
 	</div>
-	<div>Total storage: <?=MeedyaHelper::formatBytes($this->totStore)?></div>
-	<div id="myProgress"><div id="myBar"> <span>&nbsp;Importing...</span></div></div>
+	<div><?=Text::_('COM_MEEDYA_TOTSTORE')?> <?=MeedyaHelper::formatBytes($this->totStore)?></div>
+	<div id="myProgress"><div id="myBar"> <span>&nbsp;<?=Text::_('COM_MEEDYA_IMPORTING')?></span></div></div>
 	<div id="gstruct"><div data-aid="0" class="album">
 	<?php echo implode("\n",$html); ?>
 	</div></div>
@@ -130,8 +130,8 @@ $hasImport = JFolder::exists($this->gallpath.'/import');
 </div>
 <div id="delact" tabindex="-1" class="modal hide fade jviewport-width30">
 	<div class="modal-body">
-		<?php echo Text::_('COM_MEEDYA_CREATE_DELETE_ALBUM_BLURB'); ?><br /><br />
-		<input type="checkbox" name="trashall" id="trashall" value="true" /><label for="trashall"><?php echo Text::_('COM_MEEDYA_CREATE_DELETE_ALL_IMAGES'); ?></label>
+		<?=Text::_('COM_MEEDYA_CREATE_DELETE_ALBUM_BLURB')?><br /><br />
+		<input type="checkbox" name="trashall" id="trashall" value="true" /><label for="trashall"><?=Text::_('COM_MEEDYA_CREATE_DELETE_ALL_IMAGES')?></label>
 	</div>
 	<div class="modal-footer">
 		<?php echo HTMLHelper::_('meedya.modalButtons', 'COM_MEEDYA_CREATE_DELETE_ALBUM','Meedya.deleteAlbum(this)', 'deliB', false); ?>

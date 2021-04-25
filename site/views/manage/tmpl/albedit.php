@@ -25,6 +25,7 @@ Meedya.rawURL = "'.Route::_('index.php?option=com_meedya&format=raw&Itemid='.$th
 Text::script('COM_MEEDYA_REMOVE');
 Text::script('COM_MEEDYA_VRB_REMOVE');
 
+$pubchk = $this->album['visib']==1 ? 'checked' : '';
 //var_dump($this->album);
 ?>
 <style>
@@ -33,28 +34,35 @@ Text::script('COM_MEEDYA_VRB_REMOVE');
 	.modal-backdrop.fade.in {opacity:0.4}
 	.bootbox-body {padding: 12px; font-size: larger}
 	.modal-footer {padding: 8px 10px}
-	.pell-content {height: 120px}
+	.pell-content {height: 100px}
 	.actbuts {margin-top: 1em}
+	.albdesc > div {margin-top: 1em}
+	#pubalb {vertical-align: text-bottom}
 }
 </style>
 <div class="meedya-gallery">
 <?php if ($this->manage) echo HTMLHelper::_('meedya.manageMenu', $this->userPerms, 0, $this->itemId); ?>
-<h3>ALBUM EDIT: <?=$this->album['title']?></h3>
+<h3><?=Text::_('COM_MEEDYA_ALBEDIT')?> <?=$this->album['title']?></h3>
 <form action="<?=Route::_('index.php?option=com_meedya&Itemid='.$this->itemId)?>" id="albForm" name="albForm" method="POST">
 	<div class="albman">
 		<div class="albprp">
-			Title:<br />
-			<input type="text" name="albttl" value="<?=$this->album['title']?>" /><br />
-			Album thumbnail:<br />
+			<?=Text::_('COM_MEEDYA_TITLE')?><br>
+			<input type="text" name="albttl" value="<?=$this->album['title']?>" /><br>
+			<?=Text::_('COM_MEEDYA_ALBTHM')?><br>
 			<div class="albthm" id="albthm">
 				<img id="albthmimg" src="<?=$this->aThum?>" width="120px" height="120px" title="album thumbnail image" alt="album thumbnail" />
 			</div>
 			<input type="hidden" name="albthmid" id="albthmid" value=<?=$this->album['thumb']?> />
 		</div>
 		<div class="albdesc">
-			Description:<br />
-			<textarea name="albdsc" id="albdsc" style="display:none"><?=$this->album['desc']?></textarea>
-			<div id="peditor" class="pell"></div>
+			<div>
+				<input type="checkbox" name="pubalb" id="pubalb" value="1" <?=$pubchk?>> <label for="pubalb" style="display:inline"><?=Text::_('COM_MEEDYA_MAKPUB')?></label>
+			</div>
+			<div>
+				<?=Text::_('COM_MEEDYA_DESC')?><br>
+				<textarea name="albdsc" id="albdsc" style="display:none"><?=$this->album['desc']?></textarea>
+				<div id="peditor" class="pell"></div>
+			</div>
 		</div>
 	</div>
 	<input type="hidden" name="task" value="manage.saveAlbum" />
@@ -70,8 +78,8 @@ Text::script('COM_MEEDYA_VRB_REMOVE');
 </h1>
 <?php endif; ?>
 
-<button class="btn btn-primary" onclick="Meedya.saveAlbum()">Save Changes</button>
-<button class="btn" onclick="Meedya.cancelEdt()">Cancel</button>
+<button class="btn btn-primary" onclick="Meedya.saveAlbum()"><?=Text::_('COM_MEEDYA_SAVE')?></button>
+<button class="btn" onclick="Meedya.cancelEdt()"><?=Text::_('JCANCEL')?></button>
 
 <div class="actbuts">
 	<?php echo HTMLHelper::_('meedya.actionButtons', ['sela','seln','edts','rems']); ?>

@@ -23,17 +23,5 @@
 
 		</fieldset>
 
-		<fieldset name="perms" label="Permissions">
-
-			<field
-				name="upload_group"
-				type="optgrouplist"
-				multiple="multiple"
-				label="COM_MEEDYA_FIELD_UPGROUP_LABEL"
-				description="COM_MEEDYA_FIELD_UPGROUP_DESC"
-				default="" />
-
-		</fieldset>
-
 	</fields>
 </metadata>

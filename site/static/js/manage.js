@@ -43,16 +43,10 @@ function _ae (elem, evnt, func, capt=false) {
 			bootbox.confirm({
 				message: Joomla.JText._('COM_MEEDYA_PERM_DELETE'),
 				buttons: {
-						confirm: {
-							label: Joomla.JText._('JACTION_DELETE'),
-							className: 'btn-danger'
-						},
-						cancel: {
-							label: Joomla.JText._('JCANCEL')
-						//	className: 'btn-standard'
-						}
-					},
-					callback: function(c){
+					confirm: { label: Joomla.JText._('JACTION_DELETE'), className: 'btn-danger' },
+					cancel: { label: Joomla.JText._('JCANCEL') }
+				},
+				callback: function(c){
 					if (c) {
 						document.adminForm.task.value = 'manage.deleteItems';
 						document.adminForm.submit();
@@ -68,16 +62,10 @@ function _ae (elem, evnt, func, capt=false) {
 			bootbox.confirm({
 				message: Joomla.JText._('COM_MEEDYA_REMOVE'),
 				buttons: {
-						confirm: {
-							label: Joomla.JText._('COM_MEEDYA_VRB_REMOVE'),
-							className: 'btn-primary'
-						},
-						cancel: {
-							label: Joomla.JText._('JCANCEL')
-						//	className: 'btn-standard'
-						}
-					},
-					callback: function(c){
+					confirm: { label: Joomla.JText._('COM_MEEDYA_VRB_REMOVE'), className: 'btn-primary' },
+					cancel: { label: Joomla.JText._('JCANCEL') }
+				},
+				callback: function(c){
 					if (c) {
 						var items = document.querySelectorAll("[name='slctimg[]']:checked");
 						var pnode = items[0].parentNode.parentNode;
@@ -497,7 +485,7 @@ Meedya.AArrange = (function ($) {
 		da = e.target.getAttribute('data-aid');
 		setAlbPaid(sa, da, function(r){
 			if (r) {
-				alert(Joomla.JText._('COM_MEEDYA_MOVE_FAIL'));
+				bootbox.alert(Joomla.JText._('COM_MEEDYA_MOVE_FAIL'));
 			} else {
 				e.target.append(dragSrcEl);
 			}
