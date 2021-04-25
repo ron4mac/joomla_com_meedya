@@ -76,7 +76,7 @@ class MeedyaModelManage extends MeedyaModelMeedya
 	public function getAllAlbums ()
 	{
 		$db = $this->getDbo();
-		$db->setQuery('SELECT aid,paid,hord,title,desc,items FROM `albums` ORDER BY albhier(aid,paid)');
+		$db->setQuery('SELECT aid,paid,hord,title,desc,visib,items FROM `albums` ORDER BY albhier(aid,paid)');
 		$albs = $db->loadAssocList();
 		return $albs;
 	}

@@ -34,9 +34,9 @@ function buildTree(array $albums, &$html, $paid = 0) {
 			$html[] = '<span class="icon-edit" title="Edit Album"> </span>';
 			$html[] = '<big><b>'.$alb['title'].'</b></big> ( '.$alb['items'].' items )';
 			$html[] = '<span class="icon-upload" title="Upload to Album"> </span>';
-		//	if ($alb['desc']) {
-		//		$html[] = '<br />'.$alb['desc'];
-		//	}
+			if ($alb['visib']==1) {
+				$html[] = '<span class="pubalb">'.Text::_('COM_MEEDYA_PUBLIC').'</span>';
+			}
 			$children = buildTree($albums, $html, $alb['aid']);
 			if ($children) {
 				$alb['children'] = $children;
@@ -95,7 +95,7 @@ $hasImport = JFolder::exists($this->gallpath.'/import');
 	color: blue;
 }
 #gstruct .icon-delete {
-	color: #FDD;
+	color: #EAA;
 	float: right;
 	cursor: pointer;
 }
@@ -104,6 +104,12 @@ $hasImport = JFolder::exists($this->gallpath.'/import');
 }
 #gstruct .slctd {
 	background-color: #E0E8FF;
+}
+.pubalb {
+	font-variant-caps: all-small-caps;
+	font-size: large;
+	color: crimson;
+	margin-left: 1em;
 }
 #myProgress { width:100%; background-color:#ddd; display:none; }
 #myBar { width:0; background-color:#4CAF50; font-size:larger; padding:3px 0; }
