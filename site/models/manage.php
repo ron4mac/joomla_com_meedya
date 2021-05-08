@@ -59,10 +59,15 @@ class MeedyaModelManage extends MeedyaModelMeedya
 	{
 		$aid = $aid ?: ($this->state->get('album.id') ?: 0);
 		$db = $this->getDbo();
-		$db->setQuery('SELECT * FROM `albums` WHERE `aid`='.$aid);
-		$r = $db->loadAssoc();
-
-		return $r;
+		$db->setQuery('SELECT * FROM `albums` WHERE `aid`='.$aid.' OR `visib`=1');
+		$r = $db->loadAssocList();
+		$pub = 0;
+		foreach ($r as $a) {
+			if ($a['aid']==$aid) $alb = $a;
+			if ($a['visib']==1) $pub = $a['aid'];
+		}
+		$alb['pub'] = $pub;
+		return $alb;
 	}
 
 	public function setAlbumPaid ($aid, $paid)

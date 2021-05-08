@@ -98,6 +98,7 @@ class MeedyaModelPublic extends JModelList
 			$alb = $db->loadObject();
 			$alb->paix = $k;
 			$alb->path = $padb['path'];
+			$alb->owner = $padb['owner'];
 			$items[] = $alb;
 			$db->disconnect();
 		}
@@ -129,7 +130,7 @@ class MeedyaModelPublic extends JModelList
 	}
 
 
-	public function getCfg ($which)
+	public function _getCfg ($which)
 	{
 		$db = $this->getDbo();
 		$db->setQuery('SELECT `vals` FROM `config` WHERE `type`='.$db->quote($which));
@@ -158,7 +159,7 @@ class MeedyaModelPublic extends JModelList
 		return [$thm, $r['title'], $r['desc'], $r['mtype']];
 	}
 
-	public function getAlbumsList ()
+	public function _getAlbumsList ()
 	{
 		$db = $this->getDbo();
 		$db->setQuery('SELECT * FROM `albums`');
@@ -168,16 +169,20 @@ class MeedyaModelPublic extends JModelList
 	}
 
 	// returns an array of aid=>title to the specified album
-	public function getAlbumPath ($to)
+	public function getAlbumPath ()
 	{
-		$db = $this->getDbo();
+		$pgid = $this->getState('pgid');
+		list($gdir, $gsfx, $to) = explode('|', base64_decode($pgid));
+		$db = $this->getDb();
 		$albs = [];
 		while ($to) {
 			$db->setQuery('SELECT paid,title FROM albums WHERE aid='.$to);
 			$r = $db->loadAssoc();
-			array_unshift($albs, [$to =>$r['title']]);
+			array_unshift($albs, [$to =>[$r['title'],$pgid]]);
 			$to = $r['paid'];
+			$pgid = base64_encode(implode('|',[$gdir,$gsfx,$to]));
 		}
+		$db->disconnect();
 		return $albs;
 	}
 
@@ -194,7 +199,7 @@ class MeedyaModelPublic extends JModelList
 		}
 	}
 
-	protected function getListQuery ()
+	protected function _getListQuery ()
 	{
 		$albord = ['`tstamp` DESC','`tstamp` ASC','`title` DESC','`title` ASC'];
 		$params = Factory::getApplication()->getParams();
@@ -228,6 +233,29 @@ class MeedyaModelPublic extends JModelList
 		//var_dump($r);
 		return $r;
 	}
+
+	public function getOwnerName ($own)
+	{
+		$owner = '';
+		switch ($own[0]) {
+			case '@':
+				$user = Factory::getUser(substr($own,1));
+				$owner = $user->name;
+				break;
+			case '_':
+				$gid = substr($own,1);
+				if ($gid==0) {
+					$owner = 'Site';
+					break;
+				}
+				$db = Factory::getDbo();
+				$db->setQuery('SELECT title FROM #__usergroups WHERE id='.$gid);
+				$owner = $db->loadResult() ?: 'Group';
+				break;
+		}
+		return $owner;
+	}
+
 
 //	protected function populateState ($ordering = null, $direction = null)
 //	{
@@ -314,12 +342,15 @@ class MeedyaModelPublic extends JModelList
 	private function checkPublic ($path)
 	{
 		if (!file_exists($path.'/meedya.db3')) return;
+		$own = basename(dirname($path));
+		$owner = $this->getOwnerName($own);
 		$db = JDatabaseDriver::getInstance(['driver'=>'sqlite','database'=>$path.'/meedya.db3']);
 		$db->connect();
 		$db->setQuery('SELECT aid,ownid FROM `albums` WHERE `visib`>0 ORDER BY `hord`');
 		$albs = $db->loadAssocList();
 		foreach ($albs as $alb) {
 			$alb['path'] = $path;
+			$alb['owner'] = $owner;
 			$this->pubalbs[] = $alb;
 		}
 		$db->disconnect();

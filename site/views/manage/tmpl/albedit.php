@@ -25,7 +25,8 @@ Meedya.rawURL = "'.Route::_('index.php?option=com_meedya&format=raw&Itemid='.$th
 Text::script('COM_MEEDYA_REMOVE');
 Text::script('COM_MEEDYA_VRB_REMOVE');
 
-$pubchk = $this->album['visib']==1 ? 'checked' : '';
+$pubchk = $this->album['visib']==1 ? ' checked' : '';
+$pubdis = $this->album['pub'] && $this->album['pub']!=$this->album['aid'] ? ' disabled' : '';
 //var_dump($this->album);
 ?>
 <style>
@@ -56,7 +57,7 @@ $pubchk = $this->album['visib']==1 ? 'checked' : '';
 		</div>
 		<div class="albdesc">
 			<div>
-				<input type="checkbox" name="pubalb" id="pubalb" value="1" <?=$pubchk?>> <label for="pubalb" style="display:inline"><?=Text::_('COM_MEEDYA_MAKPUB')?></label>
+				<input type="checkbox" name="pubalb" id="pubalb" value="1"<?=$pubchk.$pubdis?>> <label for="pubalb" style="display:inline"><?=Text::_('COM_MEEDYA_MAKPUB')?></label>
 			</div>
 			<div>
 				<?=Text::_('COM_MEEDYA_DESC')?><br>

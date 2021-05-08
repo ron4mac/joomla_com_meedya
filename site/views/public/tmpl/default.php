@@ -25,7 +25,7 @@ $this->jDoc->addScriptDeclaration('Meedya.L = '.json_encode($jslang).';
 
 <div class="meedya-gallery">
 <?php echo HTMLHelper::_('meedya.pageHeader', $this->params); ?>
-<?php echo HTMLHelper::_('meedya.searchField', 0); ?>
+<?php // echo HTMLHelper::_('meedya.searchField', 0); ?>
 <div class="albthumbs">
 <?php
 	foreach ($this->items as $item) {
@@ -36,8 +36,8 @@ $this->jDoc->addScriptDeclaration('Meedya.L = '.json_encode($jslang).';
 		$thum = $this->getAlbumThumb($item);
 ?>
 <a href="<?=Route::_('index.php?option=com_meedya&view=public&layout=album&pgid='.$pgid.'&Itemid='.$this->itemId, false) ?>" class="alb-thumb">
-	<div><img src="<?=$thum?>" /></div>
-	<div class="alb-thm-ttl"><?= $item->title ?></div>
+	<div class="pubalb"><img src="<?=$thum?>" /><span><?= $item->title ?></span></div>
+	<div class="alb-thm-ttl"><?= $item->owner ?></div>
 </a>
 <?php
 	}

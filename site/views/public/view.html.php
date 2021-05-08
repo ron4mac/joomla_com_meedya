@@ -20,15 +20,30 @@ class MeedyaViewPublic extends MeedyaView
 
 		switch ($this->getLayout()) {
 			case 'album':
+				$app = Factory::getApplication();
 				$pgid = Factory::getApplication()->input->get('pgid','','cmd');
+				list($gdir, $gsfx, $aid) = explode('|', base64_decode($pgid));
 				$this->isSearch = true;
 				$this->useFanCB = true;
-				$this->pathWay = [];
+				$pw = $app->getPathWay();
+				$pw->setItemName(0, $this->params->get('page_title'));
+
+				$apw = $this->get('AlbumPath');  //$m->getAlbumPath($this->aid);
+				foreach ($apw as $ap) {
+					foreach ($ap as $k => $v) {
+						if ($k != $aid) {
+							$pw->addItem($v[0], Route::_('index.php?option=com_meedya&view=public&layout=album&pgid='.$v[1].'&Itemid='.$this->itemId, false));
+						}
+					}
+				}
+				//$this->pathWay = [$this->params->get('page_title')];
+				$this->pathWay = $pw->getPathway();
 				$this->gallpath = $this->get('Gallpath');
 				$this->title = $this->get('Title');
 				$this->desc = $this->get('Desc');
 				$this->albums = $this->get('Albums');
 				$this->items = $this->get('AlbumItems');
+				$this->params->set('owner', $this->getModel()->getOwnerName($gdir));
 				break;
 			default:
 				$this->items = $this->get('Items');

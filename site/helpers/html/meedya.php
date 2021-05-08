@@ -18,7 +18,7 @@ abstract class JHtmlMeedya
 		if ($params->def('show_page_heading', 1)) {
 			$html .= '<h1>';
 			$html .= $params->get('page_title');
-			switch ($params->get('instance_type')) {
+			switch ($params->get('instance_type', 3)) {
 				case 0:
 					$user = Factory::getUser();
 					$html .= ' <small>- '.$user->name.'</small>';
@@ -26,6 +26,10 @@ abstract class JHtmlMeedya
 				case 1:
 					break;
 				case 2:
+					break;
+				case 3:
+					if ($owner = $params->get('owner'))
+						$html .= ' <small>- '.$owner.'</small>';
 					break;
 			}
 			$html .= '</h1>';
