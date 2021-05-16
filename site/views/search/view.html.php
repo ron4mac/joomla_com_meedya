@@ -37,7 +37,7 @@ class MeedyaViewSearch extends MeedyaView
 
 		// build the bread crumbs
 		$pw = Factory::getApplication()->getPathWay();
-		$pw->setItemName(0, '<i class="icon-home-2" title="Gallery Home"></i>');
+//		$pw->setItemName(0, '<i class="icon-home-2" title="Gallery Home"></i>');
 		$apw = $m->getAlbumPath($this->aid);
 		foreach ($apw as $ap) {
 			foreach ($ap as $k => $v) {

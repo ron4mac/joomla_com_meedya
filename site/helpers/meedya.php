@@ -17,14 +17,15 @@ abstract class MeedyaHelper
 
 	public static function scriptVersion ($scr, $path='js/')
 	{
-		$dbg = true || RJC_DBUG;
+		$dbg = RJC_DBUG;
 		$sfx = $dbg ? ('?'.time()) : '';
 		$vray = [
-			'manage' => ['manage.js', 'manage.js'],
+			'manage' => ['manage.js', 'manage.min.js'],
 			'echo' => ['echo.js', 'echo.min.js'],
-			'slides' => ['slides.js', 'slides.js' /*'slides.min.js'*/],
+			'slides' => ['slides.js', 'slides.min.js'],
 			'upload' => ['upload.js', 'upload.min.js'],
-			'each' => ['each.js', 'each.js']
+			'bootbox' => ['bootbox.js', 'bootbox.min.js'],
+			'jquery.tagsinput' => ['jquery.tagsinput.js', 'jquery.tagsinput.min.js']
 			];
 		if (isset($vray[$scr])) {
 			$s = $vray[$scr][$dbg ? 0 : 1];
@@ -34,22 +35,31 @@ abstract class MeedyaHelper
 		return 'components/com_meedya/static/' . $path . $s . $sfx;
 	}
 
-	public static function addScript ($scr, $path='js/')
+	public static function addScript ($scrs, $path='js/')
 	{
 		if (self::$jdoc === null) self::$jdoc = Factory::getDocument();
-		self::$jdoc->addScript(self::scriptVersion($scr, $path));
+		$jaso = RJC_DBUG ? null : ['version'=>'auto'];
+		if (!is_array($scrs)) $scrs = [$scrs];
+		foreach ($scrs as $k=>$v) {
+			if (is_array($v)) {
+				foreach ($v as $kk=>$vv) {
+					self::$jdoc->addScript(self::scriptVersion($kk, $vv), $jaso);
+				}
+			} else {
+				self::$jdoc->addScript(self::scriptVersion($v, $path), $jaso);
+			}
+		}
 	}
 
 	public static function styleVersion ($css, $path='css/')
 	{
-		$dbg = true || RJC_DBUG;
+		$dbg = RJC_DBUG;
 		$sfx = $dbg ? ('?'.time()) : '';
 		$vray = [
 			'manage' => ['manage.css', 'manage.css'],
 			'echo' => ['echo.css', 'echo.min.css'],
 			'slides' => ['slides.css', 'slides.min.css'],
-			'upload' => ['upload.css', 'upload.min.css'],
-			'each' => ['each.css', 'each.css']
+			'upload' => ['upload.css', 'upload.css']
 			];
 		if (isset($vray[$css])) {
 			$s = $vray[$css][$dbg ? 0 : 1];
@@ -59,10 +69,20 @@ abstract class MeedyaHelper
 		return 'components/com_meedya/static/' . $path . $s . $sfx;
 	}
 
-	public static function addStyle ($css, $path='css/')
+	public static function addStyle ($csss, $path='css/')
 	{
 		if (self::$jdoc === null) self::$jdoc = Factory::getDocument();
-		self::$jdoc->addStyleSheet(self::styleVersion($css, $path));
+		$jaso = RJC_DBUG ? null : ['version'=>'auto'];
+		if (!is_array($csss)) $csss = [$csss];
+		foreach ($csss as $k=>$v) {
+			if (is_array($v)) {
+				foreach ($v as $kk=>$vv) {
+					self::$jdoc->addStyleSheet(self::styleVersion($kk, $vv), $jaso);
+				}
+			} else {
+				self::$jdoc->addStyleSheet(self::styleVersion($v, $path), $jaso);
+			}
+		}
 	}
 
 	public static function getInstanceID ()

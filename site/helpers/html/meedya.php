@@ -107,22 +107,22 @@ EOD;
 		foreach ($whch as $but) {
 			switch ($but) {
 			case 'sela':
-				$html[] = '<button class="btn btn-mini" onclick="Meedya.selAllImg(event, true)">'.Text::_('COM_MEEDYA_MANAGE_SELECT_ALL').'</button>';
+				$html[] = '<button class="btn btn-small" onclick="Meedya.selAllImg(event, true)">'.Text::_('COM_MEEDYA_MANAGE_SELECT_ALL').'</button>';
 				break;
 			case 'seln':
-				$html[] = '<button class="btn btn-mini" onclick="Meedya.selAllImg(event, false)">'.Text::_('COM_MEEDYA_MANAGE_SELECT_NONE').'</button>';
+				$html[] = '<button class="btn btn-small" onclick="Meedya.selAllImg(event, false)">'.Text::_('COM_MEEDYA_MANAGE_SELECT_NONE').'</button>';
 				break;
 			case 'edts':
-				$html[] = '<button class="btn btn-mini" onclick="Meedya.editSelected(event)">'.'<i class="icon-pencil"></i> '.Text::_('COM_MEEDYA_MANAGE_EDIT_ITEMS').'</button>';
+				$html[] = '<button class="btn btn-small" onclick="Meedya.editSelected(event)">'.'<i class="icon-pencil"></i> '.Text::_('COM_MEEDYA_MANAGE_EDIT_ITEMS').'</button>';
 				break;
 			case 'adds':
-				$html[] = '<button class="btn btn-mini" onclick="return Meedya.addSelected(event);">'.'<i class="icon-plus-circle"></i> '.Text::_('COM_MEEDYA_MANAGE_ADD2ALBUM').'</button>';
+				$html[] = '<button class="btn btn-small" onclick="return Meedya.addSelected(event);">'.'<i class="icon-plus-circle"></i> '.Text::_('COM_MEEDYA_MANAGE_ADD2ALBUM').'</button>';
 				break;
 			case 'rems':
-				$html[] = '<button class="btn btn-mini" onclick="Meedya.removeSelected(event)">'.'<i class="icon-minus-circle"></i> '.Text::_('COM_MEEDYA_MANAGE_REMOVE').'</button>';
+				$html[] = '<button class="btn btn-small" onclick="Meedya.removeSelected(event)">'.'<i class="icon-minus-circle"></i> '.Text::_('COM_MEEDYA_MANAGE_REMOVE').'</button>';
 				break;
 			case 'dels':
-				$html[] = '<button class="btn btn-mini" onclick="Meedya.deleteSelected(event)">'.'<i class="icon-minus-circle"></i> '.Text::_('COM_MEEDYA_MANAGE_TOTAL_DEL').'</button>';
+				$html[] = '<button class="btn btn-small" onclick="Meedya.deleteSelected(event)">'.'<i class="icon-minus-circle"></i> '.Text::_('COM_MEEDYA_MANAGE_TOTAL_DEL').'</button>';
 				break;
 			default:
 				$html[] = 'NOACTION';

@@ -14,9 +14,24 @@ use Joomla\CMS\Session\Session;
 
 HTMLHelper::addIncludePath(JPATH_COMPONENT.'/helpers');
 
-$script = '
-Meedya = {};
+// build and add javascript options
+$h5opts = [
+	'frmtkn' => Session::getFormToken(),
+	'siteURL' => JUri::base().'index.php?option=com_meedya&Itemid='.$this->itemId,
+	'upURL' => Route::_('index.php?option=com_meedya&format=raw&Itemid='.$this->itemId, false),
+	'dropMessage' => 'Please drop files here to upload<br>(or click to select)',
+	'concurrent' => 4,
+	'maxchunksize' => MeedyaHelper::phpMaxUp() - 262144,
+	'timestamp' => $this->dbTime
+];
+$this->jDoc->addScriptOptions('H5uOpts', $h5opts);
 
+// add stylesheets and javascript
+HTMLHelper::_('jquery.framework');
+MeedyaHelper::addStyle(['gallery','manage','uplodr',['jquery.tagsinput'=>'vendor/tags/']]);
+MeedyaHelper::addScript(['manage','fileup','uplodr','bootbox',['jquery.tagsinput'=>'vendor/tags/']]);
+
+$script = '
 var js_vars = {concurrent: 3};
 js_vars.h5uM = {
 	selAlb: "'.Text::_('COM_MEEDYA_H5U_ALBMSELMSG').'",
@@ -28,34 +43,30 @@ js_vars.h5uM = {
 	q_go: "'.Text::_('COM_MEEDYA_H5U_Q_RESUME').'",
 	q_can: "'.Text::_('COM_MEEDYA_H5U_Q_CANCEL').'"
 };
-js_vars.timestamp = "'.$this->dbTime.'";
-js_vars.frmtkn = "'.Session::getFormToken().'";
-js_vars.user_id = '.Factory::getUser()->id.';
-js_vars.site_url = "'.JUri::base().'index.php?option=com_meedya&Itemid='.$this->itemId.'";
-js_vars.H5uPath = "'.JUri::base(true).'/components/com_meedya/static/";
-//js_vars.upLink = "'.JUri::base().'index.php?option=com_meedya&format=raw";
-js_vars.upLink = "'.Route::_('index.php?option=com_meedya&format=raw&Itemid='.$this->itemId, false).'";
-js_vars.fup_payload = {task: "manage.upfile", galid: "'.$this->galid.'"};
-js_vars.maxfilesize = '.($this->maxUploadFS/1048576).';';
+';
 
-$chnksize = MeedyaHelper::phpMaxUp() - 262144;
 if ($this->uplodr == 'UL')
 	$script .= '
 	Meedya.h5uOptions = {
-		frmtkn: "'.Session::getFormToken().'",
-		upURL: js_vars.upLink,
 		payload: function() { return {album: jQuery("#h5u_album").val(), kywrd: jQuery("#h5u_keywords").val()}; },
-		dropMessage: "Please drop files here to upload<br>(or click to select)",
-		concurrent:4,
-	//	allowed_file_types: ["jpg","jpeg","mp4"],
-		maxchunksize: '.$chnksize.',
 		success: function(resp) { updStorBar(sqb, resp.split(\':\')[1]); },
 		doneFunc: uploadDone
 	};
 	function uploadDone (okcount, errcnt) {
 	//	alert("There were "+okcount+" files uploaded with "+errcnt+" errors.");
-		redirURL = js_vars.site_url + "&task=manage.imgEdit&after=" + js_vars.timestamp;
-		if (confirm("Edit info for files?")) window.location = redirURL;
+		redirURL = H5uOpts.siteURL + "&task=manage.imgEdit&after=" + H5uOpts.timestamp;
+		bootbox.confirm({
+			message: "Edit info for the uploaded files?",
+			buttons: {
+				confirm: { label: "JYES", className: "btn-primary" },
+				cancel: { label: "JCANCEL", className: "btn-secondary" }
+			},
+			callback: function(c){
+				if (c) {
+					window.location = redirURL;
+				}
+			}
+		});
 	}
 	function showError (msg, file) {
 		$id("errmsgs").style.display = "block";
@@ -66,20 +77,8 @@ if ($this->uplodr == 'UL')
 ';
 
 //HTMLHelper::_('bootstrap.loadCss', true);
-HTMLHelper::_('jquery.framework');
 
 $this->jDoc->addScriptDeclaration($script);
-//$this->jDoc->addCustomTag('<script src="'.JUri::base(true).'/'.MeedyaHelper::scriptVersion('upload').'" type="text/javascript"></script>');
-
-$this->jDoc->addStyleSheet('components/com_meedya/static/css/gallery.css');
-$this->jDoc->addStyleSheet('components/com_meedya/static/css/manage.css');
-$this->jDoc->addStyleSheet('components/com_meedya/static/vendor/tags/jquery.tagsinput.css');
-$this->jDoc->addStyleSheet('components/com_meedya/static/css/uplodr.css');
-
-$this->jDoc->addScript('components/com_meedya/static/js/fileup.js');
-$this->jDoc->addScript('components/com_meedya/static/vendor/tags/jquery.tagsinput.js');
-
-$this->jDoc->addStyleSheet('components/com_meedya/static/css/upload.css');
 
 Text::script('COM_MEEDYA_Q_STOPPED');
 
@@ -103,9 +102,7 @@ if ($quota) {
 		$bclas = 'success';
 	}
 }
-//HTMLHelper::script(Juri::base() . 'components/com_meedya/static/js/uplodr.js');
 ?>
-<script src="components/com_meedya/static/js/uplodr.js"></script>
 <?php if ($quota): ?>
 <style>
 #quotaBar { width: 400px; border: 1px solid #BBB; border-radius: 4px; }
@@ -192,5 +189,5 @@ echo HTMLHelper::_(
 <script>
 jQuery('#h5u_keywords').tagsInput();
 var sqb = document.getElementById("qBar");
-H5uSetup();
+H5uSetup(Meedya.h5uOptions);
 </script>

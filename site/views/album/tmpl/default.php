@@ -45,7 +45,7 @@ if ($this->useFanCB) {
 		$murl = JUri::root(true).'/'.$this->gallpath.($mTyp=='image' ? '/med/' : '/img/').$file['file'];
 		$fileentry = [
 			'src' => $murl,
-			'title' => $txtinfo,
+			'opts' => ['caption' => $txtinfo],
 			'type' => $mTyp
 			];
 } else {
@@ -181,6 +181,9 @@ $this->jDoc->addScriptDeclaration($ttscript);
 .fancybox-progress {
 	background: rgb(91 192 222 / 60%);
 	height: 4px;
+}
+.fancybox-caption__body {
+	font-size: larger;
 }
 </style>
 <div class="meedya-gallery">

@@ -45,10 +45,8 @@ class MeedyaView extends JViewLegacy
 			$this->itemId = $app->input->getInt('Itemid', 0);
 		}
 		$this->userPerms = MeedyaHelper::getUserPermissions($this->user, $this->params);
-//		$this->state = $this->get('State');
 		$this->meedyaID = MeedyaHelper::getInstanceID();
 		$this->gallpath = MeedyaHelper::userDataPath($this->itemId);
-//		$this->pagination = $this->get('Pagination');
 
 		$this->instance = $app->getUserState('com_meedya.instance', '::');
 		$this->jDoc = Factory::getDocument();
@@ -57,18 +55,9 @@ class MeedyaView extends JViewLegacy
 	public function display ($tpl = null)
 	{
 		if (RJC_DBUG) { MeedyaHelper::log('MeedyaView - display'); }
-//		$this->params = Factory::getApplication()->getParams();
-//		$this->state = $this->get('State');
-//		$this->items = $this->get('Items');
-	//	if (is_null($this->items)) $this->items = $this->getModel()->getItems();
 		$this->pagination = $this->get('Pagination');
 
-	//	echo'GOt here';var_dump($this->pagination,$this->items);jexit();
-//		$jdoc = Factory::getDocument();
-//		$jdoc->addScript('components/com_meedya/static/js/'.MeedyaHelper::scriptVersion('echo'));
 		MeedyaHelper::addScript('echo');
-	//	JHtml::_('jquery.framework', false);
-	//	$jdoc->addScript('components/com_meedya/static/js/jqUnveil.js');
 		parent::display($tpl);
 		if ($this->btmscript) echo "<script type=\"text/javascript\">\n".implode("\n", $this->btmscript)."\n</script>";
 	}

@@ -370,7 +370,7 @@ function $ae (elem, evnt, func) {
 
 		// put up the progress bar
 		$.pBar = new ProgressBar($, $.doChnk ? 'chnkpb' : 'normpb');
-console.log(file);
+		//console.log(file);
 		var errM = '';
 		if (!$.fType.match(/image\/|video\//)) {
 			errM = 'File type is not allowed';
@@ -404,7 +404,8 @@ console.log(file);
 		return (this);
 	}
 
-	function _setup () {
+	function _setup (h5uo) {
+	opts = Object.assign({}, opts, h5uo);
 		let updiv = $id(opts.lodrdiv);
 		if (w.File && w.FileList) {
 			// create UI
@@ -458,5 +459,5 @@ console.log(file);
 	w.fupQadd2 = FileSelectHandler;
 
 
-})(window, [], Meedya.h5uOptions||{});
+})(window, [], Joomla.getOptions('H5uOpts'));
 

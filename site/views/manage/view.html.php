@@ -49,6 +49,7 @@ class MeedyaViewManage extends MeedyaView
 
 		Text::script('JACTION_DELETE');
 		Text::script('JCANCEL');
+		Text::script('JYES');
 		Text::script('COM_MEEDYA_SELECT_SOME');
 
 		switch ($this->getLayout()) {

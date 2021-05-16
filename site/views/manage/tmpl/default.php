@@ -200,7 +200,7 @@ endif;
 		var prms = {task:'manage.impstps', 'fld':fld};
 		var fast = jQuery("#fast").prop('checked');
 		jQuery.post(Meedya.rawURL, prms, function(data) {
-			console.log(data);
+			//console.log(data);
 			meedya_importer.init(data, Meedya.AArrange.selalb(), fast);
 		},'json');
 	}
@@ -223,7 +223,7 @@ endif;
 
 		function _L (v)
 		{
-			console.log(v);
+			//console.log(v);
 		}
 
 		function process (stp) {

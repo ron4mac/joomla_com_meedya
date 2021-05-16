@@ -48,7 +48,7 @@ function createAlbum (elm) {
 	ajd[Meedya.formTokn] = 1;
 	jQuery.post(Meedya.rawURL, ajd,
 		function (response, status, xhr) {
-			console.log(response, status, xhr);
+//			console.log(response, status, xhr);
 //			elm.nextElementSibling.style.visibility = 'hidden';
 			if (status=="success") {
 				if (response) {

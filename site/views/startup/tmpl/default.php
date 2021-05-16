@@ -13,8 +13,9 @@ use Joomla\CMS\Router\Route;
 <h1><?php echo $this->params->get('page_title'); ?> Startup Screen</h1>
 <?php if ($this->userPerms->canAdmin): ?>
 <div>
-	<p>Great!!! So you want to try this out, do you...</p>
-	<p>Please be patient and give me a few weeks to figure out what to do here.</p>
+	<p>Here you can start your own media gallery (photos and short videos).</p>
+	<p>Max file upload size is 4MB. Total gallery storage is 256MB.</p>
+	<p>You may select one of your albums to share (along with its sub-albums) in the public space.</p>
 </div>
 <div>
 	<form action="<?=Route::_('index.php?option=com_meedya&Itemid='.$this->itemId, false)?>" method="post">

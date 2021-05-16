@@ -51,7 +51,7 @@ class MeedyaViewPublic extends MeedyaView
 
 		$app = Factory::getApplication();
 		$pathway = $app->getPathway();
-		$pathway->addItem('My Added Breadcrumb Link', Route::_(''));
+//		$pathway->addItem('My Added Breadcrumb Link', Route::_(''));
 		parent::display($tpl);
 	}
 

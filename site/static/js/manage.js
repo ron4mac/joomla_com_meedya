@@ -43,8 +43,8 @@ function _ae (elem, evnt, func, capt=false) {
 			bootbox.confirm({
 				message: Joomla.JText._('COM_MEEDYA_PERM_DELETE'),
 				buttons: {
-					confirm: { label: Joomla.JText._('JACTION_DELETE'), className: 'btn-danger' },
-					cancel: { label: Joomla.JText._('JCANCEL') }
+					confirm: { label: 'JACTION_DELETE', className: 'btn-danger' },
+					cancel: { label: 'JCANCEL' }
 				},
 				callback: function(c){
 					if (c) {
@@ -62,8 +62,8 @@ function _ae (elem, evnt, func, capt=false) {
 			bootbox.confirm({
 				message: Joomla.JText._('COM_MEEDYA_REMOVE'),
 				buttons: {
-					confirm: { label: Joomla.JText._('COM_MEEDYA_VRB_REMOVE'), className: 'btn-primary' },
-					cancel: { label: Joomla.JText._('JCANCEL') }
+					confirm: { label: 'COM_MEEDYA_VRB_REMOVE', className: 'btn-danger' },
+					cancel: { label: 'JCANCEL' }
 				},
 				callback: function(c){
 					if (c) {
@@ -169,7 +169,7 @@ function _ae (elem, evnt, func, capt=false) {
 		ajd[Meedya.formTokn] = 1;
 		$.post(Meedya.rawURL, ajd,
 			function (response, status, xhr) {
-				console.log(response, status, xhr);
+				//console.log(response, status, xhr);
 				if (status=="success") {
 					if (response) {
 						alert(response);
@@ -195,7 +195,7 @@ function _ae (elem, evnt, func, capt=false) {
 		ajd[Meedya.formTokn] = 1;
 		$.post(Meedya.rawURL, ajd,
 			function (response, status, xhr) {
-				console.log(response, status, xhr);
+				//console.log(response, status, xhr);
 				if (status=="success") {
 					jQuery('#newalbdlg').modal('hide');
 					if (response) {
@@ -423,9 +423,6 @@ Meedya.AArrange = (function ($) {
 		var prms = {task: 'manage.adjustAlbPaid', 'aid': aid, 'paid': paid};
 		prms[Joomla.getOptions('csrf.token', '')] = 1;
 		$.post(Meedya.rawURL, prms, function (d) {
-			if (d) {
-				console.log(d);
-			}
 			func(d);
 		});
 	}

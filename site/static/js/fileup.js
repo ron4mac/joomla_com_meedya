@@ -41,9 +41,9 @@ function createAlbum (elm) {
 		[Joomla.getOptions('csrf.token', '')]: 1,
 		'o': 1
 		};
-	jQuery("#h5u_album").load(js_vars.upLink, ajd,
+	jQuery("#h5u_album").load(H5uOpts.upURL, ajd,
 		function (response, status, xhr) {
-			console.log(response, status, xhr);
+			//console.log(response, status, xhr);
 			if (status=="success") {
 				jQuery('#newalbdlg').modal('hide');
 				album_select(_id("h5u_album"));
