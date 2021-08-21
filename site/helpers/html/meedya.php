@@ -59,7 +59,7 @@ EOD;
 	{
 		if (!$perms) return '';
 		$itmid = $Itemid ? ('&Itemid='.$Itemid) : '';
-		$html = '<div class="mgmenu dropdown">
+		$html = '<div class="mgmenu btn-group dropdown">
 	<button class="btn btn-small dropdown-toggle" data-bs-toggle="dropdown" type="button" id="mmnulink">
 		<i class="icon-pencil"></i>'.Text::_('COM_MEEDYA_MENU_MANAGE').' <span class="caret"></span>
 	</button>
@@ -192,7 +192,8 @@ EOD;
 
 	public static function modalButtons ($verb, $script, $id, $disab=true)
 	{
-		$html = '<button type="button" class="btn" data-bs-dismiss="modal">'.Text::_('JCANCEL').'</button>';
+		$disbut = (int)JVERSION>3 ? 'data-bs-dismiss' : 'data-dismiss';
+		$html = '<button type="button" class="btn" '.$disbut.'="modal">'.Text::_('JCANCEL').'</button>';
 		$html .= '<button type="button" id="'.$id.'" class="btn';
 		$html .= $disab ? ' btn-disabled' : ' btn-primary';
 		$html .= '" onclick="'.$script.';"';
