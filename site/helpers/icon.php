@@ -11,15 +11,6 @@ use Joomla\CMS\Router\Route;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
 
-//jimport('joomla.application.component.helper');
-/**
- * MeedyaItem Component HTML Helper
- *
- * @static
- * @package		Joomla.Site
- * @subpackage	com_meedya
- * @since 1.5
- */
 class JHtmlIcon
 {
 	static function create ($meedyaitem, $params)
@@ -48,9 +39,9 @@ class JHtmlIcon
 		}
 
 		HTMLHelper::_('behavior.tooltip');
-		$url	= MeedyaHelperRoute::getFormRoute($meedyaitem->id, base64_encode($uri));
-		$icon	= $meedyaitem->state ? 'edit.png' : 'edit_unpublished.png';
-		$text	= HTMLHelper::_('image','system/'.$icon, Text::_('JGLOBAL_EDIT'), NULL, true);
+		$url = MeedyaHelperRoute::getFormRoute($meedyaitem->id, base64_encode($uri));
+		$icon = $meedyaitem->state ? 'edit.png' : 'edit_unpublished.png';
+		$text = HTMLHelper::_('image','system/'.$icon, Text::_('JGLOBAL_EDIT'), NULL, true);
 
 		if ($meedyaitem->state == 0) {
 			$overlib = Text::_('JUNPUBLISHED');

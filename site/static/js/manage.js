@@ -21,6 +21,7 @@ function _ae (elem, evnt, func, capt=false) {
 (function($) {
 
 	Meedya.setDlgParAlb = function () {
+		if (_id('h5u_palbum'))
 		_id('h5u_palbum').value = Meedya.AArrange.selalb();
 	}
 

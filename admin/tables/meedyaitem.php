@@ -6,6 +6,9 @@
  */
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+
 /**
  * MeedyaItem Table class
  *
@@ -59,8 +62,8 @@ class MeedyaTableMeedyaItem extends JTable
 	 */
 	public function store($updateNulls = false)
 	{
-		$date	= JFactory::getDate();
-		$user	= JFactory::getUser();
+		$date	= Factory::getDate();
+		$user	= Factory::getUser();
 		if ($this->id) {
 			// Existing item
 			$this->modified		= $date->toMySQL();
@@ -79,7 +82,7 @@ class MeedyaTableMeedyaItem extends JTable
 	// Verify that the alias is unique
 		$table = JTable::getInstance('MeedyaItem', 'MeedyaTable');
 		if ($table->load(array('alias'=>$this->alias,'catid'=>$this->catid)) && ($table->id != $this->id || $this->id==0)) {
-			$this->setError(JText::_('COM_MEEDYA_ERROR_UNIQUE_ALIAS'));
+			$this->setError(Text::_('COM_MEEDYA_ERROR_UNIQUE_ALIAS'));
 			return false;
 		}
 		// Attempt to store the user data.
@@ -94,13 +97,13 @@ class MeedyaTableMeedyaItem extends JTable
 	public function check()
 	{
 		if (JFilterInput::checkAttribute(array ('href', $this->url))) {
-			$this->setError(JText::_('COM_MEEDYA_ERR_TABLES_PROVIDE_URL'));
+			$this->setError(Text::_('COM_MEEDYA_ERR_TABLES_PROVIDE_URL'));
 			return false;
 		}
 
 		// check for valid name
 		if (trim($this->title) == '') {
-			$this->setError(JText::_('COM_MEEDYA_ERR_TABLES_TITLE'));
+			$this->setError(Text::_('COM_MEEDYA_ERR_TABLES_TITLE'));
 			return false;
 		}
 
@@ -118,7 +121,7 @@ class MeedyaTableMeedyaItem extends JTable
 
 		$xid = intval($this->_db->loadResult());
 		if ($xid && $xid != intval($this->id)) {
-			$this->setError(JText::_('COM_MEEDYA_ERR_TABLES_NAME'));
+			$this->setError(Text::_('COM_MEEDYA_ERR_TABLES_NAME'));
 			return false;
 		}
 
@@ -127,7 +130,7 @@ class MeedyaTableMeedyaItem extends JTable
 		}
 		$this->alias = JApplication::stringURLSafe($this->alias);
 		if (trim(str_replace('-','',$this->alias)) == '') {
-			$this->alias = JFactory::getDate()->format("Y-m-d-H-i-s");
+			$this->alias = Factory::getDate()->format("Y-m-d-H-i-s");
 		}
 
 		// Check the publish down date is not earlier than publish up.
@@ -187,7 +190,7 @@ class MeedyaTableMeedyaItem extends JTable
 			}
 			// Nothing to set publishing state on, return false.
 			else {
-				$this->setError(JText::_('JLIB_DATABASE_ERROR_NO_ROWS_SELECTED'));
+				$this->setError(Text::_('JLIB_DATABASE_ERROR_NO_ROWS_SELECTED'));
 				return false;
 			}
 		}

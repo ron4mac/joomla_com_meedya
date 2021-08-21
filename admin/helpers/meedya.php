@@ -12,6 +12,7 @@ use Joomla\Event\Dispatcher as EventDispatcher;
 abstract class MeedyaAdminHelper
 {
 	protected static $instanceType = null;
+	protected static $siteMenu = null;
 	protected static $ownerID = null;
 	protected static $udp = null;
 
@@ -88,6 +89,8 @@ abstract class MeedyaAdminHelper
 	{
 		$paths = array();
 		if (!$cmp) $cmp = JApplicationHelper::getComponentName();
+		$cmp_ = $cmp.'_';
+		$cmpl = strlen($cmp_);
 		switch ($which) {
 			case 'u':
 				$char1 = '@';
@@ -101,8 +104,33 @@ abstract class MeedyaAdminHelper
 		}
 		$dpath = JPATH_SITE.'/'.self::getStorageBase().'/';
 		if (is_dir($dpath) && ($dh = opendir($dpath))) {
+			if (!self::$siteMenu) {
+				self::$siteMenu = Factory::getApplication()->getMenu('site');
+			}
 			while (($file = readdir($dh)) !== false) {
 				if ($file[0]==$char1) {
+					$ah = opendir($dpath.$file);
+					while (($apd = readdir($ah)) !== false) {
+						$ptf = null;
+						if ($apd==$cmp) {
+							$ptf = $dpath.$file.'/'.$apd.'/'.$dbname.'.db3';
+							$mnut = 'OLD STORAGE LOCATION SCHEMA';
+						} elseif (substr($apd,0,$cmpl)==$cmp_) {
+							$ptf = $dpath.$file.'/'.$apd.'/'.$dbname.'.db3';
+							$mnu = (int)substr($apd,$cmpl);			//echo'<xmp>';var_dump(self::$siteMenu->getItem($mnu));echo'</xmp>';
+							$mnut = self::$siteMenu->getItem($mnu)->title." ({$mnu})";
+						}
+						if ($ptf && file_exists($ptf)) {
+							if ($full) {
+								$paths[$file] = ['path'=>$ptf, 'mnu'=>$mnut];
+							} else {
+								$paths[] = ['path'=>$file, 'mnu'=>$mnut];
+							}
+						} elseif (file_exists($dpath.$file.'/'.$apd.'/'.$dbname.'.sql3')) {
+							$paths[$file] = ['path'=>$dpath.$file.'/'.$apd.'/'.$dbname.'.sql3', 'mnu'=>$mnut.' [PLD DB NAME]'];
+						}
+					}
+/*
 					$ptf = $dpath.$file.'/'.$cmp.'/'.$dbname.'.sql3';
 					if (file_exists($ptf))
 						if ($full) {
@@ -117,6 +145,7 @@ abstract class MeedyaAdminHelper
 						} else {
 							$paths[] = $file;
 						}
+*/
 				}
 			}
 			closedir($dh);

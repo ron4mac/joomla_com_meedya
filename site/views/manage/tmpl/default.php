@@ -120,7 +120,7 @@ $hasImport = JFolder::exists($this->gallpath.'/import');
 	<div id="toolbar">
 		<!-- <a href="#" onclick="Meedya.goUpload(event)" title="Upload Files">Upload</a> -->
 		<!-- <a href="<?php echo Route::_('index.php?option=com_meedya&task=manage.doUpload&aid=0&Itemid='.$this->itemId, false); ?>">Upload Items</a> -->
-		<a href="#newalbdlg" data-toggle="modal" onclick="Meedya.setDlgParAlb();"><?=Text::_('COM_MEEDYA_NEW_ALBUM')?></a>
+		<a href="#newalbdlg" data-toggle="modal" data-bs-toggle="modal" onclick="Meedya.setDlgParAlb();"><?=Text::_('COM_MEEDYA_NEW_ALBUM')?></a>
 	<?php if ($hasImport): ?>
 		<a href="#importdlg" data-toggle="modal"><?=Text::_('COM_MEEDYA_IMPORT')?></a>
 	<?php endif; ?>

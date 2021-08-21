@@ -59,7 +59,32 @@ EOD;
 	{
 		if (!$perms) return '';
 		$itmid = $Itemid ? ('&Itemid='.$Itemid) : '';
-		$html = '<div class="btn-group mgmenu">
+		$html = '<div class="mgmenu dropdown">
+	<button class="btn btn-small dropdown-toggle" data-bs-toggle="dropdown" type="button" id="mmnulink">
+		<i class="icon-pencil"></i>'.Text::_('COM_MEEDYA_MENU_MANAGE').' <span class="caret"></span>
+	</button>
+	<div class="dropdown-menu dropdown-menu-end" aria-labelledby="mmnulink">';
+		if ($perms->canAdmin || $perms->canUpload) {
+			$html .= '<div class="dropdown-item"><a href="' . Route::_('index.php?option=com_meedya&task=manage.doUpload'.($aid?('&aid='.$aid):'') . $itmid, false) . '">
+				<i class="icon-upload"></i>'.Text::_('COM_MEEDYA_MENU_UPLOAD').'</a></div>';
+		}
+		if ($perms->canAdmin) {
+			$html .= '
+		<div class="dropdown-item"><a href="' . Route::_('index.php?option=com_meedya&view=manage'.$itmid, false) . '"><i class="icon-grid"></i>'.Text::_('COM_MEEDYA_MENU_EDALBS').'</a></div>
+		<div class="dropdown-item"><a href="' . Route::_('index.php?option=com_meedya&task=manage.editImgs'.$itmid, false) . '"><i class="icon-images"></i>'.Text::_('COM_MEEDYA_MENU_EDIMGS').'</a></div>';
+//		<div class="dropdown-item"><a href="' . Route::_('index.php?option=com_meedya&task=manage.doConfig'.$itmid, false) . '"><i class="icon-options"></i>'.Text::_('COM_MEEDYA_MENU_CONFIG').'</a></div>';
+		}
+		$html .= '</div>
+</div>
+';
+		return $html;
+	}
+
+	public static function manageMenu2 ($perms, $aid=0, $Itemid=0)
+	{
+		if (!$perms) return '';
+		$itmid = $Itemid ? ('&Itemid='.$Itemid) : '';
+		$html = '<div class="btn-group mgmenu dropdown">
 	<a class="btn btn-small dropdown-toggle" data-toggle="dropdown" href="#">
 		<i class="icon-pencil"></i>'.Text::_('COM_MEEDYA_MENU_MANAGE').' <span class="caret"></span>
 	</a>
@@ -167,7 +192,7 @@ EOD;
 
 	public static function modalButtons ($verb, $script, $id, $disab=true)
 	{
-		$html = '<button type="button" class="btn" data-dismiss="modal">'.Text::_('JCANCEL').'</button>';
+		$html = '<button type="button" class="btn" data-bs-dismiss="modal">'.Text::_('JCANCEL').'</button>';
 		$html .= '<button type="button" id="'.$id.'" class="btn';
 		$html .= $disab ? ' btn-disabled' : ' btn-primary';
 		$html .= '" onclick="'.$script.';"';

@@ -17,7 +17,7 @@ function album_select (elm) {
 	var asel = elm.options[elm.selectedIndex].value;
 	if (asel==-1) {
 		elm.value = '';
-		jQuery('#newalbdlg').modal();
+		jQuery('#newalbdlg').modal('show');
 		return;
 	}
 	var crea = _id("crealbm");

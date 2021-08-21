@@ -1,11 +1,12 @@
 <?php
 /**
  * @package		com_meedya
- * @copyright	Copyright (C) 2020 RJCreations. All rights reserved.
+ * @copyright	Copyright (C) 2021 RJCreations. All rights reserved.
  * @license		GNU General Public License version 3 or later; see LICENSE.txt
  */
-
 defined('JPATH_BASE') or die;
+
+use Joomla\CMS\Language\Text;
 
 JFormHelper::loadFieldClass('UserGroupList');
 
@@ -17,7 +18,7 @@ class JFormFieldOptGroupList extends Joomla\CMS\Form\Field\UsergrouplistField
 	protected function getOptions ()
 	{
 		$opts = parent::getOptions();
-		array_unshift($opts, (object)array('text'=>JText::_('JSELECT'),'value'=>'','level'=>0));
+		array_unshift($opts, (object)array('text'=>Text::_('JSELECT'),'value'=>'','level'=>0));
 		return $opts;
 	}
 

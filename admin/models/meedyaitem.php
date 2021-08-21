@@ -1,12 +1,12 @@
 <?php
 /**
- * @version		$Id: meedyaitem.php 21148 2011-04-14 17:30:08Z ian $
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
- * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ * @package		com_meedya
+ * @copyright	Copyright (C) 2021 RJCreations. All rights reserved.
+ * @license		GNU General Public License version 3 or later; see LICENSE.txt
  */
-
-// No direct access.
 defined('_JEXEC') or die;
+
+use Joomla\CMS\Factory;
 
 jimport('joomla.application.component.modeladmin');
 
@@ -38,7 +38,7 @@ class MeedyaModelMeedyaItem extends JModelAdmin
 			if ($record->state != -2) {
 				return ;
 			}
-			$user = JFactory::getUser();
+			$user = Factory::getUser();
 	
 			if ($record->catid) {
 				return $user->authorise('core.delete', 'com_meedya.category.'.(int) $record->catid);
@@ -58,7 +58,7 @@ class MeedyaModelMeedyaItem extends JModelAdmin
 	 */
 	protected function canEditState($record)
 	{
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 
 		if (!empty($record->catid)) {
 			return $user->authorise('core.edit.state', 'com_meedya.category.'.(int) $record->catid);
@@ -92,7 +92,7 @@ class MeedyaModelMeedyaItem extends JModelAdmin
 	public function getForm($data = array(), $loadData = true)
 	{
 		// Initialise variables.
-		$app	= JFactory::getApplication();
+		$app = Factory::getApplication();
 
 		// Get the form.
 		$form = $this->loadForm('com_meedya.meedyaitem', 'meedyaitem', array('control' => 'jform', 'load_data' => $loadData));
@@ -137,15 +137,15 @@ class MeedyaModelMeedyaItem extends JModelAdmin
 	protected function loadFormData()
 	{
 		// Check the session for previously entered form data.
-		$data = JFactory::getApplication()->getUserState('com_meedya.edit.meedyaitem.data', array());
+		$data = Factory::getApplication()->getUserState('com_meedya.edit.meedyaitem.data', array());
 
 		if (empty($data)) {
 			$data = $this->getItem();
 
 			// Prime some default values.
 			if ($this->getState('meedyaitem.id') == 0) {
-				$app = JFactory::getApplication();
-				$data->set('catid', JFactory::getApplication()->input->getInt('catid', $app->getUserState('com_meedya.meedya.filter.category_id')));
+				$app = Factory::getApplication();
+				$data->set('catid', Factory::getApplication()->input->getInt('catid', $app->getUserState('com_meedya.meedya.filter.category_id')));
 			}
 		}
 
@@ -180,8 +180,8 @@ class MeedyaModelMeedyaItem extends JModelAdmin
 	protected function prepareTable($table)
 	{
 		jimport('joomla.filter.output');
-		$date = JFactory::getDate();
-		$user = JFactory::getUser();
+		$date = Factory::getDate();
+		$user = Factory::getUser();
 
 		$table->title		= htmlspecialchars_decode($table->title, ENT_QUOTES);
 		$table->alias		= JApplication::stringURLSafe($table->alias);
@@ -195,7 +195,7 @@ class MeedyaModelMeedyaItem extends JModelAdmin
 
 			// Set ordering to the last item if not set
 			if (empty($table->ordering)) {
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 				$db->setQuery('SELECT MAX(ordering) FROM #__meedya');
 				$max = $db->loadResult();
 

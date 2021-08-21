@@ -1,27 +1,24 @@
 <?php
 /**
  * @package    com_meedya
- * @copyright  Copyright (C) 2016 RJCreations - All rights reserved.
+ * @copyright  Copyright (C) 2021 RJCreations - All rights reserved.
  * @license    GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
-
-jimport('joomla.filesystem.folder');
-jimport('joomla.application.component.modellist');
 
 class MeedyaModelMeedya extends JModelList
 {
 	protected $relm = 'u';
 	protected $_total = -1;
 
-	public function __construct($config = array())
+	public function __construct($config = [])
 	{
-		$config['filter_fields'] = array('fullname', 'username', 'userid');
+		$config['filter_fields'] = ['fullname', 'username', 'userid'];
 		parent::__construct($config);
 	}
 
 	public function getItems ()			//	count(glob("/path/to/file/[!\.]*"));
-	{	//return array();
+	{	//return [];
 		// Get a storage key.
 		$store = $this->getStoreId('list');
 
@@ -30,16 +27,16 @@ class MeedyaModelMeedya extends JModelList
 			return $this->cache[$store];
 		}
 
-		$unotes = array();
+		$unotes = [];
 		$folds = MeedyaAdminHelper::getDbPaths($this->relm, 'meedya', true);
-		foreach ($folds as $dir => $path) {
+		foreach ($folds as $dir => $mgi) {
 			$userid = (int)substr($dir,1);
-			$files = count(glob(dirname($path).'/img/[!\.]*')) -1;
+			$files = count(glob(dirname($mgi['path']).'/img/[!\.]*')) -1;
 			if ($this->relm == 'u') {
 				$user = JUser::getInstance($userid);
-				$unotes[] = array('name'=>$user->name,'uname'=>$user->username,'uid'=>$userid, 'fcount'=>$files);
+				$unotes[] = ['name'=>$user->name,'uname'=>$user->username,'uid'=>$userid,'mnu'=>$mgi['mnu'],'fcount'=>$files];
 			} else {
-				$unotes[] = array('uname'=>MeedyaAdminHelper::getGroupTitle($userid),'name'=>'group','uid'=>$userid, 'fcount'=>$files);
+				$unotes[] = ['uname'=>MeedyaAdminHelper::getGroupTitle($userid),'name'=>'group','uid'=>$userid,'mnu'=>$mgi['mnu'],'fcount'=>$files];
 			}
 		}
 		$this->_total = count($unotes);

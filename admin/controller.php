@@ -1,10 +1,12 @@
 <?php
 /**
  * @package		com_meedya
- * @copyright	Copyright (C) 2020 RJCreations. All rights reserved.
+ * @copyright	Copyright (C) 2021 RJCreations. All rights reserved.
  * @license		GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
+
+use Joomla\CMS\Language\Text;
 
 JLoader::register('MeedyaHelperDb', JPATH_COMPONENT_ADMINISTRATOR.'/helpers/db.php');
 
@@ -25,7 +27,7 @@ class MeedyaController extends JControllerLegacy
 		// Check for edit form.
 		if ($view == 'meedyaitem' && $layout == 'edit' && !$this->checkEditId('com_meedya.edit.meedyaitem', $id)) {
 			// Somehow the person just went to the form - we don't allow that.
-			$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_UNHELD_ID', $id));
+			$this->setError(Text::sprintf('JLIB_APPLICATION_ERROR_UNHELD_ID', $id));
 			$this->setMessage($this->getError(), 'error');
 			$this->setRedirect(JRoute::_('index.php?option=com_meedya&view=meedya', false));
 
@@ -46,7 +48,7 @@ class MeedyaController extends JControllerLegacy
 		foreach ($cids as $cid) {
 			MeedyaHelperDb::rebuildExpodt(JPATH_ROOT.'/'.$sdp.'/'.$tc.$cid.'/'.JApplicationHelper::getComponentName());
 		}
-		$this->setRedirect('index.php?option=com_meedya&view='.$view, JText::_('COM_MEEDYA_MSG_COMPLETE'));
+		$this->setRedirect('index.php?option=com_meedya&view='.$view, Text::_('COM_MEEDYA_MSG_COMPLETE'));
 	}
 
 	public function cleanOrphans ()
@@ -58,7 +60,7 @@ class MeedyaController extends JControllerLegacy
 		foreach ($cids as $cid) {
 			MeedyaHelperDb::cleanOrphans(JPATH_ROOT.'/'.$sdp.'/'.$tc.$cid.'/'.JApplicationHelper::getComponentName());
 		}
-		$this->setRedirect('index.php?option=com_meedya&view='.$view, JText::_('COM_MEEDYA_MSG_COMPLETE'));
+		$this->setRedirect('index.php?option=com_meedya&view='.$view, Text::_('COM_MEEDYA_MSG_COMPLETE'));
 	}
 
 	public function recalcStorage ()
@@ -70,7 +72,7 @@ class MeedyaController extends JControllerLegacy
 		foreach ($cids as $cid) {
 			MeedyaHelperDb::recalcStorage(JPATH_ROOT.'/'.$sdp.'/'.$tc.$cid.'/'.JApplicationHelper::getComponentName());
 		}
-		$this->setRedirect('index.php?option=com_meedya&view='.$view, JText::_('COM_MEEDYA_MSG_COMPLETE'));
+		$this->setRedirect('index.php?option=com_meedya&view='.$view, Text::_('COM_MEEDYA_MSG_COMPLETE'));
 	}
 
 	public function dbaseFixes ()
@@ -82,7 +84,7 @@ class MeedyaController extends JControllerLegacy
 		foreach ($cids as $cid) {
 			MeedyaHelperDb::fixItemAlbums(JPATH_ROOT.'/'.$sdp.'/'.$tc.$cid.'/'.JApplicationHelper::getComponentName());
 		}
-		$this->setRedirect('index.php?option=com_meedya&view='.$view, JText::_('COM_MEEDYA_MSG_COMPLETE'));
+		$this->setRedirect('index.php?option=com_meedya&view='.$view, Text::_('COM_MEEDYA_MSG_COMPLETE'));
 	}
 
 }

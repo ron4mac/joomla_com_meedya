@@ -9,8 +9,10 @@ defined('_JEXEC') or die;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
 
+//HTMLHelper::_('bootstrap.modal');
+
 ?>
-<div id="crealbm">
+<div id="crealbm" class="mdymodal">
 	<div class="nualbtop">
 	<dl>
 	<dt><label for="nualbnam">Album Name</label></dt>

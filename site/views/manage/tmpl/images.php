@@ -12,7 +12,7 @@ use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Session\Session;
 use Joomla\CMS\Layout\LayoutHelper;
 
-HTMLHelper::_('bootstrap.framework');
+//HTMLHelper::_('bootstrap.framework');
 //HTMLHelper::_('behavior.multiselect');
 HTMLHelper::_('formbehavior.chosen', 'select');
 //HTMLHelper::_('bootstrap.tooltip');

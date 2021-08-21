@@ -1,10 +1,13 @@
 <?php
 /**
  * @package		com_meedya
- * @copyright	Copyright (C) 2020 RJCreations. All rights reserved.
+ * @copyright	Copyright (C) 2021 RJCreations. All rights reserved.
  * @license		GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
+
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
 
 require_once JPATH_BASE . '/components/com_meedya/helpers/meedya.php';
 
@@ -49,17 +52,17 @@ class MeedyaView extends JViewLegacy
 	protected function addSubmenu ($vName)
 	{
 		JHtmlSidebar::addEntry(
-			JText::_('COM_MEEDYA_SUBMENU_USER'),
+			Text::_('COM_MEEDYA_SUBMENU_USER'),
 			'index.php?option=com_meedya',
 			$vName == 'user'
 		);
 		JHtmlSidebar::addEntry(
-			JText::_('COM_MEEDYA_SUBMENU_GROUP'),
+			Text::_('COM_MEEDYA_SUBMENU_GROUP'),
 			'index.php?option=com_meedya&view=groups',
 			$vName == 'group'
 		);
 //		JHtmlSidebar::addEntry(
-//			JText::_('COM_USERNOTES_SUBMENU_SITE'),
+//			Text::_('COM_USERNOTES_SUBMENU_SITE'),
 //			'index.php?option=com_usernotes&view=site',
 //			$vName == 'site'
 //		);
@@ -72,9 +75,9 @@ class MeedyaView extends JViewLegacy
 	{
 		$canDo	= MeedyaAdminHelper::getActions();
 
-		JToolBarHelper::title(JText::_('COM_MEEDYA_MENU').': '.JText::_('COM_MEEDYA_MANAGER_'.strtoupper($this->relm)), 'stack meedya');
+		JToolBarHelper::title(Text::_('COM_MEEDYA_MENU').': '.Text::_('COM_MEEDYA_MANAGER_'.strtoupper($this->relm)), 'stack meedya');
 
-		JToolBarHelper::deleteList(JText::_('COM_MEEDYA_MANAGER_DELETEOK'));
+		JToolBarHelper::deleteList(Text::_('COM_MEEDYA_MANAGER_DELETEOK'));
 		//JToolBarHelper::trash('usernotes.trash');
 
 	//	if ($canDo->get('core.edit.state')) {
@@ -97,7 +100,7 @@ class MeedyaView extends JViewLegacy
 	protected function state ($vari, $set=false, $val='', $glb=false)
 	{
 		$stvar = ($glb?'':'com_meedya.').$vari;
-		$app = JFactory::getApplication();
+		$app = Factory::getApplication();
 		if ($set) {
 			$app->setUserState($stvar, $val);
 			return;

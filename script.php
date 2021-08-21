@@ -6,6 +6,8 @@
  */
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Factory;
+
 jimport('rjuserdata.userdata');
 
 class com_meedyaInstallerScript
@@ -52,7 +54,7 @@ class com_meedyaInstallerScript
 	{
 		if (count($param_array) > 0) {
 			// read the existing component value(s)
-			$db = JFactory::getDbo();
+			$db = Factory::getDbo();
 			$db->setQuery('SELECT params FROM #__extensions WHERE name = "com_meedya"');
 			$params = json_decode($db->loadResult(), true);
 			// add the new variable(s) to the existing one(s), replacing existing only if requested

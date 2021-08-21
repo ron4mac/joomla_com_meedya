@@ -2,10 +2,13 @@
 /**
  * @package    com_meedya
  *
- * @copyright  Copyright (C) 2019 RJCreations - All rights reserved.
+ * @copyright  Copyright (C) 2021 RJCreations - All rights reserved.
  * @license    GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('JPATH_BASE') or die;
+
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
 
 JFormHelper::loadFieldClass('number');
 
@@ -23,7 +26,7 @@ class JFormFieldDefNumber extends JFormFieldNumber
 		}
 
 		$html[] = '<input type="checkbox" id="'.$this->id.'_dchk" onclick="DEFNff.sDef(this)" '.($this->value ? '' : 'checked ').'style="vertical-align:initial" />';
-		$html[] = '<label for="'.$this->id.'_dchk" style="display:inline;margin-right:1em">'.JText::_('JDEFAULT').'</label>';
+		$html[] = '<label for="'.$this->id.'_dchk" style="display:inline;margin-right:1em">'.Text::_('JDEFAULT').'</label>';
 		$html[] = '<span id="'.$this->id.'_spn" class="mydefn'.($this->value ? '' : ' hidden').'">';
 		$html[] = parent::getInput();
 		$html[] = '</span>';
@@ -33,7 +36,7 @@ class JFormFieldDefNumber extends JFormFieldNumber
 		static $scripted;
 		if (!$scripted) {
 			$scripted = true;
-			$jdoc = JFactory::getDocument();
+			$jdoc = Factory::getDocument();
 			$script = '
 var DEFNff = (function($) {
 	return {

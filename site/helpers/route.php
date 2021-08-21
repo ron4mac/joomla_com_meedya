@@ -4,11 +4,9 @@
  * @copyright	Copyright (C) 2021 RJCreations. All rights reserved.
  * @license		GNU General Public License version 3 or later; see LICENSE.txt
  */
-
-// no direct access
 defined('_JEXEC') or die;
 
-// Component Helper
+use Joomla\CMS\Factory;
 use Joomla\CMS\Component\ComponentHelper;
 
 abstract class MeedyaHelperRoute
@@ -112,8 +110,8 @@ abstract class MeedyaHelperRoute
 
 	protected static function _findItem($needles = null)
 	{
-		$app		= JFactory::getApplication();
-		$menus		= $app->getMenu('site');
+		$app = Factory::getApplication();
+		$menus = $app->getMenu('site');
 
 		// Prepare the reverse lookup array.
 		if (self::$lookup === null) {

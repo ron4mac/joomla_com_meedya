@@ -1,15 +1,18 @@
 <?php
 /**
  * @package		com_meedya
- * @copyright	Copyright (C) 2020 RJCreations. All rights reserved.
+ * @copyright	Copyright (C) 2021 RJCreations. All rights reserved.
  * @license		GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\HTML\HTMLHelper;
+
 // Include the component HTML helpers.
-JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
-JHtml::_('behavior.tooltip');
-JHtml::_('behavior.multiselect');
+HTMLHelper::addIncludePath(JPATH_COMPONENT.'/helpers/html');
+//HTMLHelper::_('behavior.tooltip');
+HTMLHelper::_('behavior.multiselect');
 
 //var_dump('vdf',$this);jexit();
 
@@ -26,20 +29,23 @@ $canDo		= MeedyaAdminHelper::getActions();
 			<thead>
 				<tr>
 					<th width="1%"></th>
-					<th width="1%"><?php echo JHtml::_('myGrid.checkall'); ?></th>
+					<th width="1%"><?php echo HTMLHelper::_('myGrid.checkall'); ?></th>
 					<th width="15%">
-						<?php echo JHtml::_('grid.sort', 'COM_MEEDYA_USERNAME', 'username', $listDirn, $listOrder); ?>
+						<?php echo HTMLHelper::_('grid.sort', 'COM_MEEDYA_USERNAME', 'username', $listDirn, $listOrder); ?>
 					</th>
 					<th width="15%">
-						<?php echo JHtml::_('grid.sort', 'COM_MEEDYA_FULLNAME', 'fullname', $listDirn, $listOrder); ?>
+						<?php echo HTMLHelper::_('grid.sort', 'COM_MEEDYA_USERID', 'userid', $listDirn, $listOrder); ?>
 					</th>
 					<th width="15%">
-						<?php echo JHtml::_('grid.sort', 'COM_MEEDYA_FCOUNT', 'fcount', $listDirn, $listOrder); ?>
+						<?php echo HTMLHelper::_('grid.sort', 'COM_MEEDYA_FULLNAME', 'fullname', $listDirn, $listOrder); ?>
 					</th>
 					<th width="15%">
-						<?php echo JHtml::_('grid.sort', 'COM_MEEDYA_USERID', 'userid', $listDirn, $listOrder); ?>
+						<?php echo HTMLHelper::_('grid.sort', 'COM_MEEDYA_FCOUNT', 'fcount', $listDirn, $listOrder); ?>
 					</th>
-					<th width="30%">
+					<th width="15%">
+						<?php echo Text::_('COM_MEEDYA_MENUID'); ?>
+					</th>
+					<th width="15%">
 						&#160;
 					</th>
 				</tr>
@@ -58,11 +64,14 @@ $canDo		= MeedyaAdminHelper::getActions();
 						<?php echo $i + 1 + $this->pagination->limitstart; ?>
 					</td>
 					<td>
-						<?php echo JHtml::_('grid.id', $i, $item['uid']); ?>
+						<?php echo HTMLHelper::_('grid.id', $i, $item['uid']); ?>
 					</td>
 					<td>
 						<?php echo $item['uname']; ?>
 						<a href="<?php echo JRoute::_('index.php?option=com_meedya&view=events&uid=').$item['uid']; ?>">view</a>
+					</td>
+					<td>
+						<?php echo $item['uid'] ?>
 					</td>
 					<td>
 						<?php echo $item['name']; ?>
@@ -71,7 +80,7 @@ $canDo		= MeedyaAdminHelper::getActions();
 						<?php echo $item['fcount'] ?>
 					</td>
 					<td>
-						<?php echo $item['uid'] ?>
+						<?php echo $item['mnu'] ?>
 					</td>
 					<td>
 						&#160;
@@ -85,7 +94,7 @@ $canDo		= MeedyaAdminHelper::getActions();
 			<input type="hidden" name="boxchecked" value="0" />
 			<input type="hidden" name="filter_order" value="<?php echo $listOrder; ?>" />
 			<input type="hidden" name="filter_order_Dir" value="<?php echo $listDirn; ?>" />
-			<?php echo JHtml::_('form.token'); ?>
+			<?php echo HTMLHelper::_('form.token'); ?>
 		</div>
 	</div>
 </form>

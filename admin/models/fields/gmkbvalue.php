@@ -2,10 +2,13 @@
 /**
  * @package    com_meedya
  *
- * @copyright  Copyright (C) 2019 RJCreations - All rights reserved.
+ * @copyright  Copyright (C) 2021 RJCreations - All rights reserved.
  * @license    GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('JPATH_BASE') or die;
+
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
 
 class JFormFieldGmkbValue extends JFormField
 {
@@ -18,7 +21,7 @@ class JFormFieldGmkbValue extends JFormField
 		$allowClear		= ((string) $this->element['clear'] != 'false') ? true : false;
 
 		// Load language
-		JFactory::getLanguage()->load(self::COMP, JPATH_ADMINISTRATOR);
+		Factory::getLanguage()->load(self::COMP, JPATH_ADMINISTRATOR);
 
 		// create the component default display
 		list($cdv,$cdm) = $this->num2gmkv($this->element['compdef']);
@@ -40,7 +43,7 @@ class JFormFieldGmkbValue extends JFormField
 		$html	= array();
 
 		$html[] = '<input type="checkbox" id="'.$this->id.'_dchk" onclick="GMKBff.sDef(this)" '.($this->value ? '' : 'checked ').'style="vertical-align:initial" />';
-		$html[] = '<label for="'.$this->id.'_dchk" style="display:inline;margin-right:1em">'.JText::_('JDEFAULT').'</label>';
+		$html[] = '<label for="'.$this->id.'_dchk" style="display:inline;margin-right:1em">'.Text::_('JDEFAULT').'</label>';
 
 		$html[] = '<span class="input-gmkb'.($this->value ? '' : ' hidden').'">';
 		$html[] = '<input type="number" step="1" min="1" class="input-medium" id="' . $this->id . '_name" value="' . $uplsiz .'" onchange="GMKBff.sVal(this.parentNode)" onkeyup="GMKBff.sVal(this.parentNode)" style="width:4em;text-align:right" />';
@@ -57,7 +60,7 @@ class JFormFieldGmkbValue extends JFormField
 		static $scripted;
 		if (!$scripted) {
 			$scripted = true;
-			$jdoc = JFactory::getDocument();
+			$jdoc = Factory::getDocument();
 			$script = '
 var GMKBff = (function($) {
 	return {

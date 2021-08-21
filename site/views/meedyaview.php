@@ -11,11 +11,15 @@ defined('_JEXEC') or die;
  */
 
 use Joomla\CMS\Factory;
+use Joomla\CMS\HTML\HTMLHelper;
 
 // provide all views with a HTMLHelper class
 JLoader::register('JHtmlMeedya', JPATH_COMPONENT . '/helpers/html/meedya.php');
 // and our htmlobject class
 JLoader::register('HtmlElementObject', JPATH_COMPONENT . '/classes/HtmlObject.php');
+
+HTMLHelper::_('bootstrap.dropdown');
+HTMLHelper::_('bootstrap.tooltip');
 
 class MeedyaView extends JViewLegacy
 {

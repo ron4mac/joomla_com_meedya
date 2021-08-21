@@ -1,15 +1,17 @@
 <?php
 /**
  * @package		com_meedya
- * @copyright	Copyright (C) 2020 RJCreations. All rights reserved.
+ * @copyright	Copyright (C) 2021 RJCreations. All rights reserved.
  * @license		GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
 
+use Joomla\CMS\HTML\HTMLHelper;
+
 // Include the component HTML helpers.
-JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
-JHtml::_('behavior.tooltip');
-JHtml::_('behavior.multiselect');
+HTMLHelper::addIncludePath(JPATH_COMPONENT.'/helpers/html');
+//HTMLHelper::_('behavior.tooltip');
+HTMLHelper::_('behavior.multiselect');
 
 //var_dump('vdf',$this);jexit();
 
@@ -26,15 +28,15 @@ $canDo		= UserNotesHelper::getActions();
 			<thead>
 				<tr>
 					<th width="1%"></th>
-					<th width="1%"><?php echo JHtml::_('myGrid.checkall'); ?></th>
+					<th width="1%"><?php echo HTMLHelper::_('myGrid.checkall'); ?></th>
 					<th width="15%">
-						<?php echo JHtml::_('grid.sort', 'COM_USERNOTES_USERNAME', 'username', $listDirn, $listOrder); ?>
+						<?php echo HTMLHelper::_('grid.sort', 'COM_USERNOTES_USERNAME', 'username', $listDirn, $listOrder); ?>
 					</th>
 					<th width="15%">
-						<?php echo JHtml::_('grid.sort', 'COM_USERNOTES_FULLNAME', 'fullname', $listDirn, $listOrder); ?>
+						<?php echo HTMLHelper::_('grid.sort', 'COM_USERNOTES_FULLNAME', 'fullname', $listDirn, $listOrder); ?>
 					</th>
 					<th width="15%">
-						<?php echo JHtml::_('grid.sort', 'COM_USERNOTES_USERID', 'userid', $listDirn, $listOrder); ?>
+						<?php echo HTMLHelper::_('grid.sort', 'COM_USERNOTES_USERID', 'userid', $listDirn, $listOrder); ?>
 					</th>
 					<th width="30%">
 						&#160;
@@ -55,7 +57,7 @@ $canDo		= UserNotesHelper::getActions();
 						<?php echo $i + 1 + $this->pagination->limitstart; ?>
 					</td>
 					<td>
-						<?php echo JHtml::_('grid.id', $i, $item['uid']); ?>
+						<?php echo HTMLHelper::_('grid.id', $i, $item['uid']); ?>
 					</td>
 					<td>
 						<?php echo $item['uname']; ?>
@@ -79,7 +81,7 @@ $canDo		= UserNotesHelper::getActions();
 			<input type="hidden" name="boxchecked" value="0" />
 			<input type="hidden" name="filter_order" value="<?php echo $listOrder; ?>" />
 			<input type="hidden" name="filter_order_Dir" value="<?php echo $listDirn; ?>" />
-			<?php echo JHtml::_('form.token'); ?>
+			<?php echo HTMLHelper::_('form.token'); ?>
 		</div>
 	</div>
 </form>
