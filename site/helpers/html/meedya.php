@@ -55,7 +55,7 @@ abstract class JHtmlMeedya
 EOD;
 	}
 
-	public static function manageMenu ($perms, $aid=0, $Itemid=0)
+	public static function manageMenu5 ($perms, $aid=0, $Itemid=0)
 	{
 		if (!$perms) return '';
 		$itmid = $Itemid ? ('&Itemid='.$Itemid) : '';
@@ -80,23 +80,23 @@ EOD;
 		return $html;
 	}
 
-	public static function manageMenu2 ($perms, $aid=0, $Itemid=0)
+	public static function manageMenu ($perms, $aid=0, $Itemid=0)
 	{
 		if (!$perms) return '';
 		$itmid = $Itemid ? ('&Itemid='.$Itemid) : '';
 		$html = '<div class="btn-group mgmenu dropdown">
-	<a class="btn btn-small dropdown-toggle" data-toggle="dropdown" href="#">
-		<i class="icon-pencil"></i>'.Text::_('COM_MEEDYA_MENU_MANAGE').' <span class="caret"></span>
+	<a class="btn btn-small dropdown-toggle" data-bs-toggle="dropdown" href="#">
+		<i class="icon-pencil"></i> '.Text::_('COM_MEEDYA_MENU_MANAGE').' <span class="caret"></span>
 	</a>
 	<ul class="dropdown-menu">';
 		if ($perms->canAdmin || $perms->canUpload) {
 			$html .= '<li><a href="' . Route::_('index.php?option=com_meedya&task=manage.doUpload'.($aid?('&aid='.$aid):'') . $itmid, false) . '">
-				<i class="icon-upload"></i>'.Text::_('COM_MEEDYA_MENU_UPLOAD').'</a></li>';
+				<i class="icon-upload"></i> '.Text::_('COM_MEEDYA_MENU_UPLOAD').'</a></li>';
 		}
 		if ($perms->canAdmin) {
 			$html .= '
-		<li><a href="' . Route::_('index.php?option=com_meedya&view=manage'.$itmid, false) . '"><i class="icon-grid"></i>'.Text::_('COM_MEEDYA_MENU_EDALBS').'</a></li>
-		<li><a href="' . Route::_('index.php?option=com_meedya&task=manage.editImgs'.$itmid, false) . '"><i class="icon-images"></i>'.Text::_('COM_MEEDYA_MENU_EDIMGS').'</a></li>';
+		<li><a href="' . Route::_('index.php?option=com_meedya&view=manage'.$itmid, false) . '"><i class="icon-grid"></i> '.Text::_('COM_MEEDYA_MENU_EDALBS').'</a></li>
+		<li><a href="' . Route::_('index.php?option=com_meedya&task=manage.editImgs'.$itmid, false) . '"><i class="icon-images"></i> '.Text::_('COM_MEEDYA_MENU_EDIMGS').'</a></li>';
 //		<li><a href="' . Route::_('index.php?option=com_meedya&task=manage.doConfig'.$itmid, false) . '"><i class="icon-options"></i>'.Text::_('COM_MEEDYA_MENU_CONFIG').'</a></li>';
 		}
 		$html .= '</ul>
