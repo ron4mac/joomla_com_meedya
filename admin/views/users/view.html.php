@@ -11,7 +11,7 @@ require_once JPATH_BASE . '/components/com_meedya/views/meedyaview.php';
 /**
  * View class for a list of user galleries.
  */
-class UsersViewMeedya extends MeedyaView
+class MeedyaViewUsers extends MeedyaView
 {
 	protected $relm = 'user';
 }

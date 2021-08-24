@@ -43,10 +43,10 @@ class JFormFieldGmkbValue extends JFormField
 		$html	= array();
 
 		$html[] = '<input type="checkbox" id="'.$this->id.'_dchk" onclick="GMKBff.sDef(this)" '.($this->value ? '' : 'checked ').'style="vertical-align:initial" />';
-		$html[] = '<label for="'.$this->id.'_dchk" style="display:inline;margin-right:1em">'.Text::_('JDEFAULT').'</label>';
+		$html[] = '<label for="'.$this->id.'_dchk" style="display:inline;margin-right:1em">'.Text::_('JGLOBAL_USE_GLOBAL').'</label>';
 
 		$html[] = '<span class="input-gmkb'.($this->value ? '' : ' hidden').'">';
-		$html[] = '<input type="number" step="1" min="1" class="input-medium" id="' . $this->id . '_name" value="' . $uplsiz .'" onchange="GMKBff.sVal(this.parentNode)" onkeyup="GMKBff.sVal(this.parentNode)" style="width:4em;text-align:right" />';
+		$html[] = '<input type="number" step="1" min="1" class="" id="' . $this->id . '_name" value="' . $uplsiz .'" onchange="GMKBff.sVal(this.parentNode)" onkeyup="GMKBff.sVal(this.parentNode)" style="width:4em;text-align:right" />';
 		$html[] = '<select id="' . $this->id . '_gmkb" class="gkmb-sel" onchange="GMKBff.sVal(this.parentNode)" style="width:5em">';
 		$html[] = '<option value="1024"'.($uplsizm==0?' selected="selected"':'').'>kB</option>';
 		$html[] = '<option value="1048576"'.($uplsizm==1?' selected="selected"':'').'>MB</option>';
@@ -85,7 +85,8 @@ var GMKBff = (function($) {
 })(jQuery);
 '		;
 			$jdoc->addScriptDeclaration($script);
-			$jdoc->addStyleDeclaration('.gmkb-dflt { opacity:0.5;display:inline-block;padding-top:4px }');
+		//	$jdoc->addStyleDeclaration('.gmkb-dflt { opacity:0.5;display:inline-block;padding-top:4px }');
+			$jdoc->addStyleDeclaration('.gmkb-dflt { opacity:0.5;padding-top:4px }');
 		}
 		return implode("\n", $html);
 	}

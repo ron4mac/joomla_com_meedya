@@ -17,7 +17,7 @@ HTMLHelper::_('behavior.multiselect');
 
 $listOrder	= $this->state('list.ordering');
 $listDirn	= $this->state('list.direction');
-$canDo		= UserNotesHelper::getActions();
+$canDo		= MeedyaAdminHelper::getActions();
 ?>
 <form action="<?php echo JRoute::_('index.php?option=com_usernotes&view=usernotes'); ?>" method="post" name="adminForm" id="adminForm">
 	<div id="j-sidebar-container" class="span2">

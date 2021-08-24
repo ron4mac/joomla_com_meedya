@@ -129,11 +129,11 @@
 				name="use_fancb"
 				type="radio"
 				class="btn-group btn-group-yesno"
-				default="0"
+				default=""
 				label="COM_MEEDYA_CONFIG_USEFANCB_LABEL"
 				description="COM_MEEDYA_CONFIG_USEFANCB_DESC"
 			>
-				<option value="">JDEFAULT</option>
+				<option value="">JGLOBAL_USE_GLOBAL</option>
 				<option value="0">JNO</option>
 				<option value="1">JYES</option>
 			</field>
@@ -148,7 +148,7 @@
 				label="COM_MEEDYA_FIELD_ALBORD_LABEL"
 				description="COM_MEEDYA_FIELD_ALBORD_DESC"
 			>
-				<option value="">JDEFAULT</option>
+				<option value="">JOPTION_USE_DEFAULT</option>
 				<option value="0">COM_MEEDYA_ALBORD_TDESC</option>
 				<option value="1">COM_MEEDYA_ALBORD_TASC</option>
 				<option value="2">COM_MEEDYA_ALBORD_NDESC</option>

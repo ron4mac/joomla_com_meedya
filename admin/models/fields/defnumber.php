@@ -26,7 +26,7 @@ class JFormFieldDefNumber extends JFormFieldNumber
 		}
 
 		$html[] = '<input type="checkbox" id="'.$this->id.'_dchk" onclick="DEFNff.sDef(this)" '.($this->value ? '' : 'checked ').'style="vertical-align:initial" />';
-		$html[] = '<label for="'.$this->id.'_dchk" style="display:inline;margin-right:1em">'.Text::_('JDEFAULT').'</label>';
+		$html[] = '<label for="'.$this->id.'_dchk" style="display:inline;margin-right:1em">'.Text::_('JGLOBAL_USE_GLOBAL').'</label>';
 		$html[] = '<span id="'.$this->id.'_spn" class="mydefn'.($this->value ? '' : ' hidden').'">';
 		$html[] = parent::getInput();
 		$html[] = '</span>';
@@ -63,8 +63,9 @@ var DEFNff = (function($) {
 ';
 			$jdoc->addScriptDeclaration($script);
 			$style = [];
-			$style[] = '.defn-dflt { opacity:0.5;display:inline-block;padding-top:4px; }';
-			$style[] = '.mydefn input { width:8em; }';
+		//	$style[] = '.defn-dflt { opacity:0.5;display:inline-block;padding-top:4px; }';
+			$style[] = '.defn-dflt { opacity:0.5;padding-top:4px; }';
+			$style[] = '.mydefn input { width:8em;display:inline;padding:.25rem .5rem; }';
 			$jdoc->addStyleDeclaration(implode(chr(13), $style));
 		}
 

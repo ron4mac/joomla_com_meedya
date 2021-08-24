@@ -32,7 +32,7 @@ class MeedyaView extends JViewLegacy
 		$this->activeFilters	= $this->get('ActiveFilters');
 
 		//UserNotesHelper::addSubmenu($this->relm);
-		$this->addSubmenu($this->relm);
+		if ((int)JVERSION < 4) $this->addSubmenu($this->relm);
 
 		// Check for errors.
 		//		if (count($errors = $this->get('Errors'))) {

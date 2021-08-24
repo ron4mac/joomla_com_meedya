@@ -2,13 +2,13 @@
 <extension type="component" version="3.0" method="upgrade">
 	<name>com_meedya</name>
 	<author>Ron Crans</author>
-	<creationDate>May 2021</creationDate>
+	<creationDate>August 2021</creationDate>
 	<copyright>(C) 2015-2021 RJCreations. All rights reserved.</copyright>
 	<license>GNU General Public License version 3 or later; see LICENSE.txt</license>
 	<authorEmail>ron@rjconline.net</authorEmail>
 	<authorUrl>rjconline.net</authorUrl>
 	<version>1.2.1</version>
-	<updater jver="3\.[0123456789]" pver="7.0" />
+	<updater jver="[34]\.[0123456789]" pver="7.0" />
 	<description>COM_MEEDYA_XML_DESCRIPTION</description>
 	<scriptfile>script.php</scriptfile>
 	<files folder="site">
@@ -29,8 +29,8 @@
 		<menu img="class:meedya">COM_MEEDYA_MENU</menu>
 		<submenu>
 			<!--Note that all & must be escaped to &amp; -->
-			<menu link="index.php?option=com_meedya" view="users" img="class:meedya-user" alt="Meedya/Users">Users</menu>
-			<menu link="index.php?option=com_meedya" view="groups" img="class:meedya-group" alt="Meedya/Groups">Groups</menu>
+			<menu link="option=com_meedya" view="users" img="class:meedya-user" alt="Meedya/Users">Users</menu>
+			<menu link="option=com_meedya" view="groups" img="class:meedya-group" alt="Meedya/Groups">Groups</menu>
 		</submenu>
 		<files folder="admin">
 			<filename>access.xml</filename>
