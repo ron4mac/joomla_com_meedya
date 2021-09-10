@@ -96,8 +96,10 @@ var GMKBff = (function($) {
 		$parts = explode('/', $num);
 		if (isset($parts[1])) {
 			$num = $this->compoptv($parts[1], (int)$parts[0]);
+		} else {
+			$num = (int)$num;
 		}
-	//	var_dump($parts,$num);
+		//var_dump($parts,$num);//jexit();
 
 		$sizm = 0;
 		if ($num) {

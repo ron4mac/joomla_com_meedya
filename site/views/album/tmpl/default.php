@@ -33,8 +33,9 @@ $this->jDoc->addScriptDeclaration('Meedya.L = '.json_encode($jslang).';
 HTMLHelper::_('bootstrap.tooltip', '.hasTip', ['fixed'=>true]);
 
 $filelist = [];
-if ($this->items) {
+if ($this->items) {		//var_dump($this->items);
 	foreach ($this->items as $file) {
+		if (!$file) continue;
 		//$ftyp = cpg_get_type($row['filename']);
 		//if ($ftyp['content'] != 'image') continue;
 		$txtinfo = '';

@@ -24,7 +24,7 @@ abstract class MeedyaHelper
 			'echo' => ['echo.js', 'echo.min.js'],
 			'slides' => ['slides.js', 'slides.min.js'],
 			'upload' => ['upload.js', 'upload.min.js'],
-			'bootbox' => ['bootbox.js', 'bootbox.min.js'],
+			'bootbox' => ((int)JVERSION < 4) ? ['bootbox.js', 'bootbox.min.js'] : ['https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.5.2/bootbox.js','https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.5.2/bootbox.min.js'],
 			'jquery.tagsinput' => ['jquery.tagsinput.js', 'jquery.tagsinput.min.js']
 			];
 		if (isset($vray[$scr])) {
@@ -32,6 +32,8 @@ abstract class MeedyaHelper
 		} else {
 			$s = $scr.'.js';
 		}
+		if (strpos($s, '://'))
+			return $s . $sfx;
 		return 'components/com_meedya/static/' . $path . $s . $sfx;
 	}
 
@@ -162,7 +164,7 @@ abstract class MeedyaHelper
 		return min($cupmax, JFilesystemHelper::fileUploadMaxSize(false));
 	}
 
-	// gat a resolved option value based on component and instance (same-named) values
+	// get a resolved option value based on component and instance (same-named) values
 	public static function getResolvedOption ($opt, $dflt=null)
 	{
 		$optval = self::instanceOption($opt);

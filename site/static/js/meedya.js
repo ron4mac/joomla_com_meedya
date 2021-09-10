@@ -23,7 +23,7 @@ Meedya = {};	// a namespace for com_meedya
 		},
 		// image view buttons
 		ivbuts: {
-			buttons: ["zoom","slideShow","fullScreen","close"]
+			buttons: ["zoom","slideShow","fullScreen","download","close"]
 		},
 		// slideshow buttons
 		ssbuts: {

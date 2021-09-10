@@ -23,7 +23,7 @@ function _ae (elem, evnt, func, capt=false) {
 	Meedya.setDlgParAlb = function () {
 		if (_id('h5u_palbum'))
 		_id('h5u_palbum').value = Meedya.AArrange.selalb();
-	}
+	};
 
 	Meedya.setAlbumDanD = function () {
 		var albthm = _id("albthm");
@@ -36,7 +36,7 @@ function _ae (elem, evnt, func, capt=false) {
 		_ae(albfrm, 'dragover', function(e){ if (e.dataTransfer.types.indexOf('albthm')>0) { _pd(e);e.dataTransfer.dropEffect = 'move'; } }, false);
 		_ae(albfrm, 'dragenter', function(e){ if (e.dataTransfer.types.indexOf('albthm')>0) { _pd(e);e.dataTransfer.dropEffect = 'move'; } }, false);
 		_ae(albfrm, 'drop', function(e){ _pd(e); removeAlbThm(); }, false);
-	}
+	};
 
 	Meedya.deleteSelected = function (e) {
 		_pd(e);
@@ -55,7 +55,7 @@ function _ae (elem, evnt, func, capt=false) {
 				}
 			});
 		}
-	}
+	};
 
 	Meedya.removeSelected = function (e) {
 		_pd(e);
@@ -77,7 +77,7 @@ function _ae (elem, evnt, func, capt=false) {
 				}
 			});
 		}
-	}
+	};
 
 	Meedya.selAllImg = function (e, X) {
 		_pd(e);
@@ -88,7 +88,7 @@ function _ae (elem, evnt, func, capt=false) {
 		for (var i = 0; i < xbs.length; i++) {
 			xbs[i].checked = ck;
 		}
-	}
+	};
 
 	Meedya.editSelected = function (e) {
 		_pd(e);
@@ -96,19 +96,19 @@ function _ae (elem, evnt, func, capt=false) {
 			document.adminForm.task.value = 'manage.imgsEdit';
 			document.adminForm.submit();
 		}
-	}
+	};
 
 	Meedya.addSelected = function (e) {
 		_pd(e);
 		if (hasSelections("input[name='slctimg[]']:checked",true)) {
 			$('#add2albdlg').modal('show');
 		}
-	}
+	};
 
 	Meedya.saveAlbum = function () {
 		document.albForm.thmord.value = Meedya.Arrange.iord();
 		document.albForm.submit();
-	}
+	};
 
 
 
@@ -132,7 +132,7 @@ function _ae (elem, evnt, func, capt=false) {
 				_id('creanualb').style.display = "none";
 			}
 		}
-	}
+	};
 
 	// watch for entry of album name; enable create button when there is a name
 	Meedya.watchAlbNam = function (elm) {
@@ -148,7 +148,7 @@ function _ae (elem, evnt, func, capt=false) {
 			classes.add("btn-disabled");
 			creab.disabled = true;
 		}
-	}
+	};
 
 	Meedya.addItems2Album = function (elm) {
 		elm.disabled = true;
@@ -158,7 +158,7 @@ function _ae (elem, evnt, func, capt=false) {
 		document.adminForm.nualbdesc.value = _id('albdesc').value;
 		document.adminForm.task.value = 'manage.addItemsToAlbum';
 		document.adminForm.submit();
-	}
+	};
 
 	Meedya.aj_addItems2Album = function (elm) {
 		elm.disabled = true;
@@ -183,7 +183,7 @@ function _ae (elem, evnt, func, capt=false) {
 				elm.disabled = false;
 			}
 		);
-	}
+	};
 
 	// request creation of new album
 	Meedya.ae_createAlbum = function (elm) {
@@ -210,8 +210,27 @@ function _ae (elem, evnt, func, capt=false) {
 				elm.disabled = false;
 			}
 		);
-	}
+	};
 
+
+	// rearrange items in an album
+	var moving = null;
+	Meedya.moveItem = function (elm) {
+		var item = elm.parentElement;
+		console.log(item);
+		if (!moving) {
+			moving = item;
+			item.classList.add("moving");
+		} else {
+			moving.classList.remove("moving");
+			if (item != moving) {
+				var area = _id('area');
+				var orf = area.removeChild(moving);
+				area.insertBefore(orf, item);
+			}
+			moving = null;
+		}
+	};
 
 
 
@@ -225,7 +244,7 @@ function _ae (elem, evnt, func, capt=false) {
 	function handleAlbthmDragOver (e) {
 		if (e.dataTransfer.types.indexOf('imgsrc') < 0) return;
 		_pd(e);		 // Necessary. Allows us to drop.
-		e.dataTransfer.dropEffect = 'copy';  // See the section on the DataTransfer object.
+		e.dataTransfer.dropEffect = 'copy';		// See the section on the DataTransfer object.
 		return false;
 	}
 
@@ -279,10 +298,10 @@ Meedya.Arrange = (function ($) {
 	}
 
 	function handleDragStart (e) {
-		this.style.opacity = '0.4';  // this / e.target is the source node.
+		this.style.opacity = '0.4';		// this / e.target is the source node.
 
 		dragSrcEl = this;
-		e.dataTransfer.effectAllowed = 'copyMove';
+		e.dataTransfer.effectAllowed = 'move';
 	//	e.dataTransfer.setData('text/html', this.innerHTML);
 		e.dataTransfer.setData(meeid,this.getAttribute('data-id'));
 	//	console.log(this.getElementsByTagName("IMG")[0].src);
@@ -292,7 +311,7 @@ Meedya.Arrange = (function ($) {
 	function handleDragOver (e) {
 		if (hasItem(e)) {
 			_pd(e);
-			e.dataTransfer.dropEffect = 'move';  // See the section on the DataTransfer object.
+			e.dataTransfer.dropEffect = 'move';		// See the section on the DataTransfer object.
 			return false;
 		}
 	}
@@ -307,7 +326,7 @@ Meedya.Arrange = (function ($) {
 	}
 
 	function handleDragLeave (e) {
-		this.classList.remove('over');  // this / e.target is previous target element.
+		this.classList.remove('over');		// this / e.target is previous target element.
 	}
 
 	function handleDrop (e) {
@@ -330,13 +349,13 @@ Meedya.Arrange = (function ($) {
 
 	function handleDragEnd (e) {
 		// this/e.target is the source node.
-		this.style.opacity = '1.0';
+		this.style.opacity = null;
 
 		[].forEach.call(items, function (itm) {
 			itm.classList.remove('over');
 		});
 
-		itmend.classList.remove('over');
+//		itmend.classList.remove('over');
 
 		stop = true;
 	}
@@ -450,7 +469,7 @@ Meedya.AArrange = (function ($) {
 	function handleDragOver (e) {
 		if (hasItem(e)) {
 			_pd(e);
-			e.dataTransfer.dropEffect = 'move';  // See the section on the DataTransfer object.
+			e.dataTransfer.dropEffect = 'move';		// See the section on the DataTransfer object.
 			return false;
 		}
 	}
@@ -468,7 +487,7 @@ Meedya.AArrange = (function ($) {
 	function handleDragLeave (e) {
 //		if (e.target == deTarg) {
 			_pd(e);
-			this.classList.remove('over');  // this / e.target is previous target element.
+			this.classList.remove('over');		// this / e.target is previous target element.
 //		}
 	}
 

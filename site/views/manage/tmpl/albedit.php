@@ -18,6 +18,8 @@ MeedyaHelper::addScript('manage');
 MeedyaHelper::addScript('bootbox');
 MeedyaHelper::addScript('pell.min', 'vendor/pell/');
 
+HTMLHelper::_('bootstrap.modal');
+
 $this->jDoc->addScriptDeclaration('
 Meedya.rawURL = "'.Route::_('index.php?option=com_meedya&format=raw&Itemid='.$this->itemId, false).'";
 ');
@@ -39,6 +41,15 @@ $pubdis = $this->album['pub'] && $this->album['pub']!=$this->album['aid'] ? ' di
 	.actbuts {margin-top: 1em}
 	.albdesc > div {margin-top: 1em}
 	#pubalb {vertical-align: text-bottom}
+	.item img {
+		-webkit-user-select: none;
+		-webkit-touch-callout: none;
+		-webkit-user-drag: none;
+	}
+	@media only screen and (min-width: 768px) {
+		/* For desktop: */
+		.item img {-webkit-user-drag: inherit;}
+	}
 }
 </style>
 <div class="meedya-gallery">
@@ -90,14 +101,14 @@ $pubdis = $this->album['pub'] && $this->album['pub']!=$this->album['aid'] ? ' di
 	<input name="items" id="aitems" type="hidden" value="" />
 </form>
 <form action="<?=Route::_('index.php?option=com_meedya&Itemid='.$this->itemId)?>" method="POST" name="adminForm" id="adminForm">
-<div id="area" style="display:flex;flex-wrap:wrap">
+<div id="area" style="display:flex;flex-wrap:wrap;-webkit-user-select:none;">
 <?php
 	foreach ($this->items as $item) {
 		if (!$item) continue;
-		echo HTMLHelper::_('meedya.imageThumbElement', (object)$this->getItemFile($item), false, 'item');
+		echo HTMLHelper::_('meedya.imageThumbElement', (object)$this->getItemFile($item), true);
 	}
 ?>
-	<div id="itmend" class="noitem item"></div>
+<!-- 	<div id="itmend" class="noitem item"></div> -->
 </div>
 <input type="hidden" name="task" value="manage.editImgs" />
 </form>

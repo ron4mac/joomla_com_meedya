@@ -253,6 +253,19 @@ td.tac {
 .item input:checked + div {
 	display: block;
 }
+.item .itmMove {
+	position: absolute;
+	left: 2px;
+	top: 2px;
+	color: white;
+	background-color: rgba(0,0,0,.5);
+	padding: 1px;
+	font-size: x-large;
+	cursor: crosshair;
+}
+.item.moving img {
+	border: 3px solid yellow;
+}
 
 /** image edit **/
 .ied-div2 {
@@ -324,6 +337,23 @@ td.tac {
 }
 
 
+/* bootbox styling */
+.bootbox-close-button {
+	position: absolute;
+	top: 0;
+	right: 0;
+	font-size: larger;
+	border: none;
+	background-color: transparent;
+	z-index: 1;
+	padding: 0 .5em;
+}
+
+
+@media only screen and (min-width: 768px) {
+	/* For desktop: */
+	.itmMove {display: none;}
+}
 
 /* tiny color picker */
 /*

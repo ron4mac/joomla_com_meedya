@@ -158,36 +158,39 @@ EOD;
 
 	public static function imageThumbElement ($item, $edt=false, $iclss='item')
 	{	//var_dump($item);
-	$id = $item->id;
-	$escfn = str_replace('\'','\\\'',$item->file);
+		$id = $item->id;
+		$escfn = str_replace('\'','\\\'',$item->file);
 
-	if (substr($item->mtype, 0, 1) == 'v') {
-		$iDat = 'video.png';
-	} else {
-		$iDat = 'img.png" data-echo="thm/'.$item->file;
-	}
+		if (substr($item->mtype, 0, 1) == 'v') {
+			$iDat = 'video.png';
+		} else {
+			$iDat = 'img.png" data-echo="thm/'.$item->file;
+		}
 
-	if ($edt) {
-		$acts = '<i class="icon-expand" onclick="iZoomOpen('.$id.')"></i>
-			<i class="icon-info-2 pull-left"></i>
-			<i class="icon-edit pull-right" onclick="editImg('.$id.')"></i>';
-	} else {
-		$acts = '<i class="icon-info-2 pull-left"></i>
-			<i class="icon-expand pull-right" onclick="iZoomOpen('.$id.')"></i>';
-	}
+		$mvicon = '';
+		if ($edt) {
+			$acts = '<i class="icon-expand" onclick="iZoomOpen('.$id.')"></i>
+				<i class="icon-info-2 pull-left"></i>
+				<i class="icon-edit pull-right" onclick="editImg('.$id.')"></i>';
+			$mvicon = '<i class="icon-move itmMove" onclick="Meedya.moveItem(this)"></i>';
+		} else {
+			$acts = '<i class="icon-info-2 pull-left"></i>
+				<i class="icon-expand pull-right" onclick="iZoomOpen('.$id.')"></i>';
+		}
 
-	$nah = $item->album ? '' : ' style="opacity:0.4"';
-	return '
-	<div class="'.$iclss.'" data-id="'.$id.'">
-		<label for="slctimg'.$id.'">
-		<img src="components/com_meedya/static/img/'.$iDat.'" class="mitem"'.$nah.' />
-		</label>
-		<div class="item-overlay top">
-			'.$acts.'
-		</div>
-		<input type="checkbox" name="slctimg[]" id="slctimg'.$id.'" value="'.$id.'" />
-		<div class="iSlct"><i class="icon-checkmark"></i></div>
-	</div>';
+		$nah = $item->album ? '' : ' style="opacity:0.4"';
+		return '
+		<div class="'.$iclss.'" data-id="'.$id.'">
+			<label for="slctimg'.$id.'">
+			<img src="components/com_meedya/static/img/'.$iDat.'" class="mitem"'.$nah.' />
+			</label>
+			<div class="item-overlay top">
+				'.$acts.'
+			</div>
+			<input type="checkbox" name="slctimg[]" id="slctimg'.$id.'" value="'.$id.'" />
+			<div class="iSlct"><i class="icon-checkmark"></i></div>
+			'.$mvicon.'
+		</div>';
 	}
 
 	public static function modalButtons ($verb, $script, $id, $disab=true)

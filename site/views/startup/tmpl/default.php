@@ -14,7 +14,7 @@ use Joomla\CMS\Router\Route;
 <?php if ($this->userPerms->canAdmin): ?>
 <div>
 	<p>Here you can start your own media gallery (photos and short videos).</p>
-	<p>Max file upload size is 4MB. Total gallery storage is 256MB.</p>
+	<p>Max file upload size is <?=$this->maxUpload?>. Total gallery storage is <?=$this->storQuota?>.</p>
 	<p>You may select one of your albums to share (along with its sub-albums) in the public space.</p>
 </div>
 <div>

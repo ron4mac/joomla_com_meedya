@@ -2,12 +2,12 @@
 <extension type="component" version="3.0" method="upgrade">
 	<name>com_meedya</name>
 	<author>Ron Crans</author>
-	<creationDate>August 2021</creationDate>
+	<creationDate>September 2021</creationDate>
 	<copyright>(C) 2015-2021 RJCreations. All rights reserved.</copyright>
 	<license>GNU General Public License version 3 or later; see LICENSE.txt</license>
 	<authorEmail>ron@rjconline.net</authorEmail>
 	<authorUrl>rjconline.net</authorUrl>
-	<version>1.2.1</version>
+	<version>1.2.2</version>
 	<updater jver="[34]\.[0123456789]" pver="7.0" />
 	<description>COM_MEEDYA_XML_DESCRIPTION</description>
 	<scriptfile>script.php</scriptfile>

@@ -43,7 +43,7 @@ foreach ($this->iids as $item) {
 	echo '<tr>';
 	//echo'<xmp>';var_dump($item);echo'</xmp>';
 	echo '<td><div class="lstItem row-fluid">';
-	echo HTMLHelper::_('meedya.imageThumbElement', $item, false, 'item');
+	echo HTMLHelper::_('meedya.imageThumbElement', $item);
 	echo '</div></td>';
 	echo '<td><div class="lstText row-fluid"><dl>';
 	if ($item->title) echo '<dt>Title:</dt><dd>'.$item->title.'</dd>';
