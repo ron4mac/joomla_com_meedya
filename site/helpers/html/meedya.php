@@ -172,7 +172,7 @@ EOD;
 			$acts = '<i class="icon-expand" onclick="iZoomOpen('.$id.')"></i>
 				<i class="icon-info-2 pull-left"></i>
 				<i class="icon-edit pull-right" onclick="editImg('.$id.')"></i>';
-			$mvicon = '<i class="icon-move itmMove" onclick="Meedya.moveItem(this)"></i>';
+			$mvicon = '<div class="itmMove" onclick="Meedya.moveItem(this)"><i class="icon-move"></i></div>';
 		} else {
 			$acts = '<i class="icon-info-2 pull-left"></i>
 				<i class="icon-expand pull-right" onclick="iZoomOpen('.$id.')"></i>';

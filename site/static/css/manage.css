@@ -258,13 +258,16 @@ td.tac {
 	left: 2px;
 	top: 2px;
 	color: white;
-	background-color: rgba(0,0,0,.5);
-	padding: 1px;
-	font-size: x-large;
+	background-color: rgba(0,0,0,.3);
+	padding: 2px 1px 0 1px;
+	font-size: large;
 	cursor: crosshair;
+	width: 1em;
 }
 .item.moving img {
 	border: 3px solid yellow;
+	width: 114px;
+	height: 114px;
 }
 
 /** image edit **/
