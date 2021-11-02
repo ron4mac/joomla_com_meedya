@@ -12,6 +12,8 @@ jimport('rjuserdata.userdata');
 
 class com_meedyaInstallerScript
 {
+	protected $minimumJoomla = '4.0';
+
 	function install ($parent)
 	{
 		$parent->getParent()->setRedirectURL('index.php?option=com_meedya');
@@ -27,6 +29,11 @@ class com_meedyaInstallerScript
 
 	function preflight ($type, $parent)
 	{
+		$dbs = JDatabaseDriver::getConnectors();
+		if (!in_array('sqlite', $dbs) && !in_array('Sqlite', $dbs)) {
+			Log::add('Joomla support for SQLite(3) is required for this component.', Log::WARNING, 'jerror');
+			return false;
+		}
 		if (method_exists($parent,'getManifest')) {
 			$this->release = $parent->getManifest()->version;
 		} else {
