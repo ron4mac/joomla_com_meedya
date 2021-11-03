@@ -7,33 +7,39 @@
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
+use Joomla\CMS\Installer\InstallerScript;
+use Joomla\CMS\Log\Log;
 
-jimport('rjuserdata.userdata');
-
-class com_meedyaInstallerScript
+class com_meedyaInstallerScript extends InstallerScript
 {
-	protected $minimumJoomla = '4.0';
+	protected $minimumJoomla = '3.8';
+	protected $com_name = 'com_meedya';
 
-	function install ($parent)
+	public function install ($parent)
 	{
-		$parent->getParent()->setRedirectURL('index.php?option=com_meedya');
+		$parent->getParent()->setRedirectURL('index.php?option='.$this->com_name);
 	}
 
-	function uninstall ($parent)
-	{
-	}
-
-	function update ($parent)
+	public function uninstall ($parent)
 	{
 	}
 
-	function preflight ($type, $parent)
+	public function update ($parent)
 	{
+	}
+
+	public function preflight ($type, $parent)
+	{
+		// give the parent first shot
+		if (parent::preflight($type, $parent) === false) return false;
+
+		// ensure that SQLite is active in joomla
 		$dbs = JDatabaseDriver::getConnectors();
 		if (!in_array('sqlite', $dbs) && !in_array('Sqlite', $dbs)) {
 			Log::add('Joomla support for SQLite(3) is required for this component.', Log::WARNING, 'jerror');
 			return false;
 		}
+		// get the version number being installed/updated
 		if (method_exists($parent,'getManifest')) {
 			$this->release = $parent->getManifest()->version;
 		} else {
@@ -41,28 +47,31 @@ class com_meedyaInstallerScript
 		}
 	}
 
-	function postflight ($type, $parent)
+	public function postflight ($type, $parent)
 	{
 		$params['version'] = $this->release;
-		$this->setParams($params, true);
+		$this->mySetParams($params, true);
 		if ($type == 'install') {
-			$params['user_canskin'] = '0';
-			$params['user_canalert'] = '0';
-			$params['user_recurrevt'] = '0';
-			$params['grp_canskin'] = '0';
-			$params['grp_canalert'] = '0';
-			$params['grp_recurrevt'] = '0';
-			$params['show_versions'] = '1';
-			$this->setParams($params);
+			$params['keep_orig'] = false;
+			$params['storQuota'] = 268435456;
+			$params['maxUpload'] = 4194304;
+			$params['image_proc'] = '';
+			$params['max_width'] = 1200;
+			$params['max_height'] = 1200;
+			$params['thm_width'] = 120;
+			$params['thm_height'] = 120;
+			$params['use_fancb'] = true;
+			$params['show_version'] = true;
+			$this->mySetParams($params);
 		}
 	}
 
-	private function setParams ($param_array, $replace=false)
+	private function mySetParams ($param_array=[], $replace=false)
 	{
 		if (count($param_array) > 0) {
 			// read the existing component value(s)
 			$db = Factory::getDbo();
-			$db->setQuery('SELECT params FROM #__extensions WHERE name = "com_meedya"');
+			$db->setQuery('SELECT params FROM #__extensions WHERE name = "'.$this->com_name.'"');
 			$params = json_decode($db->loadResult(), true);
 			// add the new variable(s) to the existing one(s), replacing existing only if requested
 			foreach ($param_array as $name => $value) {
@@ -71,7 +80,7 @@ class com_meedyaInstallerScript
 			}
 			// store the combined new and existing values back as a JSON string
 			$paramsString = json_encode($params);
-			$db->setQuery('UPDATE #__extensions SET params = ' . $db->quote($paramsString) . ' WHERE name = "com_meedya"');
+			$db->setQuery('UPDATE #__extensions SET params = ' . $db->quote($paramsString) . ' WHERE name = "'.$this->com_name.'"');
 			$db->execute();
 		}
 	}
