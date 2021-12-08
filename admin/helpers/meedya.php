@@ -92,6 +92,8 @@ abstract class MeedyaAdminHelper
 		$cmp_ = $cmp.'_';
 		$cmpl = strlen($cmp_);
 		switch ($which) {
+			case 'a':
+				$char1 = '*';
 			case 'u':
 				$char1 = '@';
 				break;
@@ -108,7 +110,7 @@ abstract class MeedyaAdminHelper
 				self::$siteMenu = Factory::getApplication()->getMenu('site');
 			}
 			while (($file = readdir($dh)) !== false) {
-				if ($file[0]==$char1) {
+				if ($char1=='*' || $file[0]==$char1) {
 					$ah = opendir($dpath.$file);
 					while (($apd = readdir($ah)) !== false) {
 						$ptf = null;
@@ -122,12 +124,12 @@ abstract class MeedyaAdminHelper
 						}
 						if ($ptf && file_exists($ptf)) {
 							if ($full) {
-								$paths[$file] = ['path'=>$ptf, 'mnu'=>$mnut];
+								$paths[$file] = ['path'=>$ptf, 'mnun' => $mnu, 'mnut'=>$mnut];
 							} else {
-								$paths[] = ['path'=>$file, 'mnu'=>$mnut];
+								$paths[] = ['path'=>$file, 'mnun' => $mnu, 'mnut'=>$mnut];
 							}
 						} elseif (file_exists($dpath.$file.'/'.$apd.'/'.$dbname.'.sql3')) {
-							$paths[$file] = ['path'=>$dpath.$file.'/'.$apd.'/'.$dbname.'.sql3', 'mnu'=>$mnut.' [PLD DB NAME]'];
+							$paths[$file] = ['path'=>$dpath.$file.'/'.$apd.'/'.$dbname.'.sql3','mnun' => $mnu, 'mnut'=>$mnut.' [PLD DB NAME]'];
 						}
 					}
 /*

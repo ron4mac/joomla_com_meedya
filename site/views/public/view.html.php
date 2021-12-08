@@ -13,6 +13,7 @@ include_once JPATH_COMPONENT.'/views/meedyaview.php';
 
 class MeedyaViewPublic extends MeedyaView
 {
+	protected $pgid;
 
 	function display ($tpl=null)
 	{
@@ -21,8 +22,8 @@ class MeedyaViewPublic extends MeedyaView
 		switch ($this->getLayout()) {
 			case 'album':
 				$app = Factory::getApplication();
-				$pgid = Factory::getApplication()->input->get('pgid','','cmd');
-				list($gdir, $gsfx, $aid) = explode('|', base64_decode($pgid));
+				$this->pgid = Factory::getApplication()->input->get('pgid','','cmd');
+				list($gdir, $gsfx, $aid) = explode('|', base64_decode($this->pgid));
 				$this->isSearch = true;
 				$this->useFanCB = true;
 				$pw = $app->getPathWay();

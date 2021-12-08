@@ -160,3 +160,108 @@
 	border-width: 0 5px 5px;
 	border-bottom-color: #FD9;
 }
+
+.mystars {}
+.mycmnts, .mycmnt1 {float:right;}
+.mycmnt1 {padding-left:1em;}
+
+/* ============================  star rating
+*/
+.rated {
+	margin: 6px auto;
+	width: fit-content;
+}
+.rating {
+	display: none;
+	font-size: 32px;
+	font-weight: bold;
+	color: #3af;
+	white-space: nowrap;
+}
+
+.rating .star {
+	display: inline-block;
+	position: relative;
+	letter-spacing: 0.05em;
+}
+
+.rating .star::before {
+	display: inline-block;
+	color: #aaa;
+	content: '☆';
+	width: 1em;
+	height: 1em;
+}
+
+.rating .star::after {
+	display: inline-block;
+	position: absolute;
+	content: '★';
+	top: 0;
+	left: 0;
+	opacity: 0;
+	width: 0;
+	height: 0;
+	transition: all 0.1s linear;
+	overflow-x: hidden;
+}
+
+.rating:not([disabled]) .star:hover::after,
+.rating .star.active::after {
+	opacity: 1;
+	width: 1em;
+	height: 1.5em;
+}
+.rating:not([disabled]) .star:hover::after {
+	color: gold;
+}
+
+.rating .star.active.half::after {
+	width: 0.5em;
+}
+
+/* ============================  small static stars in item list
+*/
+.strate {
+	display: inline-block;
+}
+.strback {
+	position: relative;
+	display: inline-block;
+}
+.strback::before {
+	content: "☆☆☆☆☆";
+	color: #CCC;
+}
+.strating {
+	position: absolute;
+	top: 0;
+	overflow-x: hidden;
+	display: flex;
+}
+.strating::before {
+	content: "★★★★★";
+	color: #3af;
+}
+
+.starcmnt {
+	line-height:1em;
+	position:relative;
+	font-size:smaller;
+	margin-top:4px;
+}
+
+/* ============================  comments/comment display
+*/
+.mycomment {
+	padding-bottom: 4px;
+	border-bottom: 1px solid #EEE;
+	margin-bottom:0.5em;
+}
+.mycommentn {
+	font-size: smaller;
+	opacity: 0.6;
+}
+.new-comment textarea {
+	width: 100%;
+}

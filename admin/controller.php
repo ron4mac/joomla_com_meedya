@@ -6,6 +6,7 @@
  */
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 
 JLoader::register('MeedyaHelperDb', JPATH_COMPONENT_ADMINISTRATOR.'/helpers/db.php');
@@ -80,11 +81,17 @@ class MeedyaController extends JControllerLegacy
 		$sdp = MeedyaAdminHelper::getStorageBase();
 		$cids = $this->input->get('cid',array(),'array');
 		$view = $this->input->get('view');
-		$tc = $view == 'meedya' ? '@' : '_';
+	//	$tc = $view == 'meedya' ? '@' : '_';
 		foreach ($cids as $cid) {
-			MeedyaHelperDb::fixItemAlbums(JPATH_ROOT.'/'.$sdp.'/'.$tc.$cid.'/'.JApplicationHelper::getComponentName());
+			list($sid, $mnu) = explode('.', $cid);
+		//	MeedyaHelperDb::fixItemAlbums(JPATH_ROOT.'/'.$sdp.'/'.$cid.'/'.JApplicationHelper::getComponentName());
+			try {
+				MeedyaHelperDb::updateDatabase(JPATH_ROOT.'/'.$sdp.'/'.$sid.'/'.JApplicationHelper::getComponentName().'_'.$mnu);
+			} catch (Exception $e) {
+				Factory::getApplication()->enqueueMessage($e->getMessage(), 'error');
+			}
 		}
-		$this->setRedirect('index.php?option=com_meedya&view='.$view, Text::_('COM_MEEDYA_MSG_COMPLETE'));
+		$this->setRedirect('index.php?option=com_meedya&view='.$view, Text::_('COM_MEEDYA_MSG_COMPLETE'), 'warning');
 	}
 
 }

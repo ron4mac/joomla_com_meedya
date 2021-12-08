@@ -26,7 +26,112 @@ class com_meedyaInstallerScript extends InstallerScript
 
 	public function update ($parent)
 	{
+		// perform any sqlite updates to all databases
 	}
+
+	/**
+	 * Method to extract the name of a discreet installation sql file from the installation manifest file.
+	 *
+	 * @param   object  $element  The XML node to process
+	 *
+	 * @return  mixed  Number of queries processed or False on error
+	 *
+	 * @since   3.1
+	 */
+	public function parseSQLFiles($element)
+	{
+		if (!$element || !count($element->children()))
+		{
+			// The tag does not exist.
+			return 0;
+		}
+
+		$db = & $this->_db;
+
+		// TODO - At 4.0 we can change this to use `getServerType()` since SQL Server will not be supported
+		$dbDriver = strtolower($db->name);
+
+		if ($db->getServerType() === 'mysql')
+		{
+			$dbDriver = 'mysql';
+		}
+		elseif ($db->getServerType() === 'postgresql')
+		{
+			$dbDriver = 'postgresql';
+		}
+
+		$update_count = 0;
+
+		// Get the name of the sql file to process
+		foreach ($element->children() as $file)
+		{
+			$fCharset = strtolower($file->attributes()->charset) === 'utf8' ? 'utf8' : '';
+			$fDriver  = strtolower($file->attributes()->driver);
+
+			if ($fDriver === 'mysqli' || $fDriver === 'pdomysql')
+			{
+				$fDriver = 'mysql';
+			}
+			elseif ($fDriver === 'pgsql')
+			{
+				$fDriver = 'postgresql';
+			}
+
+			if ($fCharset === 'utf8' && $fDriver == $dbDriver)
+			{
+				$sqlfile = $this->getPath('extension_root') . '/' . trim($file);
+
+				// Check that sql files exists before reading. Otherwise raise error for rollback
+				if (!file_exists($sqlfile))
+				{
+					\JLog::add(\JText::sprintf('JLIB_INSTALLER_ERROR_SQL_FILENOTFOUND', $sqlfile), \JLog::WARNING, 'jerror');
+
+					return false;
+				}
+
+				$buffer = file_get_contents($sqlfile);
+
+				// Graceful exit and rollback if read not successful
+				if ($buffer === false)
+				{
+					\JLog::add(\JText::_('JLIB_INSTALLER_ERROR_SQL_READBUFFER'), \JLog::WARNING, 'jerror');
+
+					return false;
+				}
+
+				// Create an array of queries from the sql file
+				$queries = \JDatabaseDriver::splitSql($buffer);
+
+				if (count($queries) === 0)
+				{
+					// No queries to process
+					continue;
+				}
+
+				// Process each query in the $queries array (split out of sql file).
+				foreach ($queries as $query)
+				{
+					$db->setQuery($db->convertUtf8mb4QueryToUtf8($query));
+
+					try
+					{
+						$db->execute();
+					}
+					catch (\JDatabaseExceptionExecuting $e)
+					{
+						\JLog::add(\JText::sprintf('JLIB_INSTALLER_ERROR_SQL_ERROR', $e->getMessage()), \JLog::WARNING, 'jerror');
+
+						return false;
+					}
+
+					$update_count++;
+				}
+			}
+		}
+
+		return $update_count;
+	}
+
 
 	public function preflight ($type, $parent)
 	{

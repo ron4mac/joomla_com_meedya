@@ -8,6 +8,9 @@ defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Router\Route;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Session\Session;
 
 class MeedyaController extends JControllerLegacy
 {
@@ -52,6 +55,77 @@ class MeedyaController extends JControllerLegacy
 		file_put_contents($udp.'/thm/index.html', $htm);
 		file_put_contents($udp.'/med/index.html', $htm);
 		$this->setRedirect(Route::_('index.php?option=com_meedya&Itemid='.$this->mnuItm, false));
+	}
+
+	// receive a rating vote
+	public function rateItem ()
+	{
+		if (!Session::checkToken()) {
+			header('HTTP/1.1 403 Not Allowed');
+			jexit(Text::_('JINVALID_TOKEN'));
+		}
+		$m = $this->getModel('social');
+		$iid = $this->input->getInt('iid', 0);
+		$val = $this->input->getInt('val', 0);
+		try {
+			// return 0-100 (percent) for a 5 point rating system
+			echo (int)($m->rate($iid, $val) * 20);
+		} catch (Exception $e) {
+				header('HTTP/1.1 404 Database Error');
+				jexit($e->getMessage());
+		}
+	}
+
+	// check to see whether already has been rated
+	public function rateChk ()
+	{
+		$m = $this->getModel('social');
+		$iid = $this->input->getInt('iid', 0);
+		try {
+			if ($m->rateChk($iid)) {
+				header('HTTP/1.1 403 Duplicate Submission');
+				jexit(Text::_('COM_MEEDYA_ALREADY_RATED'));
+			}
+		} catch (Exception $e) {
+				header('HTTP/1.1 404 Database Error');
+				jexit($e->getMessage());
+		}
+	}
+
+	// get all the comments for an item
+	public function getComments ()
+	{
+		if (!Session::checkToken()) {
+			header('HTTP/1.1 403 Not Allowed');
+			jexit(Text::_('JINVALID_TOKEN'));
+		}
+		$m = $this->getModel('social');
+		$iid = $this->input->getInt('iid', 0);
+		try {
+			$comments = $m->getComments($iid);
+			$html = [];
+			foreach ($comments as $comment) {
+				$html[] = '<div class="mycomment"><div>'.$comment['cmnt'].'</div>';
+				$html[] = '<div class="mycommentn">'.Factory::getUser($comment['uid'])->name.'&nbsp;&nbsp;'.date(Text::_('DATE_FORMAT_LC5'),$comment['ctime']).'</div></div>';
+			}
+			echo implode("\n", $html);
+		} catch (Exception $e) {
+				header('HTTP/1.1 404 Database Error');
+				jexit($e->getMessage());
+		}
+	}
+
+	public function addComment ()
+	{
+		if (!Session::checkToken()) {
+			header('HTTP/1.1 403 Not Allowed');
+			jexit(Text::_('JINVALID_TOKEN'));
+		}
+		file_put_contents('COMSUB.txt', print_r($this->input->post, true));
+		$iid = $this->input->post->getInt('iid', 0);
+		$cmnt = $this->input->post->get('cmntext', '', 'string');
+		$m = $this->getModel('social');
+		echo '&nbsp;<i class="far fa-comments"></i> '.$m->addComment($iid, $this->uid, $cmnt);
 	}
 
 }

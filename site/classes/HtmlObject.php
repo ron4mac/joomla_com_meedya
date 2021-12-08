@@ -12,17 +12,19 @@ class HtmlElementObject
 		$tag = '',
 		$stag = '',
 		$atts = [],
-		$datts = false,
+//		$datts = false,
 		$cont = [],
 		$rcont = '',
 		$dcont = true,
 		$head = null,
 		$foot = null;
 
-	public function __construct ($tag, $cont=null, $head=null, $foot=null)
+	public function __construct ($tagclas, $cont=null, $head=null, $foot=null)
 	{
+		list($tag, $clas) = array_pad(explode('.', $tagclas), 2, null);
 		$this->tag = $tag;
 		$this->stag = '<'.$tag;
+		if ($clas) $this->setAttr('class', $clas);
 		if ($cont) $this->cont[] = $cont;
 		$this->head = $head;
 		$this->foot = $foot;
@@ -42,39 +44,45 @@ class HtmlElementObject
 			} else
 				$this->atts[$attn] = $attv;
 		}
-		$this->datts = true;
+//		$this->datts = true;
+		return $this;	// for chaining
 	}
 
 	public function setCont ($contv)
 	{
 		$this->cont = [$contv];
 		$this->dcont = true;
+		return $this;	// for chaining
 	}
 
 	public function addCont ($contv)
 	{
 		$this->cont[] = $contv;
 		$this->dcont = true;
+		return $this;	// for chaining
 	}
 
 	public function sethead ($headv)
 	{
 		$this->head = $headv;
+		return $this;	// for chaining
 	}
 
 	public function setFoot ($footv)
 	{
 		$this->foot = $footv;
+		return $this;	// for chaining
 	}
 
 	public function render ()
 	{
-		if ($this->datts) {
+//		if ($this->datts) {
+		if ($this->atts) {
 			$this->stag = '<'.$this->tag;
 			foreach ($this->atts as $a=>$v) {
 				$this->stag .= ' '.$a.'="'.$v.'"';
 			}
-			$this->datts = false;
+//			$this->datts = false;
 		}
 		$htm = $this->stag . '>';
 		$htm .= is_object($this->head) ? $this->head->render() : $this->head;
@@ -86,7 +94,7 @@ class HtmlElementObject
 		}
 		$htm .= $this->rcont;
 		$htm .= is_object($this->foot) ? $this->foot->render() : $this->foot;
-		$htm .= '</'.$this->tag.'>';;
+		if ($this->tag != 'img') $htm .= '</'.$this->tag.'>';
 		return "\n{$htm}\n";
 	}
 

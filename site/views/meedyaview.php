@@ -26,6 +26,7 @@ class MeedyaView extends JViewLegacy
 	protected $state;
 	protected $items = null;
 	protected $user;
+	protected $uid;
 	protected $params;
 	protected $userPerms = null;
 	protected $meedyaID;
@@ -43,6 +44,7 @@ class MeedyaView extends JViewLegacy
 		}
 		parent::__construct($config);
 		$this->user = Factory::getUser();
+		$this->uid = $this->user->get('id');
 		$app = Factory::getApplication();
 		$this->params = $app->getParams();
 		if (empty($this->itemId)) {

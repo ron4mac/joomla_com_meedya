@@ -11,7 +11,10 @@ CREATE TABLE `meedyaitems` (
 	`album` TEXT DEFAULT NULL,
 	`timed` DATETIME DEFAULT CURRENT_TIMESTAMP,
 	`expodt` DATETIME DEFAULT NULL,
-	`thumb` TEXT DEFAULT NULL);
+	`thumb` TEXT DEFAULT NULL,
+	`ratecnt` INTEGER DEFAULT 0,
+	`ratetot` INTEGER DEFAULT 0,
+	`cmntcnt` INTEGER DEFAULT 0);
 CREATE INDEX item_expodt_idx ON meedyaitems (expodt);
 CREATE VIEW 'usage' AS SELECT SUM(tsize) as totuse FROM `meedyaitems`;
 CREATE TABLE `cats` (
@@ -32,4 +35,7 @@ CREATE TABLE `albums` (
 	`items` TEXT DEFAULT NULL);
 CREATE TABLE `config` (
 	`type` TEXT NOT NULL,
-	`vals` TEXT)
+	`vals` TEXT);
+CREATE TABLE `uratings` (`iid` INTEGER,`uid` INTEGER,`rdate` DATETIME DEFAULT CURRENT_TIMESTAMP);
+CREATE TABLE `gratings` (`iid` INTEGER,`ip` INTEGER,`rdate` DATETIME DEFAULT CURRENT_TIMESTAMP);
+CREATE TABLE `comments` (`iid` INTEGER,`uid` INTEGER,'ctime' INTEGER,`cmnt` TEXT);

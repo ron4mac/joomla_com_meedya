@@ -8,6 +8,11 @@ defined('_JEXEC') or die;
 
 abstract class MeedyaHelperDb
 {
+	public static function checkDbVersion ($udbPath)
+	{
+		return file_exists(dirname($udbPath).'/.dbver');
+	}
+	
 	public static function rebuildExpodt ($udbPath)
 	{
 		if (!file_exists($udbPath)) return;
@@ -74,6 +79,29 @@ abstract class MeedyaHelperDb
 			$db->execute();
 		}
 	//	echo'</pre>';jexit();
+	}
+
+	public static function updateDatabase ($udbPath)
+	{
+//	file_put_contents('UPDS.txt', print_r($udbPath, true));
+		if (!file_exists($udbPath)) return;
+
+		$curver = file_exists($udbPath.'/.dbver') ? file_get_contents($udbPath.'/.dbver') : '0.0.0';
+
+		$updsqlfiles = glob(JPATH_COMPONENT_ADMINISTRATOR.'/tables/upd_*.sql', GLOB_NOSORT);
+		if (!$updsqlfiles) return;
+
+		natsort($updsqlfiles);
+//	file_put_contents('UPDS.txt', print_r($updsqlfiles, true));
+		$dbfile = $udbPath.'/mmeedya.db3';
+		if (!file_exists($dbfile)) throw new Exception('COM_MEEDYA_MISSING_DB');
+		$db = JDatabaseDriver::getInstance(array('driver'=>'sqlite', 'database'=>$dbfile));
+		foreach ($updsqlfiles as $sqlf) {
+			$sqls = explode("\n",file_get_contents($sqlf));
+			foreach ($sqls as $sql) {
+				if ($sql && $sql[0] != '#') $db->setQuery($sql)->execute();
+			}
+		}
 	}
 
 	public static function fixItemAlbums ($udbPath)

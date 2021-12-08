@@ -6,13 +6,15 @@
  */
 defined('_JEXEC') or die;
 
-/* ========== NOTICE! THIS TEMPLATE IS REUSED BY SEARCH DISPLAY ========== */
+/* ========== NOTICE! THIS TEMPLATE IS REUSED BY SEARCH DISPLAY AND PUBLIC ALBUM DISPLAY ========== */
 
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Session\Session;
 
 HTMLHelper::_('jquery.framework');
+HTMLHelper::_('bootstrap.modal');
 MeedyaHelper::addStyle('album');
 MeedyaHelper::addScript('meedya');
 if ($this->useFanCB) {
@@ -22,10 +24,13 @@ if ($this->useFanCB) {
 	MeedyaHelper::addStyle('each');
 	MeedyaHelper::addScript('vuesld');
 }
+MeedyaHelper::addScript('bootbox');
+MeedyaHelper::addScript('rating');
 
 $jslang = [
 		'no_sterm' => Text::_('COM_MEEDYA_MSG_STERM'),
-		'ru_sure' => Text::_('COM_USERNOTES_RU_SURE')
+		'ru_sure' => Text::_('COM_USERNOTES_RU_SURE'),
+		'rate_item' => Text::_('COM_MEEDYA_RATE_ITEM')
 	];
 $this->jDoc->addScriptDeclaration('Meedya.L = '.json_encode($jslang).';
 ');
@@ -40,7 +45,8 @@ if ($this->items) {		//var_dump($this->items);
 		//if ($ftyp['content'] != 'image') continue;
 		$txtinfo = '';
 		$txtinfo .= trim($file['title']);
-		$txtinfo .= ($txtinfo ? ' ... ' : '') . trim($file['desc']);
+		$desc = trim($file['desc']);
+		$txtinfo .= (($txtinfo && $desc) ? ' ... ' : '') . $desc;
 if ($this->useFanCB) {
 		$mTyp = substr($file['mtype'], 0, 5);
 		$murl = JUri::root(true).'/'.$this->gallpath.($mTyp=='image' ? '/med/' : '/img/').$file['file'];
@@ -60,7 +66,11 @@ if ($this->useFanCB) {
 	}
 }
 
+$pgidparm = isset($this->pgid) ? '&pgid='.$this->pgid : '';
+
 $ttscript = '
+	Meedya.rawURL = "'.Route::_('index.php?option=com_meedya&format=raw'.$pgidparm.'&Itemid='.$this->itemId, false).'";
+	Meedya.formTokn = "'.Session::getFormToken().'";
 	Meedya.items = '.json_encode($filelist).';
 	var imgerror = "'.Text::_('COM_MEEDYA_SS_IMGERROR').'";
 	var viderror = "COULD NOT PLAY VIDEO";
@@ -89,7 +99,10 @@ $this->jDoc->addScriptDeclaration($ttscript);
 ///</form>
 
 //var_dump($bx);
-//echo'<xmp>';var_dump($this->state);echo'</xmp>';
+//echo'<xmp>';var_dump($this->params);echo'</xmp>';
+
+$use_ratings = $this->params->get('use_ratings');
+$use_comments = $this->params->get('use_comments');
 ?>
 <style>
 .tooltip.in {
@@ -124,12 +137,12 @@ $this->jDoc->addScriptDeclaration($ttscript);
 	flex-wrap: wrap;
 }
 .anitem img {
-	width: 120px;
-	height: 120px;
+	width: 160px;
+	height: 160px;
 }
 .falbum img {
-	width: 120px;
-	height: 120px;
+	width: 160px;
+	height: 160px;
 }
 .falbum img {
 	width: 94px;
@@ -151,12 +164,12 @@ $this->jDoc->addScriptDeclaration($ttscript);
 	padding: 8px;
 }
 .falbum a {
-	width: 120px;
-	height: 120px;
+	width: 160px;
+	height: 160px;
 }
 .itm-alb-ttl {
 	position: absolute;
-	min-width: 120px;
+	min-width: 160px;
 	top: 50px;
 	text-align: center;
 	background-color: rgba(255,255,255,0.7);
@@ -220,22 +233,38 @@ $this->jDoc->addScriptDeclaration($ttscript);
 	<?php endforeach; ?>
 	<?php endif; ?>
 	<?php
-	$itemImg = new HtmlElementObject('img');
-	$itemImgD = new HtmlElementObject('div', null, $itemImg);
-	$itemImgD->setAttr(['data-toggle'=>'tooltip', 'data-placement'=>'bottom']);
-	$itemZoom = new HtmlElementObject('div', null, $itemImgD);
-	$itemZoom->setAttr('class','itm-thumb');
-	$itemDiv = new HtmlElementObject('div', null, $itemZoom);
-	$itemDiv->setAttr('class','anitem');
-//	$itemDiv->setAttr('onclick','alert(\'YYYYYY\')');
-//	$itemInf = new HtmlElementObject('div');
-//	$itemInf->setAttr('class','iteminf');
-//	$itemDiv->addCont($itemInf);
+	$ttmpl = '
+<div class="anitem" data-ix="{{IX}}" data-iid="{{IID}}">
+	<div class="itm-thumb">
+		<div data-toggle="tooltip" data-placement="bottom" title="{{TITLE}}">
+			<img src="{{SRC}}">';
+	if ($use_ratings || $use_comments) {
+		$ttmpl .= '
+			<div class="starcmnt">';
+		if ($use_ratings) $ttmpl .= '
+				<div class="strate"><div class="strback"><div class="strating" style="width:{{PCNT}}%"></div></div></div>';
+		if ($use_comments) $ttmpl .= '
+				<span class="mycmnts{{CCLAS}}">&nbsp;<i class="far fa-comments"></i> {{CCNT}}</span>';
+		$ttmpl .= '
+			</div>
+';
+	}
+	$ttmpl .= '
+		</div>
+	</div>
+</div>
+';
+	$rplcds = ['{{IX}}','{{IID}}','{{TITLE}}','{{SRC}}','{{PCNT}}','{{CCLAS}}','{{CCNT}}'];
+	$do_stars = $this->params->get('use_ratings');
+	$do_cmnts = $this->params->get('use_comments');
 
 	foreach ($this->items as $ix=>$item) {
 		if (!$item) continue;
+		$rplvals = [];
+		$rplvals[] = $ix;
+		$rplvals[] = $item['id'];
 		list($thumb, $ititle, $idesc, $mtype) = $this->getItemThumbPlus($item['id']);
-		$ttip = ($ititle && $idesc) ? $ititle.'<br />'.$idesc : $ititle.$idesc;
+		$rplvals[] = ($ititle && $idesc) ? $ititle.'<br />'.$idesc : $ititle.$idesc;
 		switch (strstr($mtype, '/', true)) {
 			case 'video':
 				$thmsrc = 'video.png';
@@ -246,10 +275,12 @@ $this->jDoc->addScriptDeclaration($ttscript);
 			default:
 				$thmsrc = 'img.png" data-echo="thm/'.$thumb;
 		}
-		$itemImg->setAttr('src', 'components/com_meedya/static/img/'.$thmsrc);
-		$itemImgD->setAttr('title', $ttip);
-		$itemZoom->setAttr('onclick', 'Meedya.viewer.showSlide(event,'.$ix.')');
-		echo $itemDiv->render();
+		$rplvals[] = 'components/com_meedya/static/img/'.$thmsrc;
+	//	if ($do_stars || $do_cmnts) $itemImgD->setFoot(HTMLHelper::_('meedya.starcmnt', $item, $do_stars, $do_cmnts));
+		$rplvals[] = $item['ratecnt'] ? $item['ratetot']/$item['ratecnt']*20 : 0;
+		$rplvals[] = $item['cmntcnt'] ? ' hasem' : '';
+		$rplvals[] = $item['cmntcnt'] ?: '&nbsp;';
+		echo str_replace($rplcds, $rplvals, $ttmpl);
 	}
 	?>
 	<!-- <div id="itmend" class="noitem"></div> -->
@@ -258,7 +289,13 @@ $this->jDoc->addScriptDeclaration($ttscript);
 <div class="page-footer">
 	<?php echo $this->pagination->getListFooter(); ?>
 </div>
-
+<?php
+if ($this->uid) {
+	include_once JPATH_COMPONENT . '/layouts/rating.php';
+	include_once JPATH_COMPONENT . '/layouts/comments.php';
+	include_once JPATH_COMPONENT . '/layouts/comment.php';
+}
+?>
 <script>
 	echo.init({
 		baseUrl: "<?=JUri::root(true).'/'.$this->gallpath?>/",
@@ -266,6 +303,23 @@ $this->jDoc->addScriptDeclaration($ttscript);
 		throttle: 250,
 		debounce: false
 	});
+<?php if ($this->uid): ?>
+	jQuery(".strate").on("click", function(e){
+		e.stopPropagation();
+		var iid = this.parentElement.parentElement.parentElement.parentElement.dataset.iid;
+		Meedya.dorate(iid, this);
+	});
+	jQuery(".mycmnts").on("click", function(e){
+		e.stopPropagation();
+		var iid = this.parentElement.parentElement.parentElement.parentElement.dataset.iid;
+		Meedya.doComments(iid, this);
+	});
+<?php endif; ?>
+	jQuery(".itm-thumb").on("click", function(e){
+		e.stopPropagation();
+		Meedya.viewer.showSlide(e,jQuery(this).parent()[0].dataset.ix);
+	});
+	document.querySelector("#comments-modal .modal-dialog").classList.add('modal-dialog-scrollable');;
 </script>
 <?php if (!$this->useFanCB): ?>
 <div id="sstage" class="slideback" style="display:none">

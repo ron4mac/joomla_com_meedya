@@ -205,7 +205,8 @@ EOD;
 		return $html;
 	}
 
-	public static function buildTree (array $albums, &$html, $paid = 0) {
+	public static function buildTree (array $albums, &$html, $paid = 0)
+	{
 		$branch = [];
 		foreach ($albums as $alb) {
 			if ($alb['paid'] == $paid) {
@@ -223,6 +224,17 @@ EOD;
 			}
 		}
 		return $branch;
+	}
+
+	public static function starcmnt ($item, $star, $cmnt)
+	{
+		$strate = '<div class="strback"><div class="strating" style="width:50%"></div></div>';
+		$starelm = $star ? new HtmlElementObject('div.strate', $strate) : null;
+
+//		$starelm = $star ? new HtmlElementObject('span.mystars','stars(12)') : null;
+		$cmntelm = $cmnt ? new HtmlElementObject('span.mycmnts','&nbsp;&nbsp;5 <i class="far fa-comments"></i>') : null;
+		return (new HtmlElementObject('div.starcmnt', null, $starelm, $cmntelm))->setAttr('data-iid', $item['id']);
+		return ($star || $cmnt) ? '<div class="starcmnt"><span class="mystars">stars(12)</span><span class="mycmnts">5 <i class="far fa-comments"></i></span></div>' : null;
 	}
 
 

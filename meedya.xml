@@ -2,15 +2,20 @@
 <extension type="component" version="3.0" method="upgrade">
 	<name>com_meedya</name>
 	<author>Ron Crans</author>
-	<creationDate>September 2021</creationDate>
+	<creationDate>November 2021</creationDate>
 	<copyright>(C) 2015-2021 RJCreations. All rights reserved.</copyright>
 	<license>GNU General Public License version 3 or later; see LICENSE.txt</license>
 	<authorEmail>ron@rjconline.net</authorEmail>
 	<authorUrl>rjconline.net</authorUrl>
-	<version>1.2.2</version>
-	<updater jver="[34]\.[0123456789]" pver="7.0" />
+	<version>1.2.3</version>
+	<updater jver="(3\.[89])||(3\.1\d)||(4\.[01])" pver="7.0" />
 	<description>COM_MEEDYA_XML_DESCRIPTION</description>
 	<scriptfile>script.php</scriptfile>
+	<update>
+		<schemas>
+			<schemapath type="sqlite">sql/updates</schemapath>
+		</schemas>
+	</update>
 	<files folder="site">
 		<filename>index.html</filename>
 		<filename>meedya.php</filename>
@@ -44,6 +49,7 @@
 			<folder>tables</folder>
 			<folder>views</folder>
 			<folder>language</folder>
+			<folder>sql</folder>
 		</files>
 	</administration>
 	<updateservers>

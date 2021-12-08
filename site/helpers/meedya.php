@@ -97,13 +97,23 @@ abstract class MeedyaHelper
 	{
 		if (self::$udp) return self::$udp;
 
+		$cmp = JApplicationHelper::getComponentName();
+		$result = Factory::getApplication()->triggerEvent('onRjuserDatapath');
+		$sdp = isset($result[0]) ? trim($result[0]) : 'userstor';
+		$input = Factory::getApplication()->input;
+
+		if ($pgid = $input->get('pgid', '', 'cmd')) {
+			list($gdir, $gsfx, $aid) = explode('|', base64_decode($pgid));
+			self::$udp = $sdp.'/'.$gdir.'/'.$cmp.$gsfx;
+			return self::$udp;
+		}
+
 		if (!$mnuid) {
-			$mnuid = Factory::getApplication()->input->getInt('Itemid', 0);
+			$mnuid = $input->getInt('Itemid', 0);
 		}
 
 		self::getTypeOwner();
 		if (self::$ownerID < 0 && self::$instanceType < 2) return '';	//throw new Exception('ACCESS NOT ALLOWED');
-		$cmp = JApplicationHelper::getComponentName();
 		switch (self::$instanceType) {
 			case 0:
 				$ndir = '@'. self::$ownerID;
@@ -115,9 +125,6 @@ abstract class MeedyaHelper
 				$ndir = '_0';
 				break;
 		}
-
-		$result = Factory::getApplication()->triggerEvent('onRjuserDatapath');
-		$sdp = isset($result[0]) ? trim($result[0]) : 'userstor';
 
 		self::$udp = $sdp.'/'.$ndir.'/'.$cmp.'_'.$mnuid;
 		return self::$udp;
