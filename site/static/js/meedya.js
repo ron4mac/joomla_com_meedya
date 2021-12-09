@@ -47,7 +47,7 @@ Meedya = {};	// a namespace for com_meedya
 	var old_viewer = {
 		showSlide: function (e, iid) {
 			e.preventDefault();
-			jQuery('#sstage').appendTo('body').show();
+			$('#sstage').appendTo('body').show();
 			ssCtl.init(Meedya.items, iid);
 		}
 	};
@@ -66,62 +66,41 @@ Meedya = {};	// a namespace for com_meedya
 		return false;
 	};
 
-	Meedya.dorate = function (itemid, relm) {
-		jQuery.post(Meedya.rawURL, {[Meedya.formTokn]: 1, task: 'rateChk', iid: itemid}, function (data) {
+	var rDlg, ssr, curRelm;
+
+	function submitRating (evt) {
+		if (evt.detail === 0) {
+			if (!confirm("Clear rating for this item?")) return;
+		}
+		$.post(Meedya.rawURL, {[Meedya.formTokn]: 1, task: 'rateItem', iid: curIid, val: evt.detail}, function (data) {
+			curRelm.firstElementChild.firstElementChild.style.width = data+"%";
+			$(rDlg).modal('hide');
+			ssr.enable();
 		})
-		.done(function(){
-			var rDlg = document.getElementById('rating-modal');
-			var rModal = new bootstrap.Modal(rDlg);
-			rDlg.addEventListener('hidden.bs.modal', function (event) {rModal.hide();});
-			rModal.show();
-	//		bootbox.dialog({
-	//			title: _t('rate_item'),
-			//	message: '<div class="rated"><span id="unrating" class="rating" data-default-rating="2.5"></span></div>'
-	//			message: '<div class="rated"><span id="bunrating" class="rating"></span></div>'
-	//		});
-			var rating = document.getElementById('unrating');
-			rating.innerHTML = '';
-			var r = new SimpleStarRating(rating);
-			rating.addEventListener('rate', function(e) {
-				if (e.detail === 0) {
-					if (!confirm("Clear rating for this item?")) return;
-				}
-				jQuery.post(Meedya.rawURL, {[Meedya.formTokn]: 1, task: 'rateItem', iid: itemid, val: e.detail}, function (data) {
-				//	alert(data);
-					relm.firstElementChild.firstElementChild.style.width = data+"%";
-					bootbox.hideAll();
-					rModal.hide();	//.dispose();
-				})
-				.fail(function(err) {
-					alert(err.responseText);
-					bootbox.hideAll();
-					rModal.hide();	//.dispose();
-				});
-			});
-		})
-		.fail(function(err){
+		.fail(function(err) {
 			alert(err.responseText);
-		//	bootbox.alert({
-		//		message: err.responseText
-		//	});
+			$(rDlg).modal('hide');
 		});
 	}
 
-	var curIid = 0, curCelm;
-	var cDlg, cModal, cElm;
-	Meedya.doComments = function (itemid, elm) {
-		document.getElementById("cmnt-text").value = "";
+	Meedya.dorate = function (itemid, relm) {
 		curIid = itemid;
-		curCelm = elm;
-		if (elm.classList.contains('hasem')) {
-			Meedya.fetchComments(itemid);
-			cModal.show();
-		} else {
-			ncModal.show();
-		}
-	};
+		curRelm = relm;
+		$.post(Meedya.rawURL, {[Meedya.formTokn]: 1, task: 'rateChk', iid: itemid}, function (data) {
+		})
+		.done(function(){
+			$(rDlg).modal('show');
+		})
+		.fail(function(err){
+			alert(err.responseText);
+		});
+	}
 
-	Meedya.fetchComments = function (itemid) {
+	
+	var curIid = 0, curCelm;
+	var cDlg, ncDlg, /*cModal, ncModal,*/ cElm;
+
+	function fetchComments (itemid) {
 		curIid = itemid;
 		cElm.innerHTML = '';
 		const token = Joomla.getOptions('csrf.token', '');
@@ -187,18 +166,32 @@ Meedya = {};	// a namespace for com_meedya
 		let fData = new FormData(newcmnt);
 		fData.append(Meedya.formTokn, 1);
 		fData.append('iid', curIid);
-		fData.append('uid', 260);
 		const options = {
 			method: 'POST',
 			body: fData
 		}
 		let response = await fetch(url, options);
 		let result = await response.text();
-		ncModal.hide();
+//		ncModal.hide();
+		$(ncDlg).modal('hide');
 		elm.disabled = false;
 		curCelm.classList.add('hasem');
 		curCelm.innerHTML = result;
 	}
+
+	Meedya.doComments = function (itemid, elm) {
+		document.getElementById("cmnt-text").value = "";
+		curIid = itemid;
+		curCelm = elm;
+		if (elm.classList.contains('hasem')) {
+			fetchComments(itemid);
+//			cModal.show();
+			$(cDlg).modal('show');
+		} else {
+//			ncModal.show();
+			$(ncDlg).modal('show');
+		}
+	};
 
 	// CURRENTLY UNUSED
 	Meedya.sprintf = function (format) {
@@ -214,12 +207,21 @@ Meedya = {};	// a namespace for com_meedya
 
 	$(document).ready(function() {
 		$('[data-toggle="tooltip"]').tooltip();
+		// setup the star rating modal
+		rDlg = document.getElementById('rating-modal');
+		rDlg.addEventListener('hidden.bs.modal', function (event) {$(rDlg).modal('hide');});		// NOT SURE ABOUT THIS
+		var rating = document.getElementById('unrating');
+		ssr = new SimpleStarRating(rating);
+		rating.addEventListener('rate', submitRating);
+		// setup comments display modal
 		cDlg = document.getElementById('comments-modal');
 		cElm = document.querySelector(".modal-body .comments");
-		cModal = new bootstrap.Modal(cDlg);
+//		cModal = new bootstrap.Modal(cDlg);
+		// setup new comment entry modal
 		ncDlg = document.getElementById('comment-modal');
 		ncElm = document.querySelector(".modal-body textarea");
-		ncModal = new bootstrap.Modal(ncDlg);
+//		ncModal = new bootstrap.Modal(ncDlg);
+		// focus on the textarea
 		ncDlg.addEventListener('shown.bs.modal', function (event) {document.getElementById("cmnt-text").focus();});
 	});
 

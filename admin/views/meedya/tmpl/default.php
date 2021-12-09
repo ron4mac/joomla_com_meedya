@@ -80,7 +80,7 @@ $canDo		= MeedyaAdminHelper::getActions();
 						<?php echo $item['fcount'] ?>
 					</td>
 					<td>
-						<?php echo $item['mnu'] ?>
+						<?php echo $item['mnun'] ?>
 					</td>
 					<td>
 						&#160;

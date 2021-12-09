@@ -14,7 +14,7 @@ use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Session\Session;
 
 HTMLHelper::_('jquery.framework');
-HTMLHelper::_('bootstrap.modal');
+//HTMLHelper::_('bootstrap.modal');
 MeedyaHelper::addStyle('album');
 MeedyaHelper::addScript('meedya');
 if ($this->useFanCB) {

@@ -93,7 +93,7 @@ abstract class MeedyaHelperDb
 
 		natsort($updsqlfiles);
 //	file_put_contents('UPDS.txt', print_r($updsqlfiles, true));
-		$dbfile = $udbPath.'/mmeedya.db3';
+		$dbfile = $udbPath.'/meedya.db3';
 		if (!file_exists($dbfile)) throw new Exception('COM_MEEDYA_MISSING_DB');
 		$db = JDatabaseDriver::getInstance(array('driver'=>'sqlite', 'database'=>$dbfile));
 		foreach ($updsqlfiles as $sqlf) {
