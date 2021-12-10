@@ -244,7 +244,7 @@ $use_comments = $this->params->get('use_comments');
 		if ($use_ratings) $ttmpl .= '
 				<div class="strate"><div class="strback"><div class="strating" style="width:{{PCNT}}%"></div></div></div>';
 		if ($use_comments) $ttmpl .= '
-				<span class="mycmnts{{CCLAS}}">&nbsp;<i class="far fa-comments"></i> {{CCNT}}</span>';
+				<span class="mycmnts{{CCLAS}}">'.HTMLHelper::_('meedya.cmntsIcon').' {{CCNT}}</span>';
 		$ttmpl .= '
 			</div>
 ';

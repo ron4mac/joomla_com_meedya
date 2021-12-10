@@ -253,6 +253,10 @@
 
 /* ============================  comments/comment display
 */
+.mycmnts span {
+	color: #999;
+	margin-right: 0;
+}
 .mycomment {
 	padding-bottom: 4px;
 	border-bottom: 1px solid #EEE;
@@ -264,4 +268,5 @@
 }
 .new-comment textarea {
 	width: 100%;
+	box-sizing: border-box;
 }

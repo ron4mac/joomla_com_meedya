@@ -8,12 +8,14 @@ defined('JPATH_BASE') or die;
 
 use Joomla\CMS\HTML\HTMLHelper;
 
+$_BS = ((int)JVERSION < 4) ? '' : '-bs';
+
 echo HTMLHelper::_(
 	'bootstrap.renderModal',
 	'comment-modal', // selector
 	array( // options
 		'title'  => 'New Comment',
-		'footer' => '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+		'footer' => '<button type="button" class="btn btn-secondary" data'.$_BS.'-dismiss="modal">Close</button>
 					<button type="button" class="btn btn-primary" onclick="Meedya.submitComment(this)">Submit Comment</button>',
 	//	'modalWidth' => 30
 	),

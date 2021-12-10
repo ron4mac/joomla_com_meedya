@@ -12,6 +12,8 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Session\Session;
 
+JLoader::register('JHtmlMeedya', JPATH_COMPONENT . '/helpers/html/meedya.php');
+
 class MeedyaController extends JControllerLegacy
 {
 	protected $uid = 0;
@@ -125,7 +127,7 @@ class MeedyaController extends JControllerLegacy
 		$iid = $this->input->post->getInt('iid', 0);
 		$cmnt = $this->input->post->get('cmntext', '', 'string');
 		$m = $this->getModel('social');
-		echo '&nbsp;<i class="far fa-comments"></i> '.$m->addComment($iid, $this->uid, $cmnt);
+		echo '&nbsp;'.HTMLHelper::_('meedya.cmntsIcon').' '.$m->addComment($iid, $this->uid, $cmnt);
 	}
 
 }

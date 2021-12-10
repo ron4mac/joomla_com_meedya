@@ -226,6 +226,11 @@ EOD;
 		return $branch;
 	}
 
+	public static function cmntsIcon ()
+	{
+		return ((int)JVERSION < 4) ? '&nbsp;<span class="icon-comments-2"> </span>' : '&nbsp;<i class="far fa-comments"></i>';
+	}
+
 	public static function starcmnt ($item, $star, $cmnt)
 	{
 		$strate = '<div class="strback"><div class="strating" style="width:50%"></div></div>';
