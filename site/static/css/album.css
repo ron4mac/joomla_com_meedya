@@ -39,6 +39,7 @@
 	cursor: pointer;
 }
 .itm-thumb:hover {
+	background-color: #EEE;
 	border: 1px solid #000;
 }
 
@@ -59,8 +60,8 @@
 }
 
 .falbum {
-	width: 120px;
-	height: 120px;
+	width: 168px;
+	height: 168px;
 /*	background-image: url(../img/album4.png);
 	background-repeat: no-repeat; */
 	vertical-align: top;
@@ -163,6 +164,7 @@
 
 .mystars {}
 .mycmnts, .mycmnt1 {float:right;}
+.mycmntsno {display:none;}
 .mycmnt1 {padding-left:1em;}
 
 /* ============================  star rating
@@ -174,17 +176,15 @@
 .rating {
 	display: none;
 	font-size: 32px;
-	font-weight: bold;
+/*	font-weight: bold;*/
 	color: #3af;
 	white-space: nowrap;
 }
-
 .rating .star {
 	display: inline-block;
 	position: relative;
 	letter-spacing: 0.05em;
 }
-
 .rating .star::before {
 	display: inline-block;
 	color: #aaa;
@@ -192,7 +192,6 @@
 	width: 1em;
 	height: 1em;
 }
-
 .rating .star::after {
 	display: inline-block;
 	position: absolute;
@@ -205,7 +204,6 @@
 	transition: all 0.1s linear;
 	overflow-x: hidden;
 }
-
 .rating:not([disabled]) .star:hover::after,
 .rating .star.active::after {
 	opacity: 1;
@@ -215,7 +213,6 @@
 .rating:not([disabled]) .star:hover::after {
 	color: gold;
 }
-
 .rating .star.active.half::after {
 	width: 0.5em;
 }

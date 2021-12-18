@@ -20,6 +20,11 @@ function _ae (elem, evnt, func, capt=false) {
 
 (function($) {
 
+	// utility dialog actions for alert, confirm using bootstrap modals
+	Meedya.confirm = function (dlg, title, body, cb) {
+		$("#"+dlg).modal('show');
+	}
+
 	Meedya.setDlgParAlb = function () {
 		if (_id('h5u_palbum'))
 		_id('h5u_palbum').value = Meedya.AArrange.selalb();
@@ -27,25 +32,25 @@ function _ae (elem, evnt, func, capt=false) {
 
 	Meedya.setAlbumDanD = function () {
 		var albthm = _id("albthm");
-		_ae(albthm, 'dragover', handleAlbthmDragOver, false);
-		_ae(albthm, 'drop', handleAlbthmDrop, false);
-		_ae(albthm, 'dragenter', function () { this.style.opacity = '0.5'; }, false);
-		_ae(albthm, 'dragleave', function () { this.style.opacity = '1.0'; }, false);
+		_ae(albthm, 'dragover', handleAlbthmDragOver);
+		_ae(albthm, 'drop', handleAlbthmDrop);
+		_ae(albthm, 'dragenter', function (e) { e.preventDefault(); this.style.opacity = '0.5'; });
+		_ae(albthm, 'dragleave', function () { this.style.opacity = '1.0'; });
 		var albfrm = _id("albForm");
-		_ae(albfrm, 'dragstart', function(e){ e.dataTransfer.setData('albthm','X'); }, false);
-		_ae(albfrm, 'dragover', function(e){ if (e.dataTransfer.types.indexOf('albthm')>0) { _pd(e);e.dataTransfer.dropEffect = 'move'; } }, false);
-		_ae(albfrm, 'dragenter', function(e){ if (e.dataTransfer.types.indexOf('albthm')>0) { _pd(e);e.dataTransfer.dropEffect = 'move'; } }, false);
-		_ae(albfrm, 'drop', function(e){ _pd(e); removeAlbThm(); }, false);
+		_ae(albfrm, 'dragstart', function(e){ e.dataTransfer.setData('albthm','X'); });
+		_ae(albfrm, 'dragover', function(e){ if (e.dataTransfer.types.indexOf('albthm')>0) { _pd(e);e.dataTransfer.dropEffect = 'move'; } });
+		_ae(albfrm, 'dragenter', function(e){ if (e.dataTransfer.types.indexOf('albthm')>0) { _pd(e);e.dataTransfer.dropEffect = 'move'; } });
+		_ae(albfrm, 'drop', function(e){ _pd(e); removeAlbThm(); });
 	};
 
 	Meedya.deleteSelected = function (e) {
 		_pd(e);
 		if (hasSelections("[name='slctimg[]']:checked", true)) {
 			bootbox.confirm({
-				message: Joomla.JText._('COM_MEEDYA_PERM_DELETE'),
+				message: Joomla.Text._('COM_MEEDYA_PERM_DELETE'),
 				buttons: {
-					confirm: { label: 'JACTION_DELETE', className: 'btn-danger' },
-					cancel: { label: 'JCANCEL' }
+					confirm: { label: Joomla.Text._('JACTION_DELETE'), className: 'btn-danger' },
+					cancel: { label: Joomla.Text._('JCANCEL') }
 				},
 				callback: function(c){
 					if (c) {
@@ -61,10 +66,10 @@ function _ae (elem, evnt, func, capt=false) {
 		_pd(e);
 		if (hasSelections("[name='slctimg[]']:checked", true)) {
 			bootbox.confirm({
-				message: Joomla.JText._('COM_MEEDYA_REMOVE'),
+				message: Joomla.Text._('COM_MEEDYA_REMOVE'),
 				buttons: {
-					confirm: { label: 'COM_MEEDYA_VRB_REMOVE', className: 'btn-danger' },
-					cancel: { label: 'JCANCEL' }
+					confirm: { label: Joomla.Text._('COM_MEEDYA_VRB_REMOVE'), className: 'btn-danger' },
+					cancel: { label: Joomla.Text._('JCANCEL') }
 				},
 				callback: function(c){
 					if (c) {
@@ -119,12 +124,12 @@ function _ae (elem, evnt, func, capt=false) {
 		var classes = creab.classList;
 		if (elm.value > 0) {
 			_id('creanualb').style.display = "none";
-			classes.remove("btn-disabled");
-			classes.add("btn-primary");
+		//	classes.remove("btn-disabled");
+		//	classes.add("btn-primary");
 			creab.disabled = false;
 		} else {
-			classes.remove("btn-primary");
-			classes.add("btn-disabled");
+		//	classes.remove("btn-primary");
+		//	classes.add("btn-disabled");
 			creab.disabled = true;
 			if (elm.value == -1) {
 				_id('creanualb').style.display = "block";
@@ -140,12 +145,12 @@ function _ae (elem, evnt, func, capt=false) {
 		var creab = _id('creab');
 		var classes = creab.classList;
 		if (elm.value.trim()) {
-			classes.remove("btn-disabled");
-			classes.add("btn-primary");
+		//	classes.remove("btn-disabled");
+		//	classes.add("btn-secondary");
 			creab.disabled = false;
 		} else {
-			classes.remove("btn-primary");
-			classes.add("btn-disabled");
+		//	classes.remove("btn-secondary");
+		//	classes.add("btn-disabled");
 			creab.disabled = true;
 		}
 	};
@@ -217,7 +222,6 @@ function _ae (elem, evnt, func, capt=false) {
 	var moving = null;
 	Meedya.moveItem = function (elm) {
 		var item = elm.parentElement;
-		console.log(item);
 		if (!moving) {
 			moving = item;
 			item.classList.add("moving");
@@ -242,14 +246,16 @@ function _ae (elem, evnt, func, capt=false) {
 	}
 
 	function handleAlbthmDragOver (e) {
-		if (e.dataTransfer.types.indexOf('imgsrc') < 0) return;
+		e.preventDefault();
+		if (e.dataTransfer.types.indexOf('imgsrc') < 0) return;		//console.log("O",e.dataTransfer);
 		_pd(e);		 // Necessary. Allows us to drop.
-		e.dataTransfer.dropEffect = 'copy';		// See the section on the DataTransfer object.
+//		e.dataTransfer.dropEffect = 'copy';		// See the section on the DataTransfer object.
 		return false;
 	}
 
 	function handleAlbthmDrop (e) {
 		_pd(e);		// stops the browser from redirecting.
+				console.log("D");
 		var src = e.dataTransfer.getData('imgsrc');
 		if (src) {
 			this.getElementsByTagName("IMG")[0].src = src;
@@ -263,7 +269,7 @@ function _ae (elem, evnt, func, capt=false) {
 		if (document.querySelectorAll(sel).length) {
 			return true;
 		} else {
-			if (alrt) bootbox.alert(Joomla.JText._('COM_MEEDYA_SELECT_SOME'));
+			if (alrt) bootbox.alert(Joomla.Text._('COM_MEEDYA_SELECT_SOME'));
 			return false;
 		}
 	}
@@ -301,7 +307,7 @@ Meedya.Arrange = (function ($) {
 		this.style.opacity = '0.4';		// this / e.target is the source node.
 
 		dragSrcEl = this;
-		e.dataTransfer.effectAllowed = 'move';
+		e.dataTransfer.effectAllowed = 'copyMove';
 	//	e.dataTransfer.setData('text/html', this.innerHTML);
 		e.dataTransfer.setData(meeid,this.getAttribute('data-id'));
 	//	console.log(this.getElementsByTagName("IMG")[0].src);
@@ -316,7 +322,7 @@ Meedya.Arrange = (function ($) {
 		}
 	}
 
-	function handleDragEnter (e) {
+	function handleDragEnter (e) {		console.log("A",{...e.dataTransfer});
 		// this / e.target is the current hover target.
 		if (hasItem(e)) {
 			_pd(e);
@@ -329,7 +335,7 @@ Meedya.Arrange = (function ($) {
 		this.classList.remove('over');		// this / e.target is previous target element.
 	}
 
-	function handleDrop (e) {
+	function handleDrop (e) {		console.log("Z",e.dataTransfer);
 		// this / e.target is current target element.
 		_pd(e);
 		// Don't do anything if dropping the same item we're dragging.
@@ -398,7 +404,7 @@ Meedya.Arrange = (function ($) {
 			clas = iClass;
 			items = document.querySelectorAll('#'+iCtnr+' .'+iClass);
 			[].forEach.call(items, function(itm) {
-			//		itm.setAttribute('draggable', 'true');
+					itm.setAttribute('draggable', 'true');
 					_ae(itm, 'drag', handleDrag);
 					_ae(itm, 'dragstart', handleDragStart);
 					_ae(itm, 'dragenter', handleDragEnter);
@@ -502,7 +508,7 @@ Meedya.AArrange = (function ($) {
 		da = e.target.getAttribute('data-aid');
 		setAlbPaid(sa, da, function(r){
 			if (r) {
-				bootbox.alert(Joomla.JText._('COM_MEEDYA_MOVE_FAIL'));
+				bootbox.alert(Joomla.Text._('COM_MEEDYA_MOVE_FAIL'));
 			} else {
 				e.target.append(dragSrcEl);
 			}
@@ -553,14 +559,13 @@ Meedya.AArrange = (function ($) {
 		}
 	}
 
-	function iSelect (e) {
-		//console.log(this);
+	function iSelect (e, elm=this) {
 		_pd(e);
 		if (iSlctd) iSlctd.classList.remove('slctd');
-		if (this == iSlctd) {
+		if (elm == iSlctd) {
 			iSlctd = null;
 		} else {
-			iSlctd = this;
+			iSlctd = elm;
 			iSlctd.classList.add('slctd');
 		}
 	}
@@ -579,7 +584,7 @@ Meedya.AArrange = (function ($) {
 			ctnr = iCtnr;
 			items = document.querySelectorAll('#'+iCtnr+' .'+iClass);
 			[].forEach.call(items, function(itm) {
-			//		itm.setAttribute('draggable', 'true');
+					itm.setAttribute('draggable', 'true');
 					_ae(itm, 'drag', handleDrag);
 					_ae(itm, 'dragstart', handleDragStart, true);
 					_ae(itm, 'dragenter', handleDragEnter);
@@ -588,12 +593,13 @@ Meedya.AArrange = (function ($) {
 					_ae(itm, 'drop', handleDrop);
 					_ae(itm, 'dragend', handleDragEnd);
 					_ae(itm, 'touchmove', tMove);
-					_ae(itm, 'click', iSelect);
+				//	_ae(itm, 'click', iSelect);
 				});
 		},
 		selalb: function () {
 			return iSlctd ? iSlctd.getAttribute('data-aid') : 0;
-		}
+		},
+		iSelect: iSelect
 	};
 }(jQuery));
 
@@ -628,20 +634,18 @@ Meedya.AArrange = (function ($) {
 
 	function open (pID) {
 		area = document.createElement('div');
-		$.post(Meedya.rawURL, {task: 'manage.getZoomItem', iid: pID},
-			function (data) {
-				area.innerHTML = data;	// + '<div class="zoom-closex" onclick="iZoomClose(event)">X</div>';
-			});
+		$.post(Meedya.rawURL, {task: 'manage.getZoomItem', iid: pID})
+		.done(data => area.innerHTML = data);
 		area.className = 'zoom-area';
 		area.tabIndex = "-1";
 		back = document.createElement('div');
 		back.className = 'zoom-back';
 		back.appendChild(area);
 		document.body.appendChild(back);
-		_ae(area, 'keypress', keyPressed, false);
-		_ae(area, 'keydown', keyDowned, false);
+		_ae(area, 'keypress', keyPressed);
+		_ae(area, 'keydown', keyDowned);
 		area.focus();
-		_ae(back, 'click', close, false);
+		_ae(back, 'click', close);
 	}
 
 	function close (e) {

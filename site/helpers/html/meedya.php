@@ -60,7 +60,7 @@ EOD;
 		if (!$perms) return '';
 		$itmid = $Itemid ? ('&Itemid='.$Itemid) : '';
 		$html = '<div class="mgmenu btn-group dropdown">
-	<button class="btn btn-small dropdown-toggle" data-bs-toggle="dropdown" type="button" id="mmnulink">
+	<button class="btn btn-small dropdown-toggle" '.M34C::bs('toggle').'="dropdown" type="button" id="mmnulink">
 		<i class="icon-pencil"></i>'.Text::_('COM_MEEDYA_MENU_MANAGE').' <span class="caret"></span>
 	</button>
 	<div class="dropdown-menu dropdown-menu-end" aria-labelledby="mmnulink">';
@@ -85,7 +85,7 @@ EOD;
 		if (!$perms) return '';
 		$itmid = $Itemid ? ('&Itemid='.$Itemid) : '';
 		$html = '<div class="btn-group mgmenu dropdown">
-	<a class="btn btn-small dropdown-toggle" data-bs-toggle="dropdown" href="#">
+	<a class="btn btn-small dropdown-toggle" '.M34C::bs('toggle').'="dropdown" href="#">
 		<i class="icon-pencil"></i> '.Text::_('COM_MEEDYA_MENU_MANAGE').' <span class="caret"></span>
 	</a>
 	<ul class="dropdown-menu">';
@@ -111,7 +111,8 @@ EOD;
 		usort($albs, function ($a, $b) { return strnatcmp($a->hord,$b->hord); });
 		foreach ($albs as $alb) {
 			$d = count(explode('.',$alb->hord));
-			$pfx = str_repeat('&nbsp;&nbsp;',$d-1).($d>1?'&#x251c;&#x2500; ':'');
+		//	$pfx = str_repeat('&nbsp;&nbsp;',$d-1).($d>1?'&#x251c;&#x2500; ':'');
+			$pfx = str_repeat('&nbsp;&nbsp;', max($d-2, 0)).($d>1?'&#x251c; ':'');
 			$html .= '<option value="'.$alb->aid.'"'.($alb->aid==$sel ? ' selected' : '').'>'.$pfx.$alb->title.'</option>';
 		}
 		return $html;
@@ -129,25 +130,26 @@ EOD;
 	public static function actionButtons ($whch)
 	{
 		$html = [];
+		$b = M34C::btn('ss');
 		foreach ($whch as $but) {
 			switch ($but) {
 			case 'sela':
-				$html[] = '<button class="btn btn-small" onclick="Meedya.selAllImg(event, true)">'.Text::_('COM_MEEDYA_MANAGE_SELECT_ALL').'</button>';
+				$html[] = '<button class="'.$b.'" onclick="Meedya.selAllImg(event, true)">'.Text::_('COM_MEEDYA_MANAGE_SELECT_ALL').'</button>';
 				break;
 			case 'seln':
-				$html[] = '<button class="btn btn-small" onclick="Meedya.selAllImg(event, false)">'.Text::_('COM_MEEDYA_MANAGE_SELECT_NONE').'</button>';
+				$html[] = '<button class="'.$b.'" onclick="Meedya.selAllImg(event, false)">'.Text::_('COM_MEEDYA_MANAGE_SELECT_NONE').'</button>';
 				break;
 			case 'edts':
-				$html[] = '<button class="btn btn-small" onclick="Meedya.editSelected(event)">'.'<i class="icon-pencil"></i> '.Text::_('COM_MEEDYA_MANAGE_EDIT_ITEMS').'</button>';
+				$html[] = '<button class="'.$b.'" onclick="Meedya.editSelected(event)">'.'<i class="icon-pencil"></i> '.Text::_('COM_MEEDYA_MANAGE_EDIT_ITEMS').'</button>';
 				break;
 			case 'adds':
-				$html[] = '<button class="btn btn-small" onclick="return Meedya.addSelected(event);">'.'<i class="icon-plus-circle"></i> '.Text::_('COM_MEEDYA_MANAGE_ADD2ALBUM').'</button>';
+				$html[] = '<button class="'.$b.'" onclick="return Meedya.addSelected(event);">'.'<i class="icon-plus-circle"></i> '.Text::_('COM_MEEDYA_MANAGE_ADD2ALBUM').'</button>';
 				break;
 			case 'rems':
-				$html[] = '<button class="btn btn-small" onclick="Meedya.removeSelected(event)">'.'<i class="icon-minus-circle"></i> '.Text::_('COM_MEEDYA_MANAGE_REMOVE').'</button>';
+				$html[] = '<button class="'.$b.'" onclick="Meedya.removeSelected(event)">'.'<i class="icon-minus-circle"></i> '.Text::_('COM_MEEDYA_MANAGE_REMOVE').'</button>';
 				break;
 			case 'dels':
-				$html[] = '<button class="btn btn-small" onclick="Meedya.deleteSelected(event)">'.'<i class="icon-minus-circle"></i> '.Text::_('COM_MEEDYA_MANAGE_TOTAL_DEL').'</button>';
+				$html[] = '<button class="'.$b.'" onclick="Meedya.deleteSelected(event)">'.'<i class="icon-minus-circle"></i> '.Text::_('COM_MEEDYA_MANAGE_TOTAL_DEL').'</button>';
 				break;
 			default:
 				$html[] = 'NOACTION';
@@ -193,13 +195,11 @@ EOD;
 		</div>';
 	}
 
-	public static function modalButtons ($verb, $script, $id, $disab=true)
+	public static function modalButtons ($verb, $script, $id, $disab=true, $bclass=false)
 	{
-		$disbut = (int)JVERSION>3 ? 'data-bs-dismiss' : 'data-dismiss';
-		$html = '<button type="button" class="btn" '.$disbut.'="modal">'.Text::_('JCANCEL').'</button>';
-		$html .= '<button type="button" id="'.$id.'" class="btn';
-		$html .= $disab ? ' btn-disabled' : ' btn-primary';
-		$html .= '" onclick="'.$script.';"';
+		$html = '<button type="button" class="'.M34C::btn('s').'" '.M34C::bs('dismiss').'="modal">'.Text::_('JCANCEL').'</button>';
+		$html .= '<button type="button" id="'.$id.'" class="'.($bclass ?: M34C::btn('p')).'"';
+		$html .= ' onclick="'.$script.';"';
 		if ($disab) $html .= ' disabled';
 		$html .= '>'.Text::_($verb).'</button>';
 		return $html;

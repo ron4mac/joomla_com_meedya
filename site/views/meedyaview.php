@@ -23,6 +23,7 @@ HTMLHelper::_('bootstrap.tooltip');
 
 class MeedyaView extends JViewLegacy
 {
+	protected $app;
 	protected $state;
 	protected $items = null;
 	protected $user;
@@ -45,16 +46,16 @@ class MeedyaView extends JViewLegacy
 		parent::__construct($config);
 		$this->user = Factory::getUser();
 		$this->uid = $this->user->get('id');
-		$app = Factory::getApplication();
-		$this->params = $app->getParams();
+		$this->app = Factory::getApplication();
+		$this->params = $this->app->getParams();
 		if (empty($this->itemId)) {
-			$this->itemId = $app->input->getInt('Itemid', 0);
+			$this->itemId = $this->app->input->getInt('Itemid', 0);
 		}
 		$this->userPerms = MeedyaHelper::getUserPermissions($this->user, $this->params);
 		$this->meedyaID = MeedyaHelper::getInstanceID();
 		$this->gallpath = MeedyaHelper::userDataPath($this->itemId);
 
-		$this->instance = $app->getUserState('com_meedya.instance', '::');
+		$this->instance = $this->app->getUserState('com_meedya.instance', '::');
 		$this->jDoc = Factory::getDocument();
 	}
 

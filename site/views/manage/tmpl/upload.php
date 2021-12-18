@@ -11,6 +11,7 @@ use Joomla\CMS\Router\Route;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Session\Session;
+use Joomla\CMS\Layout\LayoutHelper;
 
 HTMLHelper::addIncludePath(JPATH_COMPONENT.'/helpers');
 
@@ -53,6 +54,8 @@ if ($this->uplodr == 'UL')
 		doneFunc: uploadDone
 	};
 	function uploadDone (okcount, errcnt) {
+		Meedya.confirm("confirm-dlg");
+		return;
 	//	alert("There were "+okcount+" files uploaded with "+errcnt+" errors.");
 		redirURL = H5uOpts.siteURL + "&task=manage.imgEdit&after=" + H5uOpts.timestamp;
 		bootbox.confirm({
@@ -177,13 +180,15 @@ if (RJC_DBUG) {
 <?php endif; ?>
 </div>
 <?php
+echo LayoutHelper::render('newalbum', ['script'=>'createAlbum(this)', 'albums'=>$this->albums]);
 echo HTMLHelper::_(
 	'bootstrap.renderModal',
-	'newalbdlg',
-	['title' => Text::_('COM_MEEDYA_CREATE_NEW_ALBUM'),
-	'footer' => HTMLHelper::_('meedya.modalButtons', 'COM_MEEDYA_H5U_CREALBM','createAlbum(this)', 'creab'),
-	'modalWidth' => '40'],
-	$this->loadTemplate('newalb')
+	'confirm-dlg',
+	['title' => 'CONFIRM',
+	'footer' => '<button type="button" class="btn btn-secondary" '.M34C::bs('dismiss').'="modal">'.Text::_('JNO').'</button>
+				<button type="button" class="btn btn-info" '.M34C::bs('dismiss').'="modal">'.Text::_('JYES').'</button>',
+	'modalWidth' => '20'],
+	'PLEASE CONFIRM'
 	);
 ?>
 <script>

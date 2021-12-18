@@ -16,7 +16,7 @@ use Joomla\CMS\HTML\HTMLHelper;
 		<dl>
 		<dt><label for="h5u_album">Select Album</label></dt>
 		<dd>
-			<select id="h5u_album" name="h5u_album" onchange="Meedya.watchAlb(this)">
+			<select class="form-select form-select-sm" id="h5u_album" name="h5u_album" onchange="Meedya.watchAlb(this)">
 				<option value="-1">[ NEW ALBUM ]</option>
 				<option value="0" selected="selected"><?=Text::_('COM_MEEDYA_H5U_SELECT')?></option>
 				<?=HTMLHelper::_('meedya.albumsHierOptions', $this->albums)?>

@@ -90,8 +90,8 @@ $pubdis = $this->album['pub'] && $this->album['pub']!=$this->album['aid'] ? ' di
 </h1>
 <?php endif; ?>
 
-<button class="btn btn-primary" onclick="Meedya.saveAlbum()"><?=Text::_('COM_MEEDYA_SAVE')?></button>
-<button class="btn" onclick="Meedya.cancelEdt()"><?=Text::_('JCANCEL')?></button>
+<button class="<?=M34C::btn('ps')?>" onclick="Meedya.saveAlbum()"><?=Text::_('COM_MEEDYA_SAVE')?></button>
+<button class="<?=M34C::btn('ss')?>" onclick="Meedya.cancelEdt()"><?=Text::_('JCANCEL')?></button>
 
 <div class="actbuts">
 	<?php echo HTMLHelper::_('meedya.actionButtons', ['sela','seln','edts','rems']); ?>

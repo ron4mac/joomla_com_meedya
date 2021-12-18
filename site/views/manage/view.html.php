@@ -28,6 +28,10 @@ class MeedyaViewManage extends MeedyaView
 
 	public function display ($tpl=null)
 	{
+		if (!$this->userPerms->canAdmin) {
+			$this->app->enqueueMessage(Text::_('JERROR_ALERTNOAUTHOR'), 'error');
+			return;
+		}
 		$this->state = $this->get('State');	//var_dump($this->state);
 //		$this->user = Factory::getUser();
 //		$this->items = $this->get('Items');

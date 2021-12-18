@@ -29,6 +29,7 @@ class MeedyaControllerManage extends JControllerLegacy
 	public function display ($cachable = false, $urlparams = false)
 	{
 	//	if (RJC_DBUG) MeedyaHelper::log('MeedyaControllerManage : display');
+		if ($this->nope()) return;
 		$view = $this->getView('manage','html');
 		$view->itemId = $this->mnuItm;
 		return parent::display($cachable, $urlparams);
@@ -43,6 +44,7 @@ class MeedyaControllerManage extends JControllerLegacy
 
 	public function imgsEdit ()
 	{
+		if ($this->nope()) return;
 		$view = $this->getView('manage','html');
 		$view->setLayout('imgedit');
 		$m = $this->getModel('manage');
@@ -55,6 +57,7 @@ class MeedyaControllerManage extends JControllerLegacy
 
 	public function imgEdit ()
 	{
+		if ($this->nope()) return;
 		$view = $this->getView('manage','html');
 		$view->setLayout('imgedit');
 		$m = $this->getModel('manage');
@@ -74,7 +77,7 @@ class MeedyaControllerManage extends JControllerLegacy
 			foreach ($attrs as $k=>$v) {
 				$m->updImage($k, $v);
 			}
-			$this->_nqMsg('Image properties sucessfully saved');
+			$this->_nqMsg('Image properties sucessfully saved', 'success');
 		}
 		$this->setRedirect(base64_decode($this->input->post->get('referer','','base64')));
 	}
@@ -88,7 +91,7 @@ class MeedyaControllerManage extends JControllerLegacy
 			$albs = [$aid];
 			$m = $this->getModel('manage');
 			$m->removeAlbums($albs, $w);
-			$this->_nqMsg('The album was successfully deleted');
+			$this->_nqMsg('The album was successfully deleted', 'success');
 		}
 		$this->setRedirect(Route::_('index.php?option=com_meedya&view=manage&limitstart=0&Itemid='.$this->mnuItm, false));
 	}
@@ -97,7 +100,7 @@ class MeedyaControllerManage extends JControllerLegacy
 	public function addItemsToAlbum ()
 	{
 		if (!Session::checkToken()) {
-			$this->_nqMsg(Text::_('JINVALID_TOKEN'),'error');
+			$this->_nqMsg(Text::_('JINVALID_TOKEN'), 'error');
 			return;
 		}
 		$this->setRedirect($_SERVER['HTTP_REFERER']);
@@ -116,7 +119,7 @@ class MeedyaControllerManage extends JControllerLegacy
 			$aid = $m->addAlbum($albttl, $albpar, $albdesc);
 		}
 		$m->addItems2Album($itms, $aid);
-		$this->_nqMsg('Items added to album');
+		$this->_nqMsg('Items added to album', 'success');
 	}
 
 
@@ -125,7 +128,7 @@ class MeedyaControllerManage extends JControllerLegacy
 		$this->setRedirect($_SERVER['HTTP_REFERER']);
 
 		if (!Session::checkToken()) {
-			$this->_nqMsg(Text::_('JINVALID_TOKEN'),'error');
+			$this->_nqMsg(Text::_('JINVALID_TOKEN'), 'error');
 			return;
 		}
 
@@ -144,7 +147,7 @@ class MeedyaControllerManage extends JControllerLegacy
 	{
 		$this->setRedirect($_SERVER['HTTP_REFERER']);
 		if (!Session::checkToken()) {
-			$this->_nqMsg(Text::_('JINVALID_TOKEN'),'error');
+			$this->_nqMsg(Text::_('JINVALID_TOKEN'), 'error');
 			return;
 		}
 		$itms = $this->input->post->get('slctimg',[],'array');
@@ -155,6 +158,7 @@ class MeedyaControllerManage extends JControllerLegacy
 
 	public function doUpload ()
 	{
+		if ($this->nope()) return;
 		$view = $this->getView('manage','html');
 		$m = $this->getModel('manage');
 		$view->aid = $this->input->get->get('aid',0,'int');
@@ -181,6 +185,7 @@ class MeedyaControllerManage extends JControllerLegacy
 
 	public function editImgs ()
 	{
+		if ($this->nope()) return;
 		$view = $this->getView('manage','html');
 		$view->itemId = $this->mnuItm;
 		$view->setLayout('images');
@@ -199,6 +204,7 @@ class MeedyaControllerManage extends JControllerLegacy
 
 	public function doConfig ()
 	{
+		if ($this->nope()) return;
 		$view = $this->getView('manage','html');
 		$view->itemId = $this->mnuItm;
 		$view->setLayout('config');
@@ -225,7 +231,7 @@ class MeedyaControllerManage extends JControllerLegacy
 			}
 			$m = $this->getModel('manage');
 		//	$m->updateConfig('ss', $vals);
-			$this->_nqMsg('Gallery settings sucessfully saved');
+			$this->_nqMsg('Gallery settings sucessfully saved', 'success');
 		}
 		$this->setRedirect(base64_decode($this->input->post->get('return','','base64')));
 	}
@@ -288,14 +294,23 @@ class MeedyaControllerManage extends JControllerLegacy
 		$m = $this->getModel('manage');
 		$m->saveAlbum($aid, $flds);
 
-		$this->_nqMsg('Album properties sucessfully saved');
+		$this->_nqMsg('Album properties sucessfully saved', 'success');
 		$this->setRedirect(base64_decode($this->input->post->get('referer','','base64')));
 	}
 
 
-	private function _nqMsg ($msg)
+	private function nope ()
 	{
-		Factory::getApplication()->enqueueMessage($msg);
+		$uid = Factory::getUser()->get('id');
+		if ($uid) return false;
+		$this->app->enqueueMessage(Text::_('JERROR_ALERTNOAUTHOR'), 'error');
+	//	$this->setRedirect('index.php');
+		return true;
+	}
+
+	private function _nqMsg ($msg, $tone='info')
+	{
+		$this->app->enqueueMessage($msg, $tone);
 	}
 
 

@@ -12,6 +12,7 @@ use Joomla\CMS\Router\Route;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Session\Session;
+use Joomla\CMS\Layout\LayoutHelper;
 
 HTMLHelper::_('jquery.framework');
 //HTMLHelper::_('bootstrap.modal');
@@ -35,7 +36,7 @@ $jslang = [
 $this->jDoc->addScriptDeclaration('Meedya.L = '.json_encode($jslang).';
 ');
 
-HTMLHelper::_('bootstrap.tooltip', '.hasTip', ['fixed'=>true]);
+//HTMLHelper::_('bootstrap.tooltip', '.hasTip', ['fixed'=>true]);
 
 $filelist = [];
 if ($this->items) {		//var_dump($this->items);
@@ -72,6 +73,7 @@ $ttscript = '
 	Meedya.rawURL = "'.Route::_('index.php?option=com_meedya&format=raw'.$pgidparm.'&Itemid='.$this->itemId, false).'";
 	Meedya.formTokn = "'.Session::getFormToken().'";
 	Meedya.items = '.json_encode($filelist).';
+	Meedya.datatog = "'.M34C::bs('toggle').'";
 	var imgerror = "'.Text::_('COM_MEEDYA_SS_IMGERROR').'";
 	var viderror = "COULD NOT PLAY VIDEO";
 	';
@@ -99,10 +101,12 @@ $this->jDoc->addScriptDeclaration($ttscript);
 ///</form>
 
 //var_dump($bx);
-//echo'<xmp>';var_dump($this->params);echo'</xmp>';
+//echo'<xmp>';var_dump($this->params->toArray());echo'</xmp>';
 
-$use_ratings = $this->params->get('use_ratings');
-$use_comments = $this->params->get('use_comments');
+$parray = $this->params->toArray();
+//$use_ratings = $this->params->get('use_ratings');
+//$use_comments = $this->params->get('use_comments');
+$cancmnt = $this->uid || $parray['pub_comments'];
 ?>
 <style>
 .tooltip.in {
@@ -145,8 +149,8 @@ $use_comments = $this->params->get('use_comments');
 	height: 160px;
 }
 .falbum img {
-	width: 94px;
-	height: 94px;
+	width: 150px;
+	height: 150px;
 	background: #fff;
 	margin-right: 15px;
 	box-shadow:
@@ -164,8 +168,8 @@ $use_comments = $this->params->get('use_comments');
 	padding: 8px;
 }
 .falbum a {
-	width: 160px;
-	height: 160px;
+	width: 168px;
+	height: 168px;
 }
 .itm-alb-ttl {
 	position: absolute;
@@ -236,14 +240,14 @@ $use_comments = $this->params->get('use_comments');
 	$ttmpl = '
 <div class="anitem" data-ix="{{IX}}" data-iid="{{IID}}">
 	<div class="itm-thumb">
-		<div data-toggle="tooltip" data-placement="bottom" title="{{TITLE}}">
-			<img src="{{SRC}}">';
-	if ($use_ratings || $use_comments) {
+		<div '.M34C::bs('toggle').'="tooltip" '.M34C::bs('html').'="true" '.M34C::bs('placement').'="bottom" title="{{TITLE}}">
+			<img class="imgthm" src="{{SRC}}">';
+	if ($parray['use_ratings'] || $parray['use_comments']) {
 		$ttmpl .= '
 			<div class="starcmnt">';
-		if ($use_ratings) $ttmpl .= '
+		if ($parray['use_ratings']) $ttmpl .= '
 				<div class="strate"><div class="strback"><div class="strating" style="width:{{PCNT}}%"></div></div></div>';
-		if ($use_comments) $ttmpl .= '
+		if ($parray['use_comments']) $ttmpl .= '
 				<span class="mycmnts{{CCLAS}}">'.HTMLHelper::_('meedya.cmntsIcon').' {{CCNT}}</span>';
 		$ttmpl .= '
 			</div>
@@ -254,9 +258,8 @@ $use_comments = $this->params->get('use_comments');
 	</div>
 </div>
 ';
+
 	$rplcds = ['{{IX}}','{{IID}}','{{TITLE}}','{{SRC}}','{{PCNT}}','{{CCLAS}}','{{CCNT}}'];
-	$do_stars = $this->params->get('use_ratings');
-	$do_cmnts = $this->params->get('use_comments');
 
 	foreach ($this->items as $ix=>$item) {
 		if (!$item) continue;
@@ -276,9 +279,9 @@ $use_comments = $this->params->get('use_comments');
 				$thmsrc = 'img.png" data-echo="thm/'.$thumb;
 		}
 		$rplvals[] = 'components/com_meedya/static/img/'.$thmsrc;
-	//	if ($do_stars || $do_cmnts) $itemImgD->setFoot(HTMLHelper::_('meedya.starcmnt', $item, $do_stars, $do_cmnts));
+	//	if ($parray['use_ratings'] || $parray['use_comments']) $itemImgD->setFoot(HTMLHelper::_('meedya.starcmnt', $item, $parray['use_ratings'], $parray['use_comments']));
 		$rplvals[] = $item['ratecnt'] ? $item['ratetot']/$item['ratecnt']*20 : 0;
-		$rplvals[] = $item['cmntcnt'] ? ' hasem' : '';
+		$rplvals[] = $item['cmntcnt'] ? ' hasem' : ($cancmnt ? '' : 'no');
 		$rplvals[] = $item['cmntcnt'] ?: '&nbsp;';
 		echo str_replace($rplcds, $rplvals, $ttmpl);
 	}
@@ -290,10 +293,14 @@ $use_comments = $this->params->get('use_comments');
 	<?php echo $this->pagination->getListFooter(); ?>
 </div>
 <?php
-if ($this->uid) {
-	include_once JPATH_COMPONENT . '/layouts/rating.php';
-	include_once JPATH_COMPONENT . '/layouts/comments.php';
-	include_once JPATH_COMPONENT . '/layouts/comment.php';
+if ($parray['use_comments']) {
+	echo LayoutHelper::render('comments', ['cancmnt'=>$cancmnt]);
+	if ($cancmnt) {
+		echo LayoutHelper::render('comment');
+	}
+}
+if ($parray['use_ratings'] && ($this->uid || $parray['pub_ratings'])) {
+	echo LayoutHelper::render('rating');
 }
 ?>
 <script>
@@ -303,23 +310,26 @@ if ($this->uid) {
 		throttle: 250,
 		debounce: false
 	});
-<?php if ($this->uid): ?>
+	document.getElementById('area').addEventListener('click', Meedya.thmClick, true);
+<?php if (false && $parray['use_ratings'] && ($this->uid || $parray['pub_ratings'])): ?>
 	jQuery(".strate").on("click", function(e){
 		e.stopPropagation();
 		var iid = this.parentElement.parentElement.parentElement.parentElement.dataset.iid;
 		Meedya.dorate(iid, this);
 	});
+<?php endif; ?>
+<?php if (false && $parray['use_comments']): ?>
 	jQuery(".mycmnts").on("click", function(e){
 		e.stopPropagation();
 		var iid = this.parentElement.parentElement.parentElement.parentElement.dataset.iid;
 		Meedya.doComments(iid, this);
 	});
 <?php endif; ?>
-	jQuery(".itm-thumb").on("click", function(e){
-		e.stopPropagation();
-		Meedya.viewer.showSlide(e,jQuery(this).parent()[0].dataset.ix);
-	});
-	document.querySelector("#comments-modal .modal-dialog").classList.add('modal-dialog-scrollable');;
+//	jQuery(".itm-thumb img").on("click", function(e){
+//		e.stopPropagation();
+//		Meedya.viewer.showSlide(e, this.parentElement.parentElement.parentElement.dataset.ix);
+//	});
+//	document.querySelector("#comments-modal .modal-dialog").classList.add('modal-dialog-scrollable');;
 </script>
 <?php if (!$this->useFanCB): ?>
 <div id="sstage" class="slideback" style="display:none">
@@ -329,4 +339,3 @@ if ($this->uid) {
 	</div>
 </div>
 <?php endif; ?>
-
