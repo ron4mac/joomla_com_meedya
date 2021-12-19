@@ -94,6 +94,7 @@ abstract class MeedyaAdminHelper
 		switch ($which) {
 			case 'a':
 				$char1 = '*';
+				break;
 			case 'u':
 				$char1 = '@';
 				break;
@@ -110,7 +111,9 @@ abstract class MeedyaAdminHelper
 				self::$siteMenu = Factory::getApplication()->getMenu('site');
 			}
 			while (($file = readdir($dh)) !== false) {
-				if ($char1=='*' || $file[0]==$char1) {
+				if ($file[0]=='.') continue;
+				if ($char1=='*' || $file[0]==$char1) {		//echo "@@@@ $char1 $dpath$file @@@@<br>";
+					if (!is_dir($dpath.$file)) continue;
 					$ah = opendir($dpath.$file);
 					while (($apd = readdir($ah)) !== false) {
 						$ptf = null;

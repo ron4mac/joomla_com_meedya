@@ -2,6 +2,8 @@ Meedya = {};	// a namespace for com_meedya
 
 (function($) {
 
+	var token;
+
 	var viewer = {
 		// video player options
 		vopts: {
@@ -82,6 +84,7 @@ Meedya = {};	// a namespace for com_meedya
 				Meedya.dorate(iid, clkd);
 				break;
 			case 'far fa-comments':
+			case 'icon-comments-2':			// J3
 				clkd = clkd.parentElement;
 			case 'mycmnts':
 			case 'mycmnts hasem':
@@ -93,7 +96,6 @@ Meedya = {};	// a namespace for com_meedya
 	}
 
 
-	const token = Joomla.getOptions('csrf.token', '');
 	var rDlg, ssr, curRelm;
 
 	function submitRating (evt) {
@@ -223,6 +225,8 @@ Meedya = {};	// a namespace for com_meedya
 
 	$(document).ready(function() {
 		$('['+Meedya.datatog+'="tooltip"]').tooltip();
+		// get the joomla suplied csrf token
+		token = Joomla.getOptions('csrf.token', '');
 		// setup the star rating modal
 		rDlg = document.getElementById('rating-modal');
 		rDlg.addEventListener('hidden.bs.modal', function (event) {$(rDlg).modal('hide');});		// NOT SURE ABOUT THIS

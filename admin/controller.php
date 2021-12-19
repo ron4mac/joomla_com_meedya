@@ -82,16 +82,21 @@ class MeedyaController extends JControllerLegacy
 		$cids = $this->input->get('cid',array(),'array');
 		$view = $this->input->get('view');
 	//	$tc = $view == 'meedya' ? '@' : '_';
+		$issues = 0;
 		foreach ($cids as $cid) {
 			list($sid, $mnu) = explode('.', $cid);
 		//	MeedyaHelperDb::fixItemAlbums(JPATH_ROOT.'/'.$sdp.'/'.$cid.'/'.JApplicationHelper::getComponentName());
 			try {
-				MeedyaHelperDb::updateDatabase(JPATH_ROOT.'/'.$sdp.'/'.$sid.'/'.JApplicationHelper::getComponentName().'_'.$mnu);
+				$issues += MeedyaHelperDb::updateDatabase(JPATH_ROOT.'/'.$sdp.'/'.$sid.'/com_meedya_'.$mnu);
 			} catch (Exception $e) {
 				Factory::getApplication()->enqueueMessage($e->getMessage(), 'error');
 			}
 		}
-		$this->setRedirect('index.php?option=com_meedya&view='.$view, Text::_('COM_MEEDYA_MSG_COMPLETE'), 'warning');
+		if ($issues) {
+			$this->setRedirect('index.php?option=com_meedya&view='.$view, Text::_('COM_MEEDYA_MSG_INCOMPLETE'), 'warning');
+		} else {
+			$this->setRedirect('index.php?option=com_meedya&view='.$view, Text::_('COM_MEEDYA_MSG_COMPLETE'), 'success');
+		}
 	}
 
 }

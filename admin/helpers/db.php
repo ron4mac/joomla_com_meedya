@@ -6,6 +6,8 @@
  */
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Factory;
+
 abstract class MeedyaHelperDb
 {
 	public static function checkDbVersion ($udbPath)
@@ -86,7 +88,7 @@ abstract class MeedyaHelperDb
 //	file_put_contents('UPDS.txt', print_r($udbPath, true));
 		if (!file_exists($udbPath)) return;
 
-		$curver = file_exists($udbPath.'/.dbver') ? file_get_contents($udbPath.'/.dbver') : '0.0.0';
+		$curver = file_exists($udbPath.'/.dbver') ? trim(file_get_contents($udbPath.'/.dbver')) : '0.0.0';
 
 		$updsqlfiles = glob(JPATH_COMPONENT_ADMINISTRATOR.'/tables/upd_*.sql', GLOB_NOSORT);
 		if (!$updsqlfiles) return;
@@ -96,12 +98,30 @@ abstract class MeedyaHelperDb
 		$dbfile = $udbPath.'/meedya.db3';
 		if (!file_exists($dbfile)) throw new Exception('COM_MEEDYA_MISSING_DB');
 		$db = JDatabaseDriver::getInstance(array('driver'=>'sqlite', 'database'=>$dbfile));
+		$errs = [];
 		foreach ($updsqlfiles as $sqlf) {
+			preg_match('#upd_(.+)\.sql#', basename($sqlf), $m);
+			$updver = $m[1];
+			if (version_compare($updver, $curver, '<=')) continue;
 			$sqls = explode("\n",file_get_contents($sqlf));
 			foreach ($sqls as $sql) {
-				if ($sql && $sql[0] != '#') $db->setQuery($sql)->execute();
+				try {
+					if ($sql && $sql[0] != '#') $db->setQuery($sql)->execute();
+				} catch (Exception $e) {
+					$errs[basename($sqlf)] = $e->getMessage();
+					break;
+				}
+			}
+			if ($errs) {
+				$msg = $udbPath . ' :: ' . print_r($errs, true).$curver.$updver;
+				Factory::getApplication()->enqueueMessage($msg, 'error');
+				break;
+			} else {
+				file_put_contents($udbPath.'/.dbver', $updver);
+				$curver = $updver;
 			}
 		}
+		return count($errs);
 	}
 
 	public static function fixItemAlbums ($udbPath)
