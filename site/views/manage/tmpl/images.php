@@ -23,9 +23,6 @@ MeedyaHelper::addStyle('jquery.tagsinput', 'vendor/tags/');
 MeedyaHelper::addScript('manage');
 MeedyaHelper::addScript('bootbox');
 MeedyaHelper::addScript('jquery.tagsinput', 'vendor/tags/');
-$this->jDoc->addScriptDeclaration('
-Meedya.rawURL = "'.Route::_('index.php?option=com_meedya&format=raw&Itemid='.$this->itemId, false).'";
-');
 
 Text::script('COM_MEEDYA_PERM_DELETE');
 Text::script('JCANCEL');
@@ -41,8 +38,6 @@ function dateF ($dt)
 function editImg (iid) {
 	window.location = "<?=Route::_('index.php?option=com_meedya&task=manage.imgEdit&Itemid='.$this->itemId)?>&items="+iid;
 }
-//var myBaseURL = "<?= Route::_('index.php?option=com_meedya&Itemid='.$this->itemId, false); ?>";
-Meedya.formTokn = "<?= Session::getFormToken(); ?>";
 </script>
 
 <style>

@@ -165,7 +165,6 @@ class com_meedyaInstallerScript extends InstallerScript
 			$params['max_height'] = 1200;
 			$params['thm_width'] = 120;
 			$params['thm_height'] = 120;
-			$params['use_fancb'] = true;
 			$params['show_version'] = true;
 			$this->mySetParams($params);
 		}

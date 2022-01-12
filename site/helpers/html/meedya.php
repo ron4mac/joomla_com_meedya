@@ -165,19 +165,22 @@ EOD;
 
 		if (substr($item->mtype, 0, 1) == 'v') {
 			$iDat = 'video.png';
+			if ($item->thumb) {
+				$iDat = 'img.png" data-echo="thm/'.$item->thumb;
+			}
 		} else {
 			$iDat = 'img.png" data-echo="thm/'.$item->file;
 		}
 
 		$mvicon = '';
 		if ($edt) {
-			$acts = '<i class="icon-expand" onclick="iZoomOpen('.$id.')"></i>
+			$acts = '<i class="icon-expand" onclick="iZoomOpen('.$id.',this)"></i>
 				<i class="icon-info-2 pull-left"></i>
 				<i class="icon-edit pull-right" onclick="editImg('.$id.')"></i>';
-			$mvicon = '<div class="itmMove" onclick="Meedya.moveItem(this)"><i class="icon-move"></i></div>';
+			$mvicon = '<div class="itmMove" onclick="Meedya.moveItem(event,this)"><i class="icon-move"></i></div>';
 		} else {
 			$acts = '<i class="icon-info-2 pull-left"></i>
-				<i class="icon-expand pull-right" onclick="iZoomOpen('.$id.')"></i>';
+				<i class="icon-expand pull-right" onclick="iZoomOpen('.$id.',this)"></i>';
 		}
 
 		$nah = $item->album ? '' : ' style="opacity:0.4"';

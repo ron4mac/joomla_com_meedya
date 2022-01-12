@@ -13,11 +13,11 @@ echo HTMLHelper::_(
 	'bootstrap.renderModal',
 	'delact', // selector
 	array( // options
-		'title'  => 'Delete Album',
-		'footer' => HTMLHelper::_('meedya.modalButtons', 'COM_MEEDYA_CREATE_DELETE_ALBUM','Meedya.deleteAlbum(this)', 'deliB', false, 'btn btn-warning'),
+		'title'  => Text::_('COM_MEEDYA_DELETE_ALBUM'),
+		'footer' => HTMLHelper::_('meedya.modalButtons', 'COM_MEEDYA_DELETE_ALBUM','Meedya.deleteAlbum(this)', 'deliB', false, 'btn btn-warning'),
 		'modalWidth' => 30
 	),
-	Text::_('COM_MEEDYA_CREATE_DELETE_ALBUM_BLURB')
+	Text::_('COM_MEEDYA_DELETE_ALBUM_BLURB')
 	.'<br /><br /><input type="checkbox" name="trashall" id="trashall" value="true" /><label for="trashall">'
-	.Text::_('COM_MEEDYA_CREATE_DELETE_ALL_IMAGES').'</label>'
+	.Text::_('COM_MEEDYA_DELETE_ALL_IMAGES').'</label>'
 );

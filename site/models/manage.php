@@ -86,7 +86,7 @@ class MeedyaModelManage extends MeedyaModelMeedya
 		return $albs;
 	}
 
-	public function removeItems ($aid, $list)
+/*	public function removeItems ($aid, $list)
 	{
 		if (RJC_DBUG) MeedyaHelper::log('removeItems', ['album'=>$aid,'items'=>$list]);
 		if (is_null($this->album) || $this->album['aid']!=$aid) $this->album = $this->getAlbum($aid);
@@ -95,7 +95,7 @@ class MeedyaModelManage extends MeedyaModelMeedya
 		$items = '\''.implode('|',$mod).'\'';
 		$this->updateAlbum(['items'=>$items]);
 	}
-
+*/
 	public function addItems2Album ($items, $album, $pot=false)
 	{
 		if (RJC_DBUG) MeedyaHelper::log('addItems', ['album'=>$album,'items'=>$items]);
@@ -205,6 +205,13 @@ class MeedyaModelManage extends MeedyaModelMeedya
 			array_push($sets, '`'.$k.'` = '. $db->quote($v));
 		}
 		$db->setQuery('UPDATE `meedyaitems` SET '.implode(', ', $sets).' WHERE `id`=' . $iid);
+		$db->execute();
+	}
+
+	public function setItemThumb ($iid, $fn)
+	{
+		$db = $this->getDbo();
+		$db->setQuery('UPDATE `meedyaitems` SET `thumb`='.$db->quote($fn).' WHERE `id`=' . $iid);
 		$db->execute();
 	}
 

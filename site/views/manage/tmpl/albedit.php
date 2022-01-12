@@ -20,10 +20,6 @@ MeedyaHelper::addScript('pell.min', 'vendor/pell/');
 
 HTMLHelper::_('bootstrap.modal');
 
-$this->jDoc->addScriptDeclaration('
-Meedya.rawURL = "'.Route::_('index.php?option=com_meedya&format=raw&Itemid='.$this->itemId, false).'";
-');
-
 Text::script('COM_MEEDYA_REMOVE');
 Text::script('COM_MEEDYA_VRB_REMOVE');
 
@@ -41,14 +37,15 @@ $pubdis = $this->album['pub'] && $this->album['pub']!=$this->album['aid'] ? ' di
 	.actbuts {margin-top: 1em}
 	.albdesc > div {margin-top: 1em}
 	#pubalb {vertical-align: text-bottom}
-	.item img {
+	.item img {user-drag: none;}
+	.itemxxx img {
 		-webkit-user-select: none;
 		-webkit-touch-callout: none;
 		-webkit-user-drag: none;
 	}
 	@media only screen and (min-width: 768px) {
 		/* For desktop: */
-		.item img {-webkit-user-drag: inherit;}
+		.item imgxxx {-webkit-user-drag: inherit;}
 	}
 }
 </style>

@@ -36,7 +36,7 @@ class MeedyaViewManage extends MeedyaView
 //		$this->user = Factory::getUser();
 //		$this->items = $this->get('Items');
 
-		$this->mparams = !empty($this->itemId) ? Factory::getApplication()->getMenu()->getItem($this->itemId)->getParams() : new Registry();
+		$this->mparams = !empty($this->itemId) ? $this->app->getMenu()->getItem($this->itemId)->getParams() : new Registry();
 		//echo'<xmp>';var_dump($this->mparams);echo'</xmp>';
 
 	//	if (RJC_DBUG) MeedyaHelper::log('ViewManage state', $this->state);
@@ -107,10 +107,10 @@ class MeedyaViewManage extends MeedyaView
 			//echo'<pre>';var_dump(JComponentHelper::getParams('com_meedya'));
 			//var_dump($this->params);
 	//			$this->totStore = (int)$this->get('StorageTotal');
-				$user = Factory::getUser();
-				$uid = $user->get('id');
-				$this->params = Factory::getApplication()->getParams();		//echo'<pre>';var_dump($this->params);echo'</pre>';
-				$this->galid = base64_encode($this->params->get('instance_type').':'.$this->params->get('owner_group').':'.$uid);
+//				$user = Factory::getUser();
+//				$uid = $user->get('id');
+				$this->params = $this->app->getParams();		//echo'<pre>';var_dump($this->params);echo'</pre>';
+				$this->galid = base64_encode($this->params->get('instance_type').':'.$this->params->get('owner_group').':'.$this->uid);
 			//	$this->state = $this->get('State');
 //				$this->curalb = 0;
 // @+@+@+@+@+@+@+@+@ get media types from config

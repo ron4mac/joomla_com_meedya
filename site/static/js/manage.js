@@ -1,58 +1,87 @@
-if (typeof Meedya === 'undefined') {
-	Meedya = {};	// a namespace for com_meedya
-}
-
 /* a few utility functions to avoid using jquery and assist in minification */
 // getElementById
-function _id (id) {
+const _id = (id) => {
 	return document.getElementById(id);
-}
+};
 // simplify cancelling an event
-function _pd (e,sp=true) {
+const _pd = (e, sp=true) => {
 	if (e.preventDefault) { e.preventDefault(); }
 	if (sp && e.stopPropagation) { e.stopPropagation(); }
-}
+};
 // addEventListener
-function _ae (elem, evnt, func, capt=false) {
+const _ae = (elem, evnt, func, capt=false) => {
 	elem.addEventListener(evnt, func, capt);
-}
+};
 
 
-(function($) {
+var Meedya = (function (my, $, w) {
 
-	// utility dialog actions for alert, confirm using bootstrap modals
-	Meedya.confirm = function (dlg, title, body, cb) {
-		$("#"+dlg).modal('show');
+	// establish some common variables
+	const formTokn = Joomla.getOptions('csrf.token');
+
+	let _removeAlbThm = () => {
+		_id('albthmimg').src = 'components/com_meedya/static/img/img.png';
+		_id('albthmid').value = 0;
 	}
 
-	Meedya.setDlgParAlb = function () {
+	let _handleAlbthmDragOver = (e) => {
+		if (e.dataTransfer.types.indexOf('imgsrc') < 0) return;
+		_pd(e);
+		return false;
+	}
+
+	let _handleAlbthmDrop = (e) => {
+		_pd(e);
+		let src = e.dataTransfer.getData('imgsrc');
+		if (src) {
+			let aimg = e.target.parentElement.getElementsByTagName("IMG")[0];
+			aimg.src = src;
+			aimg.style.opacity = null;
+			let atv = _id('albthmid');
+			atv.value = e.dataTransfer.getData('meeid');
+		}
+	}
+
+	let _hasSelections = (sel, alrt=false) => {
+		if (document.querySelectorAll(sel).length) {
+			return true;
+		} else {
+			if (alrt) bootbox.alert(Joomla.Text._('COM_MEEDYA_SELECT_SOME'));
+			return false;
+		}
+	}
+
+
+//@@@@@@@@@@ PUBLIC FUNCTIONS @@@@@@@@@@
+
+	let setDlgParAlb = () => {
 		if (_id('h5u_palbum'))
 		_id('h5u_palbum').value = Meedya.AArrange.selalb();
 	};
 
-	Meedya.setAlbumDanD = function () {
-		var albthm = _id("albthm");
-		_ae(albthm, 'dragover', handleAlbthmDragOver);
-		_ae(albthm, 'drop', handleAlbthmDrop);
-		_ae(albthm, 'dragenter', function (e) { e.preventDefault(); this.style.opacity = '0.5'; });
-		_ae(albthm, 'dragleave', function () { this.style.opacity = '1.0'; });
-		var albfrm = _id("albForm");
-		_ae(albfrm, 'dragstart', function(e){ e.dataTransfer.setData('albthm','X'); });
-		_ae(albfrm, 'dragover', function(e){ if (e.dataTransfer.types.indexOf('albthm')>0) { _pd(e);e.dataTransfer.dropEffect = 'move'; } });
-		_ae(albfrm, 'dragenter', function(e){ if (e.dataTransfer.types.indexOf('albthm')>0) { _pd(e);e.dataTransfer.dropEffect = 'move'; } });
-		_ae(albfrm, 'drop', function(e){ _pd(e); removeAlbThm(); });
+	let setAlbumDanD = () => {
+		let albthm = _id("albthm");
+		_ae(albthm, 'dragover', _handleAlbthmDragOver);
+		_ae(albthm, 'drop', _handleAlbthmDrop);
+		_ae(albthm, 'dragenter', (e) => { _pd(e); e.target.style.opacity = '0.5'; });
+		_ae(albthm, 'dragleave', (e) => e.target.style.opacity = null);
+		let albfrm = _id("albForm");
+		_ae(albfrm, 'dragstart', (e) => e.dataTransfer.setData('albthm','X'));
+		_ae(albfrm, 'dragover', (e) => { if (e.dataTransfer.types.indexOf('albthm')>0) { _pd(e);e.dataTransfer.dropEffect = 'move'; } });
+		_ae(albfrm, 'dragenter', (e) => { if (e.dataTransfer.types.indexOf('albthm')>0) { _pd(e);e.dataTransfer.dropEffect = 'move'; } });
+		_ae(albfrm, 'drop', (e) => { _pd(e); _removeAlbThm(); });
 	};
 
-	Meedya.deleteSelected = function (e) {
+	let deleteSelected = (e) => {
 		_pd(e);
-		if (hasSelections("[name='slctimg[]']:checked", true)) {
+		if (_hasSelections("[name='slctimg[]']:checked", true)) {
 			bootbox.confirm({
 				message: Joomla.Text._('COM_MEEDYA_PERM_DELETE'),
 				buttons: {
 					confirm: { label: Joomla.Text._('JACTION_DELETE'), className: 'btn-danger' },
 					cancel: { label: Joomla.Text._('JCANCEL') }
 				},
-				callback: function(c){
+				callback: (c) => {
 					if (c) {
 						document.adminForm.task.value = 'manage.deleteItems';
 						document.adminForm.submit();
@@ -62,20 +91,20 @@ function _ae (elem, evnt, func, capt=false) {
 		}
 	};
 
-	Meedya.removeSelected = function (e) {
+	let removeSelected = (e) => {
 		_pd(e);
-		if (hasSelections("[name='slctimg[]']:checked", true)) {
+		if (_hasSelections("[name='slctimg[]']:checked", true)) {
 			bootbox.confirm({
 				message: Joomla.Text._('COM_MEEDYA_REMOVE'),
 				buttons: {
 					confirm: { label: Joomla.Text._('COM_MEEDYA_VRB_REMOVE'), className: 'btn-danger' },
 					cancel: { label: Joomla.Text._('JCANCEL') }
 				},
-				callback: function(c){
+				callback: (c) => {
 					if (c) {
-						var items = document.querySelectorAll("[name='slctimg[]']:checked");
-						var pnode = items[0].parentNode.parentNode;
-						for (var i=0; i<items.length; i++) {
+						let items = document.querySelectorAll("[name='slctimg[]']:checked");
+						let pnode = items[0].parentNode.parentNode;
+						for (let i=0; i<items.length; i++) {
 							pnode.removeChild(items[i].parentNode);
 						}
 					}
@@ -84,44 +113,41 @@ function _ae (elem, evnt, func, capt=false) {
 		}
 	};
 
-	Meedya.selAllImg = function (e, X) {
+	let selAllImg = (e, X) => {
 		_pd(e);
-		var ck = X?'checked':'';
-		var xbs = document.adminForm.elements["slctimg[]"];
+		let ck = X?'checked':'';
+		let xbs = document.adminForm.elements["slctimg[]"];
 		// make up for no array returned if there is only one item
 		if (!xbs.length) xbs = [xbs];
-		for (var i = 0; i < xbs.length; i++) {
+		for (let i = 0; i < xbs.length; i++) {
 			xbs[i].checked = ck;
 		}
 	};
 
-	Meedya.editSelected = function (e) {
+	let editSelected = (e) => {
 		_pd(e);
-		if (hasSelections("input[name='slctimg[]']:checked",true)) {
+		if (_hasSelections("input[name='slctimg[]']:checked",true)) {
 			document.adminForm.task.value = 'manage.imgsEdit';
 			document.adminForm.submit();
 		}
 	};
 
-	Meedya.addSelected = function (e) {
+	let addSelected = (e) => {
 		_pd(e);
-		if (hasSelections("input[name='slctimg[]']:checked",true)) {
+		if (_hasSelections("input[name='slctimg[]']:checked",true)) {
 			$('#add2albdlg').modal('show');
 		}
 	};
 
-	Meedya.saveAlbum = function () {
+	let saveAlbum = () => {
 		document.albForm.thmord.value = Meedya.Arrange.iord();
 		document.albForm.submit();
 	};
 
-
-
-
 	// watch for selection of album; enable create button when there is one
-	Meedya.watchAlb = function (elm) {
-		var creab = _id('creab');
-		var classes = creab.classList;
+	let watchAlb = (elm) => {
+		let creab = _id('creab');
+		let classes = creab.classList;
 		if (elm.value > 0) {
 			_id('creanualb').style.display = "none";
 		//	classes.remove("btn-disabled");
@@ -140,10 +166,10 @@ function _ae (elem, evnt, func, capt=false) {
 	};
 
 	// watch for entry of album name; enable create button when there is a name
-	Meedya.watchAlbNam = function (elm) {
+	let watchAlbNam = (elm) => {
 		//var creab = _id('creab');	console.log(creab,elm.value);
-		var creab = _id('creab');
-		var classes = creab.classList;
+		let creab = _id('creab');
+		let classes = creab.classList;
 		if (elm.value.trim()) {
 		//	classes.remove("btn-disabled");
 		//	classes.add("btn-secondary");
@@ -155,7 +181,7 @@ function _ae (elem, evnt, func, capt=false) {
 		}
 	};
 
-	Meedya.addItems2Album = function (elm) {
+	let addItems2Album = (elm) => {
 		elm.disabled = true;
 		document.adminForm.albumid.value = _id('h5u_album').value;
 		document.adminForm.nualbnam.value = _id('nualbnam').value;
@@ -165,15 +191,15 @@ function _ae (elem, evnt, func, capt=false) {
 		document.adminForm.submit();
 	};
 
-	Meedya.aj_addItems2Album = function (elm) {
+	let NOT_USED_aj_addItems2Album = (elm) => {
 		elm.disabled = true;
 		var albNamFld = _id('nualbnam');
 		var albParFld = _id('h5u_palbum');
 		var albDscFld = _id('albdesc');
 		var nualbnam = albNamFld.value.trim();
 		var ajd = {task: 'manage.addItemsToAlbum', albnam: nualbnam, paralb: (albParFld ? albParFld.value : 0), albdesc: albDscFld.value};
-		ajd[Meedya.formTokn] = 1;
-		$.post(Meedya.rawURL, ajd,
+		ajd[formTokn] = 1;
+		$.post(my.rawURL, ajd,
 			function (response, status, xhr) {
 				//console.log(response, status, xhr);
 				if (status=="success") {
@@ -191,94 +217,110 @@ function _ae (elem, evnt, func, capt=false) {
 	};
 
 	// request creation of new album
-	Meedya.ae_createAlbum = function (elm) {
+	let ae_createAlbum = (elm) => {
 		elm.disabled = true;
-		var albNamFld = _id('nualbnam');
-		var albParFld = _id('h5u_palbum');
-		var albDscFld = _id('albdesc');
-		var nualbnam = albNamFld.value.trim();
-		var ajd = {task: 'manage.newAlbum', albnam: nualbnam, paralb: (albParFld ? albParFld.value : 0), albdesc: albDscFld.value};
-		ajd[Meedya.formTokn] = 1;
-		$.post(Meedya.rawURL, ajd,
-			function (response, status, xhr) {
-				//console.log(response, status, xhr);
-				if (status=="success") {
-					jQuery('#newalbdlg').modal('hide');
-					if (response) {
-						alert(response);
-					} else {
-						window.location.reload(true);
-					}
-				} else {
-					alert(xhr.statusText);
-				}
-				elm.disabled = false;
-			}
-		);
+		let albNamFld = _id('nualbnam');
+		let albParFld = _id('h5u_palbum');
+		let albDscFld = _id('albdesc');
+		let nualbnam = albNamFld.value.trim();
+		let ajd = {task: 'manage.newAlbum', albnam: nualbnam, paralb: (albParFld ? albParFld.value : 0), albdesc: albDscFld.value};
+		ajd[formTokn] = 1;
+		$.post(my.rawURL, ajd)
+		.done(data => {if (data) alert(data); else w.location.reload(true);})
+		.fail(rsp => alert(rsp.responseText));
 	};
 
-
 	// rearrange items in an album
-	var moving = null;
-	Meedya.moveItem = function (elm) {
-		var item = elm.parentElement;
+	let moving = null;
+	let moveItem = (e, elm) => {
+		_pd(e, true);
+		let item = elm.parentElement;
 		if (!moving) {
 			moving = item;
 			item.classList.add("moving");
 		} else {
 			moving.classList.remove("moving");
 			if (item != moving) {
-				var area = _id('area');
-				var orf = area.removeChild(moving);
+				let area = _id('area');
+				let orf = area.removeChild(moving);
 				area.insertBefore(orf, item);
 			}
 			moving = null;
 		}
 	};
 
+	// create a thumbnail for a video from the video position
+	let setVideoThumb = (e, iid) => {
+		_pd(e, true);
+		let _CANVAS = document.getElementById("my-video-canvas"),
+			_CTX = _CANVAS.getContext("2d"),
+			_VIDEO = document.querySelector("#zoom-zvid"),
+			_VIDOVR = document.getElementById("my-vidover"),
+			_sx = 0, _sy = 0,
+			_sw = _VIDEO.videoWidth,
+			_sh = _VIDEO.videoHeight,
+			_dx = 0, _dy = 0,
+			_dw = 160,
+			_dh = 0,
+			_sr = 0,
+			_ow = _VIDOVR.width,
+			_oh = _VIDOVR.height
+			;
 
-
-	// %%% private functions %%%
-
-	function removeAlbThm () {
-		_id('albthmimg').src = 'components/com_meedya/static/img/img.png';
-		_id('albthmid').value = 0;
-	}
-
-	function handleAlbthmDragOver (e) {
-		e.preventDefault();
-		if (e.dataTransfer.types.indexOf('imgsrc') < 0) return;		//console.log("O",e.dataTransfer);
-		_pd(e);		 // Necessary. Allows us to drop.
-//		e.dataTransfer.dropEffect = 'copy';		// See the section on the DataTransfer object.
-		return false;
-	}
-
-	function handleAlbthmDrop (e) {
-		_pd(e);		// stops the browser from redirecting.
-				console.log("D");
-		var src = e.dataTransfer.getData('imgsrc');
-		if (src) {
-			this.getElementsByTagName("IMG")[0].src = src;
-			var atv = _id('albthmid');
-			atv.value = e.dataTransfer.getData('meeid');
+		if (!_VIDEO) {
+			alert("Did not locate the video.");
+			return;
 		}
-		this.style.opacity = '1.0';
-	}
 
-	function hasSelections (sel, alrt=false) {
-		if (document.querySelectorAll(sel).length) {
-			return true;
+		// calculate rects
+		if (iid>0) {	 //always
+			_dh = 160;
+			_sr = Math.min(_sh/_dh, _sw/_dw);
+			_sw = Math.round(_dw * _sr);
+			_sh = Math.round(_dh * _sr);
+			_sx = (_VIDEO.videoWidth - _sw) > 0 ? (_VIDEO.videoWidth - _sw) >> 1 : 0;
 		} else {
-			if (alrt) bootbox.alert(Joomla.Text._('COM_MEEDYA_SELECT_SOME'));
-			return false;
+			_sr = _sw / _sh;
+			_dh = Math.round(_dw / _sr);
 		}
-	}
 
-})(jQuery);
+		_CANVAS.width = _dw;
+		_CANVAS.height = _dh;
+		_CTX.drawImage(_VIDEO, _sx, _sy, _sw, _sh, _dx, _dy, _dw, _dh);
+		_CTX.drawImage(_VIDOVR, 0, 0, _ow, _oh, 3, 3, _ow, _oh);
+
+		let dataURL = _CANVAS.toDataURL('image/jpeg', 0.8);
+		let ajd = {task: 'manage.setVideoThumb', vid: iid, imgBase64: dataURL};
+		ajd[Joomla.getOptions('csrf.token', '')] = 1;
+		$.post(my.rawURL, ajd)
+		.done((data) => { Meedya.thmelmsrc.src = data; iZoomClose(); })
+		.fail((rsp) => alert(rsp.responseText));
+	};
+
+
+	// return the Meedya public functions
+	return {
+		setDlgParAlb: setDlgParAlb,
+		selAllImg: selAllImg,
+		editSelected: editSelected,
+		addSelected: addSelected,
+		removeSelected: removeSelected,
+		deleteSelected: deleteSelected,
+		setAlbumDanD: setAlbumDanD,
+		saveAlbum: saveAlbum,
+		watchAlb: watchAlb,
+		watchAlbNam: watchAlbNam,
+	//	aj_addItems2Album: aj_addItems2Album,
+		addItems2Album: addItems2Album,
+		ae_createAlbum: ae_createAlbum,
+		moveItem: moveItem,
+		setVideoThumb: setVideoThumb
+	};
+})(Joomla.getOptions('Meedya'), jQuery, window);
 
 
 Meedya.Arrange = (function ($) {
-	var dragSrcEl = null,
+	let dragSrcEl = null,
 		iSlctd = null,
 		stop = true,
 		ctnr = '',
@@ -287,124 +329,98 @@ Meedya.Arrange = (function ($) {
 		items;
 
 	// Private functions
-/*
-	function contains(list, value) {
-		for ( var i = 0; i < list.length; ++i ) {
-			if (list[i] === value) return true;
-		}
-		return false;
-	}
-*/
-	function hasItem (e) {
-		var typs = e.dataTransfer.types;
-		for (var i = 0; i < typs.length; ++i ) {
+	let dropable = (e) => {
+		if (e.target.parentElement.parentElement == dragSrcEl) return false;
+		let typs = e.dataTransfer.types;
+		for (let i = 0; i < typs.length; ++i ) {
 			if (typs[i] === meeid) return true;
 		}
 		return false;
 	}
 
-	function handleDragStart (e) {
-		this.style.opacity = '0.4';		// this / e.target is the source node.
-
-		dragSrcEl = this;
+	let handleDragStart = (e) => {
+		dragSrcEl = e.target.parentElement.parentElement;
+		dragSrcEl.style.opacity = '0.4';
 		e.dataTransfer.effectAllowed = 'copyMove';
-	//	e.dataTransfer.setData('text/html', this.innerHTML);
-		e.dataTransfer.setData(meeid,this.getAttribute('data-id'));
-	//	console.log(this.getElementsByTagName("IMG")[0].src);
-		e.dataTransfer.setData('imgsrc',this.getElementsByTagName("IMG")[0].src);
+		e.dataTransfer.setData(meeid,dragSrcEl.getAttribute('data-id'));
+		e.dataTransfer.setData('imgsrc',e.target.src);
 	}
 
-	function handleDragOver (e) {
-		if (hasItem(e)) {
-			_pd(e);
-			e.dataTransfer.dropEffect = 'move';		// See the section on the DataTransfer object.
-			return false;
-		}
-	}
-
-	function handleDragEnter (e) {		console.log("A",{...e.dataTransfer});
-		// this / e.target is the current hover target.
-		if (hasItem(e)) {
-			_pd(e);
-			this.classList.add('over');
-			return false;
-		}
-	}
-
-	function handleDragLeave (e) {
-		this.classList.remove('over');		// this / e.target is previous target element.
-	}
-
-	function handleDrop (e) {		console.log("Z",e.dataTransfer);
-		// this / e.target is current target element.
-		_pd(e);
-		// Don't do anything if dropping the same item we're dragging.
-		if (/*e.dataTransfer.types.contains(meeid) &&*/ dragSrcEl != this) {
-//			console.log(dragSrcEl);
-//			console.log(e);
-			var area = _id(ctnr);
-			// Set the source item's HTML to the HTML of the item we dropped on.
-		//	dragSrcEl.innerHTML = this.innerHTML;
-		//	this.innerHTML = e.dataTransfer.getData('text/html');
-			var orf = area.removeChild(dragSrcEl);
-			area.insertBefore(orf, this);
-		}
-
-		return false;
-	}
-
-	function handleDragEnd (e) {
-		// this/e.target is the source node.
-		this.style.opacity = null;
-
-		[].forEach.call(items, function (itm) {
-			itm.classList.remove('over');
-		});
-
-//		itmend.classList.remove('over');
-
+	let handleDrag = (e) => {
 		stop = true;
-	}
-
-	function handleDrag (e) {
-		stop = true;	//console.log(e);
-
 		if (e.clientY < 50) {
 			stop = false;
 			scroll(-1);
 		}
-
 		if (e.clientY > ($(window).height() - 50)) {
 			stop = false;
 			scroll(1);
 		}
 	}
 
-	function tMove (e) {
+	let tMove = (e) => {
 		if (e.targetTouches.length == 1) {
-			var touch = e.targetTouches[0];
+			let touch = e.targetTouches[0];
 			// Place element where the finger is
-			this.style.left = touch.pageX + 'px';
-			this.style.top = touch.pageY + 'px';
+			e.target.style.left = touch.pageX + 'px';
+			e.target.style.top = touch.pageY + 'px';
 		}
 	}
 
-	var scroll = function (step) {
-		var scrollY = $(window).scrollTop();
+	let handleDragEnd = (e) => {
+		dragSrcEl.style.opacity = null;
+		[].forEach.call(items, (itm) => itm.classList.remove('over'));
+		stop = true;
+	}
+
+	let handleDrop = (e) => {
+		_pd(e);
+		let dtarg = e.target.parentElement.parentElement;
+		// Don't do anything if dropping the same item we're dragging.
+		if (dragSrcEl != dtarg) {
+			let area = _id(ctnr);
+			let orf = area.removeChild(dragSrcEl);
+			area.insertBefore(orf, dtarg);
+		}
+		return false;
+	}
+
+	let handleDragEnter = (e) => {
+		if (dropable(e)) {
+			_pd(e);
+			e.target.classList.add('over');
+			return false;
+		}
+	}
+
+	let handleDragOver = (e) => {
+		if (dropable(e)) {
+			_pd(e);
+			return false;
+		}
+	}
+
+	let handleDragLeave = (e) => {
+		e.target.classList.remove('over');
+	}
+
+	const scroll = (step) => {
+		let scrollY = $(window).scrollTop();
 		$(window).scrollTop(scrollY + step);
 		if (!stop) {
-			setTimeout(function () { scroll(step) }, 60);
+			setTimeout(() => scroll(step), 60);
 		}
 	};
 
 	// Return exported functions
 	return {
-		init: function (iCtnr, iClass) {
+		init: (iCtnr, iClass) => {
 			ctnr = iCtnr;
 			clas = iClass;
-			items = document.querySelectorAll('#'+iCtnr+' .'+iClass);
-			[].forEach.call(items, function(itm) {
-					itm.setAttribute('draggable', 'true');
+		//	items = document.querySelectorAll('#'+iCtnr+' .'+iClass);
+			items = document.querySelectorAll('#'+iCtnr+' img');
+			[].forEach.call(items, (itm) => {
+			//		itm.setAttribute('draggable', 'true');
 					_ae(itm, 'drag', handleDrag);
 					_ae(itm, 'dragstart', handleDragStart);
 					_ae(itm, 'dragenter', handleDragEnter);
@@ -415,11 +431,12 @@ Meedya.Arrange = (function ($) {
 					_ae(itm, 'touchmove', tMove);
 				});
 		},
-		iord: function () {
-			items = document.querySelectorAll('#'+ctnr+' .'+clas);
-			var imord = [];
-			[].forEach.call(items, function (itm) {
-				var iid = itm.getAttribute('data-id');
+		iord: () => {
+		//	items = document.querySelectorAll('#'+ctnr+' .'+clas);
+			items = document.querySelectorAll('#'+ctnr+' img');
+			let imord = [];
+			[].forEach.call(items, (itm) => {
+				let iid = itm.getAttribute('data-id');
 				if (iid) imord.push(iid);
 			});
 			return imord.join("|");
@@ -430,8 +447,8 @@ Meedya.Arrange = (function ($) {
 
 // Need to have a separate Drag and Drop arranger for the gallery album hierarchy
 
-Meedya.AArrange = (function ($) {
-	var dragSrcEl = null,
+Meedya.AArrange = (function (my, $) {
+	let dragSrcEl = null,
 		deTarg = null,
 		iSlctd = null,
 		stop = true,
@@ -441,125 +458,98 @@ Meedya.AArrange = (function ($) {
 
 	// Private functions
 
-	function setAlbPaid (aid, paid, func) {
-
-	//	func(''); alert("Actual album move is disabled"); return;
-
-	//	var prms = {'aid': aid, 'paid': paid};
-		var prms = {task: 'manage.adjustAlbPaid', 'aid': aid, 'paid': paid};
+	let setAlbPaid = (aid, paid, func) => {
+		let prms = {task: 'manage.adjustAlbPaid', 'aid': aid, 'paid': paid};
 		prms[Joomla.getOptions('csrf.token', '')] = 1;
-		$.post(Meedya.rawURL, prms, function (d) {
-			func(d);
-		});
+		$.post(my.rawURL, prms, (d) => func(d));
 	}
 
-	function hasItem (e) {
-		var typs = e.dataTransfer.types;
-		for (var i = 0; i < typs.length; ++i ) {
+	let dropable = (e) => {
+		if (e.target == dragSrcEl) return false;
+		let typs = e.dataTransfer.types;
+		for (let i = 0; i < typs.length; ++i ) {
 			if (typs[i] === meeid) return true;
 		}
 		return false;
 	}
 
-	function handleDragStart (e) {
+	let handleDragStart = (e) => {
 		e.target.style.opacity = '0.4';
-
-		dragSrcEl = this;
+		dragSrcEl = e.target;
 		e.dataTransfer.effectAllowed = 'copyMove';
-	//	e.dataTransfer.setData('text/html', this.innerHTML);
-		e.dataTransfer.setData(meeid,this.getAttribute('data-id'));
-	//	console.log(this.getElementsByTagName("IMG")[0].src);
-//		e.dataTransfer.setData('imgsrc',this.getElementsByTagName("IMG")[0].src);
+		e.dataTransfer.setData(meeid,dragSrcEl.getAttribute('data-id'));
+		e.target.classList.add('moving');
 	}
 
-	function handleDragOver (e) {
-		if (hasItem(e)) {
+	let handleDragOver = (e) => {
+		if (dropable(e)) {
 			_pd(e);
-			e.dataTransfer.dropEffect = 'move';		// See the section on the DataTransfer object.
 			return false;
 		}
 	}
 
-	function handleDragEnter (e) {
-		// this / e.target is the current hover target.
-//		if (hasItem(e)) {
+	let handleDragEnter = (e) => {
+		if (dropable(e)) {
 			_pd(e);
 			deTarg = e.target;
-			this.classList.add('over');
+			e.target.classList.add('over');
 			return false;
-//		}
+		}
 	}
 
-	function handleDragLeave (e) {
+	let handleDragLeave = (e) => {
 //		if (e.target == deTarg) {
 			_pd(e);
-			this.classList.remove('over');		// this / e.target is previous target element.
+			e.target.classList.remove('over');
 //		}
 	}
 
-	function handleDrop (e) {
-		// this / e.target is current target element.
+	let handleDrop = (e) => {
 		_pd(e);
 		// Don't do anything if dropping the same item we're dragging.
-		if (/*e.dataTransfer.types.contains(meeid) &&*/ dragSrcEl != this) {
-//			console.log(dragSrcEl);
-//			console.log(e);
-		sa = dragSrcEl.getAttribute('data-aid');
-		da = e.target.getAttribute('data-aid');
-		setAlbPaid(sa, da, function(r){
-			if (r) {
-				bootbox.alert(Joomla.Text._('COM_MEEDYA_MOVE_FAIL'));
-			} else {
-				e.target.append(dragSrcEl);
-			}
-		});
-//		e.target.append(dragSrcEl);
-//			var area = _id(ctnr);
-			// Set the source item's HTML to the HTML of the item we dropped on.
-		//	dragSrcEl.innerHTML = this.innerHTML;
-		//	this.innerHTML = e.dataTransfer.getData('text/html');
-//			var orf = area.removeChild(dragSrcEl);
-//			area.insertBefore(orf, this);
+		if (dragSrcEl != e.target) {
+			let sa = dragSrcEl.getAttribute('data-aid');
+			let da = e.target.getAttribute('data-aid');
+			setAlbPaid(sa, da, (r) => {
+				if (r) {
+					bootbox.alert(Joomla.Text._('COM_MEEDYA_MOVE_FAIL'));
+				} else {
+					e.target.append(dragSrcEl);
+				}
+			});
 		}
-
 		return false;
 	}
 
-	function handleDragEnd (e) {
-		// this/e.target is the source node.
-		this.style.opacity = '1.0';
-
-		[].forEach.call(items, function (itm) {
-			itm.classList.remove('over');
-		});
-
+	let handleDragEnd = (e) => {
+		dragSrcEl.style.opacity = null;
+		[].forEach.call(items, (itm) => itm.classList.remove('over'));
+		e.target.classList.remove('moving');
 		stop = true;
 	}
 
-	function handleDrag (e) {
+	let handleDrag = (e) => {
 		stop = true;
-
 		if (e.clientY < 50) {
 			stop = false;
 			scroll(-1);
 		}
-
 		if (e.clientY > ($(window).height() - 50)) {
 			stop = false;
 			scroll(1);
 		}
 	}
 
-	function tMove (e) {
+	let tMove = (e) => {
 		if (e.targetTouches.length == 1) {
-			var touch = e.targetTouches[0];
+			let touch = e.targetTouches[0];
 			// Place element where the finger is
-			this.style.left = touch.pageX + 'px';
-			this.style.top = touch.pageY + 'px';
+			e.target.style.left = touch.pageX + 'px';
+			e.target.style.top = touch.pageY + 'px';
 		}
 	}
 
-	function iSelect (e, elm=this) {
+	let iSelect = (e, elm=this) => {
 		_pd(e);
 		if (iSlctd) iSlctd.classList.remove('slctd');
 		if (elm == iSlctd) {
@@ -570,20 +560,20 @@ Meedya.AArrange = (function ($) {
 		}
 	}
 
-	var scroll = function (step) {
-		var scrollY = $(window).scrollTop();
+	const scroll = (step) => {
+		let scrollY = $(window).scrollTop();
 		$(window).scrollTop(scrollY + step);
 		if (!stop) {
-			setTimeout(function () { scroll(step) }, 500);
+			setTimeout(() => scroll(step), 500);
 		}
 	};
 
 	// Return exported functions
 	return {
-		init: function (iCtnr, iClass) {
+		init: (iCtnr, iClass) => {
 			ctnr = iCtnr;
 			items = document.querySelectorAll('#'+iCtnr+' .'+iClass);
-			[].forEach.call(items, function(itm) {
+			[].forEach.call(items, (itm) => {
 					itm.setAttribute('draggable', 'true');
 					_ae(itm, 'drag', handleDrag);
 					_ae(itm, 'dragstart', handleDragStart, true);
@@ -596,19 +586,19 @@ Meedya.AArrange = (function ($) {
 				//	_ae(itm, 'click', iSelect);
 				});
 		},
-		selalb: function () {
+		selalb: () => {
 			return iSlctd ? iSlctd.getAttribute('data-aid') : 0;
 		},
 		iSelect: iSelect
 	};
-}(jQuery));
+}(Joomla.getOptions('Meedya'), jQuery));
 
 
-// iZoom action to expand individual image
-(function ($, w) {
-	var back, area;
+// iZoom action to expand individual item
+(function (my, $, w) {
+	let back, area;
 
-	function keyPressed (e) {
+	let keyPressed = (e) => {
 		switch (e.charCode) {
 			case 32:
 			case 13:
@@ -620,7 +610,7 @@ Meedya.AArrange = (function ($) {
 		}
 	}
 
-	function keyDowned (e) {
+	let keyDowned = (e) => {
 		switch (e.keyCode) {
 			case 32:
 			case 13:
@@ -632,9 +622,10 @@ Meedya.AArrange = (function ($) {
 		}
 	}
 
-	function open (pID) {
+	let open = (pID, elm) => {
+		if (elm) Meedya.thmelmsrc = elm.parentElement.previousElementSibling.firstElementChild;
 		area = document.createElement('div');
-		$.post(Meedya.rawURL, {task: 'manage.getZoomItem', iid: pID})
+		$.post(my.rawURL, {task: 'manage.getZoomItem', iid: pID})
 		.done(data => area.innerHTML = data);
 		area.className = 'zoom-area';
 		area.tabIndex = "-1";
@@ -648,12 +639,13 @@ Meedya.AArrange = (function ($) {
 		_ae(back, 'click', close);
 	}
 
-	function close (e) {
-		_pd(e);
+	let close = (e) => {
+		if (e) _pd(e);
 		document.body.removeChild(back);
 	}
 
 	w.iZoomOpen = open;
 	w.iZoomClose = close;
 
-})(jQuery, window);
+})(Joomla.getOptions('Meedya'), jQuery, window);
+

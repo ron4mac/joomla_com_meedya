@@ -12,7 +12,14 @@ abstract class MeedyaHelperDb
 {
 	public static function checkDbVersion ($udbPath)
 	{
-		return file_exists(dirname($udbPath).'/.dbver');
+		$verf = dirname($udbPath).'/.dbver';
+		$curver = file_exists($verf) ? trim(file_get_contents($verf)) : '0.0.0';
+		$updsqlfiles = glob(JPATH_COMPONENT_ADMINISTRATOR.'/tables/upd_*.sql', GLOB_NOSORT);
+		if (!$updsqlfiles) return true;
+		natsort($updsqlfiles);
+		preg_match('#upd_(.+)\.sql#', basename(array_pop($updsqlfiles)), $m);
+		$updver = $m[1];
+		return version_compare($updver, $curver, '<=');
 	}
 	
 	public static function rebuildExpodt ($udbPath)

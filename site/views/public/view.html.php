@@ -15,18 +15,25 @@ class MeedyaViewPublic extends MeedyaView
 {
 	protected $pgid;
 
+	public function __construct ($config = [])
+	{
+		if (RJC_DBUG) { MeedyaHelper::log('MeedyaViewPublic'); }
+		$this->pgid = Factory::getApplication()->input->get('pgid','','cmd');
+		parent::__construct($config);
+	}
+
 	function display ($tpl=null)
 	{
 		$this->state = $this->get('State');
 
 		switch ($this->getLayout()) {
 			case 'album':
-				$app = Factory::getApplication();
+//				$app = Factory::getApplication();
 				$this->pgid = Factory::getApplication()->input->get('pgid','','cmd');
 				list($gdir, $gsfx, $aid) = explode('|', base64_decode($this->pgid));
 				$this->isSearch = true;
 				$this->useFanCB = true;
-				$pw = $app->getPathWay();
+				$pw = $this->app->getPathWay();
 				$pw->setItemName(0, $this->params->get('page_title'));
 
 				$apw = $this->get('AlbumPath');  //$m->getAlbumPath($this->aid);
@@ -50,8 +57,8 @@ class MeedyaViewPublic extends MeedyaView
 				$this->items = $this->get('Items');
 		}
 
-		$app = Factory::getApplication();
-		$pathway = $app->getPathway();
+//		$app = Factory::getApplication();
+		$pathway = $this->app->getPathway();
 //		$pathway->addItem('My Added Breadcrumb Link', Route::_(''));
 		parent::display($tpl);
 	}

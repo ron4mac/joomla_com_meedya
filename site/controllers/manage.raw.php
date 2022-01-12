@@ -32,10 +32,7 @@ class MeedyaControllerManage extends JControllerLegacy
 	public function upfile ()
 	{
 	//	if (RJC_DBUG) MeedyaHelper::log('upfile:', $this->input);
-		if (!Session::checkToken()) {
-			header('HTTP/1.1 403 Not Allowed');
-			jexit(Text::_('JINVALID_TOKEN'));
-		}
+		$this->tokenCheck();
 
 		require_once JPATH_COMPONENT.'/classes/uplodr.php';
 		$toname = null;
@@ -50,48 +47,39 @@ class MeedyaControllerManage extends JControllerLegacy
 	// task to create a new album
 	public function newAlbum ()
 	{
-		if (Session::checkToken()) {
-			$a = $this->input->post->get('albnam', 'A NEW ALBUM', 'string');
-			$p = $this->input->post->get('paralb', 0, 'int');
-			$d = $this->input->post->get('albdesc', null, 'string');
-			$m = $this->getModel('manage');
-			$aid = $m->addAlbum($a, $p, $d);
-			if (!$aid) {
-				header("HTTP/1.0 400 Could not create album: {$a}");
-			} elseif ($this->input->post->get('o', 0, 'int')) {
-				$albs = $m->getAlbumsList();
-				echo HTMLHelper::_('meedya.albumsHierOptions', $albs, $aid);
-			}
-		} else {
-			echo Text::_('JINVALID_TOKEN');
+		$this->tokenCheck();
+		$a = $this->input->post->get('albnam', 'A NEW ALBUM', 'string');
+		$p = $this->input->post->get('paralb', 0, 'int');
+		$d = $this->input->post->get('albdesc', null, 'string');
+		$m = $this->getModel('manage');
+		$aid = $m->addAlbum($a, $p, $d);
+		if (!$aid) {
+			header("HTTP/1.0 400 Could not create album: {$a}");
+		} elseif ($this->input->post->get('o', 0, 'int')) {
+			$albs = $m->getAlbumsList();
+			echo HTMLHelper::_('meedya.albumsHierOptions', $albs, $aid);
 		}
 	}
 
-	// task to remove items from an album
+/*	// task to remove items from an album
 	public function removeItems ()
 	{
-		if (Session::checkToken()) {
-			$aid = $this->input->post->get('aid','','int');
-			$parm = $this->input->post->get('items','','string');
-			$items = explode('|',$parm);
-			$m = $this->getModel('manage');
-			$m->removeItems($aid, $items);
-		} else {
-			echo Text::_('JINVALID_TOKEN');
-		}
+		$this->tokenCheck();
+		$aid = $this->input->post->get('aid','','int');
+		$parm = $this->input->post->get('items','','string');
+		$items = explode('|',$parm);
+		$m = $this->getModel('manage');
+		$m->removeItems($aid, $items);
 	}
-
+*/
 	// task to change the parent of an album
 	public function adjustAlbPaid ()
 	{
-		if (Session::checkToken()) {
-			$aid = $this->input->post->get('aid','','int');
-			$paid = $this->input->post->get('paid','','int');
-			$m = $this->getModel('manage');
-			$m->setAlbumPaid($aid, $paid);
-		} else {
-			echo Text::_('JINVALID_TOKEN');
-		}
+		$this->tokenCheck();
+		$aid = $this->input->post->get('aid','','int');
+		$paid = $this->input->post->get('paid','','int');
+		$m = $this->getModel('manage');
+		$m->setAlbumPaid($aid, $paid);
 	}
 
 	public function impstps ()
@@ -142,13 +130,36 @@ class MeedyaControllerManage extends JControllerLegacy
 				break;
 			case 'video':
 				//return '<video class="zoom-zvid" autoplay><source src="'.$url.'" type="'.$ftyp['mime'].'"></video>';
-				echo '<video class="zoom-zvid" controls autoplay><source src="'.$url.'/img/'.$item['file'].'"></video>';
+				echo '<div><button class="btn btn-sm btn-secondary" onclick="Meedya.setVideoThumb(event,'.$iid.')">'.Text::_('COM_MEEDYA_SETVIDTHM').'</button></div>';
+				echo '<div class="zoom-vid"><video class="zoom-zvid" id="zoom-zvid" controls autoplay><source src="'.$url.'/img/'.$item['file'].'"></video></div>';
+				echo '<div style="display:none"><canvas id="my-video-canvas"></canvas><img id="my-vidover" src="components/com_meedya/static/img/vidovero.png" /></div>';
 				break;
 			default:
 				echo '<div style="color:white">UNSUPPORTED FILE TYPE #'.$item['mtype'].'# '.$item['file'].'</div>';
 		}
 		echo '</div>';
 	}
+
+	public function setVideoThumb ()
+	{
+		$this->tokenCheck();
+		if (empty($_POST['imgBase64'])) $this->fail('FAILED: server received no image data');
+		$mtch = [];
+		if (!preg_match('#^data:image/(\w*);base64,#', $_POST['imgBase64'], $mtch)) $this->fail('FAILED: could not parse image data');
+		if ($mtch[1]=='jpg') $mtch[1] = 'jpeg';
+		$tdir = JPATH_BASE . '/' . $this->gallPath . '/thm/';
+		$iid = $this->input->post->getInt('vid', 0);
+		$fn = 'videothumb_'.$iid.'.'.$mtch[1];
+		if (!file_put_contents($tdir.$fn, base64_decode(substr($_POST['imgBase64'], strlen($mtch[0]))))) $this->fail('FAILED: could not save thumbnail');
+
+		// set the item's thumb file in the db
+		$m = $this->getModel('manage');
+		$m->setItemThumb($iid, $fn);
+
+		// return an image source path to the client
+		echo JUri::root(true).'/'.$this->gallPath.'/thm/'.$fn;
+	}
+
 
 	private function placeImageFiles ($fpath, $aid, $fast)
 	{
@@ -200,6 +211,20 @@ class MeedyaControllerManage extends JControllerLegacy
 		}
 		$mp = explode('/', $mtype);
 		return (is_array($mp) && $mp[0] == 'image');
+	}
+
+	private function tokenCheck ()
+	{
+		if (!Session::checkToken()) {
+			header('HTTP/1.1 403 Not Allowed');
+			jexit(Text::_('JINVALID_TOKEN'));
+		}
+	}
+
+	private function fail ($msg)
+	{
+		header('HTTP/1.1 400 Failure');
+		jexit($msg);
 	}
 
 	private function _log ($msg)

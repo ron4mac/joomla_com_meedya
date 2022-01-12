@@ -18,13 +18,7 @@ Text::script('COM_MEEDYA_IMPORT');
 MeedyaHelper::addStyle('gallery');
 MeedyaHelper::addStyle('manage');
 HTMLHelper::_('jquery.framework');
-//HTMLHelper::_('jquery.framework', false);
-//HTMLHelper::_('bootstrap.modal');
 MeedyaHelper::addScript('manage');
-$this->jDoc->addScriptDeclaration('
-Meedya.rawURL = "'.Route::_('index.php?option=com_meedya&format=raw&Itemid='.$this->itemId, false).'";
-Meedya.formTokn = "'.Session::getFormToken().'";
-');
 
 function buildTree(array $albums, &$html, $paid = 0) {
 	$branch = [];
@@ -63,15 +57,15 @@ $this->btmscript[] = 'Meedya.AArrange.init("gstruct","album");';
 $hasImport = JFolder::exists($this->gallpath.'/import');
 ?>
 <style>
-.modal-body {
+/*.modal-body {
 	padding:1em;
 	width:100%;
 	box-sizing:border-box;
 	max-height: 400px;
 	overflow-y: scroll;
 }
-.modal-backdrop.fade.in {opacity:0.2}
-#trashall {margin:0 6px 0 0;position:relative;bottom:1px}
+.modal-backdrop.fade.in {opacity:0.2}*/
+#trashall {margin:0 6px 0 0;position:relative;bottom:1px;vertical-align:middle;}
 #trashall + label {display:inline}
 #gstruct div {
 	border: 1px solid #AAA;
@@ -79,6 +73,7 @@ $hasImport = JFolder::exists($this->gallpath.'/import');
 	margin: 12px;
 	padding: 8px;
 	background-color: white;
+	color: #555;
 }
 #gstruct div.over {
 	background-color: #EF6;
@@ -107,6 +102,10 @@ $hasImport = JFolder::exists($this->gallpath.'/import');
 }
 #gstruct .slctd {
 	background-color: #E0E8FF;
+	cursor: grab;
+}
+#gstruct .album.moving {
+	cursor: grabbing;
 }
 .pubalb {
 	font-variant-caps: all-small-caps;
@@ -137,15 +136,6 @@ $hasImport = JFolder::exists($this->gallpath.'/import');
 <div class="page-footer">
 	<?php echo $this->pagination->getListFooter(); ?>
 </div>
-<!-- <div id="old-delact" tabindex="-1" class="modal hide fade jviewport-width30">
-	<div class="modal-body">
-		<?=Text::_('COM_MEEDYA_CREATE_DELETE_ALBUM_BLURB')?><br /><br />
-		<input type="checkbox" name="trashall" id="trashall" value="true" /><label for="trashall"><?=Text::_('COM_MEEDYA_CREATE_DELETE_ALL_IMAGES')?></label>
-	</div>
-	<div class="modal-footer">
-		<?php echo HTMLHelper::_('meedya.modalButtons', 'COM_MEEDYA_CREATE_DELETE_ALBUM','Meedya.deleteAlbum(this)', 'deliB', false); ?>
-	</div>
-</div> -->
 <?php
 	echo LayoutHelper::render('newalbum', ['script'=>'Meedya.ae_createAlbum(this)', 'albums'=>$this->albums]);
 	echo LayoutHelper::render('delalbum');
@@ -164,25 +154,21 @@ endif;
 <script>
 	Meedya.alb2delete = 0;
 	Meedya.deleteAlbum = function (elm) {
-		//alert(jQuery(elm).parent().attr('data-aid'));
 		var wipe = _id('trashall').checked ? '&wipe=1' : '';
 		window.location = '<?=Route::_('index.php?option=com_meedya&task=manage.delAlbum&Itemid='.$this->itemId.'&aid=', false)?>' + this.alb2delete + wipe;
 	};
 	Meedya.albEdtAction = function (e, elm) {
 		_pd(e);
 		var alb2edit = jQuery(elm).parent().attr('data-aid');
-		//window.location = '<?=Route::_('index.php?option=com_meedya&view=manage&layout=albedit&aid=', false)?>' + alb2edit;
 		window.location = '<?=Route::_('index.php?option=com_meedya&task=manage.editAlbum&Itemid='.$this->itemId.'&aid=', false)?>' + alb2edit;
 	};
 	Meedya.albUpldAction = function (e, elm) {
 		_pd(e);
 		var alb2upld = jQuery(elm).parent().attr('data-aid');
-		//window.location = '<?=Route::_('index.php?option=com_meedya&view=manage&layout=albedit&aid=', false)?>' + alb2edit;
 		window.location = '<?=Route::_('index.php?option=com_meedya&task=manage.doUpload&Itemid='.$this->itemId.'&aid=', false)?>' + alb2upld;
 	};
 	Meedya.albDelAction = function (e, elm) {
 		_pd(e);
-		//alert(jQuery(elm).parent().attr('data-aid'));
 		Meedya.alb2delete = jQuery(elm).parent().attr('data-aid');
 		jQuery("#delact").modal('show');
 	};

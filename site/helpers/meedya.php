@@ -20,20 +20,23 @@ abstract class MeedyaHelper
 		$dbg = RJC_DBUG;
 		$sfx = $dbg ? ('?'.time()) : '';
 		$vray = [
+		//	'meedya' => ['meedya.js', 'meedya.min.js'],		have issues minifying this, so just cause default use
 			'manage' => ['manage.js', 'manage.min.js'],
 			'echo' => ['echo.js', 'echo.min.js'],
 			'slides' => ['slides.js', 'slides.min.js'],
 			'upload' => ['upload.js', 'upload.min.js'],
 			'bootbox' => ((int)JVERSION < 4) ? ['bootbox.js', 'bootbox.min.js'] : ['https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.5.2/bootbox.js','https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.5.2/bootbox.min.js'],
-			'jquery.tagsinput' => ['jquery.tagsinput.js', 'jquery.tagsinput.min.js']
+			'jquery.tagsinput' => ['jquery.tagsinput.js', 'jquery.tagsinput.min.js'],
+			'fancybox' => ['3.5.7/jquery.fancybox.js', '3.5.7/jquery.fancybox.min.js']
 			];
 		if (isset($vray[$scr])) {
 			$s = $vray[$scr][$dbg ? 0 : 1];
 		} else {
 			$s = $scr.'.js';
 		}
-		if (strpos($s, '://'))
-			return $s . $sfx;
+
+		if (strpos($s, '://')) return $s . $sfx;
+
 		return 'components/com_meedya/static/' . $path . $s . $sfx;
 	}
 
@@ -61,7 +64,8 @@ abstract class MeedyaHelper
 			'manage' => ['manage.css', 'manage.css'],
 			'echo' => ['echo.css', 'echo.min.css'],
 			'slides' => ['slides.css', 'slides.min.css'],
-			'upload' => ['upload.css', 'upload.css']
+			'upload' => ['upload.css', 'upload.css'],
+			'fancybox' => ['3.5.7/jquery.fancybox.css', '3.5.7/jquery.fancybox.min.css']
 			];
 		if (isset($vray[$css])) {
 			$s = $vray[$css][$dbg ? 0 : 1];

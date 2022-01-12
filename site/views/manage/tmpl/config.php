@@ -16,9 +16,6 @@ MeedyaHelper::addStyle('manage');
 HTMLHelper::_('jquery.framework', false);
 MeedyaHelper::addScript('manage');
 $jdoc = Factory::getDocument();
-$jdoc->addScriptDeclaration('
-Meedya.formTokn = "'.Session::getFormToken().'";
-');
 
 echo '<div class="meedya-config">';
 

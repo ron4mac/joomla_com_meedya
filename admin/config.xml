@@ -79,18 +79,6 @@
 			compdef="120" />
 
 		<field
-			name="use_fancb"
-			type="radio"
-			class="btn-group btn-group-yesno"
-			default="0"
-			label="COM_MEEDYA_CONFIG_USEFANCB_LABEL"
-			description="COM_MEEDYA_CONFIG_USEFANCB_DESC"
-		>
-			<option value="0">JNO</option>
-			<option value="1">JYES</option>
-		</field>
-
-		<field
 			name="show_version"
 			type="radio"
 			class="btn-group btn-group-yesno"

@@ -31,7 +31,7 @@ class MeedyaModelMeedya extends JModelList
 
 		$unotes = [];
 		$folds = MeedyaAdminHelper::getDbPaths($this->relm, 'meedya', true);
-		foreach ($folds as $dir => $mgi) {
+		foreach ($folds as $dir => $mgis) foreach ($mgis as $mgi) {
 			$dbok = MeedyaHelperDb::checkDbVersion($mgi['path']);
 			$dbwarn = $dbok ? '' : '<span style="color:red"> DB NEEDS UPDATE</span>';
 			$userid = (int)substr($dir,1);

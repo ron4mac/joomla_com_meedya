@@ -11,6 +11,7 @@ defined('_JEXEC') or die;
  */
 
 use Joomla\CMS\Factory;
+use Joomla\CMS\Router\Route;
 use Joomla\CMS\HTML\HTMLHelper;
 
 // provide all views with a HTMLHelper class
@@ -23,6 +24,7 @@ HTMLHelper::_('bootstrap.tooltip');
 
 class MeedyaView extends JViewLegacy
 {
+	// some common properites for all views
 	protected $app;
 	protected $state;
 	protected $items = null;
@@ -57,6 +59,9 @@ class MeedyaView extends JViewLegacy
 
 		$this->instance = $this->app->getUserState('com_meedya.instance', '::');
 		$this->jDoc = Factory::getDocument();
+		$pgidparm = isset($this->pgid) ? '&pgid='.$this->pgid : '';
+		$rurl = Route::_('index.php?option=com_meedya&format=raw'.$pgidparm.'&Itemid='.$this->itemId, false);
+		$this->jDoc->addScriptOptions('Meedya',['rawURL' => $rurl]);
 	}
 
 	public function display ($tpl = null)
@@ -64,7 +69,9 @@ class MeedyaView extends JViewLegacy
 		if (RJC_DBUG) { MeedyaHelper::log('MeedyaView - display'); }
 		$this->pagination = $this->get('Pagination');
 
+		// add javascript to fetch images only when scrolled into view
 		MeedyaHelper::addScript('echo');
+
 		parent::display($tpl);
 		if ($this->btmscript) echo "<script type=\"text/javascript\">\n".implode("\n", $this->btmscript)."\n</script>";
 	}
@@ -73,11 +80,9 @@ class MeedyaView extends JViewLegacy
 	{
 		$pics = $albrec->items ? explode('|', $albrec->items) : [];
 		if (!$albrec->thumb) {
-		//	$albrec->thumb = $pics ? $this->getItemThumb($pics[0]) : false;
 			$albrec->thumb = $pics ? $pics[0] : false;
 		}
 		if ($albrec->thumb) {
-		//	$thum = $this->gallpath.'/thm/'.$albrec->thumb;
 			$thum = $this->gallpath.'/thm/'.$this->getItemThumb($albrec->thumb);
 		} else {
 			$thum = 'components/com_meedya/static/img/noimages.jpg';

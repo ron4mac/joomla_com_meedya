@@ -62,10 +62,7 @@ class MeedyaController extends JControllerLegacy
 	// receive a rating vote
 	public function rateItem ()
 	{
-		if (!Session::checkToken()) {
-			header('HTTP/1.1 403 Not Allowed');
-			jexit(Text::_('JINVALID_TOKEN'));
-		}
+		$this->tokenCheck();
 		$m = $this->getModel('social');
 		$iid = $this->input->getInt('iid', 0);
 		$val = $this->input->getInt('val', 0);
@@ -85,7 +82,7 @@ class MeedyaController extends JControllerLegacy
 		$iid = $this->input->getInt('iid', 0);
 		try {
 			if ($m->rateChk($iid)) {
-				header('HTTP/1.1 403 Duplicate Submission');
+				header('HTTP/1.1 400 Duplicate Submission');
 				jexit(Text::_('COM_MEEDYA_ALREADY_RATED'));
 			}
 		} catch (Exception $e) {
@@ -97,10 +94,7 @@ class MeedyaController extends JControllerLegacy
 	// get all the comments for an item
 	public function getComments ()
 	{
-		if (!Session::checkToken()) {
-			header('HTTP/1.1 403 Not Allowed');
-			jexit(Text::_('JINVALID_TOKEN'));
-		}
+		$this->tokenCheck();
 		$m = $this->getModel('social');
 		$iid = $this->input->getInt('iid', 0);
 		try {
@@ -119,15 +113,21 @@ class MeedyaController extends JControllerLegacy
 
 	public function addComment ()
 	{
-		if (!Session::checkToken()) {
-			header('HTTP/1.1 403 Not Allowed');
-			jexit(Text::_('JINVALID_TOKEN'));
-		}
+		$this->tokenCheck();
 		file_put_contents('COMSUB.txt', print_r($this->input->post, true));
 		$iid = $this->input->post->getInt('iid', 0);
 		$cmnt = $this->input->post->get('cmntext', '', 'string');
 		$m = $this->getModel('social');
 		echo '&nbsp;'.HTMLHelper::_('meedya.cmntsIcon').' '.$m->addComment($iid, $this->uid, $cmnt);
 	}
+
+	private function tokenCheck ()
+	{
+		if (!Session::checkToken()) {
+			header('HTTP/1.1 403 Not Allowed');
+			jexit(Text::_('JINVALID_TOKEN'));
+		}
+	}
+
 
 }

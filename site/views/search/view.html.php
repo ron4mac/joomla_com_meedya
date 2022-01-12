@@ -13,17 +13,17 @@ include_once JPATH_COMPONENT.'/views/meedyaview.php';
 
 class MeedyaViewSearch extends MeedyaView
 {
-	protected $user;
-	protected $params;
+//	protected $user;
+//	protected $params;
 	protected $userPerms = null;
 	public $aid;
 	public $sterm;
 
 	function display ($tpl=null)
 	{
-		$this->user = Factory::getUser();
-		$this->params = Factory::getApplication()->getParams();
-		$this->userPerms = MeedyaHelper::getUserPermissions($this->user, $this->params);
+//		$this->user = Factory::getUser();
+//		$this->params = Factory::getApplication()->getParams();
+//		$this->userPerms = MeedyaHelper::getUserPermissions($this->user, $this->params);
 		$this->state = $this->get('State');	//echo'<xmp>';var_dump($this->state);echo'</xmp>';	//echo get_class($this->state);
 
 		$this->isSearch = true;
@@ -36,13 +36,11 @@ class MeedyaViewSearch extends MeedyaView
 		$m = $this->getModel();
 
 		// build the bread crumbs
-		$pw = Factory::getApplication()->getPathWay();
+		$pw = $this->app->getPathWay();
 //		$pw->setItemName(0, '<i class="icon-home-2" title="Gallery Home"></i>');
 		$apw = $m->getAlbumPath($this->aid);
-		foreach ($apw as $ap) {
-			foreach ($ap as $k => $v) {
-				$pw->addItem($v, Route::_('index.php?option=com_meedya&view=album&aid='.$k.'&Itemid='.$this->itemId, false));
-			}
+		foreach ($apw as $ap) foreach ($ap as $k => $v) {
+			$pw->addItem($v, Route::_('index.php?option=com_meedya&view=album&aid='.$k.'&Itemid='.$this->itemId, false));
 		}
 		$this->pathWay = $pw->getPathway();
 

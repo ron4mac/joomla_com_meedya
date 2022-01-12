@@ -115,7 +115,8 @@ abstract class MeedyaAdminHelper
 				if ($char1=='*' || $file[0]==$char1) {		//echo "@@@@ $char1 $dpath$file @@@@<br>";
 					if (!is_dir($dpath.$file)) continue;
 					$ah = opendir($dpath.$file);
-					while (($apd = readdir($ah)) !== false) {
+					while (($apd = readdir($ah)) !== false) {		//echo "@@@@ $apd @@@@<br>";
+						if ($apd[0]=='.') continue;
 						$ptf = null;
 						if ($apd==$cmp) {
 							$ptf = $dpath.$file.'/'.$apd.'/'.$dbname.'.db3';
@@ -127,7 +128,7 @@ abstract class MeedyaAdminHelper
 						}
 						if ($ptf && file_exists($ptf)) {
 							if ($full) {
-								$paths[$file] = ['path'=>$ptf, 'mnun' => $mnu, 'mnut'=>$mnut];
+								$paths[$file][] = ['path'=>$ptf, 'mnun' => $mnu, 'mnut'=>$mnut];
 							} else {
 								$paths[] = ['path'=>$file, 'mnun' => $mnu, 'mnut'=>$mnut];
 							}
@@ -155,6 +156,7 @@ abstract class MeedyaAdminHelper
 			}
 			closedir($dh);
 		}
+	//	var_dump($paths);
 		return $paths;
 	}
 

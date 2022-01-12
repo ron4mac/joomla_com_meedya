@@ -115,7 +115,7 @@ class MeedyaModelMeedya extends JModelList
 		$db->setQuery('SELECT `file`,`thumb` FROM `meedyaitems` WHERE `id`='.$iid);
 		$r = $db->loadAssoc();
 		//var_dump($r);
-		return $r['thumb'] ? $r['thumb'] : $r['file'];
+		return $r['thumb'] ?: $r['file'];
 	}
 
 	public function getItemThumbFilePlus ($iid)
@@ -123,7 +123,7 @@ class MeedyaModelMeedya extends JModelList
 		$db = $this->getDbo();
 		$db->setQuery('SELECT `file`,`mtype`,`thumb`,`title`,`desc` FROM `meedyaitems` WHERE `id`='.$iid);
 		$r = $db->loadAssoc();
-		$thm = $r['thumb'] ? $r['thumb'] : $r['file'];
+		$thm = $r['thumb'] ?: $r['file'];
 		return [$thm, $r['title'], $r['desc'], $r['mtype']];
 	}
 

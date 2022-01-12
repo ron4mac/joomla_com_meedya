@@ -80,6 +80,12 @@
 .anitem img.over {
 	border: 2px solid #CCC;
 }
+#area img {
+	border: 2px solid transparent;
+}
+#area img.over {
+	border: 2px solid magenta;
+}
 
 .iselect {
 	border: 2px solid blue;
@@ -264,10 +270,10 @@ td.tac {
 	cursor: crosshair;
 	width: 1em;
 }
-.item.moving img {
-	border: 3px solid yellow;
-	width: 114px;
-	height: 114px;
+#area .moving img {
+	border: 2px solid magenta;
+/*	width: 114px;
+	height: 114px;*/
 }
 
 /** image edit **/
@@ -300,7 +306,7 @@ td.tac {
 	height: 100%;
 	position: relative;
 	text-align: center;
-	display: inline-flex;
+/*	display: inline-flex;*/
 }
 .zoom-area:focus {
 	outline: none;
@@ -325,6 +331,9 @@ td.tac {
 	position: relative;
 	text-align: center;
 	display: contents;
+}
+.zoom-vid {
+	display: inline;
 }
 .zoom-closex {
 	position: absolute;

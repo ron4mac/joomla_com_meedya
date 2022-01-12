@@ -1,6 +1,6 @@
 Meedya = {};	// a namespace for com_meedya
 
-(function($) {
+(function(my, $) {
 
 	var token;
 
@@ -35,7 +35,11 @@ Meedya = {};	// a namespace for com_meedya
 		showSlide: function (e, iid) {
 			e.preventDefault();
 			var imgl = JSON.parse(JSON.stringify(Meedya.items));	//copy
-			$.fancybox.open(imgl, {...this.sopts, ...this.vopts, ...this.ivbuts}, iid);
+			if (Meedya.FB4) {
+				Fancybox.show(imgl,{startIndex: iid});
+			} else {
+				$.fancybox.open(imgl, {...this.sopts, ...this.vopts, ...this.ivbuts}, iid);
+			}
 		},
 		slideShow: function (e) {
 			e.preventDefault();
@@ -72,7 +76,7 @@ Meedya = {};	// a namespace for com_meedya
 		switch (clkd.className) {
 			case 'imgthm':
 				e.stopPropagation();
-				viewer.showSlide(e, clkd.parentElement.parentElement.parentElement.dataset.ix);
+				viewer.showSlide(e, +clkd.parentElement.parentElement.parentElement.dataset.ix);
 				break;
 			case 'strating':
 				clkd = clkd.parentElement;
@@ -80,7 +84,8 @@ Meedya = {};	// a namespace for com_meedya
 				clkd = clkd.parentElement;
 			case 'strate':
 				e.stopPropagation();
-				iid = clkd.parentElement.parentElement.parentElement.parentElement.dataset.iid;
+				if (!rDlg) break;
+				iid = +clkd.parentElement.parentElement.parentElement.parentElement.dataset.iid;
 				Meedya.dorate(iid, clkd);
 				break;
 			case 'far fa-comments':
@@ -89,7 +94,7 @@ Meedya = {};	// a namespace for com_meedya
 			case 'mycmnts':
 			case 'mycmnts hasem':
 				e.stopPropagation();
-				iid = clkd.parentElement.parentElement.parentElement.parentElement.dataset.iid;
+				iid = +clkd.parentElement.parentElement.parentElement.parentElement.dataset.iid;
 				Meedya.doComments(iid, clkd);
 				break;
 		}
@@ -102,7 +107,7 @@ Meedya = {};	// a namespace for com_meedya
 		if (evt.detail === 0) {
 			if (!confirm("Clear rating for this item?")) return;
 		}
-		$.post(Meedya.rawURL, {[token]: 1, task: 'rateItem', iid: curIid, val: evt.detail}, function (data) {
+		$.post(my.rawURL, {[token]: 1, task: 'rateItem', iid: curIid, val: evt.detail}, function (data) {
 			curRelm.firstElementChild.firstElementChild.style.width = data+"%";
 			$(rDlg).modal('hide');
 			ssr.enable();
@@ -120,7 +125,7 @@ Meedya = {};	// a namespace for com_meedya
 		let data = new FormData();
 		data.append('task', 'rateChk');
 		data.append('iid', itemid);
-		fetch(Meedya.rawURL, {method: 'POST', body: data})
+		fetch(my.rawURL, {method: 'POST', body: data})
 		.then(resp => resp.text())
 		.then(txt => txt ? alert(txt) : $(rDlg).modal('show'))
 		.catch(err => console.log(err));
@@ -130,7 +135,7 @@ Meedya = {};	// a namespace for com_meedya
 	Meedya.dorate = function (itemid, relm) {
 		curIid = itemid;
 		curRelm = relm;
-		$.post(Meedya.rawURL, {task: 'rateChk', iid: itemid})
+		$.post(my.rawURL, {task: 'rateChk', iid: itemid})
 		.done(function(){ $(rDlg).modal('show'); })
 		.fail(function(err){ alert(err.responseText); });
 	}
@@ -148,7 +153,7 @@ Meedya = {};	// a namespace for com_meedya
 		data.append(`iid`, itemid);
 		data.append(token, 1);
 		let good = false;
-		fetch(Meedya.rawURL, {method: 'POST', body: data})
+		fetch(my.rawURL, {method: 'POST', body: data})
 		.then(resp => { good = resp.ok; return resp.text(); })
 		.then(txt => {if (good) {cElm.innerHTML = txt; $(cDlg).modal('show');} else alert(txt)})
 		.catch(err => console.log(err));
@@ -158,13 +163,13 @@ Meedya = {};	// a namespace for com_meedya
 	function _fetchComments (itemid) {
 		curIid = itemid;
 		cElm.innerHTML = '';
-		$.post(Meedya.rawURL, {[token]: 1, task: 'getComments', iid: itemid})
+		$.post(my.rawURL, {[token]: 1, task: 'getComments', iid: itemid})
 		.done(function(data){ cElm.innerHTML = data; $(cDlg).modal('show'); })
 		.fail(function(err){ alert(err.responseText); });
 	};
 
 	Meedya._fetchComments = async function (itemid) {
-		let url = Meedya.rawURL;
+		let url = my.rawURL;
 		let data = new URLSearchParams();
 		data.append(`task`, 'getComments');
 		data.append(`iid`, itemid);
@@ -191,7 +196,7 @@ Meedya = {};	// a namespace for com_meedya
 			method: 'POST',
 			body: fData
 		}
-		let response = await fetch(Meedya.rawURL, options);
+		let response = await fetch(my.rawURL, options);
 		let result = await response.text();
 		$(ncDlg).modal('hide');
 		elm.disabled = false;
@@ -229,18 +234,22 @@ Meedya = {};	// a namespace for com_meedya
 		token = Joomla.getOptions('csrf.token', '');
 		// setup the star rating modal
 		rDlg = document.getElementById('rating-modal');
-		rDlg.addEventListener('hidden.bs.modal', function (event) {$(rDlg).modal('hide');});		// NOT SURE ABOUT THIS
-		var rating = document.getElementById('unrating');
-		ssr = new SimpleStarRating(rating);
-		rating.addEventListener('rate', submitRating);
+		if (rDlg) {
+			rDlg.addEventListener('hidden.bs.modal', function (event) {$(rDlg).modal('hide');});		// NOT SURE ABOUT THIS
+			var rating = document.getElementById('unrating');
+			ssr = new SimpleStarRating(rating);
+			rating.addEventListener('rate', submitRating);
+		}
 		// setup comments display modal
 		cDlg = document.getElementById('comments-modal');
-		cElm = document.querySelector(".modal-body .comments");
+		if (cDlg) cElm = document.querySelector(".modal-body .comments");
 		// setup new comment entry modal
 		ncDlg = document.getElementById('comment-modal');
-		ncElm = document.querySelector(".modal-body textarea");
-		// focus on the textarea
-		if (ncDlg) ncDlg.addEventListener('shown.bs.modal', function (event) {document.getElementById("cmnt-text").focus();});
+		if (ncDlg) {
+			ncElm = document.querySelector(".modal-body textarea");
+			// focus on the textarea
+			ncDlg.addEventListener('shown.bs.modal', function (event) {document.getElementById("cmnt-text").focus();});
+		}
 	});
 
-})(jQuery);
+})(Joomla.getOptions('Meedya'), jQuery);

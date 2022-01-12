@@ -1,7 +1,7 @@
 <?php
 /**
  * @package		com_meedya
- * @copyright	Copyright (C) 2021 RJCreations. All rights reserved.
+ * @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
  * @license		GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
@@ -14,16 +14,24 @@ use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Session\Session;
 use Joomla\CMS\Layout\LayoutHelper;
 
+define('MYG_FB4', 1);
+$ttscript = '';
+
 HTMLHelper::_('jquery.framework');
-//HTMLHelper::_('bootstrap.modal');
 MeedyaHelper::addStyle('album');
 MeedyaHelper::addScript('meedya');
-if ($this->useFanCB) {
-	$this->jDoc->addStyleSheet('https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css');
-	$this->jDoc->addScript('https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js');
+if (defined('MYG_FB4')) {
+	$this->jDoc->addStyleSheet(JUri::base().'components/com_meedya/static/vendor/fancybox/4.0.15/fancybox.css');
+	$this->jDoc->addScript(JUri::base().'components/com_meedya/static/vendor/fancybox/4.0.15/fancybox.umd.js');
+	$ttscript .= 'Fancybox.defaults.infinite = 0;
+	Fancybox.defaults.showClass = false;
+	Fancybox.defaults.hideClass = false;
+	Fancybox.Plugins.Thumbs.defaults.autoStart = false;
+	Fancybox.Plugins.Toolbar.defaults.display = ["zoom","slideshow","fullscreen","download","close"];
+	';
 } else {
-	MeedyaHelper::addStyle('each');
-	MeedyaHelper::addScript('vuesld');
+	MeedyaHelper::addStyle('fancybox','vendor/fancybox/');
+	MeedyaHelper::addScript('fancybox', 'vendor/fancybox/');
 }
 MeedyaHelper::addScript('bootbox');
 MeedyaHelper::addScript('rating');
@@ -48,7 +56,6 @@ if ($this->items) {		//var_dump($this->items);
 		$txtinfo .= trim($file['title']);
 		$desc = trim($file['desc']);
 		$txtinfo .= (($txtinfo && $desc) ? ' ... ' : '') . $desc;
-if ($this->useFanCB) {
 		$mTyp = substr($file['mtype'], 0, 5);
 		$murl = JUri::root(true).'/'.$this->gallpath.($mTyp=='image' ? '/med/' : '/img/').$file['file'];
 		$fileentry = [
@@ -56,40 +63,16 @@ if ($this->useFanCB) {
 			'opts' => ['caption' => $txtinfo],
 			'type' => $mTyp
 			];
-} else {
-		$fileentry = [
-			'fpath' => $file['file'],
-			'title' => $txtinfo,
-			'mTyp' => substr($file['mtype'], 0, 1)
-			];
-}
 		$filelist[] = $fileentry;
 	}
 }
 
-$pgidparm = isset($this->pgid) ? '&pgid='.$this->pgid : '';
-
-$ttscript = '
-	Meedya.rawURL = "'.Route::_('index.php?option=com_meedya&format=raw'.$pgidparm.'&Itemid='.$this->itemId, false).'";
-	Meedya.formTokn = "'.Session::getFormToken().'";
+$ttscript .= '
 	Meedya.items = '.json_encode($filelist).';
 	Meedya.datatog = "'.M34C::bs('toggle').'";
-	var imgerror = "'.Text::_('COM_MEEDYA_SS_IMGERROR').'";
-	var viderror = "COULD NOT PLAY VIDEO";
-	';
-if ($this->useFanCB) {
-	$ttscript .= '
+	Meedya.FB4 = '.(defined('MYG_FB4')?1:0).';
 	Meedya.initIV();
 	';
-} else {
-	$ttscript .= '
-	ssCtl.baseUrl = "'.JUri::root(true).'/'.$this->gallpath.'/med/";
-	ssCtl.baseUrlV = "'.JUri::root(true).'/'.$this->gallpath.'/img/";
-	ssCtl._imgP = "components/com_meedya/static/img/";
-	ssCtl.repeat = true;
-	Meedya.initIV(true);
-	';
-}
 
 $this->jDoc->addScriptDeclaration($ttscript);
 
@@ -100,13 +83,10 @@ $this->jDoc->addScriptDeclaration($ttscript);
 ///</div>
 ///</form>
 
-//var_dump($bx);
-//echo'<xmp>';var_dump($this->params->toArray());echo'</xmp>';
-
-$parray = $this->params->toArray();
-//$use_ratings = $this->params->get('use_ratings');
-//$use_comments = $this->params->get('use_comments');
-$cancmnt = $this->uid || $parray['pub_comments'];
+$use_ratings = $this->params->get('use_ratings', 0);
+$use_comments = $this->params->get('use_comments', 0);
+$pub_ratings = $this->params->get('pub_ratings', 0);
+$cancmnt = $this->uid || $this->params->get('pub_comments', 0);
 ?>
 <style>
 .tooltip.in {
@@ -214,7 +194,7 @@ $cancmnt = $this->uid || $parray['pub_comments'];
 		}
 		echo '<span class="albttl">'.$this->title.'</span>';
 	?>
-	<?php if ($this->useFanCB && !$this->isSearch && count($this->items)>1): ?>
+	<?php if (!$this->isSearch && count($this->items)>1): ?>
 		<a href="#" title="<?=Text::_('COM_MEEDYA_SLIDESHOW')?>" onclick="Meedya.viewer.slideShow(event);return false">
 			<img src="components/com_meedya/static/img/slideshow.png" alt="" />
 		</a>
@@ -242,12 +222,12 @@ $cancmnt = $this->uid || $parray['pub_comments'];
 	<div class="itm-thumb">
 		<div '.M34C::bs('toggle').'="tooltip" '.M34C::bs('html').'="true" '.M34C::bs('placement').'="bottom" title="{{TITLE}}">
 			<img class="imgthm" src="{{SRC}}">';
-	if ($parray['use_ratings'] || $parray['use_comments']) {
+	if ($use_ratings || $use_comments) {
 		$ttmpl .= '
 			<div class="starcmnt">';
-		if ($parray['use_ratings']) $ttmpl .= '
+		if ($use_ratings) $ttmpl .= '
 				<div class="strate"><div class="strback"><div class="strating" style="width:{{PCNT}}%"></div></div></div>';
-		if ($parray['use_comments']) $ttmpl .= '
+		if ($use_comments) $ttmpl .= '
 				<span class="mycmnts{{CCLAS}}">'.HTMLHelper::_('meedya.cmntsIcon').' {{CCNT}}</span>';
 		$ttmpl .= '
 			</div>
@@ -271,6 +251,9 @@ $cancmnt = $this->uid || $parray['pub_comments'];
 		switch (strstr($mtype, '/', true)) {
 			case 'video':
 				$thmsrc = 'video.png';
+				if (substr($thumb, -5)=='.jpeg') {
+					$thmsrc = 'img.png" data-echo="thm/'.$thumb;
+				}
 				break;
 			case 'audio':
 				$thmsrc = 'audio.png';
@@ -293,13 +276,13 @@ $cancmnt = $this->uid || $parray['pub_comments'];
 	<?php echo $this->pagination->getListFooter(); ?>
 </div>
 <?php
-if ($parray['use_comments']) {
+if ($use_comments) {
 	echo LayoutHelper::render('comments', ['cancmnt'=>$cancmnt]);
 	if ($cancmnt) {
 		echo LayoutHelper::render('comment');
 	}
 }
-if ($parray['use_ratings'] && ($this->uid || $parray['pub_ratings'])) {
+if ($use_ratings && ($this->uid || $pub_ratings)) {
 	echo LayoutHelper::render('rating');
 }
 ?>
@@ -311,31 +294,5 @@ if ($parray['use_ratings'] && ($this->uid || $parray['pub_ratings'])) {
 		debounce: false
 	});
 	document.getElementById('area').addEventListener('click', Meedya.thmClick, true);
-<?php if (false && $parray['use_ratings'] && ($this->uid || $parray['pub_ratings'])): ?>
-	jQuery(".strate").on("click", function(e){
-		e.stopPropagation();
-		var iid = this.parentElement.parentElement.parentElement.parentElement.dataset.iid;
-		Meedya.dorate(iid, this);
-	});
-<?php endif; ?>
-<?php if (false && $parray['use_comments']): ?>
-	jQuery(".mycmnts").on("click", function(e){
-		e.stopPropagation();
-		var iid = this.parentElement.parentElement.parentElement.parentElement.dataset.iid;
-		Meedya.doComments(iid, this);
-	});
-<?php endif; ?>
-//	jQuery(".itm-thumb img").on("click", function(e){
-//		e.stopPropagation();
-//		Meedya.viewer.showSlide(e, this.parentElement.parentElement.parentElement.dataset.ix);
-//	});
 //	document.querySelector("#comments-modal .modal-dialog").classList.add('modal-dialog-scrollable');;
 </script>
-<?php if (!$this->useFanCB): ?>
-<div id="sstage" class="slideback" style="display:none">
-	<div id="iarea" tabindex="0" onclick="ssCtl.doMnu(0);">
-		<div id="ptext"></div>
-		<p id="loading" style="display:none">∙∙∙LOADING∙∙∙</p>
-	</div>
-</div>
-<?php endif; ?>

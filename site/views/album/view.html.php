@@ -23,7 +23,7 @@ class MeedyaViewAlbum extends MeedyaView
 
 	function display ($tpl = null)
 	{
-		$app = Factory::getApplication();
+//		$app = Factory::getApplication();
 		$this->state = $this->get('State');	//echo'<xmp>';var_dump($this->state);echo'</xmp>';	//echo get_class($this->state);
 		$this->aid = $this->state->get('album.id');
 		$this->items = $this->get('Items');
@@ -36,7 +36,7 @@ class MeedyaViewAlbum extends MeedyaView
 		$this->six = 0;
 
 		// build the bread crumbs
-		$pw = $app->getPathWay();
+		$pw = $this->app->getPathWay();
 //		$pw->setItemName(0, '<i class="icon-home-2" title="Gallery Home"></i>');
 		$apw = $m->getAlbumPath($this->aid);
 		foreach ($apw as $ap) {

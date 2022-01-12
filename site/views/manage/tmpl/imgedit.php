@@ -17,9 +17,6 @@ MeedyaHelper::addScript('jquery.tagsinput', 'vendor/tags/');
 
 HTMLHelper::stylesheet('components/com_meedya/static/css/manage.css');
 //echo'<pre>';var_dump($this->iids);echo'</pre>';
-$this->jDoc->addScriptDeclaration('
-Meedya.rawURL = "'.Route::_('index.php?option=com_meedya&format=raw&Itemid='.$this->itemId, false).'";
-');
 ?>
 </script>
 <form name="adminform" method="POST">
@@ -34,6 +31,9 @@ Meedya.rawURL = "'.Route::_('index.php?option=com_meedya&format=raw&Itemid='.$th
 	$mTyp = substr($iid->mtype, 0, 1);
 	if ($mTyp == 'v') {
 		$tPath = 'components/com_meedya/static/img/video.png';
+		if ($iid->thumb) {
+			$tPath = $this->gallpath.'/thm/'.$iid->thumb;
+		}
 	} else {
 		$tPath = $this->gallpath.'/thm/'.$iid->file;
 	}
@@ -41,9 +41,9 @@ Meedya.rawURL = "'.Route::_('index.php?option=com_meedya&format=raw&Itemid='.$th
 ?>
 <div class="ied-img">
 	<div class="eitem">
-		<img src="<?=$tPath?>" data-img="<?=$iFile?>" class="mitem" />
+		<label><img src="<?=$tPath?>" data-img="<?=$iFile?>" class="mitem" /></label>
 		<div class="item-overlay top">
-			<i class="icon-expand" title="expand image" onclick="iZoomOpen(<?=$namx?>)"></i>
+			<i class="icon-expand" title="expand image" onclick="iZoomOpen(<?=$namx?>, this)"></i>
 			<i class="icon-info-2 pull-left" title="image info"></i>
 			<i class="icon-upload pull-right" title="replace image" onclick="editImg(event, this)"></i>
 		</div>
