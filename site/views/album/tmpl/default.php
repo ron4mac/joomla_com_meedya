@@ -21,8 +21,10 @@ HTMLHelper::_('jquery.framework');
 MeedyaHelper::addStyle('album');
 MeedyaHelper::addScript('meedya');
 if (defined('MYG_FB4')) {
-	$this->jDoc->addStyleSheet(JUri::base().'components/com_meedya/static/vendor/fancybox/4.0.15/fancybox.css');
-	$this->jDoc->addScript(JUri::base().'components/com_meedya/static/vendor/fancybox/4.0.15/fancybox.umd.js');
+	MeedyaHelper::addStyle('fancybox', 'vendor/fancybox/4.0.16/');
+	MeedyaHelper::addScript('fancybox.umd', 'vendor/fancybox/4.0.16/');
+//	$this->jDoc->addStyleSheet(JUri::base().'components/com_meedya/static/vendor/fancybox/4.0.15/fancybox.css');
+//	$this->jDoc->addScript(JUri::base().'components/com_meedya/static/vendor/fancybox/4.0.15/fancybox.umd.js');
 	$ttscript .= 'Fancybox.defaults.infinite = 0;
 	Fancybox.defaults.showClass = false;
 	Fancybox.defaults.hideClass = false;
@@ -30,8 +32,8 @@ if (defined('MYG_FB4')) {
 	Fancybox.Plugins.Toolbar.defaults.display = ["zoom","slideshow","fullscreen","download","close"];
 	';
 } else {
-	MeedyaHelper::addStyle('fancybox','vendor/fancybox/');
-	MeedyaHelper::addScript('fancybox', 'vendor/fancybox/');
+	MeedyaHelper::addStyle('fancybox3','vendor/fancybox/');
+	MeedyaHelper::addScript('fancybox3', 'vendor/fancybox/');
 }
 MeedyaHelper::addScript('bootbox');
 MeedyaHelper::addScript('rating');
@@ -57,6 +59,7 @@ if ($this->items) {		//var_dump($this->items);
 		$desc = trim($file['desc']);
 		$txtinfo .= (($txtinfo && $desc) ? ' ... ' : '') . $desc;
 		$mTyp = substr($file['mtype'], 0, 5);
+		if (defined('MYG_FB4') && $mTyp=='video') $mTyp = 'html5video';
 		$murl = JUri::root(true).'/'.$this->gallpath.($mTyp=='image' ? '/med/' : '/img/').$file['file'];
 		$fileentry = [
 			'src' => $murl,
@@ -182,6 +185,10 @@ $cancmnt = $this->uid || $this->params->get('pub_comments', 0);
 }
 .fancybox-caption__body {
 	font-size: larger;
+}
+.fancybox__carousel .fancybox__slide.has-html5video .fancybox__content {
+	width: 100%;
+	height: 100%;
 }
 </style>
 <div class="meedya-gallery">

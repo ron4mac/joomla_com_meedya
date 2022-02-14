@@ -1,8 +1,8 @@
 /* a couple of utility functions to avoid using jquery and assist in minification */
 // getElementById
-function _id(id) {
-	return document.getElementById(id);
-}
+//function _id(id) {
+//	return document.getElementById(id);
+//}
 
 function up_watchAlbNam (elm) {
 	var creab = _id('creab');

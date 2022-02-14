@@ -1,12 +1,13 @@
 <?php
 /**
  * @package		com_meedya
- * @copyright	Copyright (C) 2021 RJCreations. All rights reserved.
+ * @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
  * @license		GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Router\Route;
+use Joomla\CMS\Session\Session;
 use Joomla\CMS\HTML\HTMLHelper;
 
 HTMLHelper::_('jquery.framework');
@@ -23,6 +24,7 @@ HTMLHelper::stylesheet('components/com_meedya/static/css/manage.css');
 <?=HTMLHelper::_('meedya.submissionButtons')?>
 <input type="hidden" name="task" value="manage.iedSave" />
 <input type="hidden" name="referer" value="<?=base64_encode($this->referer)?>" />
+<input type="hidden" name="<?=Session::getFormToken()?>" value="1" />
 <?php foreach ($this->iids as $iid): ?>
 <hr style="clear:both" />
 <?php

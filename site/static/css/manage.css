@@ -148,6 +148,10 @@ dd.tabs {
 	position: relative;
 	left: 150px;
 }
+.ied-attr label {
+	margin-right: 1rem;
+	vertical-align: top;
+}
 .iSlct {
 	display: none;
 	position: absolute;

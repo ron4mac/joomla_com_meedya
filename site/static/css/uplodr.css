@@ -59,7 +59,9 @@ i.cancelQ { color: red; }
 i.infoG { color: blue; }
 
 img.infog { margin-bottom: -2px; cursor: pointer; }
-div.acti {display: none; margin-left: 5px; vertical-align: text-bottom; }
+div.quebar { margin: 6px 0; }
+div.quebar #qcount { display: inline-block; width: 2em; }
+div.acti { display: inline-block; margin-left: 5px; /*vertical-align: text-bottom;*/ }
 div.acti i { cursor: pointer; }
 .textinput { width: 100%; box-sizing: border-box; }
 

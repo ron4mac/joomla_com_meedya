@@ -1,7 +1,7 @@
 <?php
 /**
  * @package		com_meedya
- * @copyright	Copyright (C) 2021 RJCreations. All rights reserved.
+ * @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
  * @license		GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
@@ -9,7 +9,6 @@ defined('_JEXEC') or die;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
-use Joomla\CMS\Session\Session;
 use Joomla\CMS\Layout\LayoutHelper;
 
 Text::script('COM_MEEDYA_MOVE_FAIL');
@@ -138,7 +137,7 @@ $hasImport = JFolder::exists($this->gallpath.'/import');
 </div>
 <?php
 	echo LayoutHelper::render('newalbum', ['script'=>'Meedya.ae_createAlbum(this)', 'albums'=>$this->albums]);
-	echo LayoutHelper::render('delalbum');
+	echo LayoutHelper::render('delalbum', ['itemId'=>$this->itemId]);
 ?>
 <?php if ($hasImport):
 echo HTMLHelper::_(
@@ -154,8 +153,9 @@ endif;
 <script>
 	Meedya.alb2delete = 0;
 	Meedya.deleteAlbum = function (elm) {
-		var wipe = _id('trashall').checked ? '&wipe=1' : '';
-		window.location = '<?=Route::_('index.php?option=com_meedya&task=manage.delAlbum&Itemid='.$this->itemId.'&aid=', false)?>' + this.alb2delete + wipe;
+		let frm = document.forms.dalbform;
+		frm.aid.value = Meedya.alb2delete;
+		frm.submit();
 	};
 	Meedya.albEdtAction = function (e, elm) {
 		_pd(e);

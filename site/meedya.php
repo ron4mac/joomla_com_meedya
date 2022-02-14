@@ -1,7 +1,7 @@
 <?php
 /**
  * @package		com_meedya
- * @copyright	Copyright (C) 2021 RJCreations. All rights reserved.
+ * @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
  * @license		GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
@@ -23,7 +23,7 @@ if (RJC_DBUG) {
 	];
 	JLog::addLogger($cml, JLog::ALL, ['com_meedya']);
 }
-
+$task = Factory::getApplication()->input->get('task','none');	file_put_contents('TASK.txt',$task."\n",FILE_APPEND);
 $controller = BaseController::getInstance('Meedya');
-$controller->execute(Factory::getApplication()->input->get('task'));
+$controller->execute(Factory::getApplication()->input->get('task','none'));
 $controller->redirect();

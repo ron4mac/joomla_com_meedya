@@ -1,7 +1,7 @@
 <?php
 /**
  * @package		com_meedya
- * @copyright	Copyright (C) 2021 RJCreations. All rights reserved.
+ * @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
  * @license		GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
@@ -453,6 +453,9 @@ class MeedyaModelManage extends MeedyaModelMeedya
 		$tag = $this->getUserStateFromRequest($this->context . '.filter.tag', 'filter_tag', '');
 		$this->setState('filter.tag', $tag);
 
+		$ord = $this->getUserStateFromRequest($this->context . '.list.orderby', 'list_orderby', '');
+		$this->setState('list.orderby', $ord);
+
 		// Load the parameters.
 		$this->setState('params', $params);
 
@@ -554,7 +557,9 @@ class MeedyaModelManage extends MeedyaModelMeedya
 			$search = $db->escape($search);
 			$query->where('`title`||\' \'||`desc` LIKE \'%'.$search.'%\'');
 		}
-		$query->order('expodt');
+		$ord = $this->state->get('list.orderby', 'expodt');
+	//	$ord = $ord ?: 'expodt DESC';
+		if ($ord) $query->order($ord);
 		//echo '<xmp>';var_dump($this->state,(string)$query);echo'</xmp>';
 
 		return $query;

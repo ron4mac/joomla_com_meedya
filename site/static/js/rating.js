@@ -1,3 +1,4 @@
+'use strict';
 var SimpleStarRating = (function () {
 	function SimpleStarRating(target) {
 		function attr(name, d) {

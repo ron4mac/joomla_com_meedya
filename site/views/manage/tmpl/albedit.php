@@ -1,7 +1,7 @@
 <?php
 /**
  * @package		com_meedya
- * @copyright	Copyright (C) 2021 RJCreations. All rights reserved.
+ * @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
  * @license		GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
@@ -76,7 +76,7 @@ $pubdis = $this->album['pub'] && $this->album['pub']!=$this->album['aid'] ? ' di
 	</div>
 	<input type="hidden" name="task" value="manage.saveAlbum" />
 	<input type="hidden" name="aid" value="<?=$this->aid?>" />
-	<input type="hidden" name="thmord" value="" />
+	<input type="hidden" name="thmord" value="_" />
 	<input type="hidden" name="referer" value="<?=base64_encode($this->referer)?>" />
 	<?=HTMLHelper::_('form.token')?>
 </form>
@@ -87,16 +87,12 @@ $pubdis = $this->album['pub'] && $this->album['pub']!=$this->album['aid'] ? ' di
 </h1>
 <?php endif; ?>
 
-<button class="<?=M34C::btn('ps')?>" onclick="Meedya.saveAlbum()"><?=Text::_('COM_MEEDYA_SAVE')?></button>
-<button class="<?=M34C::btn('ss')?>" onclick="Meedya.cancelEdt()"><?=Text::_('JCANCEL')?></button>
+<button type="button" class="<?=M34C::btn('ps')?>" onclick="Meedya.saveAlbum()"><?=Text::_('COM_MEEDYA_SAVE')?></button>
+<button type="button" class="<?=M34C::btn('ss')?>" onclick="Meedya.cancelEdt()"><?=Text::_('JCANCEL')?></button>
 
 <div class="actbuts">
 	<?php echo HTMLHelper::_('meedya.actionButtons', ['sela','seln','edts','rems']); ?>
 </div>
-<form id="actform" method="POST" action="<?=Route::_('index.php?option=com_meedya&Itemid='.$this->itemId)?>" style="display:none">
-	<input name="task" id="atask" type="hidden" value="manage.imgEdit" />
-	<input name="items" id="aitems" type="hidden" value="" />
-</form>
 <form action="<?=Route::_('index.php?option=com_meedya&Itemid='.$this->itemId)?>" method="POST" name="adminForm" id="adminForm">
 <div id="area" style="display:flex;flex-wrap:wrap;-webkit-user-select:none;">
 <?php

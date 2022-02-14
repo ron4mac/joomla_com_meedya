@@ -1,7 +1,7 @@
 <?php
 /**
  * @package		com_meedya
- * @copyright	Copyright (C) 2021 RJCreations. All rights reserved.
+ * @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
  * @license		GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
@@ -36,12 +36,77 @@ class MeedyaControllerManage extends JControllerLegacy
 	}
 
 
-	public function upload ()
+	// display a screen/form for editing an album
+	public function editAlbum ()
 	{
-		$this->input->set('view', 'upload');
+		if ($this->nope()) return;
+		$view = $this->getView('manage','html');
+		$view->setLayout('albedit');
+		$view->setModel($this->getModel('manage'), true);
+		$view->referer = $this->input->server->getRaw('HTTP_REFERER');
+		$view->display();
 	}
 
 
+/*	public function upload ()
+	{
+		$this->input->set('view', 'upload');
+	}
+*/
+
+	// display a screen/form for uploading items
+	public function doUpload ()
+	{
+		if ($this->nope()) return;
+		$view = $this->getView('manage','html');
+		$m = $this->getModel('manage');
+		$view->aid = $this->input->get->get('aid',0,'int');
+		$view->albums = $m->getAlbumsList();
+		$view->dbTime = $m->getDbTime();
+		$view->totStore = (int)$m->getStorageTotal();
+		$view->itemId = $this->mnuItm;
+		$view->setLayout('upload');
+		$view->display();
+	}
+
+
+	// display screen(s) of all items for editing purposes
+	public function editImgs ()
+	{
+		if ($this->nope()) return;
+		$view = $this->getView('manage','html');
+		$view->itemId = $this->mnuItm;
+		$view->setLayout('images');
+		$m = $this->getModel('manage');
+		$m->set('filterFormName', 'filter_images');
+		$view->setModel($m, true);
+
+		$mode = $this->input->get('mode', null, 'word');
+		if (!$mode) $mode = $this->input->cookie->get('meedya_eig', 'G');
+		$this->input->cookie->set('meedya_eig', $mode);
+		$view->mode = $mode;
+
+		$view->display();
+	}
+
+
+	// display a screen/form for editing gallery configuration
+	public function doConfig ()
+	{
+		if ($this->nope()) return;
+		$view = $this->getView('manage','html');
+		$view->itemId = $this->mnuItm;
+		$view->setLayout('config');
+		$m = $this->getModel('meedya');
+		$view->html5slideshowCfg = $m->getCfg('ss');
+		$view->setModel($this->getModel('manage'), true);
+		$view->isAdmin = true;
+		$view->album = null;
+		$view->display();
+	}
+
+
+	// present a selected set of items to edit
 	public function imgsEdit ()
 	{
 		if ($this->nope()) return;
@@ -71,6 +136,8 @@ class MeedyaControllerManage extends JControllerLegacy
 
 	public function iedSave ()
 	{
+		if (!$this->tokenCheck()) return;
+
 		$m = $this->getModel('manage');
 		if ($this->input->post->get('save',0,'int')) {
 			$attrs = $this->input->post->get('attr',[],'array');
@@ -85,6 +152,8 @@ class MeedyaControllerManage extends JControllerLegacy
 
 	public function delAlbum ()
 	{
+		if (!$this->tokenCheck()) return;
+
 		$aid = $this->input->get('aid', 0, 'int');
 		$w = $this->input->get('wipe', false, 'boolean');
 		if ($aid) {
@@ -99,10 +168,8 @@ class MeedyaControllerManage extends JControllerLegacy
 
 	public function addItemsToAlbum ()
 	{
-		if (!Session::checkToken()) {
-			$this->_nqMsg(Text::_('JINVALID_TOKEN'), 'error');
-			return;
-		}
+		if (!$this->tokenCheck()) return;
+
 		$this->setRedirect($_SERVER['HTTP_REFERER']);
 
 		$itms = $this->input->post->get('slctimg',[],'array');
@@ -126,11 +193,7 @@ class MeedyaControllerManage extends JControllerLegacy
 	public function imgsAddAlbum ()
 	{
 		$this->setRedirect($_SERVER['HTTP_REFERER']);
-
-		if (!Session::checkToken()) {
-			$this->_nqMsg(Text::_('JINVALID_TOKEN'), 'error');
-			return;
-		}
+		if (!$this->tokenCheck()) return;
 
 		$itms = $this->input->post->get('slctimg',[],'array');
 		if (!$itms) return;
@@ -146,74 +209,11 @@ class MeedyaControllerManage extends JControllerLegacy
 	public function deleteItems ()
 	{
 		$this->setRedirect($_SERVER['HTTP_REFERER']);
-		if (!Session::checkToken()) {
-			$this->_nqMsg(Text::_('JINVALID_TOKEN'), 'error');
-			return;
-		}
+		if (!$this->tokenCheck()) return;
+
 		$itms = $this->input->post->get('slctimg',[],'array');
 		$m = $this->getModel('manage');
 		$m->deleteItems($itms);
-	}
-
-
-	public function doUpload ()
-	{
-		if ($this->nope()) return;
-		$view = $this->getView('manage','html');
-		$m = $this->getModel('manage');
-		$view->aid = $this->input->get->get('aid',0,'int');
-		$view->albums = $m->getAlbumsList();
-		$view->dbTime = $m->getDbTime();
-		$view->totStore = (int)$m->getStorageTotal();
-		$view->itemId = $this->mnuItm;
-		$view->setLayout('upload');
-		$view->display();
-	}
-
-
-	public function __editImgs ()
-	{
-		$view = $this->createView('Images', 'MeedyaView', 'html');	//$this->getView('manage','html');
-		$view->setLayout('imgedit');
-		$m = $this->createModel('Images','MeedyaModel');		//$this->getModel('manage');
-		$view->setModel($m, true);
-		$view->itemId = $this->mnuItm;
-		$view->mode = $this->input->get('mode','G','string');
-		$view->display();
-	}
-
-
-	public function editImgs ()
-	{
-		if ($this->nope()) return;
-		$view = $this->getView('manage','html');
-		$view->itemId = $this->mnuItm;
-		$view->setLayout('images');
-		$m = $this->getModel('manage');
-		$m->set('filterFormName', 'filter_images');
-		$view->setModel($m, true);
-
-		$mode = $this->input->get('mode', null, 'word');
-		if (!$mode) $mode = $this->input->cookie->get('meedya_eig', 'G');
-		$this->input->cookie->set('meedya_eig', $mode);
-		$view->mode = $mode;
-
-		$view->display();
-	}
-
-
-	public function doConfig ()
-	{
-		if ($this->nope()) return;
-		$view = $this->getView('manage','html');
-		$view->itemId = $this->mnuItm;
-		$view->setLayout('config');
-		$m = $this->getModel('meedya');
-		$view->html5slideshowCfg = $m->getCfg('ss');
-		$view->setModel($this->getModel('manage'), true);
-		$view->isAdmin = true;
-		$view->album = null;
-		$view->display();
 	}
 
 
@@ -270,25 +270,21 @@ class MeedyaControllerManage extends JControllerLegacy
 
 
 	// save changes made to an album
-	public function editAlbum ()
-	{
-		$view = $this->getView('manage','html');
-		$view->setLayout('albedit');
-		$view->setModel($this->getModel('manage'), true);
-		$view->referer = $this->input->server->getRaw('HTTP_REFERER');
-		$view->display();
-	}
-
-
-	// save changes made to an album
 	public function saveAlbum ()
 	{
+		$this->setRedirect($_SERVER['HTTP_REFERER']);
+		if (!$this->tokenCheck()) return;
+
 		$aid = $this->input->post->get('aid',0,'int');
 		$flds = [];
 		$flds['thumb'] = $this->input->post->get('albthmid',0,'int');
 		$flds['title'] = $this->input->post->get('albttl','','string');
 		$flds['desc'] = $this->input->post->get('albdsc','','raw');
-		$flds['items'] = $this->input->post->get('thmord','','string');
+		$thmo = $this->input->post->get('thmord','_','string');
+		// don't save thumb order unless it is something valid
+		if ($thmo != '_') {
+			$flds['items'] = $thmo;
+		}
 		$flds['visib'] = $this->input->post->get('pubalb',0,'int');
 
 		$m = $this->getModel('manage');
@@ -299,11 +295,25 @@ class MeedyaControllerManage extends JControllerLegacy
 	}
 
 
+	private function tokenCheck ()
+	{
+		if (!Session::checkToken()) {
+			$this->_nqMsg(Text::_('JINVALID_TOKEN'), 'error');
+			return false;
+		}
+		return true;
+
+		if (!Session::checkToken()) {
+			header('HTTP/1.1 403 Not Allowed');
+			jexit(Text::_('JINVALID_TOKEN'));
+		}
+	}
+
 	private function nope ()
 	{
 		$uid = Factory::getUser()->get('id');
 		if ($uid) return false;
-		$this->app->enqueueMessage(Text::_('JERROR_ALERTNOAUTHOR'), 'error');
+		$this->_nqMsg(Text::_('JERROR_ALERTNOAUTHOR'), 'error');
 	//	$this->setRedirect('index.php');
 		return true;
 	}

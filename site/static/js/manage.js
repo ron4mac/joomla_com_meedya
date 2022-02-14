@@ -1,3 +1,4 @@
+'use strict';
 /* a few utility functions to avoid using jquery and assist in minification */
 // getElementById
 const _id = (id) => {
@@ -18,17 +19,18 @@ var Meedya = (function (my, $, w) {
 
 	// establish some common variables
 	const formTokn = Joomla.getOptions('csrf.token');
+	let thmsDirty = false;
 
 	let _removeAlbThm = () => {
 		_id('albthmimg').src = 'components/com_meedya/static/img/img.png';
 		_id('albthmid').value = 0;
-	}
+	};
 
 	let _handleAlbthmDragOver = (e) => {
 		if (e.dataTransfer.types.indexOf('imgsrc') < 0) return;
 		_pd(e);
 		return false;
-	}
+	};
 
 	let _handleAlbthmDrop = (e) => {
 		_pd(e);
@@ -40,7 +42,7 @@ var Meedya = (function (my, $, w) {
 			let atv = _id('albthmid');
 			atv.value = e.dataTransfer.getData('meeid');
 		}
-	}
+	};
 
 	let _hasSelections = (sel, alrt=false) => {
 		if (document.querySelectorAll(sel).length) {
@@ -49,10 +51,26 @@ var Meedya = (function (my, $, w) {
 			if (alrt) bootbox.alert(Joomla.Text._('COM_MEEDYA_SELECT_SOME'));
 			return false;
 		}
-	}
+	};
 
 
 //@@@@@@@@@@ PUBLIC FUNCTIONS @@@@@@@@@@
+
+	// utility dialog actions for alert, confirm using bootstrap modals
+	let yescb = null;
+	let confirm = (dlg, titl, body, cb) => {
+		//set the title and body 
+		$('#'+dlg+' .modal-title').html(titl);
+		$('#'+dlg+' .modal-body').html(body);
+		yescb = cb;
+		$('#'+dlg).modal('show');
+	};
+	let confirmed = (y) => yescb(y);
+	let alert = (body) => {
+		//set the body 
+		$('#alert-dlg span').html(body);
+		$('#alert-dlg').show();
+	};
 
 	let setDlgParAlb = () => {
 		if (_id('h5u_palbum'))
@@ -107,6 +125,7 @@ var Meedya = (function (my, $, w) {
 						for (let i=0; i<items.length; i++) {
 							pnode.removeChild(items[i].parentNode);
 						}
+						thmsDirty = true;
 					}
 				}
 			});
@@ -140,7 +159,7 @@ var Meedya = (function (my, $, w) {
 	};
 
 	let saveAlbum = () => {
-		document.albForm.thmord.value = Meedya.Arrange.iord();
+		if (thmsDirty) document.albForm.thmord.value = Meedya.Arrange.iord();
 		document.albForm.submit();
 	};
 
@@ -297,9 +316,13 @@ var Meedya = (function (my, $, w) {
 		.fail((rsp) => alert(rsp.responseText));
 	};
 
+	let dirtyThumbs = (v) => {thmsDirty = v};
 
 	// return the Meedya public functions
 	return {
+		confirm: confirm,
+		confirmed: confirmed,
+		alert: alert,
 		setDlgParAlb: setDlgParAlb,
 		selAllImg: selAllImg,
 		editSelected: editSelected,
@@ -314,7 +337,8 @@ var Meedya = (function (my, $, w) {
 		addItems2Album: addItems2Album,
 		ae_createAlbum: ae_createAlbum,
 		moveItem: moveItem,
-		setVideoThumb: setVideoThumb
+		setVideoThumb: setVideoThumb,
+		dirtyThumbs: dirtyThumbs
 	};
 })(Joomla.getOptions('Meedya'), jQuery, window);
 
@@ -336,15 +360,15 @@ Meedya.Arrange = (function ($) {
 			if (typs[i] === meeid) return true;
 		}
 		return false;
-	}
+	};
 
 	let handleDragStart = (e) => {
 		dragSrcEl = e.target.parentElement.parentElement;
 		dragSrcEl.style.opacity = '0.4';
 		e.dataTransfer.effectAllowed = 'copyMove';
-		e.dataTransfer.setData(meeid,dragSrcEl.getAttribute('data-id'));
+		e.dataTransfer.setData(meeid,dragSrcEl.dataset.id);
 		e.dataTransfer.setData('imgsrc',e.target.src);
-	}
+	};
 
 	let handleDrag = (e) => {
 		stop = true;
@@ -356,7 +380,7 @@ Meedya.Arrange = (function ($) {
 			stop = false;
 			scroll(1);
 		}
-	}
+	};
 
 	let tMove = (e) => {
 		if (e.targetTouches.length == 1) {
@@ -365,13 +389,13 @@ Meedya.Arrange = (function ($) {
 			e.target.style.left = touch.pageX + 'px';
 			e.target.style.top = touch.pageY + 'px';
 		}
-	}
+	};
 
 	let handleDragEnd = (e) => {
 		dragSrcEl.style.opacity = null;
 		[].forEach.call(items, (itm) => itm.classList.remove('over'));
 		stop = true;
-	}
+	};
 
 	let handleDrop = (e) => {
 		_pd(e);
@@ -381,9 +405,10 @@ Meedya.Arrange = (function ($) {
 			let area = _id(ctnr);
 			let orf = area.removeChild(dragSrcEl);
 			area.insertBefore(orf, dtarg);
+			Meedya.dirtyThumbs(true);
 		}
 		return false;
-	}
+	};
 
 	let handleDragEnter = (e) => {
 		if (dropable(e)) {
@@ -391,18 +416,18 @@ Meedya.Arrange = (function ($) {
 			e.target.classList.add('over');
 			return false;
 		}
-	}
+	};
 
 	let handleDragOver = (e) => {
 		if (dropable(e)) {
 			_pd(e);
 			return false;
 		}
-	}
+	};
 
 	let handleDragLeave = (e) => {
 		e.target.classList.remove('over');
-	}
+	};
 
 	const scroll = (step) => {
 		let scrollY = $(window).scrollTop();
@@ -433,10 +458,10 @@ Meedya.Arrange = (function ($) {
 		},
 		iord: () => {
 		//	items = document.querySelectorAll('#'+ctnr+' .'+clas);
-			items = document.querySelectorAll('#'+ctnr+' img');
+			items = document.querySelectorAll('#'+ctnr+' .item');
 			let imord = [];
 			[].forEach.call(items, (itm) => {
-				let iid = itm.getAttribute('data-id');
+				let iid = itm.dataset.id;
 				if (iid) imord.push(iid);
 			});
 			return imord.join("|");
@@ -462,7 +487,7 @@ Meedya.AArrange = (function (my, $) {
 		let prms = {task: 'manage.adjustAlbPaid', 'aid': aid, 'paid': paid};
 		prms[Joomla.getOptions('csrf.token', '')] = 1;
 		$.post(my.rawURL, prms, (d) => func(d));
-	}
+	};
 
 	let dropable = (e) => {
 		if (e.target == dragSrcEl) return false;
@@ -471,22 +496,22 @@ Meedya.AArrange = (function (my, $) {
 			if (typs[i] === meeid) return true;
 		}
 		return false;
-	}
+	};
 
 	let handleDragStart = (e) => {
 		e.target.style.opacity = '0.4';
 		dragSrcEl = e.target;
 		e.dataTransfer.effectAllowed = 'copyMove';
-		e.dataTransfer.setData(meeid,dragSrcEl.getAttribute('data-id'));
+		e.dataTransfer.setData(meeid,dragSrcEl.dataset.id);
 		e.target.classList.add('moving');
-	}
+	};
 
 	let handleDragOver = (e) => {
 		if (dropable(e)) {
 			_pd(e);
 			return false;
 		}
-	}
+	};
 
 	let handleDragEnter = (e) => {
 		if (dropable(e)) {
@@ -495,21 +520,21 @@ Meedya.AArrange = (function (my, $) {
 			e.target.classList.add('over');
 			return false;
 		}
-	}
+	};
 
 	let handleDragLeave = (e) => {
 //		if (e.target == deTarg) {
 			_pd(e);
 			e.target.classList.remove('over');
 //		}
-	}
+	};
 
 	let handleDrop = (e) => {
 		_pd(e);
 		// Don't do anything if dropping the same item we're dragging.
 		if (dragSrcEl != e.target) {
-			let sa = dragSrcEl.getAttribute('data-aid');
-			let da = e.target.getAttribute('data-aid');
+			let sa = dragSrcEl.dataset.aid;
+			let da = e.target.dataset.aid;
 			setAlbPaid(sa, da, (r) => {
 				if (r) {
 					bootbox.alert(Joomla.Text._('COM_MEEDYA_MOVE_FAIL'));
@@ -519,14 +544,14 @@ Meedya.AArrange = (function (my, $) {
 			});
 		}
 		return false;
-	}
+	};
 
 	let handleDragEnd = (e) => {
 		dragSrcEl.style.opacity = null;
 		[].forEach.call(items, (itm) => itm.classList.remove('over'));
 		e.target.classList.remove('moving');
 		stop = true;
-	}
+	};
 
 	let handleDrag = (e) => {
 		stop = true;
@@ -538,7 +563,7 @@ Meedya.AArrange = (function (my, $) {
 			stop = false;
 			scroll(1);
 		}
-	}
+	};
 
 	let tMove = (e) => {
 		if (e.targetTouches.length == 1) {
@@ -547,7 +572,7 @@ Meedya.AArrange = (function (my, $) {
 			e.target.style.left = touch.pageX + 'px';
 			e.target.style.top = touch.pageY + 'px';
 		}
-	}
+	};
 
 	let iSelect = (e, elm=this) => {
 		_pd(e);
@@ -558,7 +583,7 @@ Meedya.AArrange = (function (my, $) {
 			iSlctd = elm;
 			iSlctd.classList.add('slctd');
 		}
-	}
+	};
 
 	const scroll = (step) => {
 		let scrollY = $(window).scrollTop();
@@ -587,7 +612,7 @@ Meedya.AArrange = (function (my, $) {
 				});
 		},
 		selalb: () => {
-			return iSlctd ? iSlctd.getAttribute('data-aid') : 0;
+			return iSlctd ? iSlctd.dataset.aid : 0;
 		},
 		iSelect: iSelect
 	};
@@ -597,6 +622,11 @@ Meedya.AArrange = (function (my, $) {
 // iZoom action to expand individual item
 (function (my, $, w) {
 	let back, area;
+
+	let close = (e) => {
+		if (e) _pd(e);
+		document.body.removeChild(back);
+	};
 
 	let keyPressed = (e) => {
 		switch (e.charCode) {
@@ -608,7 +638,7 @@ Meedya.AArrange = (function (my, $) {
 			default:
 				break;
 		}
-	}
+	};
 
 	let keyDowned = (e) => {
 		switch (e.keyCode) {
@@ -620,7 +650,7 @@ Meedya.AArrange = (function (my, $) {
 			default:
 				break;
 		}
-	}
+	};
 
 	let open = (pID, elm) => {
 		if (elm) Meedya.thmelmsrc = elm.parentElement.previousElementSibling.firstElementChild;
@@ -637,12 +667,7 @@ Meedya.AArrange = (function (my, $) {
 		_ae(area, 'keydown', keyDowned);
 		area.focus();
 		_ae(back, 'click', close);
-	}
-
-	let close = (e) => {
-		if (e) _pd(e);
-		document.body.removeChild(back);
-	}
+	};
 
 	w.iZoomOpen = open;
 	w.iZoomClose = close;

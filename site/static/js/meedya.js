@@ -1,10 +1,13 @@
-Meedya = {};	// a namespace for com_meedya
+/* jshint esnext:false, esversion:9 */
+/* globals Joomla,jQuery,Fancybox,ssCtl,SimpleStarRating,newcmnt */
+'use strict';
+var Meedya = {};	// a namespace for com_meedya
 
 (function(my, $) {
 
-	var token;
+	var token, self=Meedya;
 
-	var viewer = {
+	const viewer = {
 		// video player options
 		vopts: {
 			video: {
@@ -32,45 +35,45 @@ Meedya = {};	// a namespace for com_meedya
 		},
 		// the following functions need to make copies of the itemslist
 		// to make possible multiple invocations on the same page (without reload)
-		showSlide: function (e, iid) {
+		showSlide: (e, iid) => {
 			e.preventDefault();
-			var imgl = JSON.parse(JSON.stringify(Meedya.items));	//copy
+			let imgl = JSON.parse(JSON.stringify(self.items));	//copy
 			if (Meedya.FB4) {
 				Fancybox.show(imgl,{startIndex: iid});
 			} else {
 				$.fancybox.open(imgl, {...this.sopts, ...this.vopts, ...this.ivbuts}, iid);
 			}
 		},
-		slideShow: function (e) {
+		slideShow: (e) => {
 			e.preventDefault();
-			var imgl = JSON.parse(JSON.stringify(Meedya.items));	//copy
+			let imgl = JSON.parse(JSON.stringify(Meedya.items));	//copy
 			$.fancybox.open(imgl, {...this.sopts, ...this.vopts, ...this.ssbuts});
 		}
 	};
 
-	var old_viewer = {
-		showSlide: function (e, iid) {
+	const old_viewer = {
+		showSlide: (e, iid) => {
 			e.preventDefault();
 			$('#sstage').appendTo('body').show();
 			ssCtl.init(Meedya.items, iid);
 		}
 	};
 
-	Meedya.initIV = function (old=false) {
+	Meedya.initIV = (old=false) => {
 		Meedya.viewer = old ? old_viewer : viewer;
 	};
 
-	Meedya.performSearch = function (aform) {
+	Meedya.performSearch = (aform) => {
 		var sterm = $.trim(aform.sterm.value);
 		if (sterm==='') {
-			alert(this.L.no_sterm);
+			alert(self.L.no_sterm);
 			return false;
 		}
 		aform.submit();
 		return false;
 	};
 
-	Meedya.thmClick = function (e) {
+	Meedya.thmClick = (e) => {
 		let clkd = e.target;
 		let iid = 0;
 		switch (clkd.className) {
@@ -80,8 +83,10 @@ Meedya = {};	// a namespace for com_meedya
 				break;
 			case 'strating':
 				clkd = clkd.parentElement;
+				/* falls through */
 			case 'strback':
 				clkd = clkd.parentElement;
+				/* falls through */
 			case 'strate':
 				e.stopPropagation();
 				if (!rDlg) break;
@@ -91,6 +96,7 @@ Meedya = {};	// a namespace for com_meedya
 			case 'far fa-comments':
 			case 'icon-comments-2':			// J3
 				clkd = clkd.parentElement;
+				/* falls through */
 			case 'mycmnts':
 			case 'mycmnts hasem':
 				e.stopPropagation();
@@ -98,113 +104,63 @@ Meedya = {};	// a namespace for com_meedya
 				Meedya.doComments(iid, clkd);
 				break;
 		}
-	}
+	};
 
 
 	var rDlg, ssr, curRelm;
 
-	function submitRating (evt) {
+	const submitRating = (evt) => {
 		if (evt.detail === 0) {
 			if (!confirm("Clear rating for this item?")) return;
 		}
-		$.post(my.rawURL, {[token]: 1, task: 'rateItem', iid: curIid, val: evt.detail}, function (data) {
+		$.post(my.rawURL, {[token]: 1, task: 'rateItem', iid: curIid, val: evt.detail})
+		.done(data => {
 			curRelm.firstElementChild.firstElementChild.style.width = data+"%";
 			$(rDlg).modal('hide');
 			ssr.enable();
 		})
-		.fail(function(err) {
+		.fail(err => {
 			alert(err.responseText);
 			$(rDlg).modal('hide');
 		});
-	}
+	};
 
-	// using fetch
-	Meedya._dorate = function (itemid, relm) {
-		curIid = itemid;
-		curRelm = relm;
-		let data = new FormData();
-		data.append('task', 'rateChk');
-		data.append('iid', itemid);
-		fetch(my.rawURL, {method: 'POST', body: data})
-		.then(resp => resp.text())
-		.then(txt => txt ? alert(txt) : $(rDlg).modal('show'))
-		.catch(err => console.log(err));
-	}
-
-	// using jquery
-	Meedya.dorate = function (itemid, relm) {
+	Meedya.dorate = (itemid, relm) => {
 		curIid = itemid;
 		curRelm = relm;
 		$.post(my.rawURL, {task: 'rateChk', iid: itemid})
-		.done(function(){ $(rDlg).modal('show'); })
-		.fail(function(err){ alert(err.responseText); });
-	}
+		.done(() => { $(rDlg).modal('show'); })
+		.fail((err) => { alert(err.responseText); });
+	};
 
 
 	var curIid = 0, curCelm;
 	var cDlg, ncDlg, cElm;
 
-	// using fetch
-	function fetchComments (itemid) {
-		curIid = itemid;
-		cElm.innerHTML = '';
-		let data = new FormData();
-		data.append(`task`, 'getComments');
-		data.append(`iid`, itemid);
-		data.append(token, 1);
-		let good = false;
-		fetch(my.rawURL, {method: 'POST', body: data})
-		.then(resp => { good = resp.ok; return resp.text(); })
-		.then(txt => {if (good) {cElm.innerHTML = txt; $(cDlg).modal('show');} else alert(txt)})
-		.catch(err => console.log(err));
-	};
-
-	// using jquery
-	function _fetchComments (itemid) {
+	const fetchComments = (itemid) => {
 		curIid = itemid;
 		cElm.innerHTML = '';
 		$.post(my.rawURL, {[token]: 1, task: 'getComments', iid: itemid})
-		.done(function(data){ cElm.innerHTML = data; $(cDlg).modal('show'); })
-		.fail(function(err){ alert(err.responseText); });
+		.done((data) => { cElm.innerHTML = data; $(cDlg).modal('show'); })
+		.fail((err) => { alert(err.responseText); });
 	};
 
-	Meedya._fetchComments = async function (itemid) {
-		let url = my.rawURL;
-		let data = new URLSearchParams();
-		data.append(`task`, 'getComments');
-		data.append(`iid`, itemid);
-		data.append(token, 1);
-		const options = {
-			method: 'POST',
-			body: data
-		}
-		let response = await fetch(url, options);
-//		if (!response.ok) {
-//			throw new Error (Joomla.Text._('COM_MYCOMPONENT_JS_ERROR_STATUS') + `${response.status}`);
-///		} else {
-			let result = await response.text();	//console.log(result);
-			cElm.innerHTML = result;
-//		}
-	};
-
-	Meedya.submitComment = async function (elm) {
+	Meedya.submitComment = (elm) => {
 		elm.disabled = true;
+		let pdat = {iid: curIid};
 		let fData = new FormData(newcmnt);
-		fData.append(token, 1);
-		fData.append('iid', curIid);
-		const options = {
-			method: 'POST',
-			body: fData
-		}
-		let response = await fetch(my.rawURL, options);
-		let result = await response.text();
-		$(ncDlg).modal('hide');
-		elm.disabled = false;
-		curCelm.classList.add('hasem');
-		curCelm.innerHTML = result;
-	}
+		for (let kv of fData.entries()) pdat[kv[0]] = kv[1];
+		$.post(my.rawURL, pdat)
+		.done((data) => {
+			$(ncDlg).modal('hide');
+			elm.disabled = false;
+			curCelm.classList.add('hasem');
+			curCelm.innerHTML = data;
+		})
+		.fail((err) => { alert(err.responseText); });
+	};
 
-	Meedya.doComments = function (itemid, elm) {
+	Meedya.doComments = (itemid, elm) => {
 		curIid = itemid;
 		curCelm = elm;
 		if (elm.classList.contains('hasem')) {
@@ -217,25 +173,25 @@ Meedya = {};	// a namespace for com_meedya
 	};
 
 	// CURRENTLY UNUSED
-	Meedya.sprintf = function (format) {
+	Meedya.sprintf = (format) => {
 		for (var i = 1; i < arguments.length; i++) {
 			format = format.replace( /%s/, arguments[i] );
 		}
 		return format;
 	};
 
-	function _t (tid) {
+	const _t = (tid) => {
 		return Meedya.L[tid] ? Meedya.L[tid] : tid;
-	}
+	};
 
-	$(document).ready(function() {
+	$(document).ready( () => {
 		$('['+Meedya.datatog+'="tooltip"]').tooltip();
 		// get the joomla suplied csrf token
 		token = Joomla.getOptions('csrf.token', '');
 		// setup the star rating modal
 		rDlg = document.getElementById('rating-modal');
 		if (rDlg) {
-			rDlg.addEventListener('hidden.bs.modal', function (event) {$(rDlg).modal('hide');});		// NOT SURE ABOUT THIS
+			rDlg.addEventListener('hidden.bs.modal', (event) => {$(rDlg).modal('hide');});		// NOT SURE ABOUT THIS
 			var rating = document.getElementById('unrating');
 			ssr = new SimpleStarRating(rating);
 			rating.addEventListener('rate', submitRating);
@@ -246,9 +202,9 @@ Meedya = {};	// a namespace for com_meedya
 		// setup new comment entry modal
 		ncDlg = document.getElementById('comment-modal');
 		if (ncDlg) {
-			ncElm = document.querySelector(".modal-body textarea");
+	//		ncElm = document.querySelector(".modal-body textarea");
 			// focus on the textarea
-			ncDlg.addEventListener('shown.bs.modal', function (event) {document.getElementById("cmnt-text").focus();});
+			ncDlg.addEventListener('shown.bs.modal', (event) => {document.getElementById("cmnt-text").focus();});
 		}
 	});
 

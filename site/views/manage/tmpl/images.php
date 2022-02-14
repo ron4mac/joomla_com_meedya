@@ -1,7 +1,7 @@
 <?php
 /**
  * @package		com_meedya
- * @copyright	Copyright (C) 2021 RJCreations. All rights reserved.
+ * @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
  * @license		GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
@@ -41,11 +41,19 @@ function editImg (iid) {
 </script>
 
 <style>
+.btn-group {display:inline-block;}
+.ordering-select {display:inline-flex; margin-left:8px;}
+.js-stools {margin-bottom:0.5rem}
+.js-stools-container-filters-visible {display:inline-flex;padding:10px 0;}
+.js-stools-container-bar {display:inline-flex; padding:0;}
+.btn-wrapper.input-append {display:inline-flex;}
+.js-stools-container-list {display:inline-flex;}
 .mitem, .litem {width:120px; height:120px;}
 .mitem {/*border:1px dashed transparent;*/}
 .litem {cursor:pointer;}
 .islct {border-color:blue;}
 /* icons and buttons */
+.actbuts {display:inline-block;}
 .action-icon {
 	font-size: larger;
 	margin-right: 0.5em;
@@ -69,6 +77,9 @@ function editImg (iid) {
 	<?php if ($this->manage) echo HTMLHelper::_('meedya.manageMenu', $this->userPerms, 0, $this->itemId); ?>
 	<?php echo HTMLHelper::_('meedya.pageHeader', $this->params, $this->action/*.'XXXX'*/); ?>
 	<form action="<?=Route::_('index.php?option=com_meedya&view=manage&Itemid='.$this->itemId)?>" method="post" name="adminForm" id="adminForm">
+		<?php $fOpts = ['filterButton' => true]; ?>
+		<?php echo LayoutHelper::render('search', ['view' => $this, 'options' => $fOpts], JPATH_ROOT.'/components/com_meedya/layouts'); ?>
+		<?php if ($this->iids): ?>
 		<?php
 			if ($this->mode == 'L') {
 				echo '<a href="'.$this->linkUrl.'&mode=G"><span class="icon-grid-2 action-icon inaicon" title="Grid View"> </span></a>';
@@ -78,9 +89,6 @@ function editImg (iid) {
 				echo '<a href="'.$this->linkUrl.'&mode=L"><span class="icon-list-2 action-icon inaicon" title="List View"> </span></a>';
 			}
 		?>
-		<?php $fOpts = ['filterButton' => true]; ?>
-		<?php echo LayoutHelper::render('search', ['view' => $this, 'options' => $fOpts], JPATH_ROOT.'/components/com_meedya/layouts'); ?>
-		<?php if ($this->iids): ?>
 		<div class="actbuts">
 			<?php echo HTMLHelper::_('meedya.actionButtons', ['sela','seln','edts','adds','dels']); ?>
 		</div>

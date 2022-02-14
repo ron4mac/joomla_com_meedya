@@ -239,7 +239,8 @@ class Up_Load
 	}
 	
 	private function upldLog ($ntry)
-	{	//return;
+	{
+		if (!defined('RJC_DBUG')) return;
 		file_put_contents('UPLOG.txt', $ntry."\n", FILE_APPEND);
 	}
 

@@ -1,7 +1,7 @@
 <?php
 /**
  * @package		com_meedya
- * @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
+ * @copyright	Copyright (C) 2021 RJCreations. All rights reserved.
  * @license		GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('JPATH_BASE') or die;
@@ -81,7 +81,89 @@ $filtersActiveClass = $hideActiveFilters ? '' : ' js-stools-container-filters-vi
 // Load search tools
 HTMLHelper::_('searchtools.form', $data['options']['formSelector'], $data['options']);
 ?>
-<div class="js-stools clearfix">
+
+
+<div class="btn-toolbar">
+			
+			<div class="btn-group">
+			<div class="input-group">
+				
+
+	
+	<input type="text" name="filter[search]" id="filter_search" value="" class="form-control" aria-describedby="filter[search]-desc" placeholder="Search" inputmode="search">
+
+	
+
+								<div role="tooltip" id="filter[search]-desc">
+					Search in title, alias and notes. Prefix with ID: to search for a menu item ID.				</div>
+								<span class="visually-hidden">
+					<label id="filter_search-lbl" for="filter_search">
+	Search Menu Items</label>
+				</span>
+				<button type="submit" class="btn btn-primary" aria-label="Search">
+					<span class="icon-search" aria-hidden="true"></span>
+				</button>
+			</div>
+		</div>
+		<div class="btn-group">
+							<button type="button" class="btn btn-primary js-stools-btn-filter">
+					Filter Options					<span class="icon-angle-down" aria-hidden="true"></span>
+				</button>
+						<button type="button" class="btn btn-primary js-stools-btn-clear" disabled="">
+				Clear			</button>
+		</div>
+					<div class="ordering-select">
+					<div class="js-stools-field-list">
+				<span class="visually-hidden"><label id="list_fullordering-lbl" for="list_fullordering">
+	Sort Table By:</label>
+</span>
+				<select id="list_fullordering" name="list[fullordering]" class="form-select" onchange="this.form.submit();">
+	<option value="">Sort Table By:</option>
+	<option value="a.lft ASC" selected="selected">Ordering ascending</option>
+	<option value="a.lft DESC">Ordering descending</option>
+	<option value="a.published ASC">Status ascending</option>
+	<option value="a.published DESC">Status descending</option>
+	<option value="a.title ASC">Title ascending</option>
+	<option value="a.title DESC">Title descending</option>
+	<option value="menutype_title ASC">Menu ascending</option>
+	<option value="menutype_title DESC">Menu descending</option>
+	<option value="a.home ASC">Home ascending</option>
+	<option value="a.home DESC">Home descending</option>
+	<option value="a.access ASC">Access ascending</option>
+	<option value="a.access DESC">Access descending</option>
+	<option value="a.id ASC">ID ascending</option>
+	<option value="a.id DESC">ID descending</option>
+</select>
+			</div>
+					<div class="js-stools-field-list">
+				<span class="visually-hidden"><label id="list_limit-lbl" for="list_limit">
+	Select number of items per page.</label>
+</span>
+				<select id="list_limit" name="list[limit]" class="form-select" onchange="this.form.submit();">
+	<option value="5">5</option>
+	<option value="10">10</option>
+	<option value="15">15</option>
+	<option value="20" selected="selected">20</option>
+	<option value="25">25</option>
+	<option value="30">30</option>
+	<option value="50">50</option>
+	<option value="100">100</option>
+	<option value="200">200</option>
+	<option value="500">500</option>
+	<option value="0">All</option>
+</select>
+			</div>
+			</div>
+	<?php if ($data['options']['filterButton']) : ?>
+	<div class="js-stools-container-filters hidden-phone clearfix<?php echo $filtersActiveClass; ?>">
+		<?php echo $this->sublayout('filters', $data); ?>
+	</div>
+	<?php endif; ?>
+		</div>
+
+
+
+<!-- <div class="js-stools clearfix">
 	<div class="clearfix">
 		<?php if ($data['options']['showSelector']) : ?>
 		<div class="js-stools-container-selector">
@@ -95,13 +177,12 @@ HTMLHelper::_('searchtools.form', $data['options']['formSelector'], $data['optio
 			<?php echo $this->sublayout('list', $data); ?>
 		</div>
 	</div>
-	<!-- Filters div -->
 	<?php if ($data['options']['filterButton']) : ?>
 	<div class="js-stools-container-filters hidden-phone clearfix<?php echo $filtersActiveClass; ?>">
 		<?php echo $this->sublayout('filters', $data); ?>
 	</div>
 	<?php endif; ?>
-</div>
+</div> -->
 <?php if ($data['options']['showNoResults']) : ?>
 	<?php echo $this->sublayout('noitems', $data); ?>
 <?php endif; ?>

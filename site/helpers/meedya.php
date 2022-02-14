@@ -27,7 +27,7 @@ abstract class MeedyaHelper
 			'upload' => ['upload.js', 'upload.min.js'],
 			'bootbox' => ((int)JVERSION < 4) ? ['bootbox.js', 'bootbox.min.js'] : ['https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.5.2/bootbox.js','https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.5.2/bootbox.min.js'],
 			'jquery.tagsinput' => ['jquery.tagsinput.js', 'jquery.tagsinput.min.js'],
-			'fancybox' => ['3.5.7/jquery.fancybox.js', '3.5.7/jquery.fancybox.min.js']
+			'fancybox3' => ['3.5.7/jquery.fancybox.js', '3.5.7/jquery.fancybox.min.js']
 			];
 		if (isset($vray[$scr])) {
 			$s = $vray[$scr][$dbg ? 0 : 1];
@@ -65,7 +65,7 @@ abstract class MeedyaHelper
 			'echo' => ['echo.css', 'echo.min.css'],
 			'slides' => ['slides.css', 'slides.min.css'],
 			'upload' => ['upload.css', 'upload.css'],
-			'fancybox' => ['3.5.7/jquery.fancybox.css', '3.5.7/jquery.fancybox.min.css']
+			'fancybox3' => ['3.5.7/jquery.fancybox.css', '3.5.7/jquery.fancybox.min.css']
 			];
 		if (isset($vray[$css])) {
 			$s = $vray[$css][$dbg ? 0 : 1];

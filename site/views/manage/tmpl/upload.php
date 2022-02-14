@@ -1,7 +1,7 @@
 <?php
 /**
  * @package		com_meedya
- * @copyright	Copyright (C) 2021 RJCreations. All rights reserved.
+ * @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
  * @license		GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
@@ -17,10 +17,10 @@ HTMLHelper::addIncludePath(JPATH_COMPONENT.'/helpers');
 
 // build and add javascript options
 $h5opts = [
-	'frmtkn' => Session::getFormToken(),
 	'siteURL' => JUri::base().'index.php?option=com_meedya&Itemid='.$this->itemId,
 	'upURL' => Route::_('index.php?option=com_meedya&format=raw&Itemid='.$this->itemId, false),
 	'dropMessage' => 'Please drop files here to upload<br>(or click to select)',
+	'failcss' => 'alert-danger',
 	'concurrent' => 4,
 	'maxchunksize' => MeedyaHelper::phpMaxUp() - 262144,
 	'timestamp' => $this->dbTime
@@ -49,27 +49,26 @@ js_vars.h5uM = {
 if ($this->uplodr == 'UL')
 	$script .= '
 	Meedya.h5uOptions = {
-		payload: function() { return {album: jQuery("#h5u_album").val(), kywrd: jQuery("#h5u_keywords").val()}; },
+		payload: function() {
+			return {
+				task: "manage.upfile",
+				[Joomla.getOptions("csrf.token")]: 1,
+				album: jQuery("#h5u_album").val(),
+				kywrd: jQuery("#h5u_keywords").val(),
+			};
+		},
 		success: function(resp) { updStorBar(sqb, resp.split(\':\')[1]); },
 		doneFunc: uploadDone
 	};
 	function uploadDone (okcount, errcnt) {
-		Meedya.confirm("confirm-dlg");
-		return;
-	//	alert("There were "+okcount+" files uploaded with "+errcnt+" errors.");
-		redirURL = H5uOpts.siteURL + "&task=manage.imgEdit&after=" + H5uOpts.timestamp;
-		bootbox.confirm({
-			message: "Edit info for the uploaded files?",
-			buttons: {
-				confirm: { label: "JYES", className: "btn-primary" },
-				cancel: { label: "JCANCEL", className: "btn-secondary" }
-			},
-			callback: function(c){
-				if (c) {
-					window.location = redirURL;
-				}
-			}
-		});
+		let msg = "There were "+okcount+" files uploaded with "+errcnt+" errors.";
+		if (okcount) {
+			msg += "<br>Edit info for the uploaded files?";
+			let redirURL = H5uOpts.siteURL + "&task=manage.imgEdit&after=" + H5uOpts.timestamp;
+			Meedya.confirm("confirm-dlg", "Uploaded Files", msg, (y) => {if (y) window.location = redirURL;});
+		} else {
+			Meedya.alert(msg);
+		}
 	}
 	function showError (msg, file) {
 		$id("errmsgs").style.display = "block";
@@ -130,6 +129,7 @@ if ($quota) {
 .modal-backdrop.fade.in {
     opacity: 0.3;
 }
+#alert-dlg { display:none; }
 </style>
 <?php endif; ?>
 <div class="meedya-gallery">
@@ -153,6 +153,10 @@ if ($quota) {
 <p>
 	<!-- <?php var_dump($this->params); ?> -->
 </p>
+<div id="alert-dlg" class="alert alert-danger alert-dismissible" role="alert">
+	<button type="button" class="btn-close" data-bs-dismiss="alert" data-dismiss="alert" aria-label="Close"></button>
+	<i class="icon-warning large-icon"> </i> <span>DANGER ALERT</span>
+</div>
 <?php
 if (RJC_DBUG) {
 	$ipp = MeedyaHelper::getImgProc('images/powered_by.png');
@@ -185,14 +189,15 @@ echo HTMLHelper::_(
 	'bootstrap.renderModal',
 	'confirm-dlg',
 	['title' => 'CONFIRM',
-	'footer' => '<button type="button" class="btn btn-secondary" '.M34C::bs('dismiss').'="modal">'.Text::_('JNO').'</button>
-				<button type="button" class="btn btn-info" '.M34C::bs('dismiss').'="modal">'.Text::_('JYES').'</button>',
-	'modalWidth' => '20'],
+	'footer' => '<button type="button" class="btn btn-secondary" '.M34C::bs('dismiss').'="modal" onclick="Meedya.confirmed(0)">'.Text::_('JNO').'</button>
+				<button type="button" class="btn btn-info" '.M34C::bs('dismiss').'="modal" onclick="Meedya.confirmed(1)">'.Text::_('JYES').'</button>',
+	'modalWidth' => '30'],
 	'PLEASE CONFIRM'
 	);
+HTMLHelper::_('bootstrap.alert');
 ?>
 <script>
 jQuery('#h5u_keywords').tagsInput();
 var sqb = document.getElementById("qBar");
-H5uSetup(Meedya.h5uOptions);
+window.addEventListener("load", () => {if (Meedya.h5uOptions) H5uSetup(Meedya.h5uOptions); else alert('UPLOAD ENGINE INITIALIZATION FAILURE')});
 </script>

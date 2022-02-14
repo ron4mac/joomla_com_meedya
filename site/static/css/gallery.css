@@ -4,6 +4,15 @@
 .meedya-gallery .search {
 	float: right;
 }
+.meedya-gallery .alert {
+	font-size: larger;
+/*	position: absolute;
+	top: 0;*/
+	width: 100%;
+}
+.meedya-gallery .alert i {
+	font-size: larger;
+}
 .btn-group.mgmenu {
 /*	position: absolute;
 	right: 0;

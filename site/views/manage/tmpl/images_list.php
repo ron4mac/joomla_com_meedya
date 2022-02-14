@@ -1,7 +1,7 @@
 <?php
 /**
  * @package		com_meedya
- * @copyright	Copyright (C) 2021 RJCreations. All rights reserved.
+ * @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
  * @license		GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
@@ -15,6 +15,8 @@ echo '<style>
 }
 #imglist th {
 	border: 1px solid #AAA;
+	background-color: aliceblue;
+	padding: 0 1rem;
 }
 .lstItem, .item {
 	margin:0;
@@ -22,7 +24,7 @@ echo '<style>
 .lstItem > div {
 	margin:0;
 }
-.lstText, .lstDates {
+.lstText, .lstDates, .lstSocial {
 	padding: 1em;
 	box-sizing: border-box;
 }
@@ -36,7 +38,7 @@ echo '<style>
 
 echo '<div id="imglist">
 <table class="itemsTable">
-<tr><th>Image</th><th>Title/Description</th><th>Dates</th></tr>
+<tr class="thead"><th>Image</th><th>Title/Description</th><th>Dates</th><th>Social</th></tr>
 ';
 
 foreach ($this->iids as $item) {
@@ -53,6 +55,10 @@ foreach ($this->iids as $item) {
 	echo '<td><div class="lstDates row-fluid"><dl>';
 	if ($item->expodt) echo '<dt>Exposure date:</dt><dd>'.dateF($item->expodt).'</dd>';
 	echo '<dt>Upload date:</dt><dd>'.date('M j, Y, g:i a', $item->timeduts).'</dd>';
+	echo '</dl></div></td>';
+	echo '<td><div class="lstSocial row-fluid"><dl>';
+	if ($item->cmntcnt) echo '<dt>Comments:</dt><dd>'.$item->cmntcnt.'</dd>';
+	if ($item->ratetot) echo '<dt>Rating:</dt><dd>'.round($item->ratetot/$item->ratecnt,2).'</dd>';
 	echo '</dl></div></td>';
 	echo '</tr>';
 }

@@ -1,7 +1,7 @@
 <?php
 /**
  * @package		com_meedya
- * @copyright	Copyright (C) 2021 RJCreations. All rights reserved.
+ * @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
  * @license		GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
@@ -36,6 +36,7 @@ abstract class JHtmlMeedya
 		}
 		if ($sub) {
 			$html .= '<h3>'.$sub.'</h3>';
+		//	$html .= '<span class="badge rounded-pill bg-primary">?</span>';
 		}
 		return $html;
 	}

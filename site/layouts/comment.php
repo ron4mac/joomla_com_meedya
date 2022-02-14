@@ -8,6 +8,7 @@ defined('JPATH_BASE') or die;
 
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Session\Session;
 
 echo HTMLHelper::_(
 	'bootstrap.renderModal',
@@ -21,5 +22,6 @@ echo HTMLHelper::_(
 	'<form id="newcmnt">
 	<div class="new-comment"><textarea id="cmnt-text" name="cmntext"></textarea></div>
 	<input type="hidden" name="task" value="addComment" />
+	<input type="hidden" name="'.Session::getFormToken().'" value="1" />
 	</form>'
 );

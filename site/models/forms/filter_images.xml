@@ -30,6 +30,31 @@
 	</fields>
 	<fields name="list">
 		<field
+			name="orderby"
+			type="list"
+			label="COM_CONTENT_LIST_FULL_ORDERING"
+			description="COM_CONTENT_LIST_FULL_ORDERING_DESC"
+			onchange="this.form.submit();"
+			default="a.id DESC"
+			validate="options"
+			>
+			<option value="">COM_MEEDYA_SORT_BY</option>
+			<option value="timed ASC">COM_MEEDYA_UPLD_ASC</option>
+			<option value="timed DESC">COM_MEEDYA_UPLD_DESC</option>
+			<option value="expodt ASC">COM_MEEDYA_EXPO_ASC</option>
+			<option value="expodt DESC">COM_MEEDYA_EXPO_DESC</option>
+			<option value="tsize ASC">COM_MEEDYA_STOR_ASC</option>
+			<option value="tsize DESC">COM_MEEDYA_STOR_DESC</option>
+			<option value="title ASC">COM_MEEDYA_TITL_ASC</option>
+			<option value="title DESC">COM_MEEDYA_TITL_DESC</option>
+			<option value="cmntcnt ASC">COM_MEEDYA_CMNT_ASC</option>
+			<option value="cmntcnt DESC">COM_MEEDYA_CMNT_DESC</option>
+			<option value="(ratetot*1.0/ratecnt) ASC">COM_MEEDYA_RATE_ASC</option>
+			<option value="(ratetot*1.0/ratecnt) DESC">COM_MEEDYA_RATE_DESC</option>
+			<option value="file ASC">COM_MEEDYA_FILE_ASC</option>
+			<option value="file DESC">COM_MEEDYA_FILE_DESC</option>
+		</field>
+		<field
 			name="limit"
 			type="limitbox"
 			class="input-mini"

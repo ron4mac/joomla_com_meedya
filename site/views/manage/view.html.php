@@ -1,7 +1,7 @@
 <?php
 /**
  * @package		com_meedya
- * @copyright	Copyright (C) 2021 RJCreations. All rights reserved.
+ * @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
  * @license		GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
@@ -68,7 +68,7 @@ class MeedyaViewManage extends MeedyaView
 				$this->iids = $this->get('Items');
 				$this->total = count($this->iids);
 		//		$this->items = $this->get('Items');
-				$this->filterForm = $this->get('FilterForm');	//var_dump('FilterForm',$this->filterForm);jexit();
+				$this->filterForm = $this->get('FilterForm');	//echo'<xmp>';var_dump('FilterForm',$this->filterForm);echo'</xmp>';jexit();
 //				$this->filterForm->setFieldAttribute('limit', 'default', 50, 'list');
 				$albs = json_encode($this->get('AllAlbums'));
 				$r = $this->filterForm->setFieldAttribute('album', 'albums', $albs, 'filter');	//echo'<xmp>';var_dump('FilterForm',$r,$this->filterForm);jexit();
@@ -76,7 +76,7 @@ class MeedyaViewManage extends MeedyaView
 
 				$this->pagination = $this->get('Pagination');
 
-				$this->linkUrl = 'index.php?option=com_meedya&task=manage.editImgs';
+				$this->linkUrl = 'index.php?option=com_meedya&task=manage.editImgs&Itemid='.$this->itemId;
 				break;
 
 			case 'albedit':
