@@ -19,6 +19,7 @@ $ttscript = '';
 
 HTMLHelper::_('jquery.framework');
 MeedyaHelper::addStyle('album');
+HTMLHelper::_('behavior.core');		// must force 'core' to load before 'meedya' on joomla 3.x
 MeedyaHelper::addScript('meedya');
 if (defined('MYG_FB4')) {
 	MeedyaHelper::addStyle('fancybox', 'vendor/fancybox/4.0.16/');

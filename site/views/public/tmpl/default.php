@@ -12,6 +12,7 @@ use Joomla\CMS\HTML\HTMLHelper;
 
 HTMLHelper::_('jquery.framework');
 MeedyaHelper::addStyle('gallery');
+HTMLHelper::_('behavior.core');		// must force 'core' to load before 'meedya' on joomla 3.x
 MeedyaHelper::addScript('meedya');
 $jslang = [
 		'no_sterm' => Text::_('COM_MEEDYA_MSG_STERM'),
