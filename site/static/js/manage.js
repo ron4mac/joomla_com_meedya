@@ -1,3 +1,4 @@
+/* globals Joomla,bootbox,iZoomClose,jQuery */
 'use strict';
 /* a few utility functions to avoid using jquery and assist in minification */
 // getElementById
@@ -13,6 +14,9 @@ const _pd = (e, sp=true) => {
 const _ae = (elem, evnt, func, capt=false) => {
 	elem.addEventListener(evnt, func, capt);
 };
+// get joomla text
+const _T = (txt) => Joomla.Text._(txt);
+
 
 
 var Meedya = (function (my, $, w) {
@@ -48,7 +52,7 @@ var Meedya = (function (my, $, w) {
 		if (document.querySelectorAll(sel).length) {
 			return true;
 		} else {
-			if (alrt) bootbox.alert(Joomla.Text._('COM_MEEDYA_SELECT_SOME'));
+			if (alrt) bootbox.alert(_T('COM_MEEDYA_SELECT_SOME'));
 			return false;
 		}
 	};
@@ -94,10 +98,10 @@ var Meedya = (function (my, $, w) {
 		_pd(e);
 		if (_hasSelections("[name='slctimg[]']:checked", true)) {
 			bootbox.confirm({
-				message: Joomla.Text._('COM_MEEDYA_PERM_DELETE'),
+				message: _T('COM_MEEDYA_PERM_DELETE'),
 				buttons: {
-					confirm: { label: Joomla.Text._('JACTION_DELETE'), className: 'btn-danger' },
-					cancel: { label: Joomla.Text._('JCANCEL') }
+					confirm: { label: _T('JACTION_DELETE'), className: 'btn-danger' },
+					cancel: { label: _T('JCANCEL') }
 				},
 				callback: (c) => {
 					if (c) {
@@ -113,10 +117,10 @@ var Meedya = (function (my, $, w) {
 		_pd(e);
 		if (_hasSelections("[name='slctimg[]']:checked", true)) {
 			bootbox.confirm({
-				message: Joomla.Text._('COM_MEEDYA_REMOVE'),
+				message: _T('COM_MEEDYA_REMOVE'),
 				buttons: {
-					confirm: { label: Joomla.Text._('COM_MEEDYA_VRB_REMOVE'), className: 'btn-danger' },
-					cancel: { label: Joomla.Text._('JCANCEL') }
+					confirm: { label: _T('COM_MEEDYA_VRB_REMOVE'), className: 'btn-danger' },
+					cancel: { label: _T('JCANCEL') }
 				},
 				callback: (c) => {
 					if (c) {
@@ -537,7 +541,7 @@ Meedya.AArrange = (function (my, $) {
 			let da = e.target.dataset.aid;
 			setAlbPaid(sa, da, (r) => {
 				if (r) {
-					bootbox.alert(Joomla.Text._('COM_MEEDYA_MOVE_FAIL'));
+					bootbox.alert(_T('COM_MEEDYA_MOVE_FAIL'));
 				} else {
 					e.target.append(dragSrcEl);
 				}

@@ -22,15 +22,15 @@ MeedyaHelper::addStyle('album');
 HTMLHelper::_('behavior.core');		// must force 'core' to load before 'meedya' on joomla 3.x
 MeedyaHelper::addScript('meedya');
 if (defined('MYG_FB4')) {
-	MeedyaHelper::addStyle('fancybox', 'vendor/fancybox/4.0.16/');
-	MeedyaHelper::addScript('fancybox.umd', 'vendor/fancybox/4.0.16/');
-//	$this->jDoc->addStyleSheet(JUri::base().'components/com_meedya/static/vendor/fancybox/4.0.15/fancybox.css');
-//	$this->jDoc->addScript(JUri::base().'components/com_meedya/static/vendor/fancybox/4.0.15/fancybox.umd.js');
+	MeedyaHelper::addStyle('fancybox', 'vendor/fancybox/4.0.26/');
+	MeedyaHelper::addScript('fancybox.umd', 'vendor/fancybox/4.0.26/');
 	$ttscript .= 'Fancybox.defaults.infinite = 0;
 	Fancybox.defaults.showClass = false;
 	Fancybox.defaults.hideClass = false;
+	Fancybox.defaults.autoFocus = false;
 	Fancybox.Plugins.Thumbs.defaults.autoStart = false;
 	Fancybox.Plugins.Toolbar.defaults.display = ["zoom","slideshow","fullscreen","download","close"];
+//	Carousel.defaults.friction = 0.75;
 	';
 } else {
 	MeedyaHelper::addStyle('fancybox3','vendor/fancybox/');
@@ -191,6 +191,17 @@ $cancmnt = $this->uid || $this->params->get('pub_comments', 0);
 	width: 100%;
 	height: 100%;
 }
+.fancybox__container .fancybox__content {
+	/* Create white border around the image */
+	box-sizing: content-box;
+	padding: .4rem;
+	background: #fff;
+	
+	border-radius: 6px;
+	color: #374151;
+	box-shadow: 0 8px 23px rgb(0 0 0 / 50%);
+}
+
 </style>
 <div class="meedya-gallery">
 <?php echo HTMLHelper::_('meedya.pageHeader', $this->params); ?>
