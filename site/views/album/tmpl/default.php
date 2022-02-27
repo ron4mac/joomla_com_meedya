@@ -36,7 +36,7 @@ if (defined('MYG_FB4')) {
 	MeedyaHelper::addStyle('fancybox3','vendor/fancybox/');
 	MeedyaHelper::addScript('fancybox3', 'vendor/fancybox/');
 }
-MeedyaHelper::addScript('bootbox');
+//MeedyaHelper::addScript('bootbox');
 MeedyaHelper::addScript('rating');
 
 $jslang = [

@@ -47,7 +47,11 @@ var Meedya = {};	// a namespace for com_meedya
 		slideShow: (e) => {
 			e.preventDefault();
 			let imgl = JSON.parse(JSON.stringify(Meedya.items));	//copy
-			$.fancybox.open(imgl, {...this.sopts, ...this.vopts, ...this.ssbuts});
+			if (Meedya.FB4) {
+				Fancybox.show(imgl/*,{mainClass: "mdyFancybox"}*/);
+			} else {
+				$.fancybox.open(imgl, {...this.sopts, ...this.vopts, ...this.ssbuts});
+			}
 		}
 	};
 

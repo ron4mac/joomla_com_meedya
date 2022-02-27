@@ -25,7 +25,9 @@ abstract class MeedyaHelper
 			'echo' => ['echo.js', 'echo.min.js'],
 			'slides' => ['slides.js', 'slides.min.js'],
 			'upload' => ['upload.js', 'upload.min.js'],
-			'bootbox' => ((int)JVERSION < 4) ? ['bootbox.js', 'bootbox.min.js'] : ['https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.5.2/bootbox.js','https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.5.2/bootbox.min.js'],
+			'bootbox' => ((int)JVERSION < 4)
+			? ['https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/3.3.0/bootbox.js','https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/3.3.0/bootbox.min.js']
+			: ['https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.5.2/bootbox.js','https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.5.2/bootbox.min.js'],
 			'jquery.tagsinput' => ['jquery.tagsinput.js', 'jquery.tagsinput.min.js'],
 			'fancybox3' => ['3.5.7/jquery.fancybox.js', '3.5.7/jquery.fancybox.min.js']
 			];
@@ -35,7 +37,7 @@ abstract class MeedyaHelper
 			$s = $scr.'.js';
 		}
 
-		if (strpos($s, '://')) return $s . $sfx;
+		if (strpos($s, '://')) return $s;
 
 		return 'components/com_meedya/static/' . $path . $s . $sfx;
 	}
