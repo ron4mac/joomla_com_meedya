@@ -1,9 +1,9 @@
 <?php
 /**
- * @package		com_meedya
- * @copyright	Copyright (C) 2021 RJCreations. All rights reserved.
- * @license		GNU General Public License version 3 or later; see LICENSE.txt
- */
+* @package		com_meedya
+* @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
+* @license		GNU General Public License version 3 or later; see LICENSE.txt
+*/
 defined('_JEXEC') or die;
 
 // a helper class to accommodate Joomla 3 and Joomla 4 differences
