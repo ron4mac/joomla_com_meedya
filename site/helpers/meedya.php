@@ -17,10 +17,10 @@ abstract class MeedyaHelper
 
 	public static function scriptVersion ($scr, $path='js/')
 	{
-		$dbg = RJC_DBUG;
+		$dbg = RJC_DBUG && Factory::getUser()->get('id');
 		$sfx = $dbg ? ('?'.time()) : '';
 		$vray = [
-		//	'meedya' => ['meedya.js', 'meedya.min.js'],		have issues minifying this, so just cause default use
+			'meedya' => ['meedya.js', 'meedya.min.js'],
 			'manage' => ['manage.js', 'manage.min.js'],
 			'echo' => ['echo.js', 'echo.min.js'],
 			'slides' => ['slides.js', 'slides.min.js'],

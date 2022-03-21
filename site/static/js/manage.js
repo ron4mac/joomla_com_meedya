@@ -1,3 +1,8 @@
+/**
+* @package		com_meedya
+* @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
+* @license		GNU General Public License version 3 or later; see LICENSE.txt
+*/
 /* globals Joomla,bootbox,iZoomClose,jQuery */
 'use strict';
 /* a few utility functions to avoid using jquery and assist in minification */

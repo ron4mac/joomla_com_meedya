@@ -1,3 +1,8 @@
+/**
+* @package		com_meedya
+* @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
+* @license		GNU General Public License version 3 or later; see LICENSE.txt
+*/
 /* uplodr v0.9 */
 'use strict';
 /* a couple of utility functions to avoid using jquery and assist in minification */

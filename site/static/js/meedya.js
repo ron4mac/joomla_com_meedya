@@ -1,3 +1,8 @@
+/**
+* @package		com_meedya
+* @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
+* @license		GNU General Public License version 3 or later; see LICENSE.txt
+*/
 /* jshint esnext:false, esversion:9 */
 /* globals Joomla,jQuery,Fancybox,ssCtl,SimpleStarRating,newcmnt */
 'use strict';

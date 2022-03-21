@@ -1,3 +1,8 @@
+/**
+* @package		com_meedya
+* @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
+* @license		GNU General Public License version 3 or later; see LICENSE.txt
+*/
 var H5ss_icons = null;
 var H5ss_ctrl = null;
 var H5ss_text = null;

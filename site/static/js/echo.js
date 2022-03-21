@@ -1,4 +1,9 @@
-/*! echo-js v1.7.3 | (c) 2016 @toddmotto | https://github.com/toddmotto/echo */
+/**
+* @package		com_meedya
+* @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
+* @license		GNU General Public License version 3 or later; see LICENSE.txt
+*/
+/* based on echo-js v1.7.2 | (c) 2016 @toddmotto | https://github.com/toddmotto/echo */
 (function (root, factory) {
 	if (typeof define === 'function' && define.amd) {
 		define(function() {
@@ -13,43 +18,44 @@
 
 	'use strict';
 
-	var echo = {};
+	// use convenience/minification constants
+	/** @noinline */
+	const	DE = 'data-echo';
+	/** @noinline */
+	const	DEBG = 'data-echo-background';
+	/** @noinline */
+	const	DEPH = 'data-echo-placeholder';
 
-	var callback = function () {};
+	let echo = {};
 
-	var offset, poll, delay, useDebounce, unload, baseUrl;
+	let callback = function () {};
 
-	var isHidden = function (element) {
-		return (element.offsetParent === null);
-	};
+	let offset, poll, delay, useDebounce, unload, baseUrl;
 
-	var inView = function (element, view) {
+	const isHidden = (element) => (element.offsetParent === null);
+
+	const inView = (element, view) => {
 		if (isHidden(element)) {
 			return false;
 		}
-		var box = element.getBoundingClientRect();
+		let box = element.getBoundingClientRect();
 		return (box.right >= view.l && box.bottom >= view.t && box.left <= view.r && box.top <= view.b);
 	};
 
-	var debounceOrThrottle = function () {
+	const debounceOrThrottle = () => {
 		if(!useDebounce && !!poll) {
 			return;
 		}
 		clearTimeout(poll);
-		poll = setTimeout(function(){
-			echo.render();
-			poll = null;
-		}, delay);
+		poll = setTimeout(() => { echo.render(); poll = null; }, delay);
 	};
 
-	echo.init = function (opts) {
+	echo.init = (opts) => {
 		opts = opts || {};
-		var offsetAll = opts.offset || 0;
-		var offsetVertical = opts.offsetVertical || offsetAll;
-		var offsetHorizontal = opts.offsetHorizontal || offsetAll;
-		var optionToInt = function (opt, fallback) {
-			return parseInt(opt || fallback, 10);
-		};
+		let offsetAll = opts.offset || 0;
+		let offsetVertical = opts.offsetVertical || offsetAll;
+		let offsetHorizontal = opts.offsetHorizontal || offsetAll;
+		let optionToInt = (opt, fallback) => parseInt(opt || fallback, 10);
 		baseUrl = opts.baseUrl || '';
 		offset = {
 			t: optionToInt(opts.offsetTop, offsetVertical),
@@ -73,45 +79,45 @@
 		}
 	};
 
-	echo.render = function (context) {
-		var nodes = (context || document).querySelectorAll('[data-echo], [data-echo-background]');
-		var length = nodes.length;
-		var src, elem;
-		var view = {
+	echo.render = (context) => {
+		let nodes = (context || document).querySelectorAll(`[${DE}], [${DEBG}]`);
+		let length = nodes.length;
+		let src, elem;
+		let view = {
 			l: 0 - offset.l,
 			t: 0 - offset.t,
 			b: (root.innerHeight || document.documentElement.clientHeight) + offset.b,
 			r: (root.innerWidth || document.documentElement.clientWidth) + offset.r
 		};
-		for (var i = 0; i < length; i++) {
+		for (let i = 0; i < length; i++) {
 			elem = nodes[i];
 			if (inView(elem, view)) {
 
 				if (unload) {
-					elem.setAttribute('data-echo-placeholder', elem.src);
+					elem.setAttribute(DEPH, elem.src);
 				}
 
-				if (elem.getAttribute('data-echo-background') !== null) {
-					elem.style.backgroundImage = 'url(' + elem.getAttribute('data-echo-background') + ')';
-				} else if (elem.src !== (src = (baseUrl + elem.getAttribute('data-echo')))) {
+				if (elem.getAttribute(DEBG) !== null) {
+					elem.style.backgroundImage = 'url(' + elem.getAttribute(DEBG) + ')';
+				} else if (elem.src !== (src = (baseUrl + elem.getAttribute(DE)))) {
 					elem.src = src;
 				}
 
 				if (!unload) {
-					elem.removeAttribute('data-echo');
-					elem.removeAttribute('data-echo-background');
+					elem.removeAttribute(DE);
+					elem.removeAttribute(DEBG);
 				}
 
 				callback(elem, 'load');
-			} else if (unload && !!(src = elem.getAttribute('data-echo-placeholder'))) {
+			} else if (unload && !!(src = elem.getAttribute(DEPH))) {
 
-				if (elem.getAttribute('data-echo-background') !== null) {
+				if (elem.getAttribute(DEBG) !== null) {
 					elem.style.backgroundImage = 'url(' + src + ')';
 				} else {
 					elem.src = src;
 				}
 
-				elem.removeAttribute('data-echo-placeholder');
+				elem.removeAttribute(DEPH);
 				callback(elem, 'unload');
 			}
 		}
@@ -120,7 +126,7 @@
 		}
 	};
 
-	echo.detach = function () {
+	echo.detach = () => {
 		if (document.removeEventListener) {
 			root.removeEventListener('scroll', debounceOrThrottle);
 		} else {
