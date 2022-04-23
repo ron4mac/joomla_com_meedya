@@ -14,7 +14,7 @@ echo HTMLHelper::_(
 	'rating-modal', // selector
 	array( // options
 		'title'  => Text::_('COM_MEEDYA_RATING_TITLE'),
-	//	'modalWidth' => 30
+		'modalWidth' => 20
 	),
 	'<div class="rated"><span id="unrating" class="rating"></span></div>'
 );

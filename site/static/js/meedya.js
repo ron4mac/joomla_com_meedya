@@ -68,6 +68,10 @@ var Meedya = {};	// a namespace for com_meedya
 		}
 	};
 
+	// open or close modals based on J4 or J3 bootstrap
+	const openMdl = (elm) => { elm.open ? elm.open() : jQuery(elm).modal('show'); };
+	const closMdl = (elm) => { elm.close ? elm.close() : jQuery(elm).modal('hide'); };
+
 	Meedya.initIV = (old=false) => {
 		Meedya.viewer = old ? old_viewer : viewer;
 	};
@@ -125,12 +129,12 @@ var Meedya = {};	// a namespace for com_meedya
 		$.post(my.rawURL, {[token]: 1, task: 'rateItem', iid: curIid, val: evt.detail})
 		.done(data => {
 			curRelm.firstElementChild.firstElementChild.style.width = data+"%";
-			$(rDlg).modal('hide');
+			closMdl(rDlg);
 			ssr.enable();
 		})
 		.fail(err => {
 			alert(err.responseText);
-			$(rDlg).modal('hide');
+			closMdl(rDlg);
 		});
 	};
 
@@ -138,7 +142,7 @@ var Meedya = {};	// a namespace for com_meedya
 		curIid = itemid;
 		curRelm = relm;
 		$.post(my.rawURL, {task: 'rateChk', iid: itemid})
-		.done(() => { $(rDlg).modal('show'); })
+		.done(() => { openMdl(rDlg); })
 		.fail((err) => { alert(err.responseText); });
 	};
 
@@ -150,7 +154,7 @@ var Meedya = {};	// a namespace for com_meedya
 		curIid = itemid;
 		cElm.innerHTML = '';
 		$.post(my.rawURL, {[token]: 1, task: 'getComments', iid: itemid})
-		.done((data) => { cElm.innerHTML = data; $(cDlg).modal('show'); })
+		.done((data) => { cElm.innerHTML = data; openMdl(cDlg); })
 		.fail((err) => { alert(err.responseText); });
 	};
 
@@ -161,7 +165,7 @@ var Meedya = {};	// a namespace for com_meedya
 		for (let kv of fData.entries()) pdat[kv[0]] = kv[1];
 		$.post(my.rawURL, pdat)
 		.done((data) => {
-			$(ncDlg).modal('hide');
+			closMdl(ncDlg);
 			elm.disabled = false;
 			curCelm.classList.add('hasem');
 			curCelm.innerHTML = data;
@@ -174,10 +178,9 @@ var Meedya = {};	// a namespace for com_meedya
 		curCelm = elm;
 		if (elm.classList.contains('hasem')) {
 			fetchComments(itemid);
-//			$(cDlg).modal('show');
 		} else {
 			document.getElementById("cmnt-text").value = "";
-			$(ncDlg).modal('show');
+			openMdl(ncDlg);
 		}
 	};
 
@@ -200,7 +203,7 @@ var Meedya = {};	// a namespace for com_meedya
 		// setup the star rating modal
 		rDlg = document.getElementById('rating-modal');
 		if (rDlg) {
-			rDlg.addEventListener('hidden.bs.modal', (event) => {$(rDlg).modal('hide');});		// NOT SURE ABOUT THIS
+			rDlg.addEventListener('hidden.bs.modal', (event) => {closMdl(rDlg);});		// NOT SURE ABOUT THIS
 			var rating = document.getElementById('unrating');
 			ssr = new SimpleStarRating(rating);
 			rating.addEventListener('rate', submitRating);
