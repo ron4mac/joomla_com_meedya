@@ -312,10 +312,19 @@ td.tac {
 	text-align: center;
 /*	display: inline-flex;*/
 }
+.zoom-area .eclipse {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	margin-top: -100px;
+	margin-left: -100px;
+/*	z-index: -1;*/
+}
 .zoom-area:focus {
 	outline: none;
 }
 .zoom-zimg {
+/*	background-image: url(../img/eclipse.svg);*/
 	opacity: 0;
 	max-width: 100%;
 	max-height: 100%;

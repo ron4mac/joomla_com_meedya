@@ -10,21 +10,20 @@ use Joomla\CMS\Router\Route;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
 
-MeedyaHelper::addStyle('gallery');
-MeedyaHelper::addStyle('manage');
+MeedyaHelper::addStyle(['gallery','manage']);
 MeedyaHelper::addStyle('pell.min', 'vendor/pell/');
-HTMLHelper::_('jquery.framework');
-MeedyaHelper::addScript('manage');
-MeedyaHelper::addScript('bootbox');
+//HTMLHelper::_('jquery.framework');
+MeedyaHelper::addScript(['manage','itm_dand','bootbox']);
 MeedyaHelper::addScript('pell.min', 'vendor/pell/');
 
 HTMLHelper::_('bootstrap.modal');
 
 Text::script('COM_MEEDYA_REMOVE');
 Text::script('COM_MEEDYA_VRB_REMOVE');
+Text::script('COM_MEEDYA_ONE_PUBALB');
 
 $pubchk = $this->album['visib']==1 ? ' checked' : '';
-$pubdis = $this->album['pub'] && $this->album['pub']!=$this->album['aid'] ? ' disabled' : '';
+$pubdis = $this->album['pub'] && $this->album['pub']!=$this->album['aid'] ? ' disssabled onclick="alert(_T(\'COM_MEEDYA_ONE_PUBALB\'));return false"' : '';
 //var_dump($this->album);
 ?>
 <style>
@@ -36,7 +35,7 @@ $pubdis = $this->album['pub'] && $this->album['pub']!=$this->album['aid'] ? ' di
 	.pell-content {height: 100px}
 	.actbuts {margin-top: 1em}
 	.albdesc > div {margin-top: 1em}
-	#pubalb {vertical-align: text-bottom}
+	#pubalb {/*vertical-align: text-bottom*/}
 	.item img {user-drag: none;}
 	.itemxxx img {
 		-webkit-user-select: none;

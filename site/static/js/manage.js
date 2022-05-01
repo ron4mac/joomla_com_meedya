@@ -24,24 +24,23 @@ const _T = (txt) => Joomla.Text._(txt);
 
 
 
-var Meedya = (function (my, $, w) {
+(function (Meedya, my, $, w) {
 
 	// establish some common variables
 	const formTokn = Joomla.getOptions('csrf.token');
-	let thmsDirty = false;
 
-	let _removeAlbThm = () => {
+	const _removeAlbThm = () => {
 		_id('albthmimg').src = 'components/com_meedya/static/img/img.png';
 		_id('albthmid').value = 0;
 	};
 
-	let _handleAlbthmDragOver = (e) => {
+	const _handleAlbthmDragOver = (e) => {
 		if (e.dataTransfer.types.indexOf('imgsrc') < 0) return;
 		_pd(e);
 		return false;
 	};
 
-	let _handleAlbthmDrop = (e) => {
+	const _handleAlbthmDrop = (e) => {
 		_pd(e);
 		let src = e.dataTransfer.getData('imgsrc');
 		if (src) {
@@ -53,7 +52,7 @@ var Meedya = (function (my, $, w) {
 		}
 	};
 
-	let _hasSelections = (sel, alrt=false) => {
+	const _hasSelections = (sel, alrt=false) => {
 		if (document.querySelectorAll(sel).length) {
 			return true;
 		} else {
@@ -62,31 +61,58 @@ var Meedya = (function (my, $, w) {
 		}
 	};
 
+	//build a FormData object
+	const toFormData = (obj) => {
+		const formData = new FormData();
+		Object.keys(obj).forEach(key => {
+			if (typeof obj[key] !== 'object') formData.append(key, obj[key]);
+			else formData.append(key, JSON.stringify(obj[key]));
+		});
+		return formData;
+	};
+
+	const postAction = (task, parms={}, cb=null, json=false, fini=null) => {
+		if (typeof parms === 'object') {
+			if (!(parms instanceof FormData)) parms = toFormData(parms);
+		} else if (typeof parms === 'string') {
+			parms = new URLSearchParams(parms);
+		}
+		if (task) parms.set('task', task);
+	
+		fetch(my.rawURL, {method:'POST', body:parms})
+		.then(resp => { if (!resp.ok) throw new Error(`HTTP ${resp.status}`); if (json) return resp.json(); else return resp.text() })
+		.then(data => cb && cb(data))
+		.catch(err => alert('Failure: '+err))
+		.then(()=>fini && fini());
+	};
+
+	// open or close modals whether on J4 or J3 bootstrap
+	const openMdl = (elm) => { elm.open ? elm.open() : jQuery(elm).modal('show'); };
+	const closMdl = (elm) => { elm.close ? elm.close() : jQuery(elm).modal('hide'); };
+
 
 //@@@@@@@@@@ PUBLIC FUNCTIONS @@@@@@@@@@
 
+	// we'll export the postAction
+	Meedya.postAction = postAction;
+
 	// utility dialog actions for alert, confirm using bootstrap modals
 	let yescb = null;
-	let confirm = (dlg, titl, body, cb) => {
+	Meedya.confirm = (dlg, titl, body, cb) => {
 		//set the title and body 
 		$('#'+dlg+' .modal-title').html(titl);
 		$('#'+dlg+' .modal-body').html(body);
 		yescb = cb;
 		$('#'+dlg).modal('show');
 	};
-	let confirmed = (y) => yescb(y);
-	let alert = (body) => {
+	Meedya.confirmed = (y) => yescb(y);
+	Meedya.alert = (body) => {
 		//set the body 
 		$('#alert-dlg span').html(body);
 		$('#alert-dlg').show();
 	};
 
-	let setDlgParAlb = () => {
-		if (_id('h5u_palbum'))
-		_id('h5u_palbum').value = Meedya.AArrange.selalb();
-	};
-
-	let setAlbumDanD = () => {
+	Meedya.setAlbumDanD = () => {
 		let albthm = _id("albthm");
 		_ae(albthm, 'dragover', _handleAlbthmDragOver);
 		_ae(albthm, 'drop', _handleAlbthmDrop);
@@ -99,7 +125,7 @@ var Meedya = (function (my, $, w) {
 		_ae(albfrm, 'drop', (e) => { _pd(e); _removeAlbThm(); });
 	};
 
-	let deleteSelected = (e) => {
+	Meedya.deleteSelected = (e) => {
 		_pd(e);
 		if (_hasSelections("[name='slctimg[]']:checked", true)) {
 			bootbox.confirm({
@@ -118,9 +144,29 @@ var Meedya = (function (my, $, w) {
 		}
 	};
 
-	let removeSelected = (e) => {
+	Meedya.removeSelected = (e) => {
 		_pd(e);
 		if (_hasSelections("[name='slctimg[]']:checked", true)) {
+/*			bootbox.prompt({
+				title: "Remove from album ...",
+				message: _T('COM_MEEDYA_REMOVE')+'<br><br>',
+				inputType: 'checkbox',
+				inputOptions: [{
+					text: 'Totally delete from every album',
+					value: '1',
+				}],
+				buttons: {
+					confirm: {
+						label: 'Remove',
+						className: 'btn-warning'
+					}
+				},
+				callback: function (result) {
+					console.log(result);
+					if (result == null) return;
+					alert(result.length?'delete':'remove');
+				}
+			});*/
 			bootbox.confirm({
 				message: _T('COM_MEEDYA_REMOVE'),
 				buttons: {
@@ -141,7 +187,7 @@ var Meedya = (function (my, $, w) {
 		}
 	};
 
-	let selAllImg = (e, X) => {
+	Meedya.selAllImg = (e, X) => {
 		_pd(e);
 		let ck = X?'checked':'';
 		let xbs = document.adminForm.elements["slctimg[]"];
@@ -152,7 +198,7 @@ var Meedya = (function (my, $, w) {
 		}
 	};
 
-	let editSelected = (e) => {
+	Meedya.editSelected = (e) => {
 		_pd(e);
 		if (_hasSelections("input[name='slctimg[]']:checked",true)) {
 			document.adminForm.task.value = 'manage.imgsEdit';
@@ -160,20 +206,62 @@ var Meedya = (function (my, $, w) {
 		}
 	};
 
-	let addSelected = (e) => {
+	Meedya.addSelected = (e) => {
 		_pd(e);
 		if (_hasSelections("input[name='slctimg[]']:checked",true)) {
-			$('#add2albdlg').modal('show');
+			openMdl(_id('add2albdlg'));
 		}
 	};
 
-	let saveAlbum = () => {
+	Meedya.albAction = (e) => {
+		let clkd = e.target;		//console.log(clkd);
+		switch (clkd.className) {
+			case 'icon-edit':
+				albEdtAction(e, clkd);
+				break;
+			case 'icon-upload':
+				albUpldAction(e, clkd);
+				break;
+			case 'icon-delete':
+				albDelAction(e, clkd);
+				break;
+			case 'album':
+				Meedya.AArrange.iSelect(e, clkd);
+				break;
+		}
+	};
+
+	Meedya.saveAlbum = () => {
 		if (thmsDirty) document.albForm.thmord.value = Meedya.Arrange.iord();
 		document.albForm.submit();
 	};
 
+	let albEdtAction = (e, elm) => {
+		_pd(e);
+		let alb2edit = elm.parentElement.dataset.aid;
+		window.location = my.aURL + 'manage.editAlbum&aid=' + alb2edit;
+	};
+
+	let albUpldAction = (e, elm) => {
+		_pd(e);
+		let alb2upld = elm.parentElement.dataset.aid;
+		window.location = my.aURL + 'manage.doUpload&aid=' + alb2upld;
+	};
+
+	let albDelAction = (e, elm) => {
+		_pd(e);
+		Meedya.alb2delete = elm.parentElement.dataset.aid;
+		openMdl(_id('delact'));
+	};
+
+	Meedya.deleteAlbum = (elm) => {
+		let frm = document.forms.dalbform;
+		frm.aid.value = Meedya.alb2delete;
+		frm.submit();
+	};
+
 	// watch for selection of album; enable create button when there is one
-	let watchAlb = (elm) => {
+	Meedya.watchAlb = (elm) => {
 		let creab = _id('creab');
 		let classes = creab.classList;
 		if (elm.value > 0) {
@@ -194,8 +282,7 @@ var Meedya = (function (my, $, w) {
 	};
 
 	// watch for entry of album name; enable create button when there is a name
-	let watchAlbNam = (elm) => {
-		//var creab = _id('creab');	console.log(creab,elm.value);
+	Meedya.watchAlbNam = (elm) => {
 		let creab = _id('creab');
 		let classes = creab.classList;
 		if (elm.value.trim()) {
@@ -209,7 +296,7 @@ var Meedya = (function (my, $, w) {
 		}
 	};
 
-	let addItems2Album = (elm) => {
+	Meedya.addItems2Album = (elm) => {
 		elm.disabled = true;
 		document.adminForm.albumid.value = _id('h5u_album').value;
 		document.adminForm.nualbnam.value = _id('nualbnam').value;
@@ -219,33 +306,8 @@ var Meedya = (function (my, $, w) {
 		document.adminForm.submit();
 	};
 
-	let NOT_USED_aj_addItems2Album = (elm) => {
-		elm.disabled = true;
-		var albNamFld = _id('nualbnam');
-		var albParFld = _id('h5u_palbum');
-		var albDscFld = _id('albdesc');
-		var nualbnam = albNamFld.value.trim();
-		var ajd = {task: 'manage.addItemsToAlbum', albnam: nualbnam, paralb: (albParFld ? albParFld.value : 0), albdesc: albDscFld.value};
-		ajd[formTokn] = 1;
-		$.post(my.rawURL, ajd,
-			function (response, status, xhr) {
-				//console.log(response, status, xhr);
-				if (status=="success") {
-					if (response) {
-						alert(response);
-					} else {
-						window.location.reload(true);
-					}
-				} else {
-					alert(xhr.statusText);
-				}
-				elm.disabled = false;
-			}
-		);
-	};
-
 	// request creation of new album
-	let ae_createAlbum = (elm) => {
+	Meedya.ae_createAlbum = (elm) => {
 		elm.disabled = true;
 		let albNamFld = _id('nualbnam');
 		let albParFld = _id('h5u_palbum');
@@ -253,14 +315,12 @@ var Meedya = (function (my, $, w) {
 		let nualbnam = albNamFld.value.trim();
 		let ajd = {task: 'manage.newAlbum', albnam: nualbnam, paralb: (albParFld ? albParFld.value : 0), albdesc: albDscFld.value};
 		ajd[formTokn] = 1;
-		$.post(my.rawURL, ajd)
-		.done(data => {if (data) alert(data); else w.location.reload(true);})
-		.fail(rsp => alert(rsp.responseText));
+		postAction(null, ajd, (data) => {if (data) alert(data); else w.location.reload(true);});
 	};
 
 	// rearrange items in an album
 	let moving = null;
-	let moveItem = (e, elm) => {
+	Meedya.moveItem = (e, elm) => {
 		_pd(e, true);
 		let item = elm.parentElement;
 		if (!moving) {
@@ -278,7 +338,7 @@ var Meedya = (function (my, $, w) {
 	};
 
 	// create a thumbnail for a video from the video position
-	let setVideoThumb = (e, iid) => {
+	Meedya.setVideoThumb = (e, iid) => {
 		_pd(e, true);
 		let _CANVAS = document.getElementById("my-video-canvas"),
 			_CTX = _CANVAS.getContext("2d"),
@@ -319,321 +379,22 @@ var Meedya = (function (my, $, w) {
 
 		let dataURL = _CANVAS.toDataURL('image/jpeg', 0.8);
 		let ajd = {task: 'manage.setVideoThumb', vid: iid, imgBase64: dataURL};
-		ajd[Joomla.getOptions('csrf.token', '')] = 1;
-		$.post(my.rawURL, ajd)
-		.done((data) => { Meedya.thmelmsrc.src = data; iZoomClose(); })
-		.fail((rsp) => alert(rsp.responseText));
+		ajd[formTokn] = 1;
+		postAction(null, ajd, (data) => { Meedya.thmelmsrc.src = data; iZoomClose(); });
 	};
 
-	let dirtyThumbs = (v) => {thmsDirty = v};
+	let thmsDirty = false;
+	Meedya.dirtyThumbs = (v) => {thmsDirty = v};
 
-	// return the Meedya public functions
-	return {
-		confirm: confirm,
-		confirmed: confirmed,
-		alert: alert,
-		setDlgParAlb: setDlgParAlb,
-		selAllImg: selAllImg,
-		editSelected: editSelected,
-		addSelected: addSelected,
-		removeSelected: removeSelected,
-		deleteSelected: deleteSelected,
-		setAlbumDanD: setAlbumDanD,
-		saveAlbum: saveAlbum,
-		watchAlb: watchAlb,
-		watchAlbNam: watchAlbNam,
-	//	aj_addItems2Album: aj_addItems2Album,
-		addItems2Album: addItems2Album,
-		ae_createAlbum: ae_createAlbum,
-		moveItem: moveItem,
-		setVideoThumb: setVideoThumb,
-		dirtyThumbs: dirtyThumbs
-	};
-})(Joomla.getOptions('Meedya'), jQuery, window);
-
-
-Meedya.Arrange = (function ($) {
-	let dragSrcEl = null,
-		iSlctd = null,
-		stop = true,
-		ctnr = '',
-		clas = '',
-		meeid = 'meeid',
-		items;
-
-	// Private functions
-	let dropable = (e) => {
-		if (e.target.parentElement.parentElement == dragSrcEl) return false;
-		let typs = e.dataTransfer.types;
-		for (let i = 0; i < typs.length; ++i ) {
-			if (typs[i] === meeid) return true;
-		}
-		return false;
-	};
-
-	let handleDragStart = (e) => {
-		dragSrcEl = e.target.parentElement.parentElement;
-		dragSrcEl.style.opacity = '0.4';
-		e.dataTransfer.effectAllowed = 'copyMove';
-		e.dataTransfer.setData(meeid,dragSrcEl.dataset.id);
-		e.dataTransfer.setData('imgsrc',e.target.src);
-	};
-
-	let handleDrag = (e) => {
-		stop = true;
-		if (e.clientY < 50) {
-			stop = false;
-			scroll(-1);
-		}
-		if (e.clientY > ($(window).height() - 50)) {
-			stop = false;
-			scroll(1);
-		}
-	};
-
-	let tMove = (e) => {
-		if (e.targetTouches.length == 1) {
-			let touch = e.targetTouches[0];
-			// Place element where the finger is
-			e.target.style.left = touch.pageX + 'px';
-			e.target.style.top = touch.pageY + 'px';
-		}
-	};
-
-	let handleDragEnd = (e) => {
-		dragSrcEl.style.opacity = null;
-		[].forEach.call(items, (itm) => itm.classList.remove('over'));
-		stop = true;
-	};
-
-	let handleDrop = (e) => {
-		_pd(e);
-		let dtarg = e.target.parentElement.parentElement;
-		// Don't do anything if dropping the same item we're dragging.
-		if (dragSrcEl != dtarg) {
-			let area = _id(ctnr);
-			let orf = area.removeChild(dragSrcEl);
-			area.insertBefore(orf, dtarg);
-			Meedya.dirtyThumbs(true);
-		}
-		return false;
-	};
-
-	let handleDragEnter = (e) => {
-		if (dropable(e)) {
-			_pd(e);
-			e.target.classList.add('over');
-			return false;
-		}
-	};
-
-	let handleDragOver = (e) => {
-		if (dropable(e)) {
-			_pd(e);
-			return false;
-		}
-	};
-
-	let handleDragLeave = (e) => {
-		e.target.classList.remove('over');
-	};
-
-	const scroll = (step) => {
-		let scrollY = $(window).scrollTop();
-		$(window).scrollTop(scrollY + step);
-		if (!stop) {
-			setTimeout(() => scroll(step), 60);
-		}
-	};
-
-	// Return exported functions
-	return {
-		init: (iCtnr, iClass) => {
-			ctnr = iCtnr;
-			clas = iClass;
-		//	items = document.querySelectorAll('#'+iCtnr+' .'+iClass);
-			items = document.querySelectorAll('#'+iCtnr+' img');
-			[].forEach.call(items, (itm) => {
-			//		itm.setAttribute('draggable', 'true');
-					_ae(itm, 'drag', handleDrag);
-					_ae(itm, 'dragstart', handleDragStart);
-					_ae(itm, 'dragenter', handleDragEnter);
-					_ae(itm, 'dragover', handleDragOver);
-					_ae(itm, 'dragleave', handleDragLeave);
-					_ae(itm, 'drop', handleDrop);
-					_ae(itm, 'dragend', handleDragEnd);
-					_ae(itm, 'touchmove', tMove);
-				});
-		},
-		iord: () => {
-		//	items = document.querySelectorAll('#'+ctnr+' .'+clas);
-			items = document.querySelectorAll('#'+ctnr+' .item');
-			let imord = [];
-			[].forEach.call(items, (itm) => {
-				let iid = itm.dataset.id;
-				if (iid) imord.push(iid);
-			});
-			return imord.join("|");
-		}
-	};
-}(jQuery));
-
-
-// Need to have a separate Drag and Drop arranger for the gallery album hierarchy
-
-Meedya.AArrange = (function (my, $) {
-	let dragSrcEl = null,
-		deTarg = null,
-		iSlctd = null,
-		stop = true,
-		ctnr = '',
-		meeid = 'meeid',
-		items;
-
-	// Private functions
-
-	let setAlbPaid = (aid, paid, func) => {
-		let prms = {task: 'manage.adjustAlbPaid', 'aid': aid, 'paid': paid};
-		prms[Joomla.getOptions('csrf.token', '')] = 1;
-		$.post(my.rawURL, prms, (d) => func(d));
-	};
-
-	let dropable = (e) => {
-		if (e.target == dragSrcEl) return false;
-		let typs = e.dataTransfer.types;
-		for (let i = 0; i < typs.length; ++i ) {
-			if (typs[i] === meeid) return true;
-		}
-		return false;
-	};
-
-	let handleDragStart = (e) => {
-		e.target.style.opacity = '0.4';
-		dragSrcEl = e.target;
-		e.dataTransfer.effectAllowed = 'copyMove';
-		e.dataTransfer.setData(meeid,dragSrcEl.dataset.id);
-		e.target.classList.add('moving');
-	};
-
-	let handleDragOver = (e) => {
-		if (dropable(e)) {
-			_pd(e);
-			return false;
-		}
-	};
-
-	let handleDragEnter = (e) => {
-		if (dropable(e)) {
-			_pd(e);
-			deTarg = e.target;
-			e.target.classList.add('over');
-			return false;
-		}
-	};
-
-	let handleDragLeave = (e) => {
-//		if (e.target == deTarg) {
-			_pd(e);
-			e.target.classList.remove('over');
-//		}
-	};
-
-	let handleDrop = (e) => {
-		_pd(e);
-		// Don't do anything if dropping the same item we're dragging.
-		if (dragSrcEl != e.target) {
-			let sa = dragSrcEl.dataset.aid;
-			let da = e.target.dataset.aid;
-			setAlbPaid(sa, da, (r) => {
-				if (r) {
-					bootbox.alert(_T('COM_MEEDYA_MOVE_FAIL'));
-				} else {
-					e.target.append(dragSrcEl);
-				}
-			});
-		}
-		return false;
-	};
-
-	let handleDragEnd = (e) => {
-		dragSrcEl.style.opacity = null;
-		[].forEach.call(items, (itm) => itm.classList.remove('over'));
-		e.target.classList.remove('moving');
-		stop = true;
-	};
-
-	let handleDrag = (e) => {
-		stop = true;
-		if (e.clientY < 50) {
-			stop = false;
-			scroll(-1);
-		}
-		if (e.clientY > ($(window).height() - 50)) {
-			stop = false;
-			scroll(1);
-		}
-	};
-
-	let tMove = (e) => {
-		if (e.targetTouches.length == 1) {
-			let touch = e.targetTouches[0];
-			// Place element where the finger is
-			e.target.style.left = touch.pageX + 'px';
-			e.target.style.top = touch.pageY + 'px';
-		}
-	};
-
-	let iSelect = (e, elm=this) => {
-		_pd(e);
-		if (iSlctd) iSlctd.classList.remove('slctd');
-		if (elm == iSlctd) {
-			iSlctd = null;
-		} else {
-			iSlctd = elm;
-			iSlctd.classList.add('slctd');
-		}
-	};
-
-	const scroll = (step) => {
-		let scrollY = $(window).scrollTop();
-		$(window).scrollTop(scrollY + step);
-		if (!stop) {
-			setTimeout(() => scroll(step), 500);
-		}
-	};
-
-	// Return exported functions
-	return {
-		init: (iCtnr, iClass) => {
-			ctnr = iCtnr;
-			items = document.querySelectorAll('#'+iCtnr+' .'+iClass);
-			[].forEach.call(items, (itm) => {
-					itm.setAttribute('draggable', 'true');
-					_ae(itm, 'drag', handleDrag);
-					_ae(itm, 'dragstart', handleDragStart, true);
-					_ae(itm, 'dragenter', handleDragEnter);
-					_ae(itm, 'dragover', handleDragOver);
-					_ae(itm, 'dragleave', handleDragLeave);
-					_ae(itm, 'drop', handleDrop);
-					_ae(itm, 'dragend', handleDragEnd);
-					_ae(itm, 'touchmove', tMove);
-				//	_ae(itm, 'click', iSelect);
-				});
-		},
-		selalb: () => {
-			return iSlctd ? iSlctd.dataset.aid : 0;
-		},
-		iSelect: iSelect
-	};
-}(Joomla.getOptions('Meedya'), jQuery));
+})(window.Meedya = window.Meedya || {}, Joomla.getOptions('Meedya'), jQuery, window);
 
 
 // iZoom action to expand individual item
-(function (my, $, w) {
+(function (mdya, my, $, w) {
 	let back, area;
 
 	let close = (e) => {
-		if (e) _pd(e);
+		e && _pd(e);
 		document.body.removeChild(back);
 	};
 
@@ -662,10 +423,9 @@ Meedya.AArrange = (function (my, $) {
 	};
 
 	let open = (pID, elm) => {
-		if (elm) Meedya.thmelmsrc = elm.parentElement.previousElementSibling.firstElementChild;
+		if (elm) mdya.thmelmsrc = elm.parentElement.previousElementSibling.firstElementChild;
 		area = document.createElement('div');
-		$.post(my.rawURL, {task: 'manage.getZoomItem', iid: pID})
-		.done(data => area.innerHTML = data);
+		mdya.postAction('manage.getZoomItem', {iid: pID}, (data) => { area.innerHTML = data });
 		area.className = 'zoom-area';
 		area.tabIndex = "-1";
 		back = document.createElement('div');
@@ -681,5 +441,5 @@ Meedya.AArrange = (function (my, $) {
 	w.iZoomOpen = open;
 	w.iZoomClose = close;
 
-})(Joomla.getOptions('Meedya'), jQuery, window);
+})(Meedya, Joomla.getOptions('Meedya'), jQuery, window);
 

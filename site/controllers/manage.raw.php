@@ -126,7 +126,7 @@ class MeedyaControllerManage extends JControllerLegacy
 		echo '<div class="zoom-ctnr"><div class="zoom-closex" onclick="iZoomClose(event)">X</div>';
 		switch ($mime[0]) {
 			case 'image':
-				echo '<img class="zoom-zimg" src="'.$url.'/med/'.$item['file'].'" onload="this.style.opacity=1" />';
+				echo '<img class="eclipse" src="components/com_meedya/static/img/eclipse.svg" /><img class="zoom-zimg" src="'.$url.'/med/'.$item['file'].'" onload="this.previousSibling.style.opacity=0;this.style.opacity=1" />';
 				break;
 			case 'video':
 				//return '<video class="zoom-zvid" autoplay><source src="'.$url.'" type="'.$ftyp['mime'].'"></video>';

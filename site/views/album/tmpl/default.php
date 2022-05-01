@@ -11,7 +11,6 @@ defined('_JEXEC') or die;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
-use Joomla\CMS\Session\Session;
 use Joomla\CMS\Layout\LayoutHelper;
 
 define('MYG_FB4', 1);
@@ -194,10 +193,10 @@ $cancmnt = $this->uid || $this->params->get('pub_comments', 0);
 .fancybox__container .fancybox__content {
 	/* Create white border around the image */
 	box-sizing: content-box;
-	padding: .4rem;
-	background: #fff;
+	padding: .3em;
+	background: #AEAEAE;
 	
-	border-radius: 6px;
+	border-radius: 5px;
 	color: #374151;
 	box-shadow: 0 8px 23px rgb(0 0 0 / 50%);
 }
@@ -239,7 +238,7 @@ $cancmnt = $this->uid || $this->params->get('pub_comments', 0);
 	$ttmpl = '
 <div class="anitem" data-ix="{{IX}}" data-iid="{{IID}}">
 	<div class="itm-thumb">
-		<div '.M34C::bs('toggle').'="tooltip" '.M34C::bs('html').'="true" '.M34C::bs('placement').'="bottom" title="{{TITLE}}">
+		<div class="{{TCLAS}}" title="{{TITLE}}">
 			<img class="imgthm" src="{{SRC}}">';
 	if ($use_ratings || $use_comments) {
 		$ttmpl .= '
@@ -258,7 +257,7 @@ $cancmnt = $this->uid || $this->params->get('pub_comments', 0);
 </div>
 ';
 
-	$rplcds = ['{{IX}}','{{IID}}','{{TITLE}}','{{SRC}}','{{PCNT}}','{{CCLAS}}','{{CCNT}}'];
+	$rplcds = ['{{IX}}','{{IID}}','{{TITLE}}','{{SRC}}','{{PCNT}}','{{CCLAS}}','{{CCNT}}','{{TCLAS}}'];
 
 	foreach ($this->items as $ix=>$item) {
 		if (!$item) continue;
@@ -266,7 +265,8 @@ $cancmnt = $this->uid || $this->params->get('pub_comments', 0);
 		$rplvals[] = $ix;
 		$rplvals[] = $item['id'];
 		list($thumb, $ititle, $idesc, $mtype) = $this->getItemThumbPlus($item['id']);
-		$rplvals[] = ($ititle && $idesc) ? $ititle.'<br />'.$idesc : $ititle.$idesc;
+		$ttd = ($ititle && $idesc) ? $ititle.'<br />'.$idesc : $ititle.$idesc;
+		$rplvals[] = $ttd;
 		switch (strstr($mtype, '/', true)) {
 			case 'video':
 				$thmsrc = 'video.png';
@@ -285,6 +285,7 @@ $cancmnt = $this->uid || $this->params->get('pub_comments', 0);
 		$rplvals[] = $item['ratecnt'] ? $item['ratetot']/$item['ratecnt']*20 : 0;
 		$rplvals[] = $item['cmntcnt'] ? ' hasem' : ($cancmnt ? '' : 'no');
 		$rplvals[] = $item['cmntcnt'] ?: '&nbsp;';
+		$rplvals[] = $ttd ? 'hastip' : 'notip';
 		echo str_replace($rplcds, $rplvals, $ttmpl);
 	}
 	?>

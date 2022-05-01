@@ -20,7 +20,7 @@ JLoader::register('JHtmlMeedya', JPATH_COMPONENT . '/helpers/html/meedya.php');
 JLoader::register('HtmlElementObject', JPATH_COMPONENT . '/classes/HtmlObject.php');
 
 HTMLHelper::_('bootstrap.dropdown');
-HTMLHelper::_('bootstrap.tooltip');
+HTMLHelper::_('bootstrap.tooltip', '.hastip', ['placement'=>'bottom']);
 
 class MeedyaView extends JViewLegacy
 {
@@ -60,8 +60,9 @@ class MeedyaView extends JViewLegacy
 		$this->instance = $this->app->getUserState('com_meedya.instance', '::');
 		$this->jDoc = Factory::getDocument();
 		$pgidparm = isset($this->pgid) ? '&pgid='.$this->pgid : '';
+		$aurl = Route::_('index.php?option=com_meedya&view='.$pgidparm.'&Itemid='.$this->itemId.'&task=', false);
 		$rurl = Route::_('index.php?option=com_meedya&format=raw'.$pgidparm.'&Itemid='.$this->itemId, false);
-		$this->jDoc->addScriptOptions('Meedya',['rawURL' => $rurl]);
+		$this->jDoc->addScriptOptions('Meedya',['aURL' => $aurl,'rawURL' => $rurl]);
 	}
 
 	public function display ($tpl = null)

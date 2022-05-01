@@ -27,7 +27,7 @@ abstract class MeedyaHelper
 			'upload' => ['upload.js', 'upload.min.js'],
 			'bootbox' => ((int)JVERSION < 4)
 			? ['https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/3.3.0/bootbox.js','https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/3.3.0/bootbox.min.js']
-			: ['https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.5.2/bootbox.js','https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.5.2/bootbox.min.js'],
+			: ['https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.5.3/bootbox.js','https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.5.3/bootbox.min.js'],
 			'jquery.tagsinput' => ['jquery.tagsinput.js', 'jquery.tagsinput.min.js'],
 			'fancybox3' => ['3.5.7/jquery.fancybox.js', '3.5.7/jquery.fancybox.min.js']
 			];

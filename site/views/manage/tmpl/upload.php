@@ -63,11 +63,12 @@ if ($this->uplodr == 'UL')
 	function uploadDone (okcount, errcnt) {
 		let msg = "There were "+okcount+" files uploaded with "+errcnt+" errors.";
 		if (okcount) {
-			msg += "<br>Edit info for the uploaded files?";
+			msg += "\nEdit info for the uploaded files?";
 			let redirURL = H5uOpts.siteURL + "&task=manage.imgEdit&after=" + H5uOpts.timestamp;
-			Meedya.confirm("confirm-dlg", "Uploaded Files", msg, (y) => {if (y) window.location = redirURL;});
+			if (confirm(msg)) window.location = redirURL;
+			//Meedya.confirm("confirm-dlg", "Uploaded Files", msg, (y) => {if (y) window.location = redirURL;});
 		} else {
-			Meedya.alert(msg);
+			alert(msg);
 		}
 	}
 	function showError (msg, file) {
@@ -126,10 +127,6 @@ if ($quota) {
 	padding: 10px 10px;
 	border-radius: 5px;
 }
-.modal-backdrop.fade.in {
-    opacity: 0.3;
-}
-#alert-dlg { display:none; }
 </style>
 <?php endif; ?>
 <div class="meedya-gallery">
@@ -153,10 +150,6 @@ if ($quota) {
 <p>
 	<!-- <?php var_dump($this->params); ?> -->
 </p>
-<div id="alert-dlg" class="alert alert-danger alert-dismissible" role="alert">
-	<button type="button" class="btn-close" data-bs-dismiss="alert" data-dismiss="alert" aria-label="Close"></button>
-	<i class="icon-warning large-icon"> </i> <span>DANGER ALERT</span>
-</div>
 <?php
 if (RJC_DBUG) {
 	$ipp = MeedyaHelper::getImgProc('images/powered_by.png');
@@ -185,16 +178,6 @@ if (RJC_DBUG) {
 </div>
 <?php
 echo LayoutHelper::render('newalbum', ['script'=>'createAlbum(this)', 'albums'=>$this->albums]);
-echo HTMLHelper::_(
-	'bootstrap.renderModal',
-	'confirm-dlg',
-	['title' => 'CONFIRM',
-	'footer' => '<button type="button" class="btn btn-secondary" '.M34C::bs('dismiss').'="modal" onclick="Meedya.confirmed(0)">'.Text::_('JNO').'</button>
-				<button type="button" class="btn btn-info" '.M34C::bs('dismiss').'="modal" onclick="Meedya.confirmed(1)">'.Text::_('JYES').'</button>',
-	'modalWidth' => '30'],
-	'PLEASE CONFIRM'
-	);
-HTMLHelper::_('bootstrap.alert');
 ?>
 <script>
 jQuery('#h5u_keywords').tagsInput();

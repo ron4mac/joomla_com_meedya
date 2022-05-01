@@ -6,11 +6,26 @@
 /* jshint esnext:false, esversion:9 */
 /* globals Joomla,jQuery,Fancybox,ssCtl,SimpleStarRating,newcmnt */
 'use strict';
-var Meedya = {};	// a namespace for com_meedya
 
-(function(my, $) {
+// creates or adds to a namespace, 'Meedya'
 
-	var token, self=Meedya;
+(function(Meedya, my, $) {
+
+	// -------------------------------------------------- local variables
+	let token,
+		self = Meedya,
+		rDlg,
+		ssr,
+		curRelm,
+		curIid = 0,
+		curCelm,
+		cDlg,
+		ncDlg,
+		cElm;
+
+	// -------------------------------------------------- private functions
+	/** @noinline */
+	const _id = id => document.getElementById(id);
 
 	const viewer = {
 		// video player options
@@ -72,12 +87,78 @@ var Meedya = {};	// a namespace for com_meedya
 	const openMdl = (elm) => { elm.open ? elm.open() : jQuery(elm).modal('show'); };
 	const closMdl = (elm) => { elm.close ? elm.close() : jQuery(elm).modal('hide'); };
 
+	const toFormData = (obj) => {
+		const formData = new FormData();
+		Object.keys(obj).forEach(key => {
+			if (typeof obj[key] !== 'object') formData.append(key, obj[key]);
+			else formData.append(key, JSON.stringify(obj[key]));
+		});
+		return formData;
+	};
+
+
+	const postAction = (task, parms={}, cb=null, json=false, fini=null) => {
+		if (typeof parms === 'object') {
+			if (!(parms instanceof FormData)) parms = toFormData(parms);
+		} else if (typeof parms === 'string') {
+			parms = new URLSearchParams(parms);
+		}
+		if (task) parms.set('task', task);
+	
+		fetch(my.rawURL, {method:'POST', body:parms})
+		.then(resp => { if (!resp.ok) throw new Error(`HTTP ${resp.status}`); if (json) return resp.json(); else return resp.text() })
+		.then(data => cb && cb(data))
+		.catch(err => alert('Failure: '+err))
+		.then(()=>fini && fini());
+	};
+
+	const dorate = (itemid, relm) => {
+		curIid = itemid;
+		curRelm = relm;
+		postAction('rateChk', {iid: itemid}, (rsp) => { if (rsp) alert(rsp); else openMdl(rDlg); });
+	};
+
+	const fetchComments = (itemid) => {
+		curIid = itemid;
+		cElm.innerHTML = '';
+		postAction('getComments', {[token]: 1, iid: itemid}, (data) => { cElm.innerHTML = data; openMdl(cDlg); });
+	};
+
+	const doComments = (itemid, elm) => {
+		curIid = itemid;
+		curCelm = elm;
+		if (elm.classList.contains('hasem')) {
+			fetchComments(itemid);
+		} else {
+			_id("cmnt-text").value = "";
+			openMdl(ncDlg);
+		}
+	};
+
+	const submitRating = (evt) => {
+		if (evt.detail === 0) {
+			if (!confirm("Clear rating for this item?")) return;
+		}
+		postAction('rateItem', {[token]: 1, iid: curIid, val: evt.detail}, (data)=>{
+			curRelm.firstElementChild.firstElementChild.style.width = data+"%";
+		//	closMdl(rDlg);
+			ssr.enable();
+		}, false, ()=>closMdl(rDlg));
+	};
+
+	const _t = (tid) => {
+		return Meedya.L[tid] ? Meedya.L[tid] : tid;
+	};
+
+
+	// -------------------------------------------------- public functions
+	
 	Meedya.initIV = (old=false) => {
 		Meedya.viewer = old ? old_viewer : viewer;
 	};
 
 	Meedya.performSearch = (aform) => {
-		var sterm = $.trim(aform.sterm.value);
+		var sterm = aform.sterm.value.trim();
 		if (sterm==='') {
 			alert(self.L.no_sterm);
 			return false;
@@ -104,7 +185,7 @@ var Meedya = {};	// a namespace for com_meedya
 				e.stopPropagation();
 				if (!rDlg) break;
 				iid = +clkd.parentElement.parentElement.parentElement.parentElement.dataset.iid;
-				Meedya.dorate(iid, clkd);
+				dorate(iid, clkd);
 				break;
 			case 'far fa-comments':
 			case 'icon-comments-2':			// J3
@@ -114,74 +195,21 @@ var Meedya = {};	// a namespace for com_meedya
 			case 'mycmnts hasem':
 				e.stopPropagation();
 				iid = +clkd.parentElement.parentElement.parentElement.parentElement.dataset.iid;
-				Meedya.doComments(iid, clkd);
+				doComments(iid, clkd);
 				break;
 		}
 	};
 
-
-	var rDlg, ssr, curRelm;
-
-	const submitRating = (evt) => {
-		if (evt.detail === 0) {
-			if (!confirm("Clear rating for this item?")) return;
-		}
-		$.post(my.rawURL, {[token]: 1, task: 'rateItem', iid: curIid, val: evt.detail})
-		.done(data => {
-			curRelm.firstElementChild.firstElementChild.style.width = data+"%";
-			closMdl(rDlg);
-			ssr.enable();
-		})
-		.fail(err => {
-			alert(err.responseText);
-			closMdl(rDlg);
-		});
-	};
-
-	Meedya.dorate = (itemid, relm) => {
-		curIid = itemid;
-		curRelm = relm;
-		$.post(my.rawURL, {task: 'rateChk', iid: itemid})
-		.done(() => { openMdl(rDlg); })
-		.fail((err) => { alert(err.responseText); });
-	};
-
-
-	var curIid = 0, curCelm;
-	var cDlg, ncDlg, cElm;
-
-	const fetchComments = (itemid) => {
-		curIid = itemid;
-		cElm.innerHTML = '';
-		$.post(my.rawURL, {[token]: 1, task: 'getComments', iid: itemid})
-		.done((data) => { cElm.innerHTML = data; openMdl(cDlg); })
-		.fail((err) => { alert(err.responseText); });
-	};
-
 	Meedya.submitComment = (elm) => {
 		elm.disabled = true;
-		let pdat = {iid: curIid};
 		let fData = new FormData(newcmnt);
-		for (let kv of fData.entries()) pdat[kv[0]] = kv[1];
-		$.post(my.rawURL, pdat)
-		.done((data) => {
+		fData.append('iid', curIid);
+		postAction(null, fData, (data) => {
 			closMdl(ncDlg);
 			elm.disabled = false;
 			curCelm.classList.add('hasem');
 			curCelm.innerHTML = data;
-		})
-		.fail((err) => { alert(err.responseText); });
-	};
-
-	Meedya.doComments = (itemid, elm) => {
-		curIid = itemid;
-		curCelm = elm;
-		if (elm.classList.contains('hasem')) {
-			fetchComments(itemid);
-		} else {
-			document.getElementById("cmnt-text").value = "";
-			openMdl(ncDlg);
-		}
+		});
 	};
 
 	// CURRENTLY UNUSED
@@ -192,32 +220,27 @@ var Meedya = {};	// a namespace for com_meedya
 		return format;
 	};
 
-	const _t = (tid) => {
-		return Meedya.L[tid] ? Meedya.L[tid] : tid;
-	};
-
-	$(document).ready( () => {
-		$('['+Meedya.datatog+'="tooltip"]').tooltip();
+	document.addEventListener('DOMContentLoaded', () => {
 		// get the joomla suplied csrf token
 		token = Joomla.getOptions('csrf.token', '');
 		// setup the star rating modal
-		rDlg = document.getElementById('rating-modal');
+		rDlg = _id('rating-modal');
 		if (rDlg) {
 			rDlg.addEventListener('hidden.bs.modal', (event) => {closMdl(rDlg);});		// NOT SURE ABOUT THIS
-			var rating = document.getElementById('unrating');
+			var rating = _id('unrating');
 			ssr = new SimpleStarRating(rating);
 			rating.addEventListener('rate', submitRating);
 		}
 		// setup comments display modal
-		cDlg = document.getElementById('comments-modal');
+		cDlg = _id('comments-modal');
 		if (cDlg) cElm = document.querySelector(".modal-body .comments");
 		// setup new comment entry modal
-		ncDlg = document.getElementById('comment-modal');
+		ncDlg = _id('comment-modal');
 		if (ncDlg) {
 	//		ncElm = document.querySelector(".modal-body textarea");
 			// focus on the textarea
-			ncDlg.addEventListener('shown.bs.modal', (event) => {document.getElementById("cmnt-text").focus();});
+			ncDlg.addEventListener('shown.bs.modal', (event) => {_id("cmnt-text").focus();});
 		}
 	});
 
-})(Joomla.getOptions('Meedya'), jQuery);
+})(window.Meedya = window.Meedya || {}, Joomla.getOptions('Meedya'), jQuery);

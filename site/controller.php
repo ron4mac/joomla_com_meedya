@@ -82,7 +82,7 @@ class MeedyaController extends JControllerLegacy
 		$iid = $this->input->getInt('iid', 0);
 		try {
 			if ($m->rateChk($iid)) {
-				header('HTTP/1.1 400 Duplicate Submission');
+			//	header('HTTP/1.1 400 Duplicate Submission');
 				jexit(Text::_('COM_MEEDYA_ALREADY_RATED'));
 			}
 		} catch (Exception $e) {
