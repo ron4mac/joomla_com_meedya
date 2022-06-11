@@ -362,19 +362,6 @@ td.tac {
 }
 
 
-/* bootbox styling */
-.bootbox-close-button {
-	position: absolute;
-	top: 0;
-	right: 0;
-	font-size: larger;
-	border: none;
-	background-color: transparent;
-	z-index: 1;
-	padding: 0 .5em;
-}
-
-
 @media only screen and (min-width: 768px) {
 	/* For desktop: */
 	.itmMove {display: none;}

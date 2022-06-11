@@ -3,69 +3,52 @@
 * @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
 */
-/* a couple of utility functions to avoid using jquery and assist in minification */
-// getElementById
-//function _id(id) {
-//	return document.getElementById(id);
-//}
+'use strict';
 
-function up_watchAlbNam (elm) {
-	var creab = _id('creab');
-	if (elm.value.trim()) {
-		creab.disabled = false;
-	} else {
-		creab.disabled = true;
-	}
-}
+(function(Meedya) {
 
-function album_select (elm) {
-	var asel = elm.options[elm.selectedIndex].value;
-	if (asel==-1) {
-		elm.value = '';
-		jQuery('#newalbdlg').modal('show');
-		return;
-	}
-	var crea = _id("crealbm");
-	crea.style.display = asel==-1 ? "inline-block" : "none";
-	if (asel==-1) {
-		var nam = _id("nualbnam");
-		nam.focus();
-	}
-	_id("dzupui").style.display = asel<1 ? "none" : "block";
-}
-
-function createAlbum (elm) {
-	elm.disabled = true;
-	var albNamFld = _id('nualbnam');
-	var albParFld = _id('h5u_palbum');
-	var nualbnam = albNamFld.value.trim();
-	var ajd = {
-		task: 'manage.newAlbum',
-		albnam: nualbnam,
-		paralb: (albParFld ? albParFld.value : 0),
-		[Joomla.getOptions('csrf.token', '')]: 1,
-		'o': 1
-		};
-	jQuery("#h5u_album").load(H5uOpts.upURL, ajd,
-		function (response, status, xhr) {
-			//console.log(response, status, xhr);
-			if (status=="success") {
-				jQuery('#newalbdlg').modal('hide');
-				album_select(_id("h5u_album"));
-			} else {
-				alert(xhr.statusText);
-			}
-			elm.disabled = false;
+	Meedya.album_select = (elm) => {
+		console.log(elm.value);
+		let asel = elm.options[elm.selectedIndex].value;
+		if (asel==-1) {
+			elm.value = '';
+			Meedya._oM('newalbdlg');
+			Meedya._id('dzupui').style.display = 'none';
+			return;
 		}
-	);
-}
-
-function updStorBar (elem, val) {
-	elem.style.width = val + "%";
-	elem.innerHTML = val + "%";
-	if (val > 90) {
-		elem.style.backgroundColor = "#ff8888";
-	} else if (val > 80) {
-		elem.style.backgroundColor = "#fff888";
+		Meedya._id('dzupui').style.display = asel<1 ? 'none' : 'block';
 	}
-}
+
+	Meedya.createAlbum = (elm) => {
+		elm.disabled = true;
+		let albNamFld = Meedya._id('nualbnam');
+		let albParFld = Meedya._id('h5u_palbum');
+		let albDscFld = Meedya._id('albdesc');
+		let nualbnam = albNamFld.value.trim();
+		let ajd = {
+			albnam: nualbnam,
+			paralb: (albParFld ? albParFld.value : 0),
+			albdesc: albDscFld.value,
+			[Joomla.getOptions('csrf.token', '')]: 1,
+			'o': 1
+			};
+		Meedya._P('manage.newAlbum', ajd, (data) => {
+			Meedya._cM('newalbdlg');
+			let sela = Meedya._id('h5u_album');
+			sela.innerHTML = data;
+			Meedya.album_select(sela);
+			elm.disabled = false;
+		});
+	}
+
+	Meedya.updStorBar = (elm, val) => {
+		elm.style.width = val + '%';
+		elm.innerHTML = val + '%';
+		if (val > 90) {
+			elm.style.backgroundColor = '#ff8888';
+		} else if (val > 80) {
+			elm.style.backgroundColor = '#fff888';
+		}
+	}
+
+})(window.Meedya = window.Meedya || {});

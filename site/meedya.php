@@ -9,7 +9,7 @@ defined('_JEXEC') or die;
 use Joomla\CMS\MVC\Controller\BaseController;
 use Joomla\CMS\Factory;
 
-define('RJC_DBUG', JDEBUG && file_exists(JPATH_ROOT.'/rjcdev.php'));
+define('RJC_DBUG', (true || JDEBUG) && file_exists(JPATH_ROOT.'/rjcdev.php'));
 
 // provide a general helper class for the rest of the component
 JLoader::register('MeedyaHelper', JPATH_COMPONENT.'/helpers/meedya.php');

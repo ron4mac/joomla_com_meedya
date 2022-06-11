@@ -12,8 +12,9 @@ use Joomla\CMS\HTML\HTMLHelper;
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
 
-HTMLHelper::stylesheet('components/com_meedya/static/css/slides.css');
-MeedyaHelper::addScript('slides');
+//HTMLHelper::stylesheet('components/com_meedya/static/css/slides.css');
+MeedyaHelper::oneStyle('s');
+MeedyaHelper::oneScript('s');
 
 $H5ss_cfg = $this->html5slideshowCfg;
 
@@ -29,8 +30,8 @@ if ($this->slides) {
 		//$ftyp = cpg_get_type($row['filename']);
 		//if ($ftyp['content'] != 'image') continue;
 		$txtinfo = '';
-		if ($H5ss_cfg['vT']) $txtinfo = trim($slide['title']);
-		if ($H5ss_cfg['vD'] && trim($slide['desc'])) $txtinfo .= ($txtinfo ? ' ... ' : '') . trim($slide['desc']);
+		if ($H5ss_cfg['vT']) $txtinfo = trim($slide['title']?:'');
+		if ($H5ss_cfg['vD'] && trim($slide['desc']?:'')) $txtinfo .= ($txtinfo ? ' ... ' : '') . trim($slide['desc']?:'');
 		$fileentry = [
 				'fpath' => $slide['file'],
 				'title' => $txtinfo,
@@ -53,7 +54,7 @@ $dcolors = $H5ss_cfg['dC'];		//explode(',', $H5ss_cfg['dC']);
 	body { background-color:<?=$dcolors[4]?>; width:100%; height:100%; overflow:hidden }
 	div#controls { background-color:<?=$dcolors[0]?>; color:<?=$dcolors[1]?>; }
 	div#ptext { background-color:<?=$dcolors[2]?>; color:<?=$dcolors[3]?>; }
-	div#screen { background-color:<?=$dcolors[4]?>;padding-left:12px;padding-right:12px;}
+	div#screen { background-color:<?=$dcolors[4]?>;padding-left:12px;padding-right:12px;position:relative; }
 	div.spribut { background: url('<?=JUri::root(true)?>/components/com_meedya/static/css/icons/<?=$icons?>.png') no-repeat; }
 </style>
 <script type="text/javascript">
@@ -75,9 +76,9 @@ $dcolors = $H5ss_cfg['dC'];		//explode(',', $H5ss_cfg['dC']);
 	}
 </script>
 <?php if ($errmsg): ?>
-	<div id="ptext" style="font-size:1.5em"><?=$errmsg?>&nbsp;&nbsp;<button type="button" onclick="ssCtl.doMnu(0)"><?=Text::_('COM_MEEDYA_SS_STOP_A')?></button></div>
+	<div id="ptext"><?=$errmsg?>&nbsp;&nbsp;<button type="button" onclick="ssCtl.doMnu(0)"><?=Text::_('COM_MEEDYA_SS_STOP_A')?></button></div>
 <?php else: ?>
-	<div id="fullarea" style="height:100%">
+	<div id="fullarea">
 		<div id="controls">
 			<div class="albnam"><p><span id="albNam"><?=$album_name?>&nbsp;&nbsp;::&nbsp;&nbsp;</span><?=sprintf(Text::_('COM_MEEDYA_SS_OF_FORMAT'),'<span id="slidnum"></span>',count($filelist))?></p></div>
 		<?php if ($usrisown): ?>
@@ -101,9 +102,8 @@ $dcolors = $H5ss_cfg['dC'];		//explode(',', $H5ss_cfg['dC']);
 			</div>
 		</div>
 		<div id="ptext"></div>
-		<div id="screen" style="height:100%;-webkit-backface-visibility:hidden;">
-			<!-- <img src="plugins/html5slideshow/css/loading.gif" style="position:relative;z-index:99;top:10px;left:50%;margin-left:-30px;" /> -->
-			<p id="loading" style="display:none">∙∙∙LOADING∙∙∙</p>
+		<div id="screen">
+			<div id="loading" style="display:none"><img src="components/com_meedya/static/img/eclipse.svg" /></div>
 		</div>
 		<!-- <div id="status"></div> -->
 	</div>

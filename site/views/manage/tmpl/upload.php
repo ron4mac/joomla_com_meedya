@@ -29,8 +29,10 @@ $this->jDoc->addScriptOptions('H5uOpts', $h5opts);
 
 // add stylesheets and javascript
 HTMLHelper::_('jquery.framework');
-MeedyaHelper::addStyle(['gallery','manage','uplodr',['jquery.tagsinput'=>'vendor/tags/']]);
-MeedyaHelper::addScript(['manage','fileup','uplodr','bootbox',['jquery.tagsinput'=>'vendor/tags/']]);
+//MeedyaHelper::addStyle(['gallery','manage','uplodr',['vendor/tags/'=>'jquery.tagsinput']]);
+MeedyaHelper::oneStyle('gMUt');
+//MeedyaHelper::addScript(['common','manage','fileup','uplodr',['vendor/tags/'=>'jquery.tagsinput']]);
+MeedyaHelper::oneScript('MuUt');
 
 $script = '
 var js_vars = {concurrent: 3};
@@ -79,9 +81,10 @@ if ($this->uplodr == 'UL')
 	}
 ';
 
-//HTMLHelper::_('bootstrap.loadCss', true);
-
 $this->jDoc->addScriptDeclaration($script);
+
+$this->btmscript[] = 'Meedya._ae("newalbdlg", "shown.bs.modal", () => Meedya._id("nualbnam").focus() );';
+
 
 Text::script('COM_MEEDYA_Q_STOPPED');
 
@@ -158,7 +161,7 @@ if (RJC_DBUG) {
 ?>
 <div class="albctl">
 	<label for="h5u_album"><?=Text::_('COM_MEEDYA_H5U_ALB_SELECT')?></label>
-	<select id="h5u_album" name="h5u_album" onchange="album_select(this)">
+	<select id="h5u_album" name="h5u_album" onchange="Meedya.album_select(this)">
 		<option value="-1"><?=Text::_('COM_MEEDYA_H5U_NEWALBUM')?></option>
 		<option value=""<?=($this->aid?'':' selected')?>><?=Text::_('COM_MEEDYA_H5U_SELECT')?></option>
 		<?=HTMLHelper::_('meedya.albumsHierOptions', $this->albums, $this->aid)?>
@@ -177,7 +180,7 @@ if (RJC_DBUG) {
 <?php endif; ?>
 </div>
 <?php
-echo LayoutHelper::render('newalbum', ['script'=>'createAlbum(this)', 'albums'=>$this->albums]);
+echo LayoutHelper::render('newalbum', ['script'=>'Meedya.createAlbum(this)', 'albums'=>$this->albums]);
 ?>
 <script>
 jQuery('#h5u_keywords').tagsInput();

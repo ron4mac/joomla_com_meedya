@@ -20,16 +20,33 @@ class MeedyaModelSocial extends MeedyaModelMeedya
 		// add a new rating to an item's collective rating
 		$db = $this->getDbo();
 		$db->transactionStart();
-		$db->setQuery('SELECT ratecnt,ratetot FROM meedyaitems WHERE id='.$iid);
-		$r = $db->loadAssoc();
-		if (!$r) return -1;
-		$rcnt = $r['ratecnt'] + 1;
-		$rtot = $r['ratetot'] + $val;
+		if ($val) {
+			$db->setQuery('SELECT ratecnt,ratetot FROM meedyaitems WHERE id='.$iid);
+			$r = $db->loadAssoc();
+			if (!$r) return -1;
+			$rcnt = $r['ratecnt'] + 1;
+			$rtot = $r['ratetot'] + $val;
+		} else {
+			$rcnt = $rtot = 0;
+		}
 		$db->setQuery('UPDATE meedyaitems SET ratecnt='.$rcnt.',ratetot='.$rtot.' WHERE id='.$iid)->execute();
 		$db->transactionCommit();
 
+		// if clearing, delete history and return zero
+		if (!$rcnt) {
+			$db->setQuery('DELETE FROM uratings WHERE iid='.$iid)->execute();
+			$db->setQuery('DELETE FROM gratings WHERE iid='.$iid)->execute();
+			return 0;
+		}
+
+		// MAY WANT TO PROVIDE A METHOD TO CLEAR AWAY OLD RECORDS (maybe older than 90 days: time()-7776000)
+//		if (false) {
+			$bfd = time()-7776000;	// 90 days (could make configurable)
+			$db->setQuery('DELETE FROM uratings WHERE rdate<'.$bfd)->execute();
+			$db->setQuery('DELETE FROM gratings WHERE rdate<'.$bfd)->execute();
+//		}
+
 		// remember where the rating came from to inhibit multiples
-		// MAY WANT TO PROVIDE A METHOD TO CLEAR AWAY OLD RECORDS (maybe older than 90 days)
 		$uid = Factory::getUser()->get('id');
 		if ($uid) {
 			$db->setQuery('INSERT INTO uratings (iid,uid,rdate) VALUES('.$iid.','.$uid.','.time().')');
@@ -43,7 +60,7 @@ class MeedyaModelSocial extends MeedyaModelMeedya
 	}
 
 	// check whether a submitter has already rated an item
-	// return false if there has been no recorded submission
+	// returns false if there has been no recorded submission
 	public function rateChk ($iid)
 	{
 		$db = $this->getDbo();

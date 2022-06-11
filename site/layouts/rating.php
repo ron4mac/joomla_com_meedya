@@ -9,12 +9,14 @@ defined('JPATH_BASE') or die;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
 
-echo HTMLHelper::_(
+$smmdl = HTMLHelper::_(
 	'bootstrap.renderModal',
 	'rating-modal', // selector
 	array( // options
 		'title'  => Text::_('COM_MEEDYA_RATING_TITLE'),
-		'modalWidth' => 20
+		//'modalWidth' => 20
 	),
 	'<div class="rated"><span id="unrating" class="rating"></span></div>'
 );
+
+echo str_replace('modal-lg', 'modal-sm', $smmdl);

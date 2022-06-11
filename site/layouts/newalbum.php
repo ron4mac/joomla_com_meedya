@@ -30,16 +30,19 @@ if ($displayData['albums']) $body .= '<div class="nualbtop">
 	</div>';
 $body .= '<dl style="clear:both;">
 	<dt><label for="albdesc">' . Text::_('COM_MEEDYA_ALBUM_DESC') . '</label></dt>
-	<dd><textarea id="albdesc" name="albdesc" class="nualbdsc form-control" rows="5"></textarea></dd>
+	<dd><textarea id="albdesc" name="albdesc" class="nualbdsc form-control" rows="3"></textarea></dd>
 	</dl>
 	</div>';
 
 
-echo HTMLHelper::_(
+$mmdl = HTMLHelper::_(
 	'bootstrap.renderModal',
 	'newalbdlg',
 	['title' => Text::_('COM_MEEDYA_CREATE_NEW_ALBUM'),
 	'footer' => HTMLHelper::_('meedya.modalButtons', 'COM_MEEDYA_H5U_CREALBM', $displayData['script'], 'creab'),
-	'modalWidth' => '40'],
+	//'modalWidth' => '40'
+	],
 	$body
 	);
+//remove the large modal css designation
+echo str_replace(' modal-lg', '', $mmdl);

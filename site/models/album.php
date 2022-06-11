@@ -38,7 +38,7 @@ class MeedyaModelAlbum extends MeedyaModelMeedya
 	public function getItems ()
 	{
 		$this->getAlbum();
-		if (!trim($this->_album->items)) return [];
+		if (!trim($this->_album->items ?: '')) return [];
 		$this->_itms = explode('|', $this->_album->items);
 		$this->_total = count($this->_itms);
 		$aid = $this->getState('album.id') ? : 0;
@@ -104,7 +104,7 @@ class MeedyaModelAlbum extends MeedyaModelMeedya
 		return $query;
 	}
 
-	protected function populateState ($ordering = null, $direction = null)
+	protected function populateState ($ordering = null, $direction = 'ASC')
 	{	//echo'####POPSTATE####';
 		// Initialise variables.
 		$app = Factory::getApplication();

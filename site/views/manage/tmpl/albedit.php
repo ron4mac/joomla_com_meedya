@@ -10,11 +10,11 @@ use Joomla\CMS\Router\Route;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
 
-MeedyaHelper::addStyle(['gallery','manage']);
-MeedyaHelper::addStyle('pell.min', 'vendor/pell/');
+//MeedyaHelper::addStyle(['gallery','manage',['vendor/pell/'=>'pell.min']]);
+MeedyaHelper::oneStyle('gMp');
 //HTMLHelper::_('jquery.framework');
-MeedyaHelper::addScript(['manage','itm_dand','bootbox']);
-MeedyaHelper::addScript('pell.min', 'vendor/pell/');
+//MeedyaHelper::addScript(['common','manage','itm_dand','my_bb',['vendor/pell/'=>'pell.min']]);
+MeedyaHelper::oneScript('cMabpe');
 
 HTMLHelper::_('bootstrap.modal');
 
@@ -23,14 +23,13 @@ Text::script('COM_MEEDYA_VRB_REMOVE');
 Text::script('COM_MEEDYA_ONE_PUBALB');
 
 $pubchk = $this->album['visib']==1 ? ' checked' : '';
-$pubdis = $this->album['pub'] && $this->album['pub']!=$this->album['aid'] ? ' disssabled onclick="alert(_T(\'COM_MEEDYA_ONE_PUBALB\'));return false"' : '';
+$pubdis = $this->album['pub'] && $this->album['pub']!=$this->album['aid'] ? ' disssabled onclick="alert(Meedya._T(\'COM_MEEDYA_ONE_PUBALB\'));return false"' : '';
 //var_dump($this->album);
 ?>
 <style>
 	.albman {display:inline-flex}
 	.mitem, .litem {width:120px; height:120px}
 	.modal-backdrop.fade.in {opacity:0.4}
-	.bootbox-body {padding: 12px; font-size: larger}
 	.modal-footer {padding: 8px 10px}
 	.pell-content {height: 100px}
 	.actbuts {margin-top: 1em}

@@ -1,7 +1,11 @@
+/**
+* @package		com_meedya
+* @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
+* @license		GNU General Public License version 3 or later; see LICENSE.txt
+*/
 
 Meedya.Arrange = (function (mdya) {
 	let dragSrcEl = null,
-		iSlctd = null,
 		scrt = false,
 		scrb = false,
 		scti = null,
@@ -22,8 +26,10 @@ Meedya.Arrange = (function (mdya) {
 
 	let handleDragStart = (e) => {
 		dragSrcEl = e.target.parentElement.parentElement;
-		dragSrcEl.style.opacity = '0.4';
-		e.dataTransfer.effectAllowed = 'copyMove';
+		setTimeout(()=>{dragSrcEl.style.opacity = '0.2'}, 0);
+//		e.dataTransfer.effectAllowed = 'copyMove';
+		e.dataTransfer.effectAllowed = 'move';
+		e.dataTransfer.dropEffect = 'move';
 		e.dataTransfer.setData(meeid,dragSrcEl.dataset.id);
 		e.dataTransfer.setData('imgsrc',e.target.src);
 	};
@@ -68,11 +74,11 @@ Meedya.Arrange = (function (mdya) {
 	};
 
 	let handleDrop = (e) => {
-		_pd(e);
+		Meedya._pd(e);
 		let dtarg = e.target.parentElement.parentElement;
 		// Don't do anything if dropping the same item we're dragging.
 		if (dragSrcEl != dtarg) {
-			let area = _id(ctnr);
+			let area = Meedya._id(ctnr);
 			let orf = area.removeChild(dragSrcEl);
 			area.insertBefore(orf, dtarg);
 			mdya.dirtyThumbs(true);
@@ -81,16 +87,19 @@ Meedya.Arrange = (function (mdya) {
 	};
 
 	let handleDragEnter = (e) => {
+			e.dataTransfer.dropEffect = 'move';
 		if (dropable(e)) {
-			_pd(e);
+			Meedya._pd(e);
 			e.target.classList.add('over');
 			return false;
 		}
 	};
 
 	let handleDragOver = (e) => {
+			e.dataTransfer.dropEffect = 'move';
 		if (dropable(e)) {
-			_pd(e);
+			Meedya._pd(e);
+			e.dataTransfer.dropEffect = 'move';
 			return false;
 		}
 	};
@@ -108,14 +117,14 @@ Meedya.Arrange = (function (mdya) {
 			items = document.querySelectorAll('#'+iCtnr+' img');
 			[].forEach.call(items, (itm) => {
 			//		itm.setAttribute('draggable', 'true');
-					_ae(itm, 'drag', handleDrag);
-					_ae(itm, 'dragstart', handleDragStart);
-					_ae(itm, 'dragenter', handleDragEnter);
-					_ae(itm, 'dragover', handleDragOver);
-					_ae(itm, 'dragleave', handleDragLeave);
-					_ae(itm, 'drop', handleDrop);
-					_ae(itm, 'dragend', handleDragEnd);
-					_ae(itm, 'touchmove', tMove);
+					Meedya._ae(itm, 'drag', handleDrag);
+					Meedya._ae(itm, 'dragstart', handleDragStart);
+					Meedya._ae(itm, 'dragenter', handleDragEnter);
+					Meedya._ae(itm, 'dragover', handleDragOver);
+					Meedya._ae(itm, 'dragleave', handleDragLeave);
+					Meedya._ae(itm, 'drop', handleDrop);
+					Meedya._ae(itm, 'dragend', handleDragEnd);
+					Meedya._ae(itm, 'touchmove', tMove);
 				});
 		},
 		iord: () => {

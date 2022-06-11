@@ -17,12 +17,15 @@ define('MYG_FB4', 1);
 $ttscript = '';
 
 HTMLHelper::_('jquery.framework');
-MeedyaHelper::addStyle('album');
-HTMLHelper::_('behavior.core');		// must force 'core' to load before 'meedya' on joomla 3.x
-MeedyaHelper::addScript('meedya');
+//MeedyaHelper::addStyle('album');
+$styles = 'a';
+//MeedyaHelper::addScript(['common','meedya','rating','echo']);
+$scripts = 'mre';
 if (defined('MYG_FB4')) {
-	MeedyaHelper::addStyle('fancybox', 'vendor/fancybox/4.0.26/');
-	MeedyaHelper::addScript('fancybox.umd', 'vendor/fancybox/4.0.26/');
+	$styles .= 'F';
+//	MeedyaHelper::addStyle('fancybox', 'vendor/fancybox/4.0.27/');
+	$scripts .= 'F';
+//	MeedyaHelper::addScript('fancybox.umd', 'vendor/fancybox/4.0.27/');
 	$ttscript .= 'Fancybox.defaults.infinite = 0;
 	Fancybox.defaults.showClass = false;
 	Fancybox.defaults.hideClass = false;
@@ -32,11 +35,12 @@ if (defined('MYG_FB4')) {
 //	Carousel.defaults.friction = 0.75;
 	';
 } else {
-	MeedyaHelper::addStyle('fancybox3','vendor/fancybox/');
-	MeedyaHelper::addScript('fancybox3', 'vendor/fancybox/');
+	$styles .= 'f';		//MeedyaHelper::addStyle('fancybox3','vendor/fancybox/');
+	$scripts .= 'f';		//MeedyaHelper::addScript('fancybox3', 'vendor/fancybox/');
 }
-//MeedyaHelper::addScript('bootbox');
-MeedyaHelper::addScript('rating');
+MeedyaHelper::oneStyle($styles);
+//HTMLHelper::_('behavior.core');		// must force 'core' to load before 'meedya' on joomla 3.x
+MeedyaHelper::oneScript($scripts);
 
 $jslang = [
 		'no_sterm' => Text::_('COM_MEEDYA_MSG_STERM'),
@@ -56,7 +60,7 @@ if ($this->items) {		//var_dump($this->items);
 		//if ($ftyp['content'] != 'image') continue;
 		$txtinfo = '';
 		$txtinfo .= trim($file['title']);
-		$desc = trim($file['desc']);
+		$desc = trim($file['desc'] ?: '');
 		$txtinfo .= (($txtinfo && $desc) ? ' ... ' : '') . $desc;
 		$mTyp = substr($file['mtype'], 0, 5);
 		if (defined('MYG_FB4') && $mTyp=='video') $mTyp = 'html5video';
@@ -212,7 +216,7 @@ $cancmnt = $this->uid || $this->params->get('pub_comments', 0);
 		}
 		echo '<span class="albttl">'.$this->title.'</span>';
 	?>
-	<?php if (!$this->isSearch && count($this->items)>1): ?>
+	<?php if (false && !$this->isSearch && count($this->items)>1): ?>
 		<a href="#" title="<?=Text::_('COM_MEEDYA_SLIDESHOW')?>" onclick="Meedya.viewer.slideShow(event);return false">
 			<img src="components/com_meedya/static/img/slideshow.png" alt="" />
 		</a>

@@ -113,7 +113,8 @@ EOD;
 		foreach ($albs as $alb) {
 			$d = count(explode('.',$alb->hord));
 		//	$pfx = str_repeat('&nbsp;&nbsp;',$d-1).($d>1?'&#x251c;&#x2500; ':'');
-			$pfx = str_repeat('&nbsp;&nbsp;', max($d-2, 0)).($d>1?'&#x251c; ':'');
+		//	$pfx = str_repeat('&nbsp;&nbsp;', max($d-2, 0)).($d>1?'&#x251c; ':'');
+			$pfx = str_repeat('&nbsp;&nbsp;', max($d-2, 0)).($d>1?'&#x21B3; ':'');
 			$html .= '<option value="'.$alb->aid.'"'.($alb->aid==$sel ? ' selected' : '').'>'.$pfx.$alb->title.'</option>';
 		}
 		return $html;
@@ -175,13 +176,13 @@ EOD;
 
 		$mvicon = '';
 		if ($edt) {
-			$acts = '<i class="icon-expand" onclick="iZoomOpen('.$id.',this)"></i>
+			$acts = '<i class="icon-expand" onclick="Meedya.Zoom.open('.$id.',this)"></i>
 				<i class="icon-info-2 pull-left"></i>
 				<i class="icon-edit pull-right" onclick="editImg('.$id.')"></i>';
 			$mvicon = '<div class="itmMove" onclick="Meedya.moveItem(event,this)"><i class="icon-move"></i></div>';
 		} else {
 			$acts = '<i class="icon-info-2 pull-left"></i>
-				<i class="icon-expand pull-right" onclick="iZoomOpen('.$id.',this)"></i>';
+				<i class="icon-expand pull-right" onclick="Meedya.Zoom.open('.$id.',this)"></i>';
 		}
 
 		$nah = $item->album ? '' : ' style="opacity:0.4"';

@@ -17,12 +17,10 @@ use Joomla\CMS\Layout\LayoutHelper;
 HTMLHelper::_('formbehavior.chosen', 'select');
 //HTMLHelper::_('bootstrap.tooltip');
 
-MeedyaHelper::addStyle('gallery');
-MeedyaHelper::addStyle('manage');
-MeedyaHelper::addStyle('jquery.tagsinput', 'vendor/tags/');
-MeedyaHelper::addScript('manage');
-MeedyaHelper::addScript('bootbox');
-MeedyaHelper::addScript('jquery.tagsinput', 'vendor/tags/');
+//MeedyaHelper::addStyle(['gallery','manage',['vendor/tags/'=>'jquery.tagsinput']]);
+MeedyaHelper::oneStyle('gMt');
+//MeedyaHelper::addScript(['common','manage','my_bb',['vendor/tags/'=>'jquery.tagsinput']]);
+MeedyaHelper::oneScript('Mbte');
 
 Text::script('COM_MEEDYA_PERM_DELETE');
 Text::script('JCANCEL');
@@ -67,8 +65,6 @@ function editImg (iid) {
 /*	cursor: pointer;*/
 }
 .modal-backdrop.fade.in {opacity:0.4}
-/*div.modal.bootbox-confirm {left: 50%; width: 400px; margin-left: -200px;}*/
-.bootbox-body {padding: 12px; font-size: larger;}
 .modal-footer {padding: 8px 10px}
 #filter_tag{margin-bottom:0}
 </style>
@@ -108,16 +104,17 @@ function editImg (iid) {
 </div>
 
 <?php
-echo HTMLHelper::_(
+$mmdl = HTMLHelper::_(
 	'bootstrap.renderModal',
 	'add2albdlg',
 	[
 		'title' => Text::_('COM_MEEDYA_ADD_ALBUM_ITEMS'),
 		'footer' => HTMLHelper::_('meedya.modalButtons', 'COM_MEEDYA_ADD2ALBUM', 'Meedya.addItems2Album(this)', 'creab'),
-		'modalWidth' => '40'
+		//'modalWidth' => '40'
 	],
 	$this->loadTemplate('add2alb')
 	);
+echo str_replace(' modal-lg', '', $mmdl);
 ?>
 
 <script>

@@ -14,7 +14,7 @@ use Joomla\CMS\Session\Session;
 MeedyaHelper::addStyle('gallery');
 MeedyaHelper::addStyle('manage');
 HTMLHelper::_('jquery.framework', false);
-MeedyaHelper::addScript('manage');
+MeedyaHelper::addScript(['common','manage']);
 $jdoc = Factory::getDocument();
 
 echo '<div class="meedya-config">';

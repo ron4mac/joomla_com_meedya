@@ -84,7 +84,7 @@ class MeedyaViewManage extends MeedyaView
 				//echo'<xmp>';var_dump($this->state);echo'</xmp>';
 				//echo'<xmp>';var_dump($this->album);echo'</xmp>';
 			//	$this->pagination = $this->get('Pagination');
-				$this->items = explode('|', $this->album['items']);
+				$this->items = explode('|', $this->album['items']?:'');
 				$this->aThum = $this->album['thumb'] ? $this->getAlbumThumb((object)$this->album) : 'components/com_meedya/static/img/img.png';
 				break;
 

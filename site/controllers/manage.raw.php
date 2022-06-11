@@ -123,7 +123,7 @@ class MeedyaControllerManage extends JControllerLegacy
 		$m = $this->getModel('manage');
 		$item = $m->getItem($iid);
 		$mime = explode('/',$item['mtype']);
-		echo '<div class="zoom-ctnr"><div class="zoom-closex" onclick="iZoomClose(event)">X</div>';
+		echo '<div class="zoom-ctnr"><div class="zoom-closex" onclick="Meedya.Zoom.close(event)">X</div>';
 		switch ($mime[0]) {
 			case 'image':
 				echo '<img class="eclipse" src="components/com_meedya/static/img/eclipse.svg" /><img class="zoom-zimg" src="'.$url.'/med/'.$item['file'].'" onload="this.previousSibling.style.opacity=0;this.style.opacity=1" />';

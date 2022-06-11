@@ -10,13 +10,13 @@ use Joomla\CMS\Router\Route;
 use Joomla\CMS\Session\Session;
 use Joomla\CMS\HTML\HTMLHelper;
 
-HTMLHelper::_('jquery.framework');
+//HTMLHelper::_('jquery.framework');
 
-MeedyaHelper::addScript('manage');
-MeedyaHelper::addStyle('jquery.tagsinput', 'vendor/tags/');
-MeedyaHelper::addScript('jquery.tagsinput', 'vendor/tags/');
+//MeedyaHelper::addStyle(['manage',['vendor/tags/'=>'jquery.tagsinput']]);
+MeedyaHelper::oneStyle('Mt');
+//MeedyaHelper::addScript(['common','manage',['vendor/tags/'=>'jquery.tagsinput']]);
+MeedyaHelper::oneScript('Mte');
 
-HTMLHelper::stylesheet('components/com_meedya/static/css/manage.css');
 //echo'<pre>';var_dump($this->iids);echo'</pre>';
 ?>
 </script>
@@ -45,7 +45,7 @@ HTMLHelper::stylesheet('components/com_meedya/static/css/manage.css');
 	<div class="eitem">
 		<label><img src="<?=$tPath?>" data-img="<?=$iFile?>" class="mitem" /></label>
 		<div class="item-overlay top">
-			<i class="icon-expand" title="expand image" onclick="iZoomOpen(<?=$namx?>, this)"></i>
+			<i class="icon-expand" title="expand image" onclick="Meedya.Zoom.open(<?=$namx?>, this)"></i>
 			<i class="icon-info-2 pull-left" title="image info"></i>
 			<i class="icon-upload pull-right" title="replace image" onclick="editImg(event, this)"></i>
 		</div>

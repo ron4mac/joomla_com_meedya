@@ -68,15 +68,9 @@
 		unload = !!opts.unload;
 		callback = opts.callback || callback;
 		echo.render();
-		if (document.addEventListener) {
-			root.addEventListener('scroll', debounceOrThrottle);
-			root.addEventListener('load', debounceOrThrottle);
-			window.addEventListener('resize', debounceOrThrottle/*function(){ echo.render() }*/);
-		} else {
-			root.attachEvent('onscroll', debounceOrThrottle);
-			root.attachEvent('onload', debounceOrThrottle);
-			window.attachEvent('resize', debounceOrThrottle/*function(){ echo.render() }*/);
-		}
+		root.addEventListener('scroll', debounceOrThrottle);
+		root.addEventListener('load', debounceOrThrottle);
+		window.addEventListener('resize', debounceOrThrottle/*function(){ echo.render() }*/);
 	};
 
 	echo.render = (context) => {
@@ -127,11 +121,7 @@
 	};
 
 	echo.detach = () => {
-		if (document.removeEventListener) {
-			root.removeEventListener('scroll', debounceOrThrottle);
-		} else {
-			root.detachEvent('onscroll', debounceOrThrottle);
-		}
+		root.removeEventListener('scroll', debounceOrThrottle);
 		clearTimeout(poll);
 	};
 

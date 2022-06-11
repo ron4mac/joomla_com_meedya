@@ -19,7 +19,7 @@ echo HTMLHelper::_(
 	array( // options
 		'title'  => Text::_('COM_MEEDYA_COMMENTS_TITLE'),
 		'footer' => '<button type="button" class="btn btn-secondary" '.M34C::bs('dismiss').'="modal">Close</button>' . $addbutton,
-		'modalWidth' => 30
+		//'modalWidth' => 30
 	),
 	'<div class="comments"></div>'
 );

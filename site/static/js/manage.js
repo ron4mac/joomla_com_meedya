@@ -3,51 +3,33 @@
 * @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
 */
-/* globals Joomla,bootbox,iZoomClose,jQuery */
+/* globals Joomla,URLSearchParams,My_bb */
 'use strict';
-/* a few utility functions to avoid using jquery and assist in minification */
-// getElementById
-const _id = (id) => {
-	return document.getElementById(id);
-};
-// simplify cancelling an event
-const _pd = (e, sp=true) => {
-	if (e.preventDefault) { e.preventDefault(); }
-	if (sp && e.stopPropagation) { e.stopPropagation(); }
-};
-// addEventListener
-const _ae = (elem, evnt, func, capt=false) => {
-	elem.addEventListener(evnt, func, capt);
-};
-// get joomla text
-const _T = (txt) => Joomla.Text._(txt);
 
-
-
-(function (Meedya, my, $, w) {
+(function(Meedya, my, w) {
 
 	// establish some common variables
 	const formTokn = Joomla.getOptions('csrf.token');
 
 	const _removeAlbThm = () => {
-		_id('albthmimg').src = 'components/com_meedya/static/img/img.png';
-		_id('albthmid').value = 0;
+		Meedya._id('albthmimg').src = 'components/com_meedya/static/img/img.png';
+		Meedya._id('albthmid').value = 0;
 	};
 
 	const _handleAlbthmDragOver = (e) => {
 		if (e.dataTransfer.types.indexOf('imgsrc') < 0) return;
-		_pd(e);
+		Meedya._pd(e);
 		return false;
 	};
 
 	const _handleAlbthmDrop = (e) => {
-		_pd(e);
+		Meedya._pd(e);
 		let src = e.dataTransfer.getData('imgsrc');
 		if (src) {
 			let aimg = e.target.parentElement.getElementsByTagName("IMG")[0];
 			aimg.src = src;
 			aimg.style.opacity = null;
-			let atv = _id('albthmid');
+			let atv = Meedya._id('albthmid');
 			atv.value = e.dataTransfer.getData('meeid');
 		}
 	};
@@ -56,39 +38,15 @@ const _T = (txt) => Joomla.Text._(txt);
 		if (document.querySelectorAll(sel).length) {
 			return true;
 		} else {
-			if (alrt) bootbox.alert(_T('COM_MEEDYA_SELECT_SOME'));
+			if (alrt) My_bb.alert(Meedya._T('COM_MEEDYA_SELECT_SOME'));
 			return false;
 		}
 	};
 
-	//build a FormData object
-	const toFormData = (obj) => {
-		const formData = new FormData();
-		Object.keys(obj).forEach(key => {
-			if (typeof obj[key] !== 'object') formData.append(key, obj[key]);
-			else formData.append(key, JSON.stringify(obj[key]));
-		});
-		return formData;
-	};
-
-	const postAction = (task, parms={}, cb=null, json=false, fini=null) => {
-		if (typeof parms === 'object') {
-			if (!(parms instanceof FormData)) parms = toFormData(parms);
-		} else if (typeof parms === 'string') {
-			parms = new URLSearchParams(parms);
-		}
-		if (task) parms.set('task', task);
-	
-		fetch(my.rawURL, {method:'POST', body:parms})
-		.then(resp => { if (!resp.ok) throw new Error(`HTTP ${resp.status}`); if (json) return resp.json(); else return resp.text() })
-		.then(data => cb && cb(data))
-		.catch(err => alert('Failure: '+err))
-		.then(()=>fini && fini());
-	};
-
-	// open or close modals whether on J4 or J3 bootstrap
-	const openMdl = (elm) => { elm.open ? elm.open() : jQuery(elm).modal('show'); };
-	const closMdl = (elm) => { elm.close ? elm.close() : jQuery(elm).modal('hide'); };
+	// shortcuts to common Meedya functions
+	const openMdl = Meedya._oM;
+	const closMdl = Meedya._cM;
+	const postAction = Meedya._P;
 
 
 //@@@@@@@@@@ PUBLIC FUNCTIONS @@@@@@@@@@
@@ -96,43 +54,28 @@ const _T = (txt) => Joomla.Text._(txt);
 	// we'll export the postAction
 	Meedya.postAction = postAction;
 
-	// utility dialog actions for alert, confirm using bootstrap modals
-	let yescb = null;
-	Meedya.confirm = (dlg, titl, body, cb) => {
-		//set the title and body 
-		$('#'+dlg+' .modal-title').html(titl);
-		$('#'+dlg+' .modal-body').html(body);
-		yescb = cb;
-		$('#'+dlg).modal('show');
-	};
-	Meedya.confirmed = (y) => yescb(y);
-	Meedya.alert = (body) => {
-		//set the body 
-		$('#alert-dlg span').html(body);
-		$('#alert-dlg').show();
-	};
-
 	Meedya.setAlbumDanD = () => {
-		let albthm = _id("albthm");
-		_ae(albthm, 'dragover', _handleAlbthmDragOver);
-		_ae(albthm, 'drop', _handleAlbthmDrop);
-		_ae(albthm, 'dragenter', (e) => { _pd(e); e.target.style.opacity = '0.5'; });
-		_ae(albthm, 'dragleave', (e) => e.target.style.opacity = null);
-		let albfrm = _id("albForm");
-		_ae(albfrm, 'dragstart', (e) => e.dataTransfer.setData('albthm','X'));
-		_ae(albfrm, 'dragover', (e) => { if (e.dataTransfer.types.indexOf('albthm')>0) { _pd(e);e.dataTransfer.dropEffect = 'move'; } });
-		_ae(albfrm, 'dragenter', (e) => { if (e.dataTransfer.types.indexOf('albthm')>0) { _pd(e);e.dataTransfer.dropEffect = 'move'; } });
-		_ae(albfrm, 'drop', (e) => { _pd(e); _removeAlbThm(); });
+		let albthm = Meedya._id("albthm");
+		Meedya._ae(albthm, 'dragover', _handleAlbthmDragOver);
+		Meedya._ae(albthm, 'drop', _handleAlbthmDrop);
+		Meedya._ae(albthm, 'dragenter', (e) => { Meedya._pd(e); e.target.style.opacity = '0.5'; });
+		Meedya._ae(albthm, 'dragleave', (e) => e.target.style.opacity = null);
+		let albfrm = Meedya._id("albForm");
+		Meedya._ae(albfrm, 'dragstart', (e) => e.dataTransfer.setData('albthm','X'));
+		Meedya._ae(albfrm, 'dragover', (e) => { if (e.dataTransfer.types.indexOf('albthm')>0) { Meedya._pd(e);e.dataTransfer.dropEffect = 'move'; } });
+		Meedya._ae(albfrm, 'dragenter', (e) => { if (e.dataTransfer.types.indexOf('albthm')>0) { Meedya._pd(e);e.dataTransfer.dropEffect = 'move'; } });
+		Meedya._ae(albfrm, 'drop', (e) => { Meedya._pd(e); _removeAlbThm(); });
 	};
 
 	Meedya.deleteSelected = (e) => {
-		_pd(e);
+		Meedya._pd(e);
 		if (_hasSelections("[name='slctimg[]']:checked", true)) {
-			bootbox.confirm({
-				message: _T('COM_MEEDYA_PERM_DELETE'),
+			My_bb.confirm({
+				message: Meedya._T('COM_MEEDYA_PERM_DELETE'),
+				size: 'modal-lg',
 				buttons: {
-					confirm: { label: _T('JACTION_DELETE'), className: 'btn-danger' },
-					cancel: { label: _T('JCANCEL') }
+					confirm: { label: Meedya._T('JACTION_DELETE'), className: 'btn-danger' },
+					cancel: { label: Meedya._T('JCANCEL') }
 				},
 				callback: (c) => {
 					if (c) {
@@ -145,33 +88,13 @@ const _T = (txt) => Joomla.Text._(txt);
 	};
 
 	Meedya.removeSelected = (e) => {
-		_pd(e);
+		Meedya._pd(e);
 		if (_hasSelections("[name='slctimg[]']:checked", true)) {
-/*			bootbox.prompt({
-				title: "Remove from album ...",
-				message: _T('COM_MEEDYA_REMOVE')+'<br><br>',
-				inputType: 'checkbox',
-				inputOptions: [{
-					text: 'Totally delete from every album',
-					value: '1',
-				}],
+			My_bb.confirm({
+				message: Meedya._T('COM_MEEDYA_REMOVE'),
 				buttons: {
-					confirm: {
-						label: 'Remove',
-						className: 'btn-warning'
-					}
-				},
-				callback: function (result) {
-					console.log(result);
-					if (result == null) return;
-					alert(result.length?'delete':'remove');
-				}
-			});*/
-			bootbox.confirm({
-				message: _T('COM_MEEDYA_REMOVE'),
-				buttons: {
-					confirm: { label: _T('COM_MEEDYA_VRB_REMOVE'), className: 'btn-danger' },
-					cancel: { label: _T('JCANCEL') }
+					confirm: { label: Meedya._T('COM_MEEDYA_VRB_REMOVE'), className: 'btn-danger' },
+					cancel: { label: Meedya._T('JCANCEL') }
 				},
 				callback: (c) => {
 					if (c) {
@@ -188,7 +111,7 @@ const _T = (txt) => Joomla.Text._(txt);
 	};
 
 	Meedya.selAllImg = (e, X) => {
-		_pd(e);
+		Meedya._pd(e);
 		let ck = X?'checked':'';
 		let xbs = document.adminForm.elements["slctimg[]"];
 		// make up for no array returned if there is only one item
@@ -199,7 +122,7 @@ const _T = (txt) => Joomla.Text._(txt);
 	};
 
 	Meedya.editSelected = (e) => {
-		_pd(e);
+		Meedya._pd(e);
 		if (_hasSelections("input[name='slctimg[]']:checked",true)) {
 			document.adminForm.task.value = 'manage.imgsEdit';
 			document.adminForm.submit();
@@ -207,26 +130,32 @@ const _T = (txt) => Joomla.Text._(txt);
 	};
 
 	Meedya.addSelected = (e) => {
-		_pd(e);
+		Meedya._pd(e);
 		if (_hasSelections("input[name='slctimg[]']:checked",true)) {
-			openMdl(_id('add2albdlg'));
+			openMdl('add2albdlg');
 		}
 	};
 
 	Meedya.albAction = (e) => {
-		let clkd = e.target;		//console.log(clkd);
-		switch (clkd.className) {
+		let elm = e.target;		//console.log(elm);
+		switch (elm.className) {
 			case 'icon-edit':
-				albEdtAction(e, clkd);
+				Meedya._pd(e);
+				let alb2edit = elm.parentElement.dataset.aid;
+				w.location = my.aURL + 'manage.editAlbum&aid=' + alb2edit;
 				break;
 			case 'icon-upload':
-				albUpldAction(e, clkd);
+				Meedya._pd(e);
+				let alb2upld = elm.parentElement.dataset.aid;
+				w.location = my.aURL + 'manage.doUpload&aid=' + alb2upld;
 				break;
 			case 'icon-delete':
-				albDelAction(e, clkd);
+				Meedya._pd(e);
+				Meedya.alb2delete = elm.parentElement.dataset.aid;
+				openMdl('delact');
 				break;
 			case 'album':
-				Meedya.AArrange.iSelect(e, clkd);
+				Meedya.AArrange.iSelect(e, elm);
 				break;
 		}
 	};
@@ -234,24 +163,6 @@ const _T = (txt) => Joomla.Text._(txt);
 	Meedya.saveAlbum = () => {
 		if (thmsDirty) document.albForm.thmord.value = Meedya.Arrange.iord();
 		document.albForm.submit();
-	};
-
-	let albEdtAction = (e, elm) => {
-		_pd(e);
-		let alb2edit = elm.parentElement.dataset.aid;
-		window.location = my.aURL + 'manage.editAlbum&aid=' + alb2edit;
-	};
-
-	let albUpldAction = (e, elm) => {
-		_pd(e);
-		let alb2upld = elm.parentElement.dataset.aid;
-		window.location = my.aURL + 'manage.doUpload&aid=' + alb2upld;
-	};
-
-	let albDelAction = (e, elm) => {
-		_pd(e);
-		Meedya.alb2delete = elm.parentElement.dataset.aid;
-		openMdl(_id('delact'));
 	};
 
 	Meedya.deleteAlbum = (elm) => {
@@ -262,46 +173,36 @@ const _T = (txt) => Joomla.Text._(txt);
 
 	// watch for selection of album; enable create button when there is one
 	Meedya.watchAlb = (elm) => {
-		let creab = _id('creab');
-		let classes = creab.classList;
+		let creab = Meedya._id('creab');
 		if (elm.value > 0) {
-			_id('creanualb').style.display = "none";
-		//	classes.remove("btn-disabled");
-		//	classes.add("btn-primary");
+			Meedya._id('creanualb').style.display = "none";
 			creab.disabled = false;
 		} else {
-		//	classes.remove("btn-primary");
-		//	classes.add("btn-disabled");
 			creab.disabled = true;
 			if (elm.value == -1) {
-				_id('creanualb').style.display = "block";
+				Meedya._id('creanualb').style.display = "block";
 			} else {
-				_id('creanualb').style.display = "none";
+				Meedya._id('creanualb').style.display = "none";
 			}
 		}
 	};
 
 	// watch for entry of album name; enable create button when there is a name
 	Meedya.watchAlbNam = (elm) => {
-		let creab = _id('creab');
-		let classes = creab.classList;
+		let creab = Meedya._id('creab');
 		if (elm.value.trim()) {
-		//	classes.remove("btn-disabled");
-		//	classes.add("btn-secondary");
 			creab.disabled = false;
 		} else {
-		//	classes.remove("btn-secondary");
-		//	classes.add("btn-disabled");
 			creab.disabled = true;
 		}
 	};
 
 	Meedya.addItems2Album = (elm) => {
 		elm.disabled = true;
-		document.adminForm.albumid.value = _id('h5u_album').value;
-		document.adminForm.nualbnam.value = _id('nualbnam').value;
-		document.adminForm.nualbpar.value = _id('h5u_palbum').value;
-		document.adminForm.nualbdesc.value = _id('albdesc').value;
+		document.adminForm.albumid.value = Meedya._id('h5u_album').value;
+		document.adminForm.nualbnam.value = Meedya._id('nualbnam').value;
+		document.adminForm.nualbpar.value = Meedya._id('h5u_palbum').value;
+		document.adminForm.nualbdesc.value = Meedya._id('albdesc').value;
 		document.adminForm.task.value = 'manage.addItemsToAlbum';
 		document.adminForm.submit();
 	};
@@ -309,19 +210,19 @@ const _T = (txt) => Joomla.Text._(txt);
 	// request creation of new album
 	Meedya.ae_createAlbum = (elm) => {
 		elm.disabled = true;
-		let albNamFld = _id('nualbnam');
-		let albParFld = _id('h5u_palbum');
-		let albDscFld = _id('albdesc');
+		let albNamFld = Meedya._id('nualbnam');
+		let albParFld = Meedya._id('h5u_palbum');
+		let albDscFld = Meedya._id('albdesc');
 		let nualbnam = albNamFld.value.trim();
-		let ajd = {task: 'manage.newAlbum', albnam: nualbnam, paralb: (albParFld ? albParFld.value : 0), albdesc: albDscFld.value};
+		let ajd = {albnam: nualbnam, paralb: (albParFld ? albParFld.value : 0), albdesc: albDscFld.value};
 		ajd[formTokn] = 1;
-		postAction(null, ajd, (data) => {if (data) alert(data); else w.location.reload(true);});
+		postAction('manage.newAlbum', ajd, (data) => {if (data) alert(data); else w.location.reload(true);});
 	};
 
 	// rearrange items in an album
 	let moving = null;
 	Meedya.moveItem = (e, elm) => {
-		_pd(e, true);
+		Meedya._pd(e, true);
 		let item = elm.parentElement;
 		if (!moving) {
 			moving = item;
@@ -329,7 +230,7 @@ const _T = (txt) => Joomla.Text._(txt);
 		} else {
 			moving.classList.remove("moving");
 			if (item != moving) {
-				let area = _id('area');
+				let area = Meedya._id('area');
 				let orf = area.removeChild(moving);
 				area.insertBefore(orf, item);
 			}
@@ -339,7 +240,7 @@ const _T = (txt) => Joomla.Text._(txt);
 
 	// create a thumbnail for a video from the video position
 	Meedya.setVideoThumb = (e, iid) => {
-		_pd(e, true);
+		Meedya._pd(e, true);
 		let _CANVAS = document.getElementById("my-video-canvas"),
 			_CTX = _CANVAS.getContext("2d"),
 			_VIDEO = document.querySelector("#zoom-zvid"),
@@ -378,40 +279,29 @@ const _T = (txt) => Joomla.Text._(txt);
 		_CTX.drawImage(_VIDOVR, 0, 0, _ow, _oh, 3, 3, _ow, _oh);
 
 		let dataURL = _CANVAS.toDataURL('image/jpeg', 0.8);
-		let ajd = {task: 'manage.setVideoThumb', vid: iid, imgBase64: dataURL};
+		let ajd = {vid: iid, imgBase64: dataURL};
 		ajd[formTokn] = 1;
-		postAction(null, ajd, (data) => { Meedya.thmelmsrc.src = data; iZoomClose(); });
+		postAction('manage.setVideoThumb', ajd, (data) => { Meedya.thmelmsrc.src = data; Meedya.Zoom.close(); });
 	};
 
 	let thmsDirty = false;
 	Meedya.dirtyThumbs = (v) => {thmsDirty = v};
 
-})(window.Meedya = window.Meedya || {}, Joomla.getOptions('Meedya'), jQuery, window);
+})(window.Meedya = window.Meedya || {}, Joomla.getOptions('Meedya'), window);
 
 
 // iZoom action to expand individual item
-(function (mdya, my, $, w) {
+(function (mdya) {
 	let back, area;
 
 	let close = (e) => {
-		e && _pd(e);
+		e && Meedya._pd(e);
 		document.body.removeChild(back);
 	};
 
-	let keyPressed = (e) => {
-		switch (e.charCode) {
-			case 32:
-			case 13:
-			case 27:
-				close(e);
-				break;
-			default:
-				break;
-		}
-	};
-
-	let keyDowned = (e) => {
-		switch (e.keyCode) {
+	let keyed = (e) => {
+		let kcc = e.type == 'keydown' ? e.keyCode : e.charCode;
+		switch (kcc) {
 			case 32:
 			case 13:
 			case 27:
@@ -432,14 +322,13 @@ const _T = (txt) => Joomla.Text._(txt);
 		back.className = 'zoom-back';
 		back.appendChild(area);
 		document.body.appendChild(back);
-		_ae(area, 'keypress', keyPressed);
-		_ae(area, 'keydown', keyDowned);
+		Meedya._ae(area, 'keypress', keyed);
+		Meedya._ae(area, 'keydown', keyed);
 		area.focus();
-		_ae(back, 'click', close);
+		Meedya._ae(back, 'click', close);
 	};
 
-	w.iZoomOpen = open;
-	w.iZoomClose = close;
+	mdya.Zoom = {open: open, close: close};
 
-})(Meedya, Joomla.getOptions('Meedya'), jQuery, window);
+})(Meedya);
 

@@ -15,6 +15,21 @@ abstract class MeedyaHelper
 	protected static $udp = null;
 	protected static $jdoc = null;
 
+	public static function oneScript ($str)
+	{
+		if (self::$jdoc === null) self::$jdoc = Factory::getDocument();
+		$s = (RJC_DBUG && Factory::getUser()->get('id') ? 'Dc' : 'c') . $str;
+		self::$jdoc->addScript('components/com_meedya/static/js.php?c='.$s);
+	}
+
+	public static function oneStyle ($str)
+	{
+		if (self::$jdoc === null) self::$jdoc = Factory::getDocument();
+		$s = (RJC_DBUG && Factory::getUser()->get('id') ? 'D' : '') . $str;
+		self::$jdoc->addStyleSheet('components/com_meedya/static/css.php?c='.$str);
+	}
+
+/*
 	public static function scriptVersion ($scr, $path='js/')
 	{
 		$dbg = RJC_DBUG && Factory::getUser()->get('id');
@@ -22,12 +37,11 @@ abstract class MeedyaHelper
 		$vray = [
 			'meedya' => ['meedya.js', 'meedya.min.js'],
 			'manage' => ['manage.js', 'manage.min.js'],
+			'alb_dand' => ['alb_dand.js', 'alb_dand.min.js'],
+			'itm_dand' => ['itm_dand.js', 'itm_dand.min.js'],
 			'echo' => ['echo.js', 'echo.min.js'],
 			'slides' => ['slides.js', 'slides.min.js'],
 			'upload' => ['upload.js', 'upload.min.js'],
-			'bootbox' => ((int)JVERSION < 4)
-			? ['https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/3.3.0/bootbox.js','https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/3.3.0/bootbox.min.js']
-			: ['https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.5.3/bootbox.js','https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.5.3/bootbox.min.js'],
 			'jquery.tagsinput' => ['jquery.tagsinput.js', 'jquery.tagsinput.min.js'],
 			'fancybox3' => ['3.5.7/jquery.fancybox.js', '3.5.7/jquery.fancybox.min.js']
 			];
@@ -50,7 +64,7 @@ abstract class MeedyaHelper
 		foreach ($scrs as $k=>$v) {
 			if (is_array($v)) {
 				foreach ($v as $kk=>$vv) {
-					self::$jdoc->addScript(self::scriptVersion($kk, $vv), $jaso);
+					self::$jdoc->addScript(self::scriptVersion($vv, $kk), $jaso);
 				}
 			} else {
 				self::$jdoc->addScript(self::scriptVersion($v, $path), $jaso);
@@ -85,13 +99,14 @@ abstract class MeedyaHelper
 		foreach ($csss as $k=>$v) {
 			if (is_array($v)) {
 				foreach ($v as $kk=>$vv) {
-					self::$jdoc->addStyleSheet(self::styleVersion($kk, $vv), $jaso);
+					self::$jdoc->addStyleSheet(self::styleVersion($vv, $kk), $jaso);
 				}
 			} else {
 				self::$jdoc->addStyleSheet(self::styleVersion($v, $path), $jaso);
 			}
 		}
 	}
+*/
 
 	public static function getInstanceID ()
 	{

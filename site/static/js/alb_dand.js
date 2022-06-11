@@ -1,5 +1,10 @@
-// Need to have a separate Drag and Drop arranger for the gallery album hierarchy
+/**
+* @package		com_meedya
+* @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
+* @license		GNU General Public License version 3 or later; see LICENSE.txt
+*/
 
+// Need to have a separate Drag and Drop arranger for the gallery album hierarchy
 Meedya.AArrange = (function (mdya, my) {
 	let dragSrcEl = null,
 		deTarg = null,
@@ -29,23 +34,26 @@ Meedya.AArrange = (function (mdya, my) {
 	};
 
 	let handleDragStart = (e) => {
-		e.target.style.opacity = '0.4';
+//		e.target.classList.add('moving');
 		dragSrcEl = e.target;
+		setTimeout(()=>{dragSrcEl.style.opacity = '0.2'}, 0);
 		e.dataTransfer.effectAllowed = 'copyMove';
 		e.dataTransfer.setData(meeid,dragSrcEl.dataset.id);
-		e.target.classList.add('moving');
+		e.dataTransfer.dropEffect = 'move';
 	};
 
 	let handleDragOver = (e) => {
+		e.dataTransfer.dropEffect = 'move';
 		if (dropable(e)) {
-			_pd(e);
+			Meedya._pd(e);
 			return false;
 		}
 	};
 
 	let handleDragEnter = (e) => {
+		e.dataTransfer.dropEffect = 'move';
 		if (dropable(e)) {
-			_pd(e);
+			Meedya._pd(e);
 			deTarg = e.target;
 			e.target.classList.add('over');
 			return false;
@@ -54,20 +62,20 @@ Meedya.AArrange = (function (mdya, my) {
 
 	let handleDragLeave = (e) => {
 //		if (e.target == deTarg) {
-			_pd(e);
+			Meedya._pd(e);
 			e.target.classList.remove('over');
 //		}
 	};
 
 	let handleDrop = (e) => {
-		_pd(e);
+		Meedya._pd(e);
 		// Don't do anything if dropping the same item we're dragging.
 		if (dragSrcEl != e.target) {
 			let sa = dragSrcEl.dataset.aid;
 			let da = e.target.dataset.aid;
 			setAlbPaid(sa, da, (r) => {
 				if (r) {
-					bootbox.alert(_T('COM_MEEDYA_MOVE_FAIL'));
+					My_bb.alert(Meedya._T('COM_MEEDYA_MOVE_FAIL'));
 				} else {
 					e.target.append(dragSrcEl);
 				}
@@ -117,7 +125,7 @@ Meedya.AArrange = (function (mdya, my) {
 	};
 
 	let iSelect = (e, elm=this) => {
-		_pd(e);
+		Meedya._pd(e);
 		if (iSlctd) iSlctd.classList.remove('slctd');
 		if (elm == iSlctd) {
 			iSlctd = null;
@@ -133,16 +141,16 @@ Meedya.AArrange = (function (mdya, my) {
 			ctnr = iCtnr;
 			items = document.querySelectorAll('#'+iCtnr+' .'+iClass);
 			[].forEach.call(items, (itm) => {
-					itm.setAttribute('draggable', 'true');
-					_ae(itm, 'drag', handleDrag);
-					_ae(itm, 'dragstart', handleDragStart, true);
-					_ae(itm, 'dragenter', handleDragEnter);
-					_ae(itm, 'dragover', handleDragOver);
-					_ae(itm, 'dragleave', handleDragLeave);
-					_ae(itm, 'drop', handleDrop);
-					_ae(itm, 'dragend', handleDragEnd);
-					_ae(itm, 'touchmove', tMove);
-				//	_ae(itm, 'click', iSelect);
+				//	itm.setAttribute('draggable', 'true');
+					Meedya._ae(itm, 'drag', handleDrag);
+					Meedya._ae(itm, 'dragstart', handleDragStart, true);
+					Meedya._ae(itm, 'dragenter', handleDragEnter);
+					Meedya._ae(itm, 'dragover', handleDragOver);
+					Meedya._ae(itm, 'dragleave', handleDragLeave);
+					Meedya._ae(itm, 'drop', handleDrop);
+					Meedya._ae(itm, 'dragend', handleDragEnd);
+					Meedya._ae(itm, 'touchmove', tMove);
+				//	Meedya._ae(itm, 'click', iSelect);
 				});
 		},
 		selalb: () => {

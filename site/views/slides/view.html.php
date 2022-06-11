@@ -30,8 +30,8 @@ class MeedyaViewSlides extends MeedyaView
 			$this->html5slideshowCfg = MeedyaHelper::$ssDefault;
 		}
 		$jawc = new JApplicationWebClient();
-		if ($jawc->mobile) {
-			$this->html5slideshowCfg['tT'] = 's';
+		if (true || $jawc->mobile) {
+			$this->html5slideshowCfg['tT'] = 'n';
 		}
 
 		parent::display($tpl);

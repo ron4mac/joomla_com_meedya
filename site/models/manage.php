@@ -429,7 +429,7 @@ class MeedyaModelManage extends MeedyaModelMeedya
 		return $phord . '.' . $v;
 	}
 
-	protected function populateState ($ordering = null, $direction = null)
+	protected function populateState ($ordering = null, $direction = 'ASC')
 	{	//echo'####POPSTATE####';
 		// Initialise variables.
 		$app = Factory::getApplication();

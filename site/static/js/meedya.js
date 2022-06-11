@@ -4,7 +4,7 @@
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
 */
 /* jshint esnext:false, esversion:9 */
-/* globals Joomla,jQuery,Fancybox,ssCtl,SimpleStarRating,newcmnt */
+/* globals Joomla,jQuery,URLSearchParams,Fancybox,ssCtl,SimpleStarRating,newcmnt */
 'use strict';
 
 // creates or adds to a namespace, 'Meedya'
@@ -56,7 +56,7 @@
 		// the following functions need to make copies of the itemslist
 		// to make possible multiple invocations on the same page (without reload)
 		showSlide: (e, iid) => {
-			e.preventDefault();
+			Meedya._pd(e);
 			let imgl = JSON.parse(JSON.stringify(self.items));	//copy
 			if (Meedya.FB4) {
 				Fancybox.show(imgl,{startIndex: iid});
@@ -65,7 +65,7 @@
 			}
 		},
 		slideShow: (e) => {
-			e.preventDefault();
+			Meedya._pd(e);
 			let imgl = JSON.parse(JSON.stringify(Meedya.items));	//copy
 			if (Meedya.FB4) {
 				Fancybox.show(imgl/*,{mainClass: "mdyFancybox"}*/);
@@ -77,53 +77,33 @@
 
 	const old_viewer = {
 		showSlide: (e, iid) => {
-			e.preventDefault();
+			Meedya._pd(e);
 			$('#sstage').appendTo('body').show();
 			ssCtl.init(Meedya.items, iid);
 		}
 	};
 
-	// open or close modals based on J4 or J3 bootstrap
-	const openMdl = (elm) => { elm.open ? elm.open() : jQuery(elm).modal('show'); };
-	const closMdl = (elm) => { elm.close ? elm.close() : jQuery(elm).modal('hide'); };
+	// shortcuts to common Meedya functions
+	const openMdl = Meedya._oM;
+	const closMdl = Meedya._cM;
+	const postAction = Meedya._P;
 
-	const toFormData = (obj) => {
-		const formData = new FormData();
-		Object.keys(obj).forEach(key => {
-			if (typeof obj[key] !== 'object') formData.append(key, obj[key]);
-			else formData.append(key, JSON.stringify(obj[key]));
-		});
-		return formData;
-	};
-
-
-	const postAction = (task, parms={}, cb=null, json=false, fini=null) => {
-		if (typeof parms === 'object') {
-			if (!(parms instanceof FormData)) parms = toFormData(parms);
-		} else if (typeof parms === 'string') {
-			parms = new URLSearchParams(parms);
-		}
-		if (task) parms.set('task', task);
-	
-		fetch(my.rawURL, {method:'POST', body:parms})
-		.then(resp => { if (!resp.ok) throw new Error(`HTTP ${resp.status}`); if (json) return resp.json(); else return resp.text() })
-		.then(data => cb && cb(data))
-		.catch(err => alert('Failure: '+err))
-		.then(()=>fini && fini());
-	};
-
-	const dorate = (itemid, relm) => {
+	// handle user request to enter an item rating
+	const dorate = (evt, itemid, relm) => {
 		curIid = itemid;
 		curRelm = relm;
-		postAction('rateChk', {iid: itemid}, (rsp) => { if (rsp) alert(rsp); else openMdl(rDlg); });
+		if (my.isAdmin && evt.metaKey) openMdl(rDlg);	// allow gallery admin to force with cmd/alt
+		else postAction('rateChk', {iid: itemid}, (rsp) => { if (rsp) alert(rsp); else openMdl(rDlg); });
 	};
 
+	// get and display the comments for an item
 	const fetchComments = (itemid) => {
 		curIid = itemid;
 		cElm.innerHTML = '';
 		postAction('getComments', {[token]: 1, iid: itemid}, (data) => { cElm.innerHTML = data; openMdl(cDlg); });
 	};
 
+	// either display current comments, if any, or provide dialog for new comment 
 	const doComments = (itemid, elm) => {
 		curIid = itemid;
 		curCelm = elm;
@@ -135,6 +115,7 @@
 		}
 	};
 
+	// send rating value to server
 	const submitRating = (evt) => {
 		if (evt.detail === 0) {
 			if (!confirm("Clear rating for this item?")) return;
@@ -146,9 +127,9 @@
 		}, false, ()=>closMdl(rDlg));
 	};
 
-	const _t = (tid) => {
-		return Meedya.L[tid] ? Meedya.L[tid] : tid;
-	};
+//	const _t = (tid) => {
+//		return Meedya.L[tid] ? Meedya.L[tid] : tid;
+//	};
 
 
 	// -------------------------------------------------- public functions
@@ -185,7 +166,7 @@
 				e.stopPropagation();
 				if (!rDlg) break;
 				iid = +clkd.parentElement.parentElement.parentElement.parentElement.dataset.iid;
-				dorate(iid, clkd);
+				dorate(e, iid, clkd);
 				break;
 			case 'far fa-comments':
 			case 'icon-comments-2':			// J3
@@ -213,23 +194,23 @@
 	};
 
 	// CURRENTLY UNUSED
-	Meedya.sprintf = (format) => {
-		for (var i = 1; i < arguments.length; i++) {
-			format = format.replace( /%s/, arguments[i] );
-		}
-		return format;
-	};
+//	Meedya.sprintf = (format) => {
+//		for (var i = 1; i < arguments.length; i++) {
+//			format = format.replace( /%s/, arguments[i] );
+//		}
+//		return format;
+//	};
 
-	document.addEventListener('DOMContentLoaded', () => {
+	Meedya._ae(document, 'DOMContentLoaded', () => {
 		// get the joomla suplied csrf token
 		token = Joomla.getOptions('csrf.token', '');
 		// setup the star rating modal
 		rDlg = _id('rating-modal');
 		if (rDlg) {
-			rDlg.addEventListener('hidden.bs.modal', (event) => {closMdl(rDlg);});		// NOT SURE ABOUT THIS
+			Meedya._ae(rDlg, 'hidden.bs.modal', (event) => {closMdl(rDlg);});		// NOT SURE ABOUT THIS
 			var rating = _id('unrating');
 			ssr = new SimpleStarRating(rating);
-			rating.addEventListener('rate', submitRating);
+			Meedya._ae(rating, 'rate', submitRating);
 		}
 		// setup comments display modal
 		cDlg = _id('comments-modal');
@@ -239,7 +220,7 @@
 		if (ncDlg) {
 	//		ncElm = document.querySelector(".modal-body textarea");
 			// focus on the textarea
-			ncDlg.addEventListener('shown.bs.modal', (event) => {_id("cmnt-text").focus();});
+			Meedya._ae(ncDlg, 'shown.bs.modal', (event) => {Meedya._id("cmnt-text").focus();});
 		}
 	});
 

@@ -13,9 +13,11 @@ use Joomla\CMS\Layout\LayoutHelper;
 Text::script('COM_MEEDYA_MOVE_FAIL');
 Text::script('COM_MEEDYA_IMPORT');
 
-MeedyaHelper::addStyle(['gallery','manage']);
+//MeedyaHelper::addStyle(['gallery','manage']);
+MeedyaHelper::oneStyle('gM');
 //HTMLHelper::_('jquery.framework');
-MeedyaHelper::addScript(['manage','alb_dand']);
+//MeedyaHelper::addScript(['common','manage','alb_dand']);
+MeedyaHelper::oneScript('MA');
 
 function buildTree(array $albums, &$html, $paid = 0) {
 	$branch = [];
@@ -46,13 +48,13 @@ buildTree($this->galStruct, $html);
 //$this->btmscript[] = 'var albStruct = '. json_encode($this->galStruct).';';
 
 // use a catch-all click handler for the albums list
-$this->btmscript[] = '_ae(_id("gstruct"), "click", (e) => Meedya.albAction(e) );';
+$this->btmscript[] = 'Meedya._ae("gstruct", "click", (e) => Meedya.albAction(e) );';
 // initialize dragndrop for the albums list
 $this->btmscript[] = 'Meedya.AArrange.init("gstruct","album");';
 // cause input focus for new album dialog
-$this->btmscript[] = '_ae(_id("newalbdlg"), "shown.bs.modal", () => _id("nualbnam").focus() );';
+$this->btmscript[] = 'Meedya._ae("newalbdlg", "shown.bs.modal", () => Meedya._id("nualbnam").focus() );';
 // set new album dlg parent to current list selection
-$this->btmscript[] = '_ae(_id("newalbdlg"), "show.bs.modal", () => { _id("h5u_palbum").value = Meedya.AArrange.selalb(); });';
+$this->btmscript[] = 'Meedya._ae("newalbdlg", "show.bs.modal", () => { Meedya._id("h5u_palbum").value = Meedya.AArrange.selalb(); });';
 
 
 $hasImport = JFolder::exists($this->gallpath.'/import');
@@ -145,7 +147,8 @@ echo HTMLHelper::_(
 	'importdlg',
 	['title' => Text::_('COM_MEEDYA_IMPORT_ITEMS'),
 	'footer' => HTMLHelper::_('meedya.modalButtons', Text::_('COM_MEEDYA_IMPORT'),'importItems(this)', 'imporb'),
-	'modalWidth' => '40'],
+	//'modalWidth' => '40'
+	],
 	$this->loadTemplate('import')
 	);
 endif;

@@ -11,9 +11,11 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
 
 HTMLHelper::_('jquery.framework');
-MeedyaHelper::addStyle('gallery');
+//MeedyaHelper::addStyle('gallery');
+MeedyaHelper::oneStyle('g');
 HTMLHelper::_('behavior.core');		// must force 'core' to load before 'meedya' on joomla 3.x
-MeedyaHelper::addScript('meedya');
+//MeedyaHelper::addScript(['common','meedya']);
+MeedyaHelper::oneScript('cme');
 $jslang = [
 		'no_sterm' => Text::_('COM_MEEDYA_MSG_STERM'),
 		'ru_sure' => Text::_('COM_MEEDYA_RU_SURE')

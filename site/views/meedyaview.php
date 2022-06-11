@@ -62,7 +62,7 @@ class MeedyaView extends JViewLegacy
 		$pgidparm = isset($this->pgid) ? '&pgid='.$this->pgid : '';
 		$aurl = Route::_('index.php?option=com_meedya&view='.$pgidparm.'&Itemid='.$this->itemId.'&task=', false);
 		$rurl = Route::_('index.php?option=com_meedya&format=raw'.$pgidparm.'&Itemid='.$this->itemId, false);
-		$this->jDoc->addScriptOptions('Meedya',['aURL' => $aurl,'rawURL' => $rurl]);
+		$this->jDoc->addScriptOptions('Meedya',['aURL' => $aurl,'rawURL' => $rurl,'isAdmin' => $this->userPerms->canAdmin]);
 	}
 
 	public function display ($tpl = null)
@@ -71,7 +71,7 @@ class MeedyaView extends JViewLegacy
 		$this->pagination = $this->get('Pagination');
 
 		// add javascript to fetch images only when scrolled into view
-		MeedyaHelper::addScript('echo');
+//		MeedyaHelper::addScript('echo');
 
 		parent::display($tpl);
 		if ($this->btmscript) echo "<script type=\"text/javascript\">\n".implode("\n", $this->btmscript)."\n</script>";

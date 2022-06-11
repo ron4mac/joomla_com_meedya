@@ -11,13 +11,13 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Session\Session;
 
-echo HTMLHelper::_(
+$mmdl = HTMLHelper::_(
 	'bootstrap.renderModal',
 	'delact', // selector
 	array( // options
 		'title'  => Text::_('COM_MEEDYA_DELETE_ALBUM'),
 		'footer' => HTMLHelper::_('meedya.modalButtons', 'COM_MEEDYA_DELETE_ALBUM','Meedya.deleteAlbum(this)', 'deliB', false, 'btn btn-warning'),
-		'modalWidth' => 30
+		//'modalWidth' => 30
 	),
 	Text::_('COM_MEEDYA_DELETE_ALBUM_BLURB')
 	.'<br /><br /><form name="dalbform" action="'.Route::_('index.php?option=com_meedya&view=manage&Itemid='.$displayData['itemId'], false).'" method="POST">'
@@ -27,3 +27,5 @@ echo HTMLHelper::_(
 	.'<input type="hidden" name="'.Session::getFormToken().'" value="1" />'
 	.'<input type="hidden" name="aid" value="" /></form>'
 );
+//remove the large modal css designation
+echo str_replace(' modal-lg', '', $mmdl);

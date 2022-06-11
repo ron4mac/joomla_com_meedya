@@ -106,7 +106,7 @@ class MeedyaModelMeedya extends JModelList
 		$db = $this->getDbo();
 		$db->setQuery('SELECT `vals` FROM `config` WHERE `type`='.$db->quote($which));
 		$r = $db->loadResult();
-		return json_decode($r, true);
+		return json_decode($r?:'{}', true);
 	}
 
 	public function getItemThumbFile ($iid)

@@ -1,7 +1,5 @@
 /*
-
 	jQuery Tags Input Plugin 1.3.3
-
 	Copyright (c) 2011 XOXCO, Inc
 
 	Documentation for this plugin lives here:
@@ -11,12 +9,13 @@
 	http://www.opensource.org/licenses/mit-license.php
 
 	ben@xoxco.com
-
 */
+
 (function($) {
 
 	var delimiter = [];
 	var tags_callbacks = [];
+
 	$.fn.doAutosize = function(o) {
 		var minWidth = $(this).data('minwidth'),
 			maxWidth = $(this).data('maxwidth'),
@@ -73,6 +72,7 @@
 		input.data('tester_id', testerId);
 		input.css('width', minWidth);
 	};
+
 
 	$.fn.addTag = function(value, options) {
 		options = jQuery.extend({
@@ -139,6 +139,7 @@
 		return false;
 	};
 
+
 	$.fn.removeTag = function(value) {
 		value = unescape(value);
 		this.each(function() {
@@ -165,11 +166,13 @@
 		return false;
 	};
 
+
 	$.fn.tagExist = function(val) {
 		var id = $(this).attr('id');
 		var tagslist = $(this).val().split(delimiter[id]);
 		return (jQuery.inArray(val, tagslist) >= 0); //true when tag exists, false when not
 	};
+
 
 	// clear all existing tags and import new ones from a string
 	$.fn.importTags = function(str) {
@@ -177,6 +180,7 @@
 		$('#' + id + '_tagsinput .tag').remove();
 		$.fn.tagsInput.importTags(this, str);
 	};
+
 
 	$.fn.tagsInput = function(options) {
 		var settings = jQuery.extend({
@@ -360,10 +364,12 @@
 
 	};
 
+
 	$.fn.tagsInput.updateTagsField = function(obj, tagslist) {
 		var id = $(obj).attr('id');
 		$(obj).val(tagslist.join(delimiter[id]));
 	};
+
 
 	$.fn.tagsInput.importTags = function(obj, val) {
 		$(obj).val('');
@@ -380,6 +386,7 @@
 			f.call(obj, obj, tags[i]);
 		}
 	};
+
 
 	/**
 	 * check delimiter Array
@@ -407,4 +414,5 @@
 
 		return found;
 	};
+
 })(jQuery);

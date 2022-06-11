@@ -114,14 +114,8 @@ class MeedyaModelPublic extends JModelList
 		$this->_itms = explode('|', $this->_album->items);
 		$this->_total = count($this->_itms);
 		$aid = $this->getState('album.id') ? : 0;
-		$limit = $this->state->get('list.limit'.$aid);
-		if ($limit) {
-		//	return array_slice($this->_itms, $this->state->get('list.start'.$aid), $limit);
-			$iids = array_slice($this->_itms, $this->state->get('list.start'.$aid), $limit);
-		} else {
-		//	return array_slice($this->_itms, $this->state->get('list.start'.$aid));
-			$iids = array_slice($this->_itms, $this->state->get('list.start'.$aid));
-		}
+		$limit = $this->state->get('list.limit'.$aid, null);
+		$iids = array_slice($this->_itms, $this->state->get('list.start'.$aid, 0), $limit);
 		$items = [];
 		foreach ($iids as $iid) {
 			$items[] = $this->getItemFile($iid);
