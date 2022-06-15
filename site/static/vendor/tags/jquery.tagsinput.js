@@ -10,7 +10,8 @@
 
 	ben@xoxco.com
 */
-
+/* globals jQuery */
+'use strict';
 (function($) {
 
 	var delimiter = [];
@@ -48,7 +49,6 @@
 		// alert(JSON.stringify(options));
 		var minWidth = $(this).data('minwidth') || options.minInputWidth || $(this).width(),
 			maxWidth = $(this).data('maxwidth') || options.maxInputWidth || ($(this).closest('.tagsinput').width() - options.inputPadding),
-			val = '',
 			input = $(this),
 			testSubject = $('<tester/>').css({
 				position: 'absolute',
@@ -108,7 +108,7 @@
 						title: 'Removing tag',
 						text: 'x'
 					}).click(function() {
-						return $('#' + id).removeTag(escape(value));
+						return $('#' + id).removeTag(encodeURIComponent(value));
 					})
 				).insertBefore('#' + id + '_addTag');
 
@@ -141,15 +141,15 @@
 
 
 	$.fn.removeTag = function(value) {
-		value = unescape(value);
+		value = decodeURIComponent(value);
 		this.each(function() {
 			var id = $(this).attr('id');
 
 			var old = $(this).val().split(delimiter[id]);
 
 			$('#' + id + '_tagsinput .tag').remove();
-			str = '';
-			for (i = 0; i < old.length; i++) {
+			var str = '';
+			for (let i = 0; i < old.length; i++) {
 				if (old[i] != value) {
 					str = str + delimiter[id] + old[i];
 				}
@@ -272,7 +272,7 @@
 				});
 
 				if (settings.autocomplete_url !== undefined) {
-					autocomplete_options = {
+					let autocomplete_options = {
 						source: settings.autocomplete_url
 					};
 					for (var attrname in settings.autocomplete) {
@@ -343,7 +343,7 @@
 						var last_tag = $(this).closest('.tagsinput').find('.tag:last').text();
 						var id = $(this).attr('id').replace(/_tag$/, '');
 						last_tag = last_tag.replace(/[\s]+x$/, '');
-						$('#' + id).removeTag(escape(last_tag));
+						$('#' + id).removeTag(encodeURIComponent(last_tag));
 						$(this).trigger('focus');
 					}
 				});
@@ -375,6 +375,7 @@
 		$(obj).val('');
 		var id = $(obj).attr('id');
 		var tags = val.split(delimiter[id]);
+		let i;
 		for (i = 0; i < tags.length; i++) {
 			$(obj).addTag(tags[i], {
 				focus: false,

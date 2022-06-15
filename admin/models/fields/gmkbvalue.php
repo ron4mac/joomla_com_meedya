@@ -14,24 +14,23 @@ class JFormFieldGmkbValue extends JFormField
 	const COMP = 'com_meedya';
 	protected $type = 'GmkbValue';
 
-	protected function getInput()
+	protected function getInput ()
 	{
-		$allowEdit		= ((string) $this->element['edit'] == 'true') ? true : false;
-		$allowClear		= ((string) $this->element['clear'] != 'false') ? true : false;
+		$allowEdit = ((string) $this->element['edit'] == 'true') ? true : false;
+		$allowClear = ((string) $this->element['clear'] != 'false') ? true : false;
 
 		// Load language
 		Factory::getLanguage()->load(self::COMP, JPATH_ADMINISTRATOR);
 
 		// create the component default display
 		list($cdv,$cdm) = $this->num2gmkv($this->element['compdef']);
-		$mc = array('KB','MB','GB');
+		$mc = ['KB','MB','GB'];
 		$compdef = $cdv.$mc[$cdm];
 
 		// class='required' for client side validation
 		$class = '';
 
-		if ($this->required)
-		{
+		if ($this->required) {
 			$class = ' class="required modal-value"';
 		}
 
@@ -39,13 +38,13 @@ class JFormFieldGmkbValue extends JFormField
 		list($uplsiz,$uplsizm) = $this->num2gmkv($this->value?:$this->element['compdef']);
 
 		// Setup variables for display.
-		$html	= array();
+		$html	= [];
 
 		$html[] = '<input type="checkbox" id="'.$this->id.'_dchk" onclick="GMKBff.sDef(this)" '.($this->value ? '' : 'checked ').'style="vertical-align:initial" />';
 		$html[] = '<label for="'.$this->id.'_dchk" style="display:inline;margin-right:1em">'.Text::_('JGLOBAL_USE_GLOBAL').'</label>';
 
 		$html[] = '<span class="input-gmkb'.($this->value ? '' : ' hidden').'">';
-		$html[] = '<input type="number" step="1" min="1" class="" id="' . $this->id . '_name" value="' . $uplsiz .'" onchange="GMKBff.sVal(this.parentNode)" onkeyup="GMKBff.sVal(this.parentNode)" style="width:4em;text-align:right" />';
+		$html[] = '<input type="number" step="1" min="1" class="gkmb-num" id="' . $this->id . '_name" value="' . $uplsiz .'" onchange="GMKBff.sVal(this.parentNode)" onkeyup="GMKBff.sVal(this.parentNode)" style="width:4em;text-align:right" />';
 		$html[] = '<select id="' . $this->id . '_gmkb" class="gkmb-sel" onchange="GMKBff.sVal(this.parentNode)" style="width:5em">';
 		$html[] = '<option value="1024"'.($uplsizm==0?' selected="selected"':'').'>kB</option>';
 		$html[] = '<option value="1048576"'.($uplsizm==1?' selected="selected"':'').'>MB</option>';
@@ -61,30 +60,31 @@ class JFormFieldGmkbValue extends JFormField
 			$scripted = true;
 			$jdoc = Factory::getDocument();
 			$script = '
-var GMKBff = (function($) {
+var GMKBff = (() => {
 	return {
-		sDef: function (elm) {
+		sDef: (elm) => {
+			let pare = elm.parentElement;
+			let gkmb = pare.querySelector(".input-gmkb");
 			if (elm.checked) {
-				$(elm).siblings(".input-gmkb").addClass("hidden");
-				$(elm).siblings(".gmkb-dflt").removeClass("hidden");
-				$(elm).siblings(".input-gmkb").children(".gmkb-valu").val(0);
+				gkmb.querySelector(".gmkb-valu").value = 0;
+				gkmb.classList.add("hidden");
+				pare.querySelector(".gmkb-dflt").classList.remove("hidden");
 			} else {
-				$(elm).siblings(".gmkb-dflt").addClass("hidden");
-				$(elm).siblings(".input-gmkb").removeClass("hidden");
-				this.sVal($(elm).siblings(".input-gmkb"));
+				pare.querySelector(".gmkb-dflt").classList.add("hidden");
+				gkmb.classList.remove("hidden");
+				GMKBff.sVal(gkmb);
 			}
 		},
-		sVal: function (elm) {
-			var valu = $(elm).children(".gmkb-valu").eq(0);
-			var numb = +$(elm).children(".input-medium").val();
-			var shft = +$(elm).children(".gkmb-sel").val();
-			valu.val(numb * shft);
+		sVal: (elm) => {
+			let valu = elm.querySelector(".gmkb-valu");
+			let numb = +elm.querySelector(".gkmb-num").value;
+			let shft = +elm.querySelector(".gkmb-sel").value;
+			valu.value = numb * shft;
 		}
 	};
-})(jQuery);
+})();
 '		;
 			$jdoc->addScriptDeclaration($script);
-		//	$jdoc->addStyleDeclaration('.gmkb-dflt { opacity:0.5;display:inline-block;padding-top:4px }');
 			$jdoc->addStyleDeclaration('.gmkb-dflt { opacity:0.5;padding-top:4px }');
 		}
 		return implode("\n", $html);
@@ -98,7 +98,6 @@ var GMKBff = (function($) {
 		} else {
 			$num = (int)$num;
 		}
-		//var_dump($parts,$num);//jexit();
 
 		$sizm = 0;
 		if ($num) {
@@ -114,7 +113,7 @@ var GMKBff = (function($) {
 		} else {
 			$num = '';
 		}
-		return array($num,$sizm);
+		return [$num, $sizm];
 	}
 
 	// get a component option value

@@ -3,7 +3,7 @@
 * @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
 */
-/* globals Joomla,URLSearchParams,My_bb */
+/* globals Joomla,My_bb */
 'use strict';
 
 (function(Meedya, my, w) {

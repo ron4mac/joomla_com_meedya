@@ -10,11 +10,10 @@ use Joomla\CMS\Router\Route;
 use Joomla\CMS\Session\Session;
 use Joomla\CMS\HTML\HTMLHelper;
 
-//HTMLHelper::_('jquery.framework');
-
 //MeedyaHelper::addStyle(['manage',['vendor/tags/'=>'jquery.tagsinput']]);
 MeedyaHelper::oneStyle('Mt');
 //MeedyaHelper::addScript(['common','manage',['vendor/tags/'=>'jquery.tagsinput']]);
+HTMLHelper::_('jquery.framework');
 MeedyaHelper::oneScript('Mte');
 
 //echo'<pre>';var_dump($this->iids);echo'</pre>';

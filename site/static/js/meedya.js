@@ -4,12 +4,12 @@
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
 */
 /* jshint esnext:false, esversion:9 */
-/* globals Joomla,jQuery,URLSearchParams,Fancybox,ssCtl,SimpleStarRating,newcmnt */
+/* globals Joomla,jQuery,Fancybox,ssCtl,SimpleStarRating,newcmnt */
 'use strict';
 
 // creates or adds to a namespace, 'Meedya'
 
-(function(Meedya, my, $) {
+(function(Meedya, my) {
 
 	// -------------------------------------------------- local variables
 	let token,
@@ -61,7 +61,7 @@
 			if (Meedya.FB4) {
 				Fancybox.show(imgl,{startIndex: iid});
 			} else {
-				$.fancybox.open(imgl, {...this.sopts, ...this.vopts, ...this.ivbuts}, iid);
+				jQuery.fancybox.open(imgl, {...this.sopts, ...this.vopts, ...this.ivbuts}, iid);
 			}
 		},
 		slideShow: (e) => {
@@ -70,7 +70,7 @@
 			if (Meedya.FB4) {
 				Fancybox.show(imgl/*,{mainClass: "mdyFancybox"}*/);
 			} else {
-				$.fancybox.open(imgl, {...this.sopts, ...this.vopts, ...this.ssbuts});
+				jQuery.fancybox.open(imgl, {...this.sopts, ...this.vopts, ...this.ssbuts});
 			}
 		}
 	};
@@ -78,7 +78,7 @@
 	const old_viewer = {
 		showSlide: (e, iid) => {
 			Meedya._pd(e);
-			$('#sstage').appendTo('body').show();
+			jQuery('#sstage').appendTo('body').show();
 			ssCtl.init(Meedya.items, iid);
 		}
 	};
@@ -224,4 +224,4 @@
 		}
 	});
 
-})(window.Meedya = window.Meedya || {}, Joomla.getOptions('Meedya'), jQuery);
+})(window.Meedya = window.Meedya || {}, Joomla.getOptions('Meedya'));

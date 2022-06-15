@@ -16,7 +16,7 @@ class JFormFieldDefNumber extends JFormFieldNumber
 	const COMP = 'com_meedya';
 	protected $type = 'DefNumber';
 
-	protected function getInput()
+	protected function getInput ()
 	{
 		$compdef = $this->element['compdef'];
 		$parts = explode('/', $compdef);
@@ -37,35 +37,36 @@ class JFormFieldDefNumber extends JFormFieldNumber
 			$scripted = true;
 			$jdoc = Factory::getDocument();
 			$script = '
-var DEFNff = (function($) {
+var DEFNff = (() => {
 	return {
-		sDef: function (elm) {
-			var dflt = $(elm).siblings(".defn-dflt");
-			var numi = $(elm).siblings(".mydefn").children("input");
-			var ngrp = $(elm).siblings(".mydefn");
-			var stor = $(elm).siblings(".defn-valu");
+		sDef: (elm) => {
+			let pare = elm.parentElement;
+			let dflt = pare.querySelector(".defn-dflt");
+			let numi = pare.querySelector(".mydefn input");
+			let ngrp = pare.querySelector(".mydefn");
+			let stor = pare.querySelector(".defn-valu");
+
 			if (elm.checked) {
-				ngrp.addClass("hidden");
-				dflt.removeClass("hidden");
-				var valu = numi.val();
-				numi.val(0);
-				stor.val(valu);
+				ngrp.classList.add("hidden");
+				dflt.classList.remove("hidden");
+			//	let valu = stor.value;
+				numi.value = 0;
+			//	numi.value = valu;
 			} else {
-				var valu = stor.val();
-				numi.val(valu);
-				dflt.addClass("hidden");
-				ngrp.removeClass("hidden");
+				let valu = stor.value;
+				numi.value = valu;
+				dflt.classList.add("hidden");
+				ngrp.classList.remove("hidden");
 			}
 		}
 	};
-})(jQuery);
+})();
 ';
 			$jdoc->addScriptDeclaration($script);
 			$style = [];
-		//	$style[] = '.defn-dflt { opacity:0.5;display:inline-block;padding-top:4px; }';
 			$style[] = '.defn-dflt { opacity:0.5;padding-top:4px; }';
 			$style[] = '.mydefn input { width:8em;display:inline;padding:.25rem .5rem; }';
-			$jdoc->addStyleDeclaration(implode(chr(13), $style));
+			$jdoc->addStyleDeclaration(implode("\n", $style));
 		}
 
 		return implode("\n", $html);

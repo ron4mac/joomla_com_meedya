@@ -50,6 +50,7 @@
 }
 .failure { background: #F99 none 0 0 no-repeat; }
 
+.btn-qaction { border: 1px solid #AAA; }
 
 i.abortX, i.pausQ, i.playQ, i.cancelQ, i.infoG { font-size: initial; cursor: pointer; }
 i.abortX { float: right; color: red; }
