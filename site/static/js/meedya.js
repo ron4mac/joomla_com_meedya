@@ -5,11 +5,9 @@
 */
 /* jshint esnext:false, esversion:9 */
 /* globals Joomla,jQuery,Fancybox,ssCtl,SimpleStarRating,newcmnt */
-'use strict';
-
-// creates or adds to a namespace, 'Meedya'
 
 (function(Meedya, my) {
+	'use strict';
 
 	// -------------------------------------------------- local variables
 	let token,

@@ -189,7 +189,9 @@ abstract class MeedyaHelper
 		$cupmax = $op ?: self::componentOption('maxUpload', 4194304);
 		$cupmax = $cupmax ?: 4194304;
 		$cupmax = self::instanceOption('maxUpload', $cupmax);
-		return min($cupmax, JFilesystemHelper::fileUploadMaxSize(false));
+	//	return min($cupmax, JFilesystemHelper::fileUploadMaxSize(false));
+		// using my chunking uploader so no need to account for PHP max
+		return $cupmax;
 	}
 
 	// get a resolved option value based on component and instance (same-named) values

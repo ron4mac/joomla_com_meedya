@@ -185,11 +185,11 @@ EOD;
 				<i class="icon-expand pull-right" onclick="Meedya.Zoom.open('.$id.',this)"></i>';
 		}
 
-		$nah = $item->album ? '' : ' style="opacity:0.4"';
+		$nah = $item->album ? '' : ' orphan';
 		return '
-		<div class="'.$iclss.'" data-id="'.$id.'">
+		<div class="'.$iclss.$nah.'" data-id="'.$id.'">
 			<label for="slctimg'.$id.'">
-			<img src="components/com_meedya/static/img/'.$iDat.'" class="mitem"'.$nah.' />
+			<img src="components/com_meedya/static/img/'.$iDat.'" class="mitem" />
 			</label>
 			<div class="item-overlay top">
 				'.$acts.'

@@ -36,11 +36,21 @@ class MeedyaControllerManage extends JControllerLegacy
 
 		require_once JPATH_COMPONENT.'/classes/uplodr.php';
 		$toname = null;
+		$resp = [];
+		ob_start();
 		$uplodr_obj = new Up_Load($this->input, $toname, ['target_dir'=>JPATH_BASE.'/']);
 		if ($toname) {
 			$m = $this->getModel('manage');
 			$qr = $m->storeFile($toname, $this->input->post, $uplodr_obj);
-			echo ':qp:'.$qr;
+			$resp['qp'] = $qr;
+		}
+		$smsg = ob_get_contents();
+		ob_end_clean();
+		if ($smsg) {
+			$resp['smsg'] = $smsg;
+		}
+		if ($resp) {
+			echo json_encode($resp);
 		}
 	}
 

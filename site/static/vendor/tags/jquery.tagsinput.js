@@ -42,9 +42,9 @@
 		if (isValidWidthChange) {
 			input.width(newWidth);
 		}
-
-
 	};
+
+
 	$.fn.resetAutosize = function(options) {
 		// alert(JSON.stringify(options));
 		var minWidth = $(this).data('minwidth') || options.minInputWidth || $(this).width(),
@@ -278,7 +278,6 @@
 					for (var attrname in settings.autocomplete) {
 						autocomplete_options[attrname] = settings.autocomplete[attrname];
 					}
-
 					if (jQuery.Autocompleter !== undefined) {
 						$(data.fake_input).autocomplete(settings.autocomplete_url, settings.autocomplete);
 						$(data.fake_input).bind('result', data, function(event, data, formatted) {
@@ -299,8 +298,6 @@
 							return false;
 						});
 					}
-
-
 				} else {
 					// if a user tabs out of the field, create a new tag
 					// this is only available if autocomplete is not used.
@@ -318,8 +315,8 @@
 						}
 						return false;
 					});
-
 				}
+
 				// if user types a default delimiter like comma,semicolon and then create a new tag
 				$(data.fake_input).bind('keypress', data, function(event) {
 					if (_checkDelimiter(event)) {
@@ -333,9 +330,9 @@
 						return false;
 					} else if (event.data.autosize) {
 						$(event.data.fake_input).doAutosize(settings);
-
 					}
 				});
+
 				//Delete last tag on backspace
 				data.removeWithBackspace && $(data.fake_input).bind('keydown', function(event) {
 					if (event.keyCode == 8 && $(this).val() === '') {

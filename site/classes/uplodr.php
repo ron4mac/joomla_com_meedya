@@ -130,7 +130,7 @@ class Up_Load
 	private function processChunk ()
 	{
 		$this->ckid = $this->pvals->get('ident');
-		$this->tmpath = sys_get_temp_dir() . '/';
+		$this->tmpath = JPATH_SITE . '/tmp/';	//sys_get_temp_dir() . '/';
 		$this->ckpath = $this->tmpath . $this->ckid;
 		switch ($this->pvals->get('chunkact')) {
 			case 'pref':

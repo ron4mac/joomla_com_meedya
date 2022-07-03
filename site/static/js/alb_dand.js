@@ -3,9 +3,12 @@
 * @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
 */
+/* globals Meedya,Joomla,My_bb */
+'use strict';
 
 // Need to have a separate Drag and Drop arranger for the gallery album hierarchy
-Meedya.AArrange = (function (mdya, my) {
+Meedya.AArrange = (function (mdya) {
+
 	let dragSrcEl = null,
 		deTarg = null,
 		iSlctd = null,
@@ -158,4 +161,4 @@ Meedya.AArrange = (function (mdya, my) {
 		},
 		iSelect: iSelect
 	};
-}(Meedya, Joomla.getOptions('Meedya')));
+})(Meedya);

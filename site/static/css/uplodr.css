@@ -42,7 +42,7 @@
 }
 .normpb { background-color:#AAD7FD; }
 .chnkpb { background-color:#D9D2FF; }
-.indeterm { background: #efefef url("indtrm.gif") repeat-x top; }
+.indeterm { background: #efefef url(css/indtrm.gif) repeat-x top; }
 .pbfinf {
 	padding: 3px 4px;
 	position:relative;

@@ -4,9 +4,9 @@
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
 */
 /* globals Joomla,My_bb */
-'use strict';
 
 (function(Meedya, my, w) {
+	'use strict';
 
 	// establish some common variables
 	const formTokn = Joomla.getOptions('csrf.token');
@@ -292,10 +292,11 @@
 
 // iZoom action to expand individual item
 (function (mdya) {
+	'use strict';
 	let back, area;
 
 	let close = (e) => {
-		e && Meedya._pd(e);
+		e && mdya._pd(e);
 		document.body.removeChild(back);
 	};
 
@@ -322,13 +323,12 @@
 		back.className = 'zoom-back';
 		back.appendChild(area);
 		document.body.appendChild(back);
-		Meedya._ae(area, 'keypress', keyed);
-		Meedya._ae(area, 'keydown', keyed);
+		mdya._ae(area, 'keypress', keyed);
+		mdya._ae(area, 'keydown', keyed);
 		area.focus();
-		Meedya._ae(back, 'click', close);
+		mdya._ae(back, 'click', close);
 	};
 
 	mdya.Zoom = {open: open, close: close};
 
 })(Meedya);
-

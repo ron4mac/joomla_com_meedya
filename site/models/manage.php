@@ -141,7 +141,7 @@ class MeedyaModelManage extends MeedyaModelMeedya
 	{
 		$db = $this->getDbo();
 		$flds = $db->quoteName(['file','mtype','ownid','title','kywrd','album','fsize','tsize','expodt']);
-		$vals = $db->quote([$fnam, $mtype, $this->ownid, $ittl, $itgs, $albm, (int)$fsize, (int)$tsize, $xpdt]);
+		$vals = $db->quote([$fnam, $mtype, $this->ownid, $ittl, $itgs, $albm, (int)$fsize, (int)$tsize, $xpdt], false);
 		if (count($vals) < 7) $vals[] = 'NULL';
 		$db->transactionStart();
 		$db->setQuery('INSERT INTO `meedyaitems` ('.implode(',', $flds).') VALUES ('.implode(',', $vals).')');

@@ -22,7 +22,9 @@ $h5opts = [
 	'dropMessage' => 'Please drop files here to upload<br>(or click to select)',
 	'failcss' => 'alert-danger',
 	'concurrent' => 4,
-	'maxchunksize' => MeedyaHelper::phpMaxUp() - 262144,
+	'maxfilesize' => $this->maxUploadFS,
+	'maxchunksize' => MeedyaHelper::phpMaxUp() - 32768,
+	'fdonetarget' => 'quotaBar',	// element to receive event with server response for each uploaded file
 	'timestamp' => $this->dbTime
 ];
 $this->jDoc->addScriptOptions('H5uOpts', $h5opts);
@@ -74,17 +76,17 @@ if ($this->uplodr == 'UL')
 		}
 	}
 	function showError (msg, file) {
-		$id("errmsgs").style.display = "block";
+		Meedya._id("errmsgs").style.display = "block";
 		var div = document.createElement("div");
 		div.innerHTML = "<span class=\"errmsg\">"+msg+"</span> : <span>"+file+"</span>";
-		$id("errmsgs").appendChild(div);
+		Meedya._id("errmsgs").appendChild(div);
 	}
 ';
 
 $this->jDoc->addScriptDeclaration($script);
 
 $this->btmscript[] = 'Meedya._ae("newalbdlg", "shown.bs.modal", () => Meedya._id("nualbnam").focus() );';
-
+$this->btmscript[] = 'Meedya._ae("quotaBar", "mdya.totp", (evt) => Meedya.itmUpldRslt(evt.detail));';
 
 Text::script('COM_MEEDYA_Q_STOPPED');
 
@@ -111,7 +113,12 @@ if ($quota) {
 ?>
 <?php if ($quota): ?>
 <style>
-#quotaBar { width: 400px; border: 1px solid #BBB; border-radius: 4px; }
+#quotaBar {
+	width: 400px;
+	border: 1px solid #BBB;
+	border-radius: 4px;
+	margin-bottom: 1rem;
+}
 #qBar {
 	background-color: <?=$bcolr?>;
 	/*height: 20px;*/
@@ -143,22 +150,22 @@ if ($quota) {
 	</div>
 </div>
 <?php endif; ?>
-<h4><?=Text::_('COM_MEEDYA_QUOTA_VALUE')?> <?=MeedyaHelper::formatBytes($quota)?></h4>
+<?php
+if (RJC_DBUG) {
+	$ipp = MeedyaHelper::getImgProc('images/powered_by.png');
+	echo "<p>{$ipp->ipp} image processor<br>{$this->phpupld} PHP max upload</p>";
+}
+?>
+<h6><?=Text::_('COM_MEEDYA_QUOTA_VALUE')?> <?=MeedyaHelper::formatBytes($quota)?></h6>
 <div id="quotaBar"><div id="qBar"><?=$qper?>%</div></div>
 <!-- <p><big>== UPLOADS HERE ==</big></p>
 <p>--@@-- STORAGE QUOTA: <?=MeedyaHelper::formatBytes($quota)?></p>
 <p>--@@-- STORAGE USED: <?=MeedyaHelper::formatBytes($this->totStore)?></p> -->
 <?php if ($this->totStore < $quota): ?>
-<h4><?=Text::_('COM_MEEDYA_MAX_UPLD_SIZE')?> <?=$this->maxupld?></h4>
+<h6><?=Text::_('COM_MEEDYA_MAX_UPLD_SIZE')?> <?=$this->maxupld?></h6>
 <p>
 	<!-- <?php var_dump($this->params); ?> -->
 </p>
-<?php
-if (RJC_DBUG) {
-	$ipp = MeedyaHelper::getImgProc('images/powered_by.png');
-	echo "<p>{$ipp->ipp} image processor</p>";
-}
-?>
 <div class="albctl">
 	<label for="h5u_album"><?=Text::_('COM_MEEDYA_H5U_ALB_SELECT')?></label>
 	<select id="h5u_album" name="h5u_album" onchange="Meedya.album_select(this)">

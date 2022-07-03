@@ -48,6 +48,8 @@ function editImg (iid) {
 .js-stools-container-list {display:inline-flex;}
 .mitem, .litem {width:120px; height:120px;}
 .mitem {/*border:1px dashed transparent;*/}
+.item.orphan {opacity:0.5}
+.item.orphan::after {content:"?";font-size:64px;position:absolute;top:10px;left:44px;color:white;}
 .litem {cursor:pointer;}
 .islct {border-color:blue;}
 /* icons and buttons */

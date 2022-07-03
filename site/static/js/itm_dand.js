@@ -3,6 +3,8 @@
 * @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
 */
+/* globals Meedya*/
+'use strict';
 
 Meedya.Arrange = (function (mdya) {
 	let dragSrcEl = null,
@@ -74,11 +76,11 @@ Meedya.Arrange = (function (mdya) {
 	};
 
 	let handleDrop = (e) => {
-		Meedya._pd(e);
+		mdya._pd(e);
 		let dtarg = e.target.parentElement.parentElement;
 		// Don't do anything if dropping the same item we're dragging.
 		if (dragSrcEl != dtarg) {
-			let area = Meedya._id(ctnr);
+			let area = mdya._id(ctnr);
 			let orf = area.removeChild(dragSrcEl);
 			area.insertBefore(orf, dtarg);
 			mdya.dirtyThumbs(true);
@@ -89,7 +91,7 @@ Meedya.Arrange = (function (mdya) {
 	let handleDragEnter = (e) => {
 			e.dataTransfer.dropEffect = 'move';
 		if (dropable(e)) {
-			Meedya._pd(e);
+			mdya._pd(e);
 			e.target.classList.add('over');
 			return false;
 		}
@@ -98,7 +100,7 @@ Meedya.Arrange = (function (mdya) {
 	let handleDragOver = (e) => {
 			e.dataTransfer.dropEffect = 'move';
 		if (dropable(e)) {
-			Meedya._pd(e);
+			mdya._pd(e);
 			e.dataTransfer.dropEffect = 'move';
 			return false;
 		}
@@ -117,14 +119,14 @@ Meedya.Arrange = (function (mdya) {
 			items = document.querySelectorAll('#'+iCtnr+' img');
 			[].forEach.call(items, (itm) => {
 			//		itm.setAttribute('draggable', 'true');
-					Meedya._ae(itm, 'drag', handleDrag);
-					Meedya._ae(itm, 'dragstart', handleDragStart);
-					Meedya._ae(itm, 'dragenter', handleDragEnter);
-					Meedya._ae(itm, 'dragover', handleDragOver);
-					Meedya._ae(itm, 'dragleave', handleDragLeave);
-					Meedya._ae(itm, 'drop', handleDrop);
-					Meedya._ae(itm, 'dragend', handleDragEnd);
-					Meedya._ae(itm, 'touchmove', tMove);
+					mdya._ae(itm, 'drag', handleDrag);
+					mdya._ae(itm, 'dragstart', handleDragStart);
+					mdya._ae(itm, 'dragenter', handleDragEnter);
+					mdya._ae(itm, 'dragover', handleDragOver);
+					mdya._ae(itm, 'dragleave', handleDragLeave);
+					mdya._ae(itm, 'drop', handleDrop);
+					mdya._ae(itm, 'dragend', handleDragEnd);
+					mdya._ae(itm, 'touchmove', tMove);
 				});
 		},
 		iord: () => {
@@ -138,4 +140,4 @@ Meedya.Arrange = (function (mdya) {
 			return imord.join("|");
 		}
 	};
-}(Meedya));
+})(Meedya);

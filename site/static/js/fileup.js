@@ -3,12 +3,13 @@
 * @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
 */
+/* globals Joomla */
 'use strict';
 
 (function(Meedya) {
 
 	Meedya.album_select = (elm) => {
-		console.log(elm.value);
+		//console.log(elm.value);
 		let asel = elm.options[elm.selectedIndex].value;
 		if (asel==-1) {
 			elm.value = '';
@@ -17,7 +18,7 @@
 			return;
 		}
 		Meedya._id('dzupui').style.display = asel<1 ? 'none' : 'block';
-	}
+	};
 
 	Meedya.createAlbum = (elm) => {
 		elm.disabled = true;
@@ -39,7 +40,7 @@
 			Meedya.album_select(sela);
 			elm.disabled = false;
 		});
-	}
+	};
 
 	Meedya.updStorBar = (elm, val) => {
 		elm.style.width = val + '%';
@@ -49,6 +50,16 @@
 		} else if (val > 80) {
 			elm.style.backgroundColor = '#fff888';
 		}
-	}
+	};
+
+	Meedya.itmUpldRslt = (rslt) => {
+		let r = JSON.parse(rslt);
+		if (r.qp) {
+			Meedya.updStorBar(Meedya._id('qBar'), r.qp);
+		}
+		if (r.smsg) {
+			console.warn(r.smsg);
+		}
+	};
 
 })(window.Meedya = window.Meedya || {});

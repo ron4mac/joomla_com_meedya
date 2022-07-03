@@ -3,20 +3,18 @@
 * @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
 */
+/* globals Joomla */
 /* uplodr v0.9 */
 'use strict';
-/* a couple of utility functions to avoid using jquery and assist in minification */
-// getElementById
-function $id (id) {
-	return document.getElementById(id);
-}
-// addEventListener
-function $ae (elem, evnt, func) {
-	elem.addEventListener(evnt, func, false);
-}
 
 /* encapsulate the entire upload engine in a function */
-(function (w, FLDS, CFG) {
+(function (w, CFG) {
+
+	// a couple of utility functions to assist in minification
+	/** @noinline */
+	const _id = (id) => document.getElementById(id);
+	/** @noinline */
+	const _ae = (elem, evnt, func) => elem.addEventListener(evnt, func, false);
 
 	const defaults = {
 			lodrdiv: 'uplodr',
@@ -32,11 +30,11 @@ function $ae (elem, evnt, func) {
 			doneFunc: (good,bad) => {}
 		};
 
-	var opts = Object.assign({}, defaults, CFG),
+	let opts = Object.assign({}, defaults, CFG),
 		totProgressBar,
 		progressDiv,
 		qCountSpan,
-
+		fdonetarget,
 		upQueue = [],
 		maxXfer = opts.concurrent,
 		aft = opts.allowed_file_types,
@@ -119,7 +117,7 @@ function $ae (elem, evnt, func) {
 		if (upQueue.length > maxXfer) e_st.disabled = false;
 	};
 
-	let _endUp = () => {	console.log("ENDUP");
+	let _endUp = () => {	//console.log("ENDUP");
 		if (!qStopt || !upQueue.length) {
 			allDone = 1;
 			if (typeof(opts.doneFunc) == 'function') {
@@ -189,12 +187,12 @@ function $ae (elem, evnt, func) {
 		if (adsz < 0) return;
 		totalDone += adsz;
 		let wp = 100 * totalDone / total2do;
-		totProgressBar.style.width = wp + "%";
+		totProgressBar.style.width = wp + '%';
 	};
 
 	let addData = (frmd, data) => {
 		for (let key in data) {
-			frmd.append(key, data[key]);
+			frmd.set(key, data[key]);
 		}
 	};
 
@@ -203,23 +201,27 @@ function $ae (elem, evnt, func) {
 		let $ = this;
 		$.upFile = file;
 		$.fn = file.fileName || file.name;
-		$.size = file.fileSize || file.size;
+		$.size = file.fileSize || file.size;	//console.log('FSize '+$.size);
 		$.fType = file.fileType || file.type;
 		$.date = file.lastModified;
 		$.upState = '';
 		$.doChnk = ($.size > maxcnksz);
-		$.chnkSize = Math.round(maxcnksz / 2) - 3072;
+		$.chnkSize = maxcnksz;		//Math.round(maxcnksz / 2);
 		$.relPath = file.webkitRelativePath || $.fn;
-		$.uniqueId = $.size + '-' + Math.random().toString().replace("0.", "");
+		$.uniqueId = $.size + '-' + Math.random().toString().replace('0.', '');
 		$.actSize = $.startByte = $.lastsz = $.chnkNum = 0;
-		$.numChnks = Math.max(Math.floor($.size / $.chnkSize), 1);
+		$.numChnks = Math.ceil($.size / $.chnkSize);		//Math.max(Math.floor($.size / $.chnkSize), 1);
 		$.fData = $.pBar = null;
 		$.palod = opts.payload();
-		$.upForm = {};	// extra data can be added
+		$.upForm = {task: 'manage.upfile', [Joomla.getOptions('csrf.token')]: 1};	// extra data can be added
 		$.X = new XMLHttpRequest();
 
 		const endup = (all) => {
 			if ($.X) {
+				if (all) {
+					let tpce = new CustomEvent('mdya.totp',{detail: $.X.response});
+					fdonetarget.dispatchEvent(tpce);
+				}
 				$.X.upload.onprogress = null;
 				$.X.onabort = null;
 				$.X.onerror = null;
@@ -245,7 +247,7 @@ function $ae (elem, evnt, func) {
 			switch ($.upState) {
 				case '':
 					addData($.fData, {type: $.fType, size: $.size, lastMod: $.date});
-					$.fData.append('Filedata', $.upFile);
+					$.fData.set('Filedata', $.upFile);
 					$.upState = 'upld';
 					break;
 				case 'upld':
@@ -260,41 +262,42 @@ function $ae (elem, evnt, func) {
 			fDat(false);
 			switch ($.upState) {
 				case '':
-					//console.log('pref',$.fileName);
-					addData($.fData, { chunkact: 'pref', file: $.fileName, type: $.fType, size: $.size, ident: $.uniqueId});
+					//console.log('pref',$.fn);
+					addData($.fData, { chunkact: 'pref', file: $.fn, type: $.fType, size: $.size, ident: $.uniqueId});
 					$.upState = 'chnk';
 					break;
 				case 'chnk':
-					//console.log('chnk',$.chnkNum+1,$.fileName);
-					addData($.fData, { chunkact: 'chnk', ident: $.uniqueId, /*fname: $.fileName,*/ tchnk: $.numChnks });
+					//console.log('chnk',$.chnkNum+1,$.fn);
+					addData($.fData, { chunkact: 'chnk', ident: $.uniqueId, /*fname: $.fn,*/ tchnk: $.numChnks });
 					if ($.chnkNum == $.numChnks) { endup(true); return; }	///////// do stuff here to finish up
 					$.startByte = $.chnkNum * $.chnkSize;
-					$.endByte = Math.min($.size, ($.chnkNum + 1) * $.chnkSize);
-					if ($.size - $.endByte < $.chnkSize) {
+					let endByte = Math.min($.size, $.startByte + $.chnkSize);
+				//	if ($.size - endByte < $.chnkSize) {
 						// The last chunk will be bigger than the chunk size, but less than 2*chunkSize
-						$.endByte = $.size;
-					}
-					$.actSize = $.endByte - $.startByte;
-					$.fData.append('chnkn', ++$.chnkNum);
+				//		endByte = $.size;
+				//	}
+					$.actSize = endByte - $.startByte;		//console.log('CHK '+$.chnkNum+':'+$.actSize);
+					$.fData.set('chnkn', ++$.chnkNum);
 					if ($.chnkNum == $.numChnks) {
-						addData($.fData, { fname: $.fileName, type: $.fType, size: $.size, lastMod: $.date });
+						addData($.fData, { fname: $.fn, type: $.fType, size: $.size, lastMod: $.date });
 						addData($.fData, $.palod);
 					}
-					$.fData.append('Filedata', $.upFile[slfunc]($.startByte, $.endByte));
+					//console.log([...$.fData.entries()]);
+					$.fData.set('Filedata', $.upFile[slfunc]($.startByte, endByte));
 					$.lastsz = 0;
 					break;
 				case 'abrt':
-					//console.log('abrt',$.fileName);
+					//console.log('abrt',$.fn);
 					$.X.timeout = 10000;
 					addData($.fData, { chunkact: 'abrt', ident: $.uniqueId });
 					$.upState = 'nil';
 					break;
 				case 'nil':
-					//console.log('nil ',$.fileName);
+					//console.log('nil ',$.fn);
 					endup();
 					return;
 			}
-			//console.log($.chnkNum, $.fileName);
+			//console.log($.chnkNum, $.fn);
 			$.X.open('POST', opts.upURL);
 			$.X.send($.fData);
 		};
@@ -324,7 +327,8 @@ function $ae (elem, evnt, func) {
 				},
 			//upload successful
 			load: (pe) => {
-					console.log("QQQ",pe);
+					//console.log("QQQ",pe);
+					//console.log('cbLoadErt '+pe.target.response);
 					if (pe.target.status >= 400) {
 						if (pe.target.status == 403) _qCtrl.stop();
 						errOut(pe.target.response);
@@ -390,7 +394,8 @@ function $ae (elem, evnt, func) {
 		}
 
 		const hndE = (e) => {
-			console.log(`${e.type}: ${e.loaded} bytes transferred\n`,e);
+			//console.log(`${e.type}: ${e.loaded} bytes transferred\n`,e);
+			//console.log('hndErt '+e.target.response);
 			switch (e.type) {
 				case 'progress':
 					break;
@@ -415,7 +420,7 @@ function $ae (elem, evnt, func) {
 		$.X.addEventListener('loadstart', hndE);
 	//	$.X.addEventListener('load', hndE);
 	//	$.X.addEventListener('loadend', hndE);
-		$.X.addEventListener('progress', hndE);
+//		$.X.addEventListener('progress', hndE);
 		$.X.addEventListener('error', hndE);
 		$.X.addEventListener('abort', hndE);
 
@@ -437,14 +442,14 @@ function $ae (elem, evnt, func) {
 
 	let _setup = (h5uo) => {
 		opts = Object.assign({}, opts, h5uo);
-		let updiv = $id(opts.lodrdiv);
+		let updiv = _id(opts.lodrdiv);
 		if (w.File && w.FileList) {
 			// create UI
 			updiv.appendChild(CreateElement(
 				'div',
-				'<input type="file" name="userpictures" id="file_field" multiple="multiple" accept="image/*,video/*" style="display:none">'
+				'<input type="file" name="userpictures" id="file_field" multiple="multiple" accept="image/*,video/*" style="display:none" />'
 				+ '<div class="drpmsg">'+opts.dropMessage+'</div>',
-				{id:'dropArea', onclick:"$id('file_field').click();"}
+				{id:'dropArea', onclick:"this.firstElementChild.click();"}
 				)
 			);
 	
@@ -465,28 +470,31 @@ function $ae (elem, evnt, func) {
 				+'<div id="server_response"></div>';
 			updiv.appendChild(CreateElement('div', uprg, {id:'progress_report', style:'position:relative'}));
 
-			qCountSpan = $id('qcount');
-			e_st = $id('qstop');
-			e_rs = $id('qresume');
-			e_cn = $id('qcancel');
+			qCountSpan = _id('qcount');
+			e_st = _id('qstop');
+			e_rs = _id('qresume');
+			e_cn = _id('qcancel');
+
+			// get element to receive server response event data for each file
+			fdonetarget = _id(opts.fdonetarget);
 
 			// file select
-			$ae($id('file_field'), 'change', FileSelectHandler);
+			_ae(_id('file_field'), 'change', FileSelectHandler);
 
 			// is XHR2 available?
 			let xhr = new XMLHttpRequest();
 			if (xhr.upload) {
 
 				// file drop
-				let filedrag = $id('dropArea');
-				$ae(filedrag, 'dragover', FileDragHover);
-				$ae(filedrag, 'dragleave', FileDragHover);
-				$ae(filedrag, 'drop', FileSelectHandler);
+				let filedrag = _id('dropArea');
+				_ae(filedrag, 'dragover', FileDragHover);
+				_ae(filedrag, 'dragleave', FileDragHover);
+				_ae(filedrag, 'drop', FileSelectHandler);
 				filedrag.style.display = 'block';
 
 				// progress display area
-				totProgressBar = $id('progress_report_bar');
-				progressDiv = $id('fprogress');
+				totProgressBar = _id('progress_report_bar');
+				progressDiv = _id('fprogress');
 			}
 			xhr = null;
 
@@ -505,5 +513,4 @@ function $ae (elem, evnt, func) {
 	w.fupQadd2 = FileSelectHandler;
 
 
-})(window, [], Joomla.getOptions('H5uOpts'));
-
+})(window, Joomla.getOptions('H5uOpts'));

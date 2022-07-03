@@ -78,13 +78,6 @@ $pubdis = $this->album['pub'] && $this->album['pub']!=$this->album['aid'] ? ' di
 	<input type="hidden" name="referer" value="<?=base64_encode($this->referer)?>" />
 	<?=HTMLHelper::_('form.token')?>
 </form>
-
-<?php if ($this->params->def('show_page_heading', 1)) : ?>
-<h1>
-	<?php echo $this->escape($this->params->get('page_heading')); ?>
-</h1>
-<?php endif; ?>
-
 <button type="button" class="<?=M34C::btn('ps')?>" onclick="Meedya.saveAlbum()"><?=Text::_('COM_MEEDYA_SAVE')?></button>
 <button type="button" class="<?=M34C::btn('ss')?>" onclick="Meedya.cancelEdt()"><?=Text::_('JCANCEL')?></button>
 

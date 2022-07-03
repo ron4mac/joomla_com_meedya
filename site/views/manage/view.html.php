@@ -119,6 +119,7 @@ class MeedyaViewManage extends MeedyaView
 			//	$this->albums = $this->get('AlbumsList');
 				$this->maxUploadFS = MeedyaHelper::maxUpload($this->mparams->get('maxUpload'));
 				$this->maxupld = MeedyaHelper::formatBytes($this->maxUploadFS);
+				$this->phpupld = MeedyaHelper::formatBytes(JFilesystemHelper::fileUploadMaxSize(false));
 			//	$this->dbTime = $this->get('DbTime');
 				$this->items = [];		// keep parent view from loading items
 				break;
