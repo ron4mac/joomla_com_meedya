@@ -67,9 +67,13 @@ if ($this->items) {		//var_dump($this->items);
 		$murl = JUri::root(true).'/'.$this->gallpath.($mTyp=='image' ? '/med/' : '/img/').$file['file'];
 		$fileentry = [
 			'src' => $murl,
-			'opts' => ['caption' => $txtinfo],
 			'type' => $mTyp
 			];
+		if (defined('MYG_FB4') && $txtinfo) {
+			$fileentry['caption'] = $txtinfo;
+		} else {
+			$fileentry['opts'] = ['caption' => $txtinfo];
+		}
 		$filelist[] = $fileentry;
 	}
 }

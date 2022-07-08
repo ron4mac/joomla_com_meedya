@@ -111,7 +111,7 @@ class MeedyaModelPublic extends JModelList
 		//$this->curAlbID = $this->getState('album.id') ? : 0;
 		$this->getAlbum();
 	//	if (RJC_DBUG) MeedyaHelper::log('ModelMeedya getAlbumItems', debug_backtrace(2));
-		$this->_itms = explode('|', $this->_album->items);
+		$this->_itms = explode('|', $this->_album->items?:'');
 		$this->_total = count($this->_itms);
 		$aid = $this->getState('album.id') ? : 0;
 		$limit = $this->state->get('list.limit'.$aid, null);

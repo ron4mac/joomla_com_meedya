@@ -39,7 +39,7 @@ class MeedyaModelAlbum extends MeedyaModelMeedya
 	{
 		$this->getAlbum();
 		if (!trim($this->_album->items ?: '')) return [];
-		$this->_itms = explode('|', $this->_album->items);
+		$this->_itms = explode('|', $this->_album->items?:'');
 		$this->_total = count($this->_itms);
 		$aid = $this->getState('album.id') ? : 0;
 		$limit = $this->state->get('list.limit'.$aid);
