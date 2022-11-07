@@ -16,6 +16,7 @@ class MeedyaModelManage extends MeedyaModelMeedya
 	protected $album = null;
 	protected $ownid;
 
+
 	public function __construct ($config = [])
 	{
 		// set filter fields for Search Tools purposes
@@ -30,6 +31,7 @@ class MeedyaModelManage extends MeedyaModelMeedya
 		parent::__construct($config);
 		$this->ownid = Factory::getUser()->get('id');
 	}
+
 
 	public function updateConfig ($type, $vals)
 	{
@@ -47,6 +49,7 @@ class MeedyaModelManage extends MeedyaModelMeedya
 		$db->execute();
 	}
 
+
 	public function getDbTime ()
 	{
 		$db = $this->getDbo();
@@ -54,6 +57,7 @@ class MeedyaModelManage extends MeedyaModelMeedya
 		$r = $db->loadResult();
 		return $r;
 	}
+
 
 	public function getAlbum ($aid=0)
 	{
@@ -70,6 +74,28 @@ class MeedyaModelManage extends MeedyaModelMeedya
 		return $alb;
 	}
 
+
+	public function getAlbumTitle ($aid=0)
+	{
+		if ($aid==0) return '???';
+		$db = $this->getDbo();
+		$db->setQuery('SELECT `title` FROM `albums` WHERE `aid`='.$aid);
+		$ttl = $db->loadResult();
+		return $ttl;
+	}
+
+
+	public function getAlbumTitles ($aids='')
+	{
+		if ($aids=='') return '???';
+		$alst = explode('|', trim($aids,'|'));
+		$db = $this->getDbo();
+		$db->setQuery('SELECT `title` FROM `albums` WHERE `aid` IN ('.implode(',',$alst).')');
+		$ttls = $db->loadColumn();
+		return implode('<br>', array_values($ttls));
+	}
+
+
 	public function setAlbumPaid ($aid, $paid)
 	{
 		$hord = $paid ? $this->getParentNextHord($paid) : $aid;
@@ -78,6 +104,7 @@ class MeedyaModelManage extends MeedyaModelMeedya
 		$db->execute();
 	}
 
+
 	public function getAllAlbums ()
 	{
 		$db = $this->getDbo();
@@ -85,6 +112,7 @@ class MeedyaModelManage extends MeedyaModelMeedya
 		$albs = $db->loadAssocList();
 		return $albs;
 	}
+
 
 /*	public function removeItems ($aid, $list)
 	{
@@ -96,6 +124,7 @@ class MeedyaModelManage extends MeedyaModelMeedya
 		$this->updateAlbum(['items'=>$items]);
 	}
 */
+
 	public function addItems2Album ($items, $album, $pot=false)
 	{
 		if (RJC_DBUG) MeedyaHelper::log('addItems', ['album'=>$album,'items'=>$items]);
@@ -104,9 +133,8 @@ class MeedyaModelManage extends MeedyaModelMeedya
 		$db->setQuery('SELECT `items` FROM `albums` WHERE `aid`='.$album);
 		$r = $db->loadResult();
 		if ($r!==false || is_null($r)) {
-			$cur = $r ? explode('|', $r) : [];
-			$diff = array_diff($items, $cur);
-			$items = array_merge($cur, $diff);
+			$cur = $r ? explode('|', trim($r,'|')) : [];
+			$items = array_unique(array_merge($cur, $items));
 			$q = 'UPDATE `albums` SET `items`=\''.implode('|',$items).'\' WHERE `aid`='.$album;
 			$db->setQuery($q);
 			$db->execute();
@@ -117,9 +145,29 @@ class MeedyaModelManage extends MeedyaModelMeedya
 			$album = $db->insertid();
 		}
 		$db->transactionCommit($pot);
+		// now mark all items as being referenced by the album
 		$this->addAlbum2Items($album, $items, $pot);
 	}
 
+
+	// moves items from one album to another
+	public function movItems2Album ($items, $from, $album, $pot=false)
+	{
+		if (RJC_DBUG) MeedyaHelper::log('movItems', ['from'=>$from,'toalb'=>$album,'items'=>$items]);
+
+		// add (merge) items to the target album
+		$this->addItems2Album($items, $album);
+
+		// remove the items from the source album
+		$this->removeAlbumItems($from, $items);
+
+		// update each item for which albums it is in
+		// i.e. remove the 'from' album from its list 
+		$this->removeItemAlbums($items, $from);
+	}
+
+
+	// sets 1 or more items as being contained in 1 or more albums
 	public function addAlbum2Items ($album, $items, $pot=false)
 	{
 		if (!is_array($album)) $album = [$album];
@@ -128,8 +176,8 @@ class MeedyaModelManage extends MeedyaModelMeedya
 		$db->setQuery('SELECT `id`,`album` FROM `meedyaitems` WHERE `id` IN ('.implode(',',$items).')');
 		$itms = $db->loadAssocList();
 		foreach ($itms as $itm) {
-			$cur = explode('|',$itm['album']);
-			$albs = $this->uniqVals(array_merge($cur, $album));
+			$cur = empty($itm['album']) ? null : explode('|',trim($itm['album'],'|'));
+			$albs = empty($cur) ? $album : array_unique(array_merge($cur, $album));
 			$q = 'UPDATE `meedyaitems` SET `album`=\''.implode('|',$albs).'\' WHERE `id`='.$itm['id'];
 			$db->setQuery($q);
 			$db->execute();
@@ -137,6 +185,45 @@ class MeedyaModelManage extends MeedyaModelMeedya
 		$db->transactionCommit($pot);
 	}
 
+
+	// dis-associate an item from 1 or more albums
+	// remove the album(s) from the item's album list
+	public function removeItemAlbums ($items, $albums, $pot=false)
+	{
+		if (!is_array($albums)) $albums = [$albums];
+		$db = $this->getDbo();
+		$db->transactionStart($pot);
+		$db->setQuery('SELECT `id`,`album` FROM `meedyaitems` WHERE `id` IN ('.implode(',',$items).')');
+		$itms = $db->loadAssocList();
+		foreach ($itms as $itm) {
+			$cur = explode('|',trim($itm['album'],'|'));
+			$albs = array_unique(array_diff($cur, $albums));
+			$q = 'UPDATE `meedyaitems` SET `album`=\''.implode('|',$albs).'\' WHERE `id`='.$itm['id'];
+			$db->setQuery($q);
+			$db->execute();
+		}
+		$db->transactionCommit($pot);
+	}
+
+
+	// remove items from an album's list of items
+	public function removeAlbumItems ($album, $items, $pot=false)
+	{
+		if (!is_array($items)) $items = [$items];
+		$db = $this->getDbo();
+		$db->transactionStart($pot);
+		$db->setQuery('SELECT `items` FROM `albums` WHERE `aid`='.$album);
+		$r = $db->loadResult();
+		$cur = explode('|',trim($r,'|'));
+		$upd = array_unique(array_diff($cur, $items));
+		$q = 'UPDATE `albums` SET `items`=\''.implode('|',$upd).'\' WHERE `aid`='.$album;
+		$db->setQuery($q);
+		$db->execute();
+		$db->transactionCommit($pot);
+	}
+
+
+	// add an item to the gallery
 	public function addItem ($fnam, $mtype, $ittl, $itgs, $albm, $fsize, $tsize, $xpdt)
 	{
 		$db = $this->getDbo();
@@ -149,7 +236,8 @@ class MeedyaModelManage extends MeedyaModelMeedya
 		try {
 			$db->execute();
 			$iid = $db->insertid();
-			$this->addItems2Album((array)$iid, $albm, true);
+			// and add the item to the album's list of items
+			$this->addItems2Album([$iid], $albm, true);
 		} catch (RuntimeException $e) {
 			if (RJC_DBUG) MeedyaHelper::log('addItem error: '.$e->getMessage());
 			JError::raiseError(500, $e->getMessage());
@@ -157,6 +245,8 @@ class MeedyaModelManage extends MeedyaModelMeedya
 		$db->transactionCommit();
 	}
 
+
+	// add an album to the gallery heirarchy
 	public function addAlbum ($anam, $parid=0, $desc='')
 	{
 		$db = $this->getDbo();
@@ -176,6 +266,8 @@ class MeedyaModelManage extends MeedyaModelMeedya
 		return $rowid;
 	}
 
+
+	// get the datbase entry for a specific item
 	public function getItem ($iid)
 	{
 		$db = $this->getDbo();
@@ -184,6 +276,8 @@ class MeedyaModelManage extends MeedyaModelMeedya
 		return $r;
 	}
 
+
+	// get either a list of items or items that were added after a certain time
 	public function getImages ($parm)
 	{
 		if (is_array($parm)) {
@@ -197,6 +291,8 @@ class MeedyaModelManage extends MeedyaModelMeedya
 		return $itms;
 	}
 
+
+	// update an item with specified field values
 	public function updImage ($iid, $vals)
 	{
 		$db = $this->getDbo();
@@ -208,6 +304,8 @@ class MeedyaModelManage extends MeedyaModelMeedya
 		$db->execute();
 	}
 
+
+	// set the thumbnail (override) for an item
 	public function setItemThumb ($iid, $fn)
 	{
 		$db = $this->getDbo();
@@ -215,6 +313,8 @@ class MeedyaModelManage extends MeedyaModelMeedya
 		$db->execute();
 	}
 
+
+	// receive a file from upload and store it appropriately
 	public function storeFile ($name, $post, $uplodr_obj)
 	{
 		$alb = $post->get('album', 0);
@@ -246,10 +346,13 @@ class MeedyaModelManage extends MeedyaModelMeedya
 
 		$ittl = null;
 		$itgs = $post->getString('kywrd', null);
+		// now add it to the database
 		$this->processFile($ffpnam, $base_name.$uniq.$ext, $alb, $ittl, $itgs, $keep);
 		return (int)($this->getStorageTotal() / $quota * 100);
 	}
 
+
+	// process a new file into the database
 	public function processFile ($fpath, $fname, $alb, $ittl, $itgs=null, $keep=false)
 	{
 		$mtype = '';
@@ -296,6 +399,8 @@ class MeedyaModelManage extends MeedyaModelMeedya
 		if (!$keep) @unlink($fpath);
 	}
 
+
+	// get the amount of storage being used for the gallery
 	public function getStorageTotal ()
 	{
 		$db = $this->getDbo();
@@ -304,6 +409,7 @@ class MeedyaModelManage extends MeedyaModelMeedya
 		$r = $db->loadResult();
 		return (is_null($r) ? 0 : $r) + filesize(MeedyaHelper::userDataPath().'/meedya.db3');
 	}
+
 
 	// remove items from storage and from the Database
 	// $itms - array of item id numbers
@@ -326,6 +432,7 @@ class MeedyaModelManage extends MeedyaModelMeedya
 		$db->execute();
 	}
 
+
 	// remove albums from the Database
 	// $albs - array of album id numbers
 	// $wipe - also remove all items in the album
@@ -336,13 +443,14 @@ class MeedyaModelManage extends MeedyaModelMeedya
 			foreach ($albs as $alb) {
 				$db->setQuery('SELECT `items` FROM `albums` WHERE `aid`='.$alb);
 				$r = $db->loadResult();
-				$itms = $r ? explode('|',$r) : [];
+				$itms = $r ? explode('|',trim($r,'|')) : [];
 				$this->deleteItems($itms, $alb);
 			}
 		}
 		$db->setQuery('DELETE FROM `albums` WHERE `aid` IN ('.implode(',',$albs).')');
 		$db->execute();
 	}
+
 
 	// remove an item from albums that reference it (because it is being deleted)
 	// $itm - item id
@@ -351,13 +459,13 @@ class MeedyaModelManage extends MeedyaModelMeedya
 	private function removeItemFromAlbums ($itm, $astr, $igna)
 	{
 		$db = $this->getDbo();
-		$albs = explode('|',$astr);
+		$albs = explode('|',trim($astr,'|'));
 		foreach ($albs as $alb) {
 			if ($alb == $igna) continue;
 			$db->setQuery('SELECT `items`,`thumb` FROM `albums` WHERE `aid`='.$alb);
 			$r = $db->loadAssoc();
 			if (!$r) continue;
-			$itms = explode('|',$r['items']);
+			$itms = explode('|',trim($r['items'],'|'));
 			$itms = array_diff($itms, [$itm]);
 			$istr = implode('|',$itms);
 			if ($r['thumb'] == $itm) $r['thumb'] = 0;
@@ -372,6 +480,7 @@ class MeedyaModelManage extends MeedyaModelMeedya
 		}
 	}
 
+
 	public function saveAlbum ($aid, $flds)
 	{	//echo'<xmp>';var_dump($aid, $flds);echo'</xmp>';jexit();
 		if (is_null($this->album) || $this->album['aid']!=$aid) $this->album = $this->getAlbum($aid);
@@ -379,12 +488,13 @@ class MeedyaModelManage extends MeedyaModelMeedya
 	// @@need to remove album id from removed items
 	//	echo'<xmp>';var_dump($this->album['items'], $flds['items']);echo'</xmp>';jexit();
 // @@@@@@@@@@ use a different method to determine what to remove rather than a dangerous diff of items
-		$rmvd = array_diff(explode('|', $this->album['items']), explode('|', $flds['items']));
+		$rmvd = array_diff(explode('|', $this->album['items']?:''), explode('|', $flds['items']?:''));
 		foreach ($rmvd as $itm) {
 			$this->removeItemAlbum($itm, $aid);
 		}
 		$this->updateAlbum($flds);
 	}
+
 
 	private function updateAlbum ($fields)
 	{
@@ -401,15 +511,17 @@ class MeedyaModelManage extends MeedyaModelMeedya
 		$db->execute();
 	}
 
+
 	private function removeItemAlbum ($itm, $alb)
 	{
 		$db = $this->getDbo();
 		$db->setQuery('SELECT `album` FROM `meedyaitems` WHERE `id`='.$itm);
-		$albs = explode('|', $db->loadResult());
+		$albs = explode('|', trim($db->loadResult(),'|'));
 		$albs = array_diff($albs, [$alb]);
 		$db->setQuery('UPDATE `meedyaitems` SET `album`=\''.implode('|', $albs).'\' WHERE `id`=' . $itm);
 		$db->execute();
 	}
+
 
 	private function getParentNextHord ($parid)
 	{
@@ -428,6 +540,7 @@ class MeedyaModelManage extends MeedyaModelMeedya
 		}
 		return $phord . '.' . $v;
 	}
+
 
 	protected function populateState ($ordering = null, $direction = 'ASC')
 	{	//echo'####POPSTATE####';
@@ -462,6 +575,7 @@ class MeedyaModelManage extends MeedyaModelMeedya
 		parent::populateState($ordering, $direction);
 	}
 
+
 	protected function getListQuery ()
 	{
 		if ($this->state->get('album.id', 0) || $this->filterFormName == 'filter_images') {
@@ -484,6 +598,7 @@ class MeedyaModelManage extends MeedyaModelMeedya
 		return $query;
 	}
 
+
 	protected function __getListQuery ()
 	{
 		$db = $this->getDbo();
@@ -504,6 +619,7 @@ class MeedyaModelManage extends MeedyaModelMeedya
 		return $query;
 	}
 
+
 	private function albumsListQuery ()
 	{
 		$db = $this->getDbo();
@@ -513,6 +629,7 @@ class MeedyaModelManage extends MeedyaModelMeedya
 		if (RJC_DBUG) MeedyaHelper::log('ModelManage getListQuery(albums)', (string)$query);
 		return $query;
 	}
+
 
 	private function itemsListQuery ()
 	{
@@ -565,13 +682,15 @@ class MeedyaModelManage extends MeedyaModelMeedya
 		return $query;
 	}
 
-	private function uniqVals (array $ary)
-	{
-		$vals = []; 
-		foreach ($ary as $k=>$v) {    
-			$vals[$v] = true; 
-		} 
-		return array_keys($vals); 
-	}
+
+	// ensure an array's values are all unique 
+//	private function uniqVals (array $ary)
+//	{
+//		$vals = []; 
+//		foreach ($ary as $k=>$v) {    
+//			$vals[$v] = true; 
+//		} 
+//		return array_keys($vals); 
+//	}
 
 }

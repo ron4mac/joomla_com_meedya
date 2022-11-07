@@ -13,6 +13,7 @@ class MeedyaModelMeedya extends JModelList
 	protected $curAlbID = 0;
 	protected $_album = null;
 
+
 	public function __construct ($config = [])
 	{
 		$dbFile = '/meedya.db3';
@@ -48,6 +49,7 @@ class MeedyaModelMeedya extends JModelList
 		}
 		parent::__construct($config);
 	}
+
 
 /* * * * sqlite extension functions * * * */
 	// a kluge to order albums so that sub-albums are listed just below their parents
@@ -85,6 +87,7 @@ class MeedyaModelMeedya extends JModelList
 //		return $form;
 //	}
 
+
 	public function getAlbumItems ()
 	{
 		$this->curAlbID = $this->getState('album.id') ? : 0;
@@ -101,6 +104,7 @@ class MeedyaModelMeedya extends JModelList
 		}
 	}
 
+
 	public function getCfg ($which)
 	{
 		$db = $this->getDbo();
@@ -108,6 +112,7 @@ class MeedyaModelMeedya extends JModelList
 		$r = $db->loadResult();
 		return json_decode($r?:'{}', true);
 	}
+
 
 	public function getItemThumbFile ($iid)
 	{
@@ -118,6 +123,7 @@ class MeedyaModelMeedya extends JModelList
 		return $r['thumb'] ?: $r['file'];
 	}
 
+
 	public function getItemThumbFilePlus ($iid)
 	{
 		$db = $this->getDbo();
@@ -127,6 +133,7 @@ class MeedyaModelMeedya extends JModelList
 		return [$thm, $r['title'], $r['desc'], $r['mtype']];
 	}
 
+
 	public function getAlbumsList ()
 	{
 		$db = $this->getDbo();
@@ -135,6 +142,7 @@ class MeedyaModelMeedya extends JModelList
 		//var_dump($r);
 		return $r;
 	}
+
 
 	// returns an array of aid=>title to the specified album
 	public function getAlbumPath ($to)
@@ -149,6 +157,7 @@ class MeedyaModelMeedya extends JModelList
 		}
 		return $albs;
 	}
+
 
 	protected function getListQuery ()
 	{
@@ -165,6 +174,7 @@ class MeedyaModelMeedya extends JModelList
 		return $query;
 	}
 
+
 /*	public function getAlbum ($aid=0)
 	{
 		if ($this->_album) return $this->_album;
@@ -175,6 +185,7 @@ class MeedyaModelMeedya extends JModelList
 		return $this->_album;
 	}*/
 
+
 	public function getItemFile ($iid)
 	{
 		if (!$iid) return false;
@@ -184,6 +195,7 @@ class MeedyaModelMeedya extends JModelList
 		//var_dump($r);
 		return $r;
 	}
+
 
 //	protected function populateState ($ordering = null, $direction = null)
 //	{

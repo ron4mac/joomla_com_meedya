@@ -36,6 +36,6 @@ CREATE TABLE `albums` (
 CREATE TABLE `config` (
 	`type` TEXT NOT NULL,
 	`vals` TEXT);
-CREATE TABLE `uratings` (`iid` INTEGER,`uid` INTEGER,`rdate` DATETIME DEFAULT CURRENT_TIMESTAMP);
-CREATE TABLE `gratings` (`iid` INTEGER,`ip` INTEGER,`rdate` DATETIME DEFAULT CURRENT_TIMESTAMP);
+CREATE TABLE `uratings` (`iid` INTEGER,`uid` INTEGER,`rdate` INTEGER);
+CREATE TABLE `gratings` (`iid` INTEGER,`ip` INTEGER,`rdate` INTEGER);
 CREATE TABLE `comments` (`iid` INTEGER,`uid` INTEGER,'ctime' INTEGER,`cmnt` TEXT);

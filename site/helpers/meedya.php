@@ -285,8 +285,8 @@ abstract class MeedyaHelper
 		if ($data) {
 			$msg = '';
 			if (!is_array($data)) $data = [$data];
-			foreach ($data as $dat) {
-				$msg .= print_r($dat, true);
+			foreach ($data as $wh=>$dat) {
+				$msg .= "\n".$wh.': '.print_r($dat, true);
 			}
 			JLog::add($msg, JLog::DEBUG, 'com_meedya');
 		}
