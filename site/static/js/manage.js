@@ -104,6 +104,7 @@
 							pnode.removeChild(items[i].parentNode);
 						}
 						thmsDirty = true;
+						Meedya.albdirt();
 					}
 				}
 			});
@@ -129,12 +130,64 @@
 		}
 	};
 
+	Meedya.moveSelected = (e) => {
+		Meedya._pd(e);
+		const dodlg = () => {
+			postAction('manage.getAlbumSelect',
+				{exc: document.albForm.aid.value},
+				(data) => { document.querySelector("#mov2albdlg .modal-body").innerHTML = data },
+				false,
+				() => openMdl('mov2albdlg'));
+		}
+		if (_hasSelections("input[name='slctimg[]']:checked",true)) {
+			if (Meedya.albdirty) {
+				My_bb.confirm({
+					message: Meedya._T('COM_MEEDYA_LOSE_CHANGE'),
+					size: '',
+					buttons: {
+						confirm: { label: Meedya._T('JOK'), className: 'btn-warning' },
+						cancel: { label: Meedya._T('JCANCEL') }
+					},
+					callback: (c) => {
+						if (c) {
+							dodlg();
+						}
+					}
+				});
+			} else {
+				dodlg();
+			}
+		}
+	};
+
 	Meedya.addSelected = (e) => {
 		Meedya._pd(e);
 		if (_hasSelections("input[name='slctimg[]']:checked",true)) {
 			openMdl('add2albdlg');
 		}
 	};
+
+	Meedya.selectedAction = (e, wch) => {
+		switch (wch) {
+			case 'edts':
+				Meedya.editSelected(e);
+				break;
+			case 'movs':
+				Meedya.moveSelected(e);
+				break;
+			case 'adds':
+				Meedya.addSelected(e);
+				break;
+			case 'rems':
+				Meedya.removeSelected(e);
+				break;
+			case 'dels':
+				Meedya.deleteSelected(e);
+				break;
+			default:
+			//	$html[] = 'NOACTION';
+		}
+	}
 
 	Meedya.albAction = (e) => {
 		let elm = e.target;		//console.log(elm);
@@ -204,6 +257,18 @@
 		document.adminForm.nualbpar.value = Meedya._id('h5u_palbum').value;
 		document.adminForm.nualbdesc.value = Meedya._id('albdesc').value;
 		document.adminForm.task.value = 'manage.addItemsToAlbum';
+		document.adminForm.submit();
+	};
+
+	// move items into a different album
+	Meedya.movItems2Album = (elm) => {
+		elm.disabled = true;
+		document.adminForm.fromalb.value = document.albForm.aid.value;
+		document.adminForm.albumid.value = Meedya._id('h5u_album').value;
+		document.adminForm.nualbnam.value = Meedya._id('nualbnam').value;
+		document.adminForm.nualbpar.value = Meedya._id('h5u_palbum').value;
+		document.adminForm.nualbdesc.value = Meedya._id('albdesc').value;
+		document.adminForm.task.value = 'manage.movItemsToAlbum';
 		document.adminForm.submit();
 	};
 
@@ -285,7 +350,10 @@
 	};
 
 	let thmsDirty = false;
-	Meedya.dirtyThumbs = (v) => {thmsDirty = v};
+	Meedya.dirtyThumbs = (v) => {
+		thmsDirty = v;
+		if (v) Meedya.albdirt();
+		};
 
 })(window.Meedya = window.Meedya || {}, Joomla.getOptions('Meedya'), window);
 
@@ -330,5 +398,49 @@
 	};
 
 	mdya.Zoom = {open: open, close: close};
+
+})(Meedya);
+
+
+// itmInfo action to get relevent item info/data
+(function (mdya) {
+	'use strict';
+	let back, area;
+
+	let close = (e) => {
+		e && mdya._pd(e);
+		document.body.removeChild(back);
+	};
+
+	let keyed = (e) => {
+		let kcc = e.type == 'keydown' ? e.keyCode : e.charCode;
+		switch (kcc) {
+			case 32:
+			case 13:
+			case 27:
+				close(e);
+				break;
+			default:
+				break;
+		}
+	};
+
+	let open = (pID, elm) => {
+		if (elm) mdya.thmelmsrc = elm.parentElement.previousElementSibling.firstElementChild;
+		area = document.createElement('div');
+		mdya.postAction('manage.getItemInfo', {iid: pID}, (data) => { area.innerHTML = data });
+		area.className = 'info-area';
+		area.tabIndex = "-1";
+		back = document.createElement('div');
+		back.className = 'zoom-back';
+		back.appendChild(area);
+		document.body.appendChild(back);
+		mdya._ae(area, 'keypress', keyed);
+		mdya._ae(area, 'keydown', keyed);
+		area.focus();
+		mdya._ae(back, 'click', close);
+	};
+
+	mdya.itmInfo = {open: open, close: close};
 
 })(Meedya);

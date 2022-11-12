@@ -190,6 +190,31 @@ class MeedyaControllerManage extends JControllerLegacy
 	}
 
 
+	public function movItemsToAlbum ()
+	{
+		if (!$this->tokenCheck()) return;
+
+		$this->setRedirect($_SERVER['HTTP_REFERER']);
+
+		$itms = $this->input->post->get('slctimg',[],'array');
+		if (!$itms) return;
+
+		$m = $this->getModel('manage');
+
+		$from = $this->input->post->get('fromalb',0,'int');
+		$aid = $this->input->post->get('albumid',0,'int');
+		if ($aid == 0) return;
+		if ($aid < 0) {
+			$albttl = $this->input->post->get('nualbnam','New Album','string');
+			$albpar = $this->input->post->get('nualbpar',0,'int');
+			$albdesc = $this->input->post->get('nualbdesc','','string');
+			$aid = $m->addAlbum($albttl, $albpar, $albdesc);
+		}
+		$m->movItems2Album($itms, $from, $aid);
+		$this->_nqMsg('Items moved to album "'.$m->getAlbumTitle($aid).'"', 'success');
+	}
+
+
 	public function imgsAddAlbum ()
 	{
 		$this->setRedirect($_SERVER['HTTP_REFERER']);

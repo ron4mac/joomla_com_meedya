@@ -12,9 +12,11 @@ use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Session\Session;
 use Joomla\CMS\Layout\LayoutHelper;
 
+HTMLHelper::_('jquery.framework');
+
 //HTMLHelper::_('bootstrap.framework');
 //HTMLHelper::_('behavior.multiselect');
-HTMLHelper::_('formbehavior.chosen', 'select');
+//HTMLHelper::_('formbehavior.chosen', 'select');
 //HTMLHelper::_('bootstrap.tooltip');
 
 //MeedyaHelper::addStyle(['gallery','manage',['vendor/tags/'=>'jquery.tagsinput']]);
@@ -88,7 +90,9 @@ function editImg (iid) {
 			}
 		?>
 		<div class="actbuts">
-			<?php echo HTMLHelper::_('meedya.actionButtons', ['sela','seln','edts','adds','dels']); ?>
+			<?php //echo HTMLHelper::_('meedya.actionButtons', ['sela','seln','edts','adds','dels']); ?>
+			<?php echo HTMLHelper::_('meedya.actionButtons', ['sela','seln']); ?>
+			<?php echo HTMLHelper::_('meedya.actionSelect', ['edts','adds','dels']); ?>
 		</div>
 		<?php endif; ?>
 		<?php echo $this->loadTemplate($this->mode == 'G' ? 'grid' : 'list'); ?>

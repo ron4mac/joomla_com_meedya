@@ -106,16 +106,20 @@ EOD;
 		return $html;
 	}
 
-	public static function albumsHierOptions ($albs, $sel=0)
+	public static function albumsHierOptions ($albs, $sel=0, $exc=[])
 	{
 		$html='';
 		usort($albs, function ($a, $b) { return strnatcmp($a->hord,$b->hord); });
+		if (!is_array($exc)) $exc = [$exc];
 		foreach ($albs as $alb) {
 			$d = count(explode('.',$alb->hord));
 		//	$pfx = str_repeat('&nbsp;&nbsp;',$d-1).($d>1?'&#x251c;&#x2500; ':'');
 		//	$pfx = str_repeat('&nbsp;&nbsp;', max($d-2, 0)).($d>1?'&#x251c; ':'');
 			$pfx = str_repeat('&nbsp;&nbsp;', max($d-2, 0)).($d>1?'&#x21B3; ':'');
-			$html .= '<option value="'.$alb->aid.'"'.($alb->aid==$sel ? ' selected' : '').'>'.$pfx.$alb->title.'</option>';
+			$html .= '<option value="'.$alb->aid.'"'
+				.($alb->aid==$sel ? ' selected' : '')
+				.(in_array($alb->aid, $exc) ? ' disabled' : '')
+				.'>'.$pfx.$alb->title.'</option>';
 		}
 		return $html;
 	}
@@ -144,6 +148,9 @@ EOD;
 			case 'edts':
 				$html[] = '<button class="'.$b.'" onclick="Meedya.editSelected(event)">'.'<i class="icon-pencil"></i> '.Text::_('COM_MEEDYA_MANAGE_EDIT_ITEMS').'</button>';
 				break;
+			case 'movs':
+				$html[] = '<button class="'.$b.'" onclick="Meedya.moveSelected(event)">'.'<i class="icon-move"></i> '.Text::_('COM_MEEDYA_MANAGE_MOVE_ITEMS').'</button>';
+				break;
 			case 'adds':
 				$html[] = '<button class="'.$b.'" onclick="return Meedya.addSelected(event);">'.'<i class="icon-plus-circle"></i> '.Text::_('COM_MEEDYA_MANAGE_ADD2ALBUM').'</button>';
 				break;
@@ -158,6 +165,38 @@ EOD;
 			}
 		}
 		return implode("\n\t",$html);
+	}
+
+	public static function actionSelect ($acts)
+	{
+		$html = ['<option value="">'.Text::_('COM_MEEDYA_MANAGE_WITH_SELECTED').'</option>'];
+		$b = M34C::btn('ss');
+		foreach ($acts as $act) {
+			switch ($act) {
+			case 'edts':
+				$html[] = '<option value="edts">'.Text::_('COM_MEEDYA_MANAGE_EDIT_ITEMS').'</option>';
+				break;
+			case 'movs':
+				$html[] = '<option value="movs">'.Text::_('COM_MEEDYA_MANAGE_MOVE_ITEMS').'</option>';
+			//	$html[] = '<button class="'.$b.'" onclick="Meedya.moveSelected(event)">'.'<i class="icon-move"></i> '.Text::_('COM_MEEDYA_MANAGE_MOVE_ITEMS').'</button>';
+				break;
+			case 'adds':
+				$html[] = '<option value="adds">'.Text::_('COM_MEEDYA_MANAGE_ADD2ALBUM').'</option>';
+			//	$html[] = '<button class="'.$b.'" onclick="return Meedya.addSelected(event);">'.'<i class="icon-plus-circle"></i> '.Text::_('COM_MEEDYA_MANAGE_ADD2ALBUM').'</button>';
+				break;
+			case 'rems':
+				$html[] = '<option value="rems">'.Text::_('COM_MEEDYA_MANAGE_REMOVE').'</option>';
+			//	$html[] = '<button class="'.$b.'" onclick="Meedya.removeSelected(event)">'.'<i class="icon-minus-circle"></i> '.Text::_('COM_MEEDYA_MANAGE_REMOVE').'</button>';
+				break;
+			case 'dels':
+				$html[] = '<option value="dels">'.Text::_('COM_MEEDYA_MANAGE_TOTAL_DEL').'</option>';
+			//	$html[] = '<button class="'.$b.'" onclick="Meedya.deleteSelected(event)">'.'<i class="icon-minus-circle"></i> '.Text::_('COM_MEEDYA_MANAGE_TOTAL_DEL').'</button>';
+				break;
+			default:
+			//	$html[] = 'NOACTION';
+			}
+		}
+		return '<select class="form-select form-select-sm actPicker" onchange="Meedya.selectedAction(event,this.value);this.value=\'\'">' . implode('', $html) . '</select>';
 	}
 
 	public static function imageThumbElement ($item, $edt=false, $iclss='item')
@@ -177,11 +216,11 @@ EOD;
 		$mvicon = '';
 		if ($edt) {
 			$acts = '<i class="icon-expand" onclick="Meedya.Zoom.open('.$id.',this)"></i>
-				<i class="icon-info-2 pull-left"></i>
-				<i class="icon-edit pull-right" onclick="editImg('.$id.')"></i>';
+				<i class="icon-info-2 pull-left" onclick="Meedya.itmInfo.open('.$id.',this)"></i>';
+			//	<i class="icon-edit pull-right" onclick="editImg('.$id.')"></i>';
 			$mvicon = '<div class="itmMove" onclick="Meedya.moveItem(event,this)"><i class="icon-move"></i></div>';
 		} else {
-			$acts = '<i class="icon-info-2 pull-left"></i>
+			$acts = '<i class="icon-info-2 pull-left" onclick="Meedya.itmInfo.open('.$id.',this)"></i>
 				<i class="icon-expand pull-right" onclick="Meedya.Zoom.open('.$id.',this)"></i>';
 		}
 

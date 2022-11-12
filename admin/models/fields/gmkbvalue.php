@@ -46,7 +46,7 @@ class JFormFieldGmkbValue extends JFormField
 		$html[] = '<span class="input-gmkb'.($this->value ? '' : ' hidden').'">';
 		$html[] = '<input type="number" step="1" min="1" class="gkmb-num" id="' . $this->id . '_name" value="' . $uplsiz .'" onchange="GMKBff.sVal(this.parentNode)" onkeyup="GMKBff.sVal(this.parentNode)" style="width:4em;text-align:right" />';
 		$html[] = '<select id="' . $this->id . '_gmkb" class="gkmb-sel" onchange="GMKBff.sVal(this.parentNode)" style="width:5em">';
-		$html[] = '<option value="1024"'.($uplsizm==0?' selected="selected"':'').'>kB</option>';
+		$html[] = '<option value="1024"'.($uplsizm==0?' selected="selected"':'').'>KB</option>';
 		$html[] = '<option value="1048576"'.($uplsizm==1?' selected="selected"':'').'>MB</option>';
 		$html[] = '<option value="1073741824"'.($uplsizm==2?' selected="selected"':'').'>GB</option>';
 		$html[] = '</select>';

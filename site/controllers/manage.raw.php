@@ -10,6 +10,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Session\Session;
+use Joomla\CMS\Layout\LayoutHelper;
 
 JLoader::register('JHtmlMeedya', JPATH_COMPONENT . '/helpers/html/meedya.php');
 
@@ -92,6 +93,45 @@ class MeedyaControllerManage extends JControllerLegacy
 		$m->setAlbumPaid($aid, $paid);
 	}
 
+	// get a select element to choose an album
+	public function getAlbumSelect ()
+	{
+		$xc = $this->input->post->get('exc', '', 'anum');
+		$exca = explode(',', $xc);
+		$m = $this->getModel('manage');
+		echo LayoutHelper::render('addtoalbum', ['albs'=>$m->getAlbumsList(), 'exca'=>$exca], JPATH_ROOT.'/components/com_meedya/layouts');
+		return;
+
+		$anp = $this->input->post->get('anp','a','word');
+		switch ($anp) {
+			case 'a':
+				$lbl = 'COM_MEEDYA_ALBUM';
+				$zo = '';
+				break;
+			case 'n':
+				break;
+			case 'p':
+				$lbl = 'COM_MEEDYA_ALBUM_PARENT';
+				$zo = '<option value="0">' . Text::_('COM_MEEDYA_H5U_NONE') . '</option>';
+				break;
+		}
+		$m = $this->getModel('manage');
+		$albs = $m->getAlbumsList();
+		$body = '<div class="nualbtop">
+		<dl>
+		<dt><label for="h5u_palbum">' . Text::_($lbl) . '</label></dt>
+		<dd>
+			<select class="form-select form-select-sm" id="h5u_palbum" name="h5u_palbum">
+				<!-- <option value="">' . Text::_('COM_MEEDYA_H5U_SELPAR') . '</option> -->
+				' .$zo.'
+				' . HTMLHelper::_('meedya.albumsHierOptions', $albs) . '
+			</select>
+		</dd>
+		</dl>
+		</div>';
+		echo $body;
+	}
+
 	public function impstps ()
 	{
 		$fld = $this->input->get('fld','','STRING');
@@ -148,6 +188,42 @@ class MeedyaControllerManage extends JControllerLegacy
 				echo '<div style="color:white">UNSUPPORTED FILE TYPE #'.$item['mtype'].'# '.$item['file'].'</div>';
 		}
 		echo '</div>';
+	}
+
+	public function getItemInfo ()
+	{
+		$iid = $this->input->post->getInt('iid', 0);
+		if (!$iid) return;
+		$url = $this->gallPath;
+		$m = $this->getModel('manage');
+		$item = $m->getItem($iid);
+		$mime = explode('/',$item['mtype']);
+		echo '<div class="info-ctnr"><div class="info-closex" onclick="Meedya.itmInfo.close(event)">X</div><dl>';
+		switch ($mime[0]) {
+			case 'image':
+				echo '<dt>TITLE</dt><dd>'.$item['title'].'</dd>';
+				echo '<dt>DESCRIPTION</dt><dd>'.$item['desc'].'</dd>';
+				echo '<dt>KEYWORDS</dt><dd>'.$item['kywrd'].'</dd>';
+				echo '<dt>FILENAME</dt><dd>'.$item['file'].'</dd>';
+				echo '<dt>MIMETYPE</dt><dd>'.$item['mtype'].'</dd>';
+				echo '<dt>STORAGE</dt><dd>'. MeedyaHelper::formatBytes($item['tsize']).'</dd>';
+				echo '<dt>UPLOAD</dt><dd>'.$item['timed'].'</dd>';
+				echo '<dt>EXPOSURE</dt><dd>'.$item['expodt'].'</dd>';
+				echo '<dt>ALBUMS</dt><dd>'.$m->getAlbumTitles($item['album']).'</dd>';
+				echo '<dt>COMMENTS</dt><dd>'.$item['cmntcnt'].'</dd>';
+				echo '<dt>GALLEREY_ID</dt><dd>'.$item['id'].'</dd>';
+			//	echo'<xmp>';print_r($item);echo'</xmp>';
+				break;
+			case 'video':
+				//return '<video class="zoom-zvid" autoplay><source src="'.$url.'" type="'.$ftyp['mime'].'"></video>';
+				echo '<div><button class="btn btn-sm btn-secondary" onclick="Meedya.setVideoThumb(event,'.$iid.')">'.Text::_('COM_MEEDYA_SETVIDTHM').'</button></div>';
+				echo '<div class="zoom-vid"><video class="zoom-zvid" id="zoom-zvid" controls autoplay><source src="'.$url.'/img/'.$item['file'].'"></video></div>';
+				echo '<div style="display:none"><canvas id="my-video-canvas"></canvas><img id="my-vidover" src="components/com_meedya/static/img/vidovero.png" /></div>';
+				break;
+			default:
+				echo '<div style="color:white">UNSUPPORTED FILE TYPE #'.$item['mtype'].'# '.$item['file'].'</div>';
+		}
+		echo '</dl></div>';
 	}
 
 	public function setVideoThumb ()
