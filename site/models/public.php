@@ -16,7 +16,7 @@ class MeedyaModelPublic extends JModelList
 
 	public function __construct ($config = [])
 	{
-		$dbFile = '/meedya.db3';
+	//	$dbFile = '/meedya.db3';
 		$result = Factory::getApplication()->triggerEvent('onRjuserDatapath');
 		$sdp = isset($result[0]) ? trim($result[0]) : 'userstor';
 		$this->scanForDbs($sdp);

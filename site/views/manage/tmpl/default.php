@@ -8,6 +8,7 @@ defined('_JEXEC') or die;
 
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Filesystem\Folder;
 use Joomla\CMS\Layout\LayoutHelper;
 
 Text::script('COM_MEEDYA_MOVE_FAIL');
@@ -57,7 +58,7 @@ $this->btmscript[] = 'Meedya._ae("newalbdlg", "shown.bs.modal", () => Meedya._id
 $this->btmscript[] = 'Meedya._ae("newalbdlg", "show.bs.modal", () => { Meedya._id("h5u_palbum").value = Meedya.AArrange.selalb(); });';
 
 
-$hasImport = JFolder::exists($this->gallpath.'/import');
+$hasImport = Folder::exists($this->gallpath.'/import');
 ?>
 <style>
 /*.modal-body {

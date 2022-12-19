@@ -62,4 +62,29 @@
 		}
 	};
 
+	Meedya.uploadComplete = (okcnt, errcnt) => {
+		let msg = 'There were $ files successfully uploaded and $ errors.$ Edit info for the uploaded files?';
+		let mps = msg.split('$');
+		if (okcnt) mps[2] += mps[3];
+		if (!okcnt) {
+			My_bb.alert(mps[0]+okcnt+mps[1]+errcnt+mps[2], {
+				size: 'modal-md'
+			});
+			return;
+		}
+		My_bb.confirm({
+			message: mps[0]+okcnt+mps[1]+errcnt+mps[2],
+			size: 'modal-md',
+			buttons: {
+				confirm: { label: Meedya._T('JYES'), className: 'btn-info' },
+				cancel: { label: Meedya._T('JCANCEL') }
+			},
+			callback: (c) => {
+				if (c) {
+					window.location = H5uOpts.siteURL + "&task=manage.imgEdit&after=" + H5uOpts.timestamp;
+				}
+			}
+		});
+	}
+
 })(window.Meedya = window.Meedya || {});

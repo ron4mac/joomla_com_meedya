@@ -8,8 +8,6 @@ defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
 
-require_once __DIR__ . '/meedya.php';
-
 class MeedyaModelManage extends MeedyaModelMeedya
 {
 	//protected $context = 'manage';
@@ -681,16 +679,5 @@ class MeedyaModelManage extends MeedyaModelMeedya
 
 		return $query;
 	}
-
-
-	// ensure an array's values are all unique 
-//	private function uniqVals (array $ary)
-//	{
-//		$vals = []; 
-//		foreach ($ary as $k=>$v) {    
-//			$vals[$v] = true; 
-//		} 
-//		return array_keys($vals); 
-//	}
 
 }

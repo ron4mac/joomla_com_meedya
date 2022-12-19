@@ -9,9 +9,9 @@ defined('_JEXEC') or die;
 require_once JPATH_BASE . '/components/com_meedya/views/meedyaview.php';
 
 /**
- * View class for a list of user schedules.
+ * View class for a list of user galleries.
  */
 class MeedyaViewMeedya extends MeedyaView
 {
-	protected $relm = 'user';
+	protected $relm = 'users';
 }

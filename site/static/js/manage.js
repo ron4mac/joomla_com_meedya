@@ -72,7 +72,7 @@
 		if (_hasSelections("[name='slctimg[]']:checked", true)) {
 			My_bb.confirm({
 				message: Meedya._T('COM_MEEDYA_PERM_DELETE'),
-				size: 'modal-lg',
+				size: 'modal-md',
 				buttons: {
 					confirm: { label: Meedya._T('JACTION_DELETE'), className: 'btn-danger' },
 					cancel: { label: Meedya._T('JCANCEL') }

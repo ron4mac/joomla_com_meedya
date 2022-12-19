@@ -40,6 +40,7 @@
 		aft = opts.allowed_file_types,
 		maxcnksz = opts.maxchunksize,
 		qStopt = false,
+		f2p = 0,
 		inPrg = 0,
 		total2do = 0,
 		totalDone = 0,
@@ -105,7 +106,10 @@
 			files = e.target.files || e.dataTransfer.files;
 		}
 
-		if (allDone) allDone = total2do = totalDone = 0;
+		if (allDone) allDone = f2p = total2do = totalDone = 0;
+
+		// keep a count of files to process
+		f2p += files.length;
 
 		// process all File objects
 		for (i = 0; (f = files[i]); i++) {
@@ -120,7 +124,7 @@
 	let _endUp = () => {	//console.log("ENDUP");
 		if (!qStopt || !upQueue.length) {
 			allDone = 1;
-			if (typeof(opts.doneFunc) == 'function') {
+			if (typeof(opts.doneFunc) == 'function') {	//alert(errCount);
 				let okC = okCount, errC = errCount;
 				setTimeout(() => opts.doneFunc(okC, errC), 1000);
 			}
@@ -129,14 +133,21 @@
 	};
 
 	let NextInQueue = (decr,tag) => {
-		if (decr) {
+		if (decr) {		//console.log(upQueue.length,inPrg);
 			if (tag == 'ufo') okCount++;
-			if (! --inPrg) { _endUp(); }
+//			if (!upQueue.length && !--inPrg) { _endUp(); }
+			if (/*!inPrg && */!--f2p) {
+				_endUp();
+			} else {
+				inPrg--;
+			//	f2p--;
+			}
 		}
 		if (!qStopt && upQueue.length && (!maxXfer || inPrg < maxXfer)) {
 			let nxf = upQueue.shift();
-			let ufo = new UpldFileObj(nxf);			//console.log(ufo);
 			inPrg++;
+			let ufo = new UpldFileObj(nxf);			//console.log(ufo);
+//			inPrg++;
 			qCountSpan.innerHTML = upQueue.length;
 		}
 		if (upQueue.length <= 0) {
@@ -175,7 +186,8 @@
 		$.pb = pbw.appendChild(CreateElement('div', '', {class:sclass}));
 		let pbv = fileObj.fn + '<i class="fa fa-window-close abortX" aria-hidden="true" onclick="this.parentNode.parentNode._ufo.abort(true);"></i>';
 		$.pbi = pbw.appendChild(CreateElement('div', pbv, {class:'pbfinf'}));
-		progressDiv.appendChild(pbw);
+//		progressDiv.appendChild(pbw);
+		progressDiv.prepend(pbw);
 		$.pbw = pbw;
 		$.pbw._ufo = fileObj;
 		$.fObj = fileObj;

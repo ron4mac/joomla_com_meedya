@@ -9,12 +9,15 @@ defined('_JEXEC') or die;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 
-JLoader::register('MeedyaAdminHelper', JPATH_COMPONENT.'/helpers/meedya.php');
-
 // Access check.
 if (!Factory::getUser()->authorise('core.manage', 'com_meedya')) {
-	return JError::raiseWarning(404, Text::_('JERROR_ALERTNOAUTHOR'));
+	return JError::raiseWarning(403, Text::_('JERROR_ALERTNOAUTHOR'));
 }
+
+// register the library for common user storage actions
+JLoader::register('RJUserCom', JPATH_LIBRARIES . '/rjuser/com.php');
+// and a general helper
+JLoader::register('MeedyaAdminHelper', JPATH_COMPONENT.'/helpers/meedya.php');
 
 // Include dependancies
 jimport('joomla.application.component.controller');

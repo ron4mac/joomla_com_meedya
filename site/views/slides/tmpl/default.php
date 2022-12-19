@@ -61,7 +61,7 @@ $dcolors = $H5ss_cfg['dC'];		//explode(',', $H5ss_cfg['dC']);
 	var albumID = '<?=$this->aid?>';
 	var popdwin = <?=$popdwin?'true':'false'?>;
 	var baseUrl = "<?=JUri::root(true).'/'.$this->gallpath?>/med/";
-	var _imgP = "components/com_meedya/static/img/";
+	var _imgP = "<?=JUri::root(true)?>/components/com_meedya/static/img/";
 	var viderror = "COULD NOT PLAY VIDEO";
 	var imagelist = <?=json_encode($filelist)?>;
 	var imgerror = "<?=Text::_('COM_MEEDYA_SS_IMGERROR')?>";

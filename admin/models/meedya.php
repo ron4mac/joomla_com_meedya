@@ -30,8 +30,10 @@ class MeedyaModelMeedya extends JModelList
 		}
 
 		$unotes = [];
-		$folds = MeedyaAdminHelper::getDbPaths($this->relm, 'meedya', true);
+		//$folds = MeedyaAdminHelper::getDbPaths($this->relm, 'meedya', true);
+		$folds = RJUserCom::getDbPaths($this->relm, 'meedya', true);
 		foreach ($folds as $dir => $mgis) foreach ($mgis as $mgi) {
+			$info = MeedyaHelperDb::getInfo($mgi['path']);	//var_dump($info);
 			$dbok = MeedyaHelperDb::checkDbVersion($mgi['path']);
 			$dbwarn = $dbok ? '' : '<span style="color:red"> DB NEEDS UPDATE</span>';
 			$userid = (int)substr($dir,1);
@@ -41,10 +43,10 @@ class MeedyaModelMeedya extends JModelList
 			if ($char1 == '@') {
 				$user = User::getInstance($userid);
 			//	$unotes[] = ['name'=>$user->name,'uname'=>$user->username,'uid'=>$userid,'mnu'=>$mgi['mnu'],'fcount'=>$files];
-				$unotes[] = ['name'=>$user->name,'uname'=>$user->username,'uid'=>$dir,'mnun'=>$mgi['mnun'],'fcount'=>$files,'info'=>$dbwarn];
+				$unotes[] = ['name'=>$user->name,'uname'=>$user->username,'uid'=>$dir,'mnun'=>$mgi['mnun'],'mnut'=>$mgi['mnut'],'fcount'=>$files,'info'=>$info];
 			} else {
 			//	$unotes[] = ['uname'=>MeedyaAdminHelper::getGroupTitle($userid),'name'=>'group','uid'=>$userid,'mnu'=>$mgi['mnu'],'fcount'=>$files];
-				$unotes[] = ['uname'=>MeedyaAdminHelper::getGroupTitle($userid),'name'=>'group','uid'=>$dir,'mnun'=>$mgi['mnun'],'fcount'=>$files,'info'=>$dbwarn];
+				$unotes[] = ['uname'=>MeedyaAdminHelper::getGroupTitle($userid),'name'=>'group','uid'=>$dir,'mnun'=>$mgi['mnun'],'mnut'=>$mgi['mnut'],'fcount'=>$files,'info'=>$info];
 			}
 		}
 		$this->_total = count($unotes);

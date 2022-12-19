@@ -529,7 +529,7 @@ if (LR !== 0) { _titlelm.innerHTML = ''; }
 	const imgError = (e) => {
 		let t = e.target;
 		t.eMsg = '<p class="errMsg">'+imgerror+t.src+'</p>';
-		t.src = 'components/com_meedya/static/css/broken.png';
+		t.src = _imgP+'broken.png';
 	};
 
 	const medError = (e) => {

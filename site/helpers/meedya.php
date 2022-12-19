@@ -10,10 +10,18 @@ use Joomla\CMS\Factory;
 
 abstract class MeedyaHelper
 {
+	protected static $instanceObj = null;
 	protected static $instanceType = null;
 	protected static $ownerID = null;
 	protected static $udp = null;
 	protected static $jdoc = null;
+
+	public static function getInstanceObject ($mid=null)	// SO
+	{
+		if (!empty(self::$instanceObj)) return self::$instanceObj;
+		self::$instanceObj = RJUserCom::getInstObject('instance_type', $mid);
+		return self::$instanceObj;
+	}
 
 	public static function oneScript ($str)
 	{
@@ -117,7 +125,10 @@ abstract class MeedyaHelper
 	public static function userDataPath ($mnuid=0)
 	{
 		if (self::$udp) return self::$udp;
-
+		if (!self::$instanceObj) self::getInstanceObject($mnuid);
+		self::$udp = RJUserCom::getStoragePath(self::$instanceObj);
+		return self::$udp;
+/*
 		$cmp = JApplicationHelper::getComponentName();
 		$result = Factory::getApplication()->triggerEvent('onRjuserDatapath');
 		$sdp = isset($result[0]) ? trim($result[0]) : 'userstor';
@@ -149,6 +160,7 @@ abstract class MeedyaHelper
 
 		self::$udp = $sdp.'/'.$ndir.'/'.$cmp.'_'.$mnuid;
 		return self::$udp;
+*/
 	}
 
 	public static function getUserPermissions ($user, $params)

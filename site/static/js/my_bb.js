@@ -24,6 +24,14 @@
 	const dialog = (wch, cls) => wch.replace('{S}', cls?(' '+cls):'');
 
 	const createDlg = (opts) => {
+		let mdl = Object.assign(document.createElement('div'), {className:'joomla-modal modal fade'});
+		mdl.innerHTML = dialog(amodal, opts.size);
+		document.body.appendChild(mdl);
+		Joomla.initialiseModal(mdl, {isJoomla: true});
+		return mdl;
+	};
+
+	const olDcreateDlg = (opts) => {
 		let mdl = document.createElement('div');
 		mdl.setAttribute('role','dialog');
 		mdl.setAttribute('tabindex','-1');
@@ -71,7 +79,7 @@
 			adlg = createDlg(opts);
 			adlg.addEventListener('shown.bs.modal', (e) => {adlg.querySelector('.btn-primary').focus()});
 		}
-		show(adlg, msg, button(but_can, Meedya._T('JOK'), 'btn-primary'));
+		show(adlg, msg, button(but_can, Meedya._T('JOK'), 'btn-sm btn-primary'));
 	};
 
 	My_bb.confirm = (opts) => {

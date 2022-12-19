@@ -6,11 +6,7 @@
 */
 defined('_JEXEC') or die;
 
-$relmtext = ['COM_MEEDYA_USERNAME','COM_MEEDYA_USERID'];
-
-require JPATH_COMPONENT.'/views/meedyatmpl.php';
-
-/*
+use Joomla\CMS\Router\Route;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
 
@@ -25,7 +21,7 @@ $listOrder	= $this->state('list.ordering');
 $listDirn	= $this->state('list.direction');
 $canDo		= MeedyaAdminHelper::getActions();
 ?>
-<form action="<?php echo JRoute::_('index.php?option=com_meedya&view=meedya'); ?>" method="post" name="adminForm" id="adminForm">
+<form action="<?php echo Route::_('index.php?option=com_meedya&view='.$this->relm); ?>" method="post" name="adminForm" id="adminForm">
 	<div id="j-sidebar-container" class="span2">
 		<?php echo $this->sidebar; ?>
 	</div>
@@ -36,22 +32,16 @@ $canDo		= MeedyaAdminHelper::getActions();
 					<th width="1%"></th>
 					<th width="1%"><?php echo HTMLHelper::_('myGrid.checkall'); ?></th>
 					<th width="15%">
-						<?php echo HTMLHelper::_('grid.sort', 'COM_MEEDYA_USERNAME', 'username', $listDirn, $listOrder); ?>
+						<?php echo HTMLHelper::_('grid.sort', $relmtext[0], 'username', $listDirn, $listOrder); ?>
 					</th>
 					<th width="15%">
-						<?php echo HTMLHelper::_('grid.sort', 'COM_MEEDYA_USERID', 'userid', $listDirn, $listOrder); ?>
-					</th>
-					<th width="15%">
-						<?php echo HTMLHelper::_('grid.sort', 'COM_MEEDYA_FULLNAME', 'fullname', $listDirn, $listOrder); ?>
-					</th>
-					<th width="15%">
-						<?php echo HTMLHelper::_('grid.sort', 'COM_MEEDYA_FCOUNT', 'fcount', $listDirn, $listOrder); ?>
+						<?php echo HTMLHelper::_('grid.sort', $relmtext[1], 'userid', $listDirn, $listOrder); ?>
 					</th>
 					<th width="15%">
 						<?php echo Text::_('COM_MEEDYA_MENUID'); ?>
 					</th>
 					<th width="15%">
-						&#160;
+						<?php echo Text::_('COM_MEEDYA_INST_INFO'); ?>
 					</th>
 				</tr>
 			</thead>
@@ -73,22 +63,16 @@ $canDo		= MeedyaAdminHelper::getActions();
 					</td>
 					<td>
 						<?php echo $item['uname']; ?>
-						<a href="<?php echo JRoute::_('index.php?option=com_meedya&view=events&uid=').$item['uid']; ?>">view</a>
+						<a href="<?php echo Route::_('index.php?option=com_meedya&view=events&uid=').$item['uid']; ?>">view</a>
 					</td>
 					<td>
 						<?php echo $item['uid'] ?>
 					</td>
 					<td>
-						<?php echo $item['name']; ?>
-					</td>
-					<td>
-						<?php echo $item['fcount'] ?>
-					</td>
-					<td>
 						<?php echo $item['mnut'] ?>
 					</td>
 					<td>
-						&#160;
+						<?php echo HTMLHelper::_('myGrid.info', $item['info']); ?>
 					</td>
 				</tr>
 			<?php endforeach; ?>
@@ -103,4 +87,3 @@ $canDo		= MeedyaAdminHelper::getActions();
 		</div>
 	</div>
 </form>
-*/

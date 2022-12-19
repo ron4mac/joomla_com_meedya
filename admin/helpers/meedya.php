@@ -16,32 +16,32 @@ abstract class MeedyaAdminHelper
 	protected static $ownerID = null;
 	protected static $udp = null;
 
-	public static $ssDefault = array(
-			'aA'=>1,	//slideshow action icon at album header
-			'aT'=>1,	//shoehorn in this slideshow action at thumbs page
-			'uA'=>1,	//user allow album settings (and their default)
-			'nW'=>0,	//new (pop) window
-			'pS'=>2,	//picture size (intermediate/full)
-			'tT'=>'d',	//image transition = dissolve
-			'vT'=>1,	//show Title in text area
-			'vD'=>1,	//show Desc in title area
-			'sI'=>0,	//shuffle slides for show
-			'aP'=>1,	//autoplay
-			'lS'=>0,	//loop slideshow
-			'sD'=>5,	//slide duration
-			'dC'=>array('#666','#CCC','rgba(51,51,51,0.5)','#FFF','#000'),	//control background, control text, text background, text text, pic background
-			'iS'=>'cb1' //iconset
-		);
+	public static $ssDefault = [
+			'aA' => 1,	//slideshow action icon at album header
+			'aT' => 1,	//shoehorn in this slideshow action at thumbs page
+			'uA' => 1,	//user allow album settings (and their default)
+			'nW' => 0,	//new (pop) window
+			'pS' => 2,	//picture size (intermediate/full)
+			'tT' => 'd',	//image transition = dissolve
+			'vT' => 1,	//show Title in text area
+			'vD' => 1,	//show Desc in title area
+			'sI' => 0,	//shuffle slides for show
+			'aP' => 1,	//autoplay
+			'lS' => 0,	//loop slideshow
+			'sD' => 5,	//slide duration
+			'dC' => ['#666','#CCC','rgba(51,51,51,0.5)','#FFF','#000'],	//control background, control text, text background, text text, pic background
+			'iS' => 'cb1' //iconset
+		];
 
 	public static function scriptVersion ($scr)
 	{
 		$sfx = JDEBUG ? ('?'.time()) : '';
-		$vray = array(
-			'echo' => array('echo.js', 'echo.min.js'),
-			'slides' => array('slides.js', 'slides.min.js'),
-			'upload' => array('upload.js', 'upload.min.js'),
-			'each' => array('each.js', 'each.js')
-			);
+		$vray = [
+			'echo' => ['echo.js', 'echo.min.js'],
+			'slides' => ['slides.js', 'slides.min.js'],
+			'upload' => ['upload.js', 'upload.min.js'],
+			'each' => ['each.js', 'each.js']
+			];
 		return $vray[$scr][JDEBUG ? 0 : 1].$sfx;
 	}
 
@@ -85,9 +85,10 @@ abstract class MeedyaAdminHelper
 		return self::$udp;
 	}
 
+/*
 	public static function getDbPaths ($which, $dbname, $full=false, $cmp='')
 	{
-		$paths = array();
+		$paths = [];
 		if (!$cmp) $cmp = JApplicationHelper::getComponentName();
 		$cmp_ = $cmp.'_';
 		$cmpl = strlen($cmp_);
@@ -136,22 +137,6 @@ abstract class MeedyaAdminHelper
 							$paths[$file] = ['path'=>$dpath.$file.'/'.$apd.'/'.$dbname.'.sql3','mnun' => $mnu, 'mnut'=>$mnut.' [PLD DB NAME]'];
 						}
 					}
-/*
-					$ptf = $dpath.$file.'/'.$cmp.'/'.$dbname.'.sql3';
-					if (file_exists($ptf))
-						if ($full) {
-							$paths[$file] = $ptf;
-						} else {
-							$paths[] = $file;
-						}
-					$ptf = $dpath.$file.'/'.$cmp.'/'.$dbname.'.db3';
-					if (file_exists($ptf))
-						if ($full) {
-							$paths[$file] = $ptf;
-						} else {
-							$paths[] = $file;
-						}
-*/
 				}
 			}
 			closedir($dh);
@@ -159,6 +144,7 @@ abstract class MeedyaAdminHelper
 	//	var_dump($paths);
 		return $paths;
 	}
+*/
 
 	public static function userAuth ($uid)
 	{
@@ -256,7 +242,7 @@ abstract class MeedyaAdminHelper
 
 	public static function formatBytes ($bytes, $precision=2)
 	{
-		$units = array('B', 'KB', 'MB', 'GB', 'TB');
+		$units = ['B','KB','MB','GB','TB'];
 		$bytes = max($bytes, 0);
 		$pow = floor(($bytes ? log($bytes) : 0) / log(1024));
 		$pow = min($pow, count($units) - 1);

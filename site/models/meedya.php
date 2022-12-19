@@ -8,7 +8,7 @@ defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
 
-class MeedyaModelMeedya extends JModelList
+class MeedyaModelMeedya extends Joomla\CMS\MVC\Model\ListModel
 {
 	protected $curAlbID = 0;
 	protected $_album = null;

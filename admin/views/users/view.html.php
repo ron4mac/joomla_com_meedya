@@ -13,5 +13,5 @@ require_once JPATH_BASE . '/components/com_meedya/views/meedyaview.php';
  */
 class MeedyaViewUsers extends MeedyaView
 {
-	protected $relm = 'user';
+	protected $relm = 'users';
 }

@@ -10,10 +10,6 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\Registry\Registry;
 
-include_once JPATH_COMPONENT.'/views/meedyaview.php';
-
-jimport('joomla.filesystem.folder');
-
 class MeedyaViewManage extends MeedyaView
 {
 	public $aid = 0;

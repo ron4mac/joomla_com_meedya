@@ -8,6 +8,7 @@ defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\HTML\HTMLHelper;
 
 require_once JPATH_BASE . '/components/com_meedya/helpers/meedya.php';
 
@@ -25,8 +26,10 @@ class MeedyaView extends JViewLegacy
 	 */
 	public function display ($tpl = null)
 	{
+		HTMLHelper::stylesheet('administrator/components/com_meedya/static/meedya.css', ['version' => 'auto']);
+
 		$this->items			= $this->get('Items');
-		$this->pagination		= $this->get('Pagination');	echo'@@@@'.($this->pagination?'YES':'NO').'@@@@';	//echo'<xmp>';var_dump($this->pagination);echo'</xmp>';
+		$this->pagination		= $this->get('Pagination');	//echo'@@@@'.($this->pagination?'YES':'NO').'@@@@';	//echo'<xmp>';var_dump($this->pagination);echo'</xmp>';
 		$this->state			= $this->get('State');	//var_dump($this->state);
 		$this->filterForm		= $this->get('FilterForm');
 		$this->activeFilters	= $this->get('ActiveFilters');

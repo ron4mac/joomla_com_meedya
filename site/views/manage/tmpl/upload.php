@@ -34,7 +34,7 @@ HTMLHelper::_('jquery.framework');
 //MeedyaHelper::addStyle(['gallery','manage','uplodr',['vendor/tags/'=>'jquery.tagsinput']]);
 MeedyaHelper::oneStyle('gMUt');
 //MeedyaHelper::addScript(['common','manage','fileup','uplodr',['vendor/tags/'=>'jquery.tagsinput']]);
-MeedyaHelper::oneScript('MuUt');
+MeedyaHelper::oneScript('MuUtb');
 
 $script = '
 var js_vars = {concurrent: 3};
@@ -62,25 +62,8 @@ if ($this->uplodr == 'UL')
 			};
 		},
 		success: function(resp) { updStorBar(sqb, resp.split(\':\')[1]); },
-		doneFunc: uploadDone
+		doneFunc: Meedya.uploadComplete
 	};
-	function uploadDone (okcount, errcnt) {
-		let msg = "There were "+okcount+" files uploaded with "+errcnt+" errors.";
-		if (okcount) {
-			msg += "\nEdit info for the uploaded files?";
-			let redirURL = H5uOpts.siteURL + "&task=manage.imgEdit&after=" + H5uOpts.timestamp;
-			if (confirm(msg)) window.location = redirURL;
-			//Meedya.confirm("confirm-dlg", "Uploaded Files", msg, (y) => {if (y) window.location = redirURL;});
-		} else {
-			alert(msg);
-		}
-	}
-	function showError (msg, file) {
-		Meedya._id("errmsgs").style.display = "block";
-		var div = document.createElement("div");
-		div.innerHTML = "<span class=\"errmsg\">"+msg+"</span> : <span>"+file+"</span>";
-		Meedya._id("errmsgs").appendChild(div);
-	}
 ';
 
 $this->jDoc->addScriptDeclaration($script);

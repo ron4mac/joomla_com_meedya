@@ -9,8 +9,6 @@ defined('_JEXEC') or die;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Router\Route;
 
-include_once JPATH_COMPONENT.'/views/meedyaview.php';
-
 class MeedyaViewSearch extends MeedyaView
 {
 //	protected $user;

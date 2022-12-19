@@ -8,8 +8,6 @@ defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
 
-require_once __DIR__ . '/meedya.php';
-
 class MeedyaModelSearch extends MeedyaModelMeedya
 {
 	protected $_album = null;
@@ -47,18 +45,6 @@ class MeedyaModelSearch extends MeedyaModelMeedya
 		$r = $db->loadResult();
 		return $r;
 	}
-
-/*	public function getItems ()
-	{
-		// Invoke the parent getItems method to get the main list
-		$items = parent::getItems();
-		$this->_album = $items[0];
-		//echo'<xmp>';var_dump($items);echo'</xmp>';jexit();
-		if (!$this->_album->items) return false;
-		$this->_itms = explode('|', $this->_album->items);
-		$this->_total = count($this->_itms);
-		return $this->_itms;
-	}*/
 
 	public function getAlbum ($aid=0)
 	{

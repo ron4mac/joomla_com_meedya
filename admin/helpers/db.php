@@ -10,6 +10,17 @@ use Joomla\CMS\Factory;
 
 abstract class MeedyaHelperDb
 {
+	public static function getInfo ($udbPath)
+	{
+		if (!file_exists($udbPath)) return [];
+		$size = filesize($udbPath);
+		$db = JDatabaseDriver::getInstance(['driver'=>'sqlite', 'database'=>$udbPath]);
+		$items = $db->setQuery('SELECT COUNT(*) FROM meedyaitems')->loadResult();
+		$size += $db->setQuery('SELECT totuse FROM usage')->loadResult();
+		$dbv = $db->setQuery('PRAGMA user_version')->loadResult();
+		return ['size'=>$size,'items'=>$items,'dbv'=>$dbv];
+	}
+
 	public static function checkDbVersion ($udbPath)
 	{
 		$verf = dirname($udbPath).'/.dbver';

@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <config>
 
-	<fieldset name="component" label="COM_MEEDYA_COMPONENT_LABEL" description="COM_MEEDYA_COMPONENT_DESC"
-		addfieldpath="/administrator/components/com_meedya/models/fields">
+	<fieldset name="component" label="COM_MEEDYA_COMPONENT_LABEL" description="COM_MEEDYA_COMPONENT_DESC" addfieldpath="/libraries/rjuser/fields">
 
 		<field
 			name="keep_orig"

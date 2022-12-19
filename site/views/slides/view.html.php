@@ -6,8 +6,6 @@
 */
 defined('_JEXEC') or die;
 
-include_once JPATH_COMPONENT.'/views/meedyaview.php';
-
 class MeedyaViewSlides extends MeedyaView
 {
 	protected $slides = [];

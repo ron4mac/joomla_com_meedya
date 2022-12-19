@@ -22,7 +22,7 @@ JLoader::register('HtmlElementObject', JPATH_COMPONENT . '/classes/HtmlObject.ph
 HTMLHelper::_('bootstrap.dropdown');
 HTMLHelper::_('bootstrap.tooltip', '.hastip', ['placement'=>'bottom']);
 
-class MeedyaView extends JViewLegacy
+class MeedyaView extends Joomla\CMS\MVC\View\HtmlView
 {
 	// some common properites for all views
 	protected $app;

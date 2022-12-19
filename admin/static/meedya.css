@@ -1,0 +1,19 @@
+.MDY-info { line-height: 1rem; margin-bottom: 0; }
+.MDY-info dt, .MDY-info dd {
+/*	display: inline-block;*/
+	margin-right: 0.5rem;
+}
+.MDY-info dt {
+	float: left;
+	clear: left;
+	widthh: 100px;
+	text-alignn: right;
+	font-weight: bold;
+	colorr: green;
+}
+.MDY-info-not dt::after {
+	content: ":";
+}
+.MDY-item .errm {
+	color: red;
+}

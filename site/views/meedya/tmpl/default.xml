@@ -47,7 +47,7 @@
 
 		</fieldset>
 
-		<fieldset name="basic" addfieldpath="/administrator/components/com_meedya/models/fields">
+		<fieldset name="basic" addfieldpath="/libraries/rjuser/fields">
 
 			<field name="maxUpload" type="gmkbvalue"
 				label="COM_MEEDYA_CONFIG_MAXUPLD_LABEL"

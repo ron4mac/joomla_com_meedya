@@ -8,8 +8,6 @@ defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
 
-require_once __DIR__ . '/meedya.php';
-
 class MeedyaModelSocial extends MeedyaModelMeedya
 {
 

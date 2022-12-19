@@ -2,7 +2,7 @@
 <extension type="component" version="3.0" method="upgrade">
 	<name>com_meedya</name>
 	<author>Ron Crans</author>
-	<creationDate>July 2022</creationDate>
+	<creationDate>December 2022</creationDate>
 	<copyright>(C) 2015-2022 RJCreations. All rights reserved.</copyright>
 	<license>GNU General Public License version 3 or later; see LICENSE.txt</license>
 	<authorEmail>ron@rjconline.net</authorEmail>
@@ -34,8 +34,8 @@
 		<menu img="class:meedya">COM_MEEDYA_MENU</menu>
 		<submenu>
 			<!--Note that all & must be escaped to &amp; -->
-			<menu link="option=com_meedya" view="users" img="class:meedya-user" alt="Meedya/Users">Users</menu>
-			<menu link="option=com_meedya" view="groups" img="class:meedya-group" alt="Meedya/Groups">Groups</menu>
+			<menu view="users" img="class:meedya-user" alt="Meedya/Users">Users</menu>
+			<menu view="groups" img="class:meedya-group" alt="Meedya/Groups">Groups</menu>
 		</submenu>
 		<files folder="admin">
 			<filename>access.xml</filename>
@@ -49,6 +49,7 @@
 			<folder>tables</folder>
 			<folder>views</folder>
 			<folder>language</folder>
+			<folder>static</folder>
 			<folder>sql</folder>
 		</files>
 	</administration>

@@ -17,4 +17,24 @@ abstract class JHtmlMyGrid
 		return $html;
 	}
 
+	public static function info ($data)
+	{
+		if (!is_array($data)) return $data;
+		$html = '<dl class="MDY-info">';
+		foreach ($data as $k=>$v) {
+			switch ($k) {
+				case 'size':
+					$html .= '<dt>'.'Storage Use:'.'</dt><dd>'.JHtmlNumber::bytes($v, 'auto', 1).'</dd>';
+					break;
+				case 'items':
+					$html .= '<dt>'.'Items:'.'</dt><dd>'.$v.'</dd>';
+					break;
+				case 'atts':
+					$html .= '<dt>'.'Attachments:'.'</dt><dd>'.$v.'</dd>';
+					break;
+			}
+		}
+		return $html.'</dl>';
+	}
+
 }
