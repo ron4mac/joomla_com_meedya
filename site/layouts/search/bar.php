@@ -1,7 +1,7 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2023 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
 */
 defined('JPATH_BASE') or die;
@@ -10,21 +10,21 @@ use Joomla\Registry\Registry;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 
-$data = $displayData;
+extract($displayData);	//view,options
 
 // Receive overridable options
-$data['options'] = !empty($data['options']) ? $data['options'] : [];
+$options = $options ?? [];
 
-if (is_array($data['options']))
+if (is_array($options))
 {
-	$data['options'] = new Registry($data['options']);
+	$options = new Registry($options);
 }
 
 // Options
-$filterButton = $data['options']->get('filterButton', true);
-$searchButton = $data['options']->get('searchButton', true);
+$filterButton = $options->get('filterButton', true);
+$searchButton = $options->get('searchButton', true);
 
-$filters = $data['view']->filterForm->getGroup('filter');
+$filters = $view->filterForm->getGroup('filter');
 ?>
 
 <?php if (!empty($filters['filter_search'])) : ?>

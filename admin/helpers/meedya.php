@@ -1,7 +1,7 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2023 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
 */
 defined('_JEXEC') or die;
@@ -48,8 +48,8 @@ abstract class MeedyaAdminHelper
 	public static function getStorageBase ()
 	{
 		$result = Factory::getApplication()->triggerEvent('onRjuserDatapath');
-		$sdp = isset($results[0]) ? trim($results[0]) : '';
-		return $sdp ? $sdp : 'userstor';
+		$sdp = trim($results[0] ?? '');
+		return ($sdp ?: 'userstor');
 	}
 
 	public static function getGalStruct ($list)

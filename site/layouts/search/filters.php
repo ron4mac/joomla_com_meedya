@@ -1,17 +1,17 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2023 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
 */
 defined('JPATH_BASE') or die;
 
 use Joomla\CMS\HTML\HTMLHelper;
 
-$data = $displayData;
+extract($displayData);	//view,options
 
 // Load the form filters
-$filters = $data['view']->filterForm->getGroup('filter');
+$filters = $view->filterForm->getGroup('filter');
 ?>
 <?php if ($filters) : ?>
 	<?php foreach ($filters as $fieldName => $field) : ?>

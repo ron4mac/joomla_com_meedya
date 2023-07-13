@@ -1,8 +1,9 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2023 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
+* @since		1.3.2
 */
 defined('_JEXEC') or die;
 
@@ -159,7 +160,7 @@ class ImageProcessor extends ImageProc
 		$osize = filesize(realpath($this->src));
 		$exif = @exif_read_data(realpath($this->src));		//file_put_contents('exif.txt', print_r($exif,true), FILE_APPEND);
 		if (!$exif) return;
-		$ort = isset($exif['Orientation']) ? $exif['Orientation'] : 0;
+		$ort = $exif['Orientation'] ?? 0;
 		switch ($ort) {
 			case 1: // nothing
 				break;

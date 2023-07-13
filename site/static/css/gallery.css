@@ -67,3 +67,16 @@
 	background-color: rgba(0,0,0,.5);
 	color: white;
 }
+.pubfull {
+	position: relative;
+	width: 200px;
+	height: 200px;
+	border: 1px solid #DDD;
+	background-image: url('../static/img/img.png');
+}
+.pubfull div {
+	position: absolute;
+	bottom: 0.25rem;
+	text-align: center;
+	width: 100%;
+}

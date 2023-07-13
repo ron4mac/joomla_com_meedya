@@ -19,6 +19,7 @@
 		curCelm,
 		cDlg,
 		ncDlg,
+		pfDlg,
 		cElm;
 
 	// -------------------------------------------------- private functions
@@ -191,6 +192,38 @@
 		});
 	};
 
+
+	Meedya.submitPlaylist = (elm) => {
+		elm.disabled = true;
+		let fData = new FormData(picframe);
+		fData.append('aid', Meedya.albumID);
+		postAction('picframekey', fData, (data) => {
+//			console.log(data);
+			document.forms.picframe.pfkey.value = data.key;
+			let h1 = 200;
+			let w1 = 460;
+			let h2 = (screen.height-h1)/2;
+			let w2 = (screen.width-w1)/2;
+			let wcon='toolbar=no,status=no,location=no,menubar=no,resizable=0,scrollbars=1,width='+w1+',height='+h1+',left='+w2+',top='+h2;
+			let titl = encodeURI(data.title);
+			let parms = encodeURI(data.key);
+			let pcnt = encodeURI(data.pcnt);
+			let sdly = encodeURI(data.sdly);
+			window.open('http://picframe.local?nplk='+parms+'&nplt='+titl+'&pcnt='+pcnt+'&sdly='+sdly, '', wcon);
+		}, true);
+
+		closMdl(pfDlg);
+	};
+
+	Meedya.doPicframe = () => {
+//		fetch('https://picframe.local', {method:'HEAD'})
+//		.then(resp => { if (!resp.ok) throw new Error(`HTTP ${resp.status}`); return resp.text() })
+//		.then(data => {console.log(data); openMdl(pfDlg);})
+//		.catch(err => alert('Failure: '+err));
+		openMdl(pfDlg);
+	};
+
+
 	// CURRENTLY UNUSED
 //	Meedya.sprintf = (format) => {
 //		for (var i = 1; i < arguments.length; i++) {
@@ -220,6 +253,7 @@
 			// focus on the textarea
 			Meedya._ae(ncDlg, 'shown.bs.modal', (event) => {Meedya._id("cmnt-text").focus();});
 		}
+		pfDlg = _id('picframe-modal');
 	});
 
 })(window.Meedya = window.Meedya || {}, Joomla.getOptions('Meedya'));

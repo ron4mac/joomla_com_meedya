@@ -35,15 +35,9 @@ $this->jDoc->addScriptDeclaration('Meedya.L = '.json_encode($jslang).';
 	foreach ($this->items as $item) {
 		$pgid = basename(dirname($item->path));
 		$pgid .= '|'.substr($item->path, strrpos($item->path, '_'));
-		$pgid .= '|'.$item->aid;
+		$pgid .= '|0';	var_dump($pgid);
 		$pgid = base64_encode($pgid);
-		$thum = $this->getAlbumThumb($item);
-?>
-<a href="<?=Route::_('index.php?option=com_meedya&view=public&layout=album&pgid='.$pgid.'&Itemid='.$this->itemId, false) ?>" class="alb-thumb">
-	<div class="pubalb"><img src="<?=$thum?>" /><span><?= $item->title ?></span></div>
-	<div class="alb-thm-ttl"><?= $item->owner ?></div>
-</a>
-<?php
+		echo '<a href="' . Route::_('index.php?option=com_meedya&view=public&pgid='.$pgid.'&Itemid='.$this->itemId, false) . '" class="alb-thumb"><div class="pubfull"><div>'.$item->owner.'</div></div></a>';
 	}
 ?>
 </div>

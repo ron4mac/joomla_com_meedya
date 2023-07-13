@@ -1,7 +1,7 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2023 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
 */
 defined('_JEXEC') or die;
@@ -11,15 +11,20 @@ use Joomla\CMS\Factory;
 class MeedyaModelPublic extends JModelList
 {
 	protected $pubalbs = [];
+	protected $pubdbs = [];
 	protected $curAlbID = 0;
 	protected $_album = null;
+	protected $sdp = null;		// storage directory path
+	protected $full_gallery;
 
 	public function __construct ($config = [])
 	{
 	//	$dbFile = '/meedya.db3';
-		$result = Factory::getApplication()->triggerEvent('onRjuserDatapath');
-		$sdp = isset($result[0]) ? trim($result[0]) : 'userstor';
-		$this->scanForDbs($sdp);
+		$app = Factory::getApplication();
+		$result = $app->triggerEvent('onRjuserDatapath');
+		$this->sdp = trim($result[0] ?? 'userstor');
+		$this->full_gallery = $app->getParams()->get('full_gallery', 0);
+		$this->scanForDbs($this->sdp);
 	//	var_dump($this->pubalbs);
 		parent::__construct($config);
 	}
@@ -90,17 +95,23 @@ class MeedyaModelPublic extends JModelList
 
 	public function getItems ()
 	{
-		$items = [];
+		if ($this->full_gallery) return $this->pubdbs;
+ 		$items = [];
 		foreach ($this->pubalbs as $k => $padb) {
 			$db = JDatabaseDriver::getInstance(['driver'=>'sqlite','database'=>$padb['path'].'/meedya.db3']);
 			$db->connect();
-			$db->setQuery('SELECT * FROM `albums` WHERE `aid`='.$padb['aid']);
+			if ($this->full_gallery) {
+				$db->setQuery('SELECT * FROM `albums` WHERE `aid`='.$padb['aid'].' AND `hord` IS "1"');
+			} else {
+				$db->setQuery('SELECT * FROM `albums` WHERE `aid`='.$padb['aid']);
+			}
 			$alb = $db->loadObject();
+			$db->disconnect();
+			if (!$alb) continue;
 			$alb->paix = $k;
 			$alb->path = $padb['path'];
 			$alb->owner = $padb['owner'];
 			$items[] = $alb;
-			$db->disconnect();
 		}
 		return $items;
 	}
@@ -169,10 +180,12 @@ class MeedyaModelPublic extends JModelList
 		list($gdir, $gsfx, $to) = explode('|', base64_decode($pgid));
 		$db = $this->getDb();
 		$albs = [];
+		$inpub = false;
 		while ($to) {
-			$db->setQuery('SELECT paid,title FROM albums WHERE aid='.$to);
-			$r = $db->loadAssoc();
-			array_unshift($albs, [$to =>[$r['title'],$pgid]]);
+			$db->setQuery('SELECT paid,visib,title FROM albums WHERE aid='.$to);
+			$r = $db->loadAssoc();	//var_dump($r);echo'<br>';
+			if (!$inpub) array_unshift($albs, [$to =>[$r['title'],$pgid]]);
+			if (!$inpub && $r['visib']) $inpub = true;
 			$to = $r['paid'];
 			$pgid = base64_encode(implode('|',[$gdir,$gsfx,$to]));
 		}
@@ -184,9 +197,7 @@ class MeedyaModelPublic extends JModelList
 	{
 		if ($paix===false) {
 			list($gdir, $gsfx, $gaid) = explode('|', base64_decode($this->getState('pgid')));
-			$result = Factory::getApplication()->triggerEvent('onRjuserDatapath');
-			$sdp = isset($result[0]) ? trim($result[0]) : 'userstor';
-			$path = $sdp.'/'.$gdir.'/com_meedya'.$gsfx;
+			$path = $this->sdp.'/'.$gdir.'/com_meedya'.$gsfx;
 			return $path;
 		} else {
 			return $this->pubalbs[$paix]['path'];
@@ -295,9 +306,7 @@ class MeedyaModelPublic extends JModelList
 	{
 		if ($paix===false) {
 			list($gdir, $gsfx, $gaid) = explode('|', base64_decode($this->getState('pgid')));
-			$result = Factory::getApplication()->triggerEvent('onRjuserDatapath');
-			$sdp = isset($result[0]) ? trim($result[0]) : 'userstor';
-			$path = $sdp.'/'.$gdir.'/com_meedya'.$gsfx;
+			$path = $this->sdp.'/'.$gdir.'/com_meedya'.$gsfx;
 		} else {
 			$path = $this->pubalbs[$paix]['path'];
 		}
@@ -340,8 +349,13 @@ class MeedyaModelPublic extends JModelList
 		$owner = $this->getOwnerName($own);
 		$db = JDatabaseDriver::getInstance(['driver'=>'sqlite','database'=>$path.'/meedya.db3']);
 		$db->connect();
-		$db->setQuery('SELECT aid,ownid FROM `albums` WHERE `visib`>0 ORDER BY `hord`');
+		if ($this->full_gallery) {	echo'FULLFULL';
+			$db->setQuery('SELECT aid,ownid FROM `albums` ORDER BY `hord`');
+		} else {	echo'NOT FULL';
+			$db->setQuery('SELECT aid,ownid FROM `albums` WHERE `visib`>0 ORDER BY `hord`');
+		}
 		$albs = $db->loadAssocList();
+		if ($albs) $this->pubdbs[] = (object)['path'=>$path, 'owner'=>$owner];
 		foreach ($albs as $alb) {
 			$alb['path'] = $path;
 			$alb['owner'] = $owner;

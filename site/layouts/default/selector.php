@@ -7,8 +7,8 @@
 
 defined('JPATH_BASE') or die;
 
-$data = $displayData;
+extract($displayData);	//view,options
 ?>
 <div class="js-stools-field-selector">
-	<?php echo $data['view']->filterForm->getField($data['options']['selectorFieldName'])->input; ?>
+	<?php echo $view->filterForm->getField($options['selectorFieldName'])->input; ?>
 </div>

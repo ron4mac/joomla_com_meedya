@@ -1,16 +1,16 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2023 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
 */
 
 defined('JPATH_BASE') or die;
 
-$data = $displayData;
+extract($displayData);	//view,options
 
 // Load the form list fields
-$list = $data['view']->filterForm->getGroup('list');
+$list = $view->filterForm->getGroup('list');
 ?>
 <?php if ($list) : ?>
 	<div class="ordering-select hidden-phone">

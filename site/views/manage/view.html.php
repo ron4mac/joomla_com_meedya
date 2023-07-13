@@ -1,7 +1,7 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2023 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
 */
 defined('_JEXEC') or die;
@@ -111,7 +111,8 @@ class MeedyaViewManage extends MeedyaView
 //				$this->curalb = 0;
 // @+@+@+@+@+@+@+@+@ get media types from config
 				$this->uplodr = $this->params->get('upload_ap','UL');
-				$this->acptmime = 'accept="image/*,video/*" ';
+				$this->acptmime = $this->params->get('videok', 0) ? 'accept="image/*,video/*" ' : 'accept="image/*" ';
+				$this->mimatch = $this->params->get('videok', 0) ? 'image\/|video\/' : 'image\/';
 			//	$this->albums = $this->get('AlbumsList');
 				$this->maxUploadFS = MeedyaHelper::maxUpload($this->mparams->get('maxUpload'));
 				$this->maxupld = MeedyaHelper::formatBytes($this->maxUploadFS);

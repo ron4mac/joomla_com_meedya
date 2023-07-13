@@ -1,7 +1,7 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2023 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
 */
 defined('_JEXEC') or die;
@@ -12,12 +12,14 @@ use Joomla\CMS\Router\Route;
 class MeedyaViewPublic extends MeedyaView
 {
 	protected $pgid;
+	protected $aid;
+	protected $ownername;
 
 	public function __construct ($config = [])
 	{
 		if (RJC_DBUG) { MeedyaHelper::log('MeedyaViewPublic'); }
-		$this->pgid = Factory::getApplication()->input->get('pgid','','cmd');
 		parent::__construct($config);
+		$this->pgid = $this->app->input->get('pgid','','cmd');
 	}
 
 	function display ($tpl=null)
@@ -26,18 +28,18 @@ class MeedyaViewPublic extends MeedyaView
 
 		switch ($this->getLayout()) {
 			case 'album':
-//				$app = Factory::getApplication();
-				$this->pgid = Factory::getApplication()->input->get('pgid','','cmd');
-				list($gdir, $gsfx, $aid) = explode('|', base64_decode($this->pgid));
+				list($gdir, $gsfx, $this->aid) = explode('|', base64_decode($this->pgid));
 				$this->isSearch = true;
 				$this->useFanCB = true;
+				$this->ownername = $this->getModel()->getOwnerName($gdir);
 				$pw = $this->app->getPathWay();
 				$pw->setItemName(0, $this->params->get('page_title'));
+				$pw->addItem($this->ownername, Route::_('index.php?option=com_meedya&view=public&layout=album&pgid='.$this->pgid.'&Itemid='.$this->itemId, false));
 
 				$apw = $this->get('AlbumPath');  //$m->getAlbumPath($this->aid);
 				foreach ($apw as $ap) {
 					foreach ($ap as $k => $v) {
-						if ($k != $aid) {
+						if ($k != $this->aid) {
 							$pw->addItem($v[0], Route::_('index.php?option=com_meedya&view=public&layout=album&pgid='.$v[1].'&Itemid='.$this->itemId, false));
 						}
 					}
@@ -49,10 +51,15 @@ class MeedyaViewPublic extends MeedyaView
 				$this->desc = $this->get('Desc');
 				$this->albums = $this->get('Albums');
 				$this->items = $this->get('AlbumItems');
-				$this->params->set('owner', $this->getModel()->getOwnerName($gdir));
+				$this->params->set('owner', $this->ownername);
 				break;
 			default:
-				$this->items = $this->get('Items');
+				if ($this->params->get('full_gallery', 0)) {
+					$tpl = $this->pgid ? 'fuser' : 'full';
+					$this->items = $this->get($this->pgid ? 'Albums' : 'Items');
+				} else {
+					$this->items = $this->get('Items');
+				}
 		}
 
 //		$app = Factory::getApplication();

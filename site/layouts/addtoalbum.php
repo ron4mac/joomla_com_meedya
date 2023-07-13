@@ -1,7 +1,7 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2023 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
 */
 defined('_JEXEC') or die;
@@ -9,8 +9,7 @@ defined('_JEXEC') or die;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
 
-$albs = $displayData['albs'];
-$exca = $displayData['exca'];
+extract($displayData);	//albs,exca
 ?>
 <div id="crealbm">
 	<?php if ($albs): ?>

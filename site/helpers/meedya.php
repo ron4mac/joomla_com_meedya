@@ -1,8 +1,9 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2023 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
+* @since		1.3.2
 */
 defined('_JEXEC') or die;
 
@@ -37,85 +38,6 @@ abstract class MeedyaHelper
 		self::$jdoc->addStyleSheet('components/com_meedya/static/css.php?c='.$str);
 	}
 
-/*
-	public static function scriptVersion ($scr, $path='js/')
-	{
-		$dbg = RJC_DBUG && Factory::getUser()->get('id');
-		$sfx = $dbg ? ('?'.time()) : '';
-		$vray = [
-			'meedya' => ['meedya.js', 'meedya.min.js'],
-			'manage' => ['manage.js', 'manage.min.js'],
-			'alb_dand' => ['alb_dand.js', 'alb_dand.min.js'],
-			'itm_dand' => ['itm_dand.js', 'itm_dand.min.js'],
-			'echo' => ['echo.js', 'echo.min.js'],
-			'slides' => ['slides.js', 'slides.min.js'],
-			'upload' => ['upload.js', 'upload.min.js'],
-			'jquery.tagsinput' => ['jquery.tagsinput.js', 'jquery.tagsinput.min.js'],
-			'fancybox3' => ['3.5.7/jquery.fancybox.js', '3.5.7/jquery.fancybox.min.js']
-			];
-		if (isset($vray[$scr])) {
-			$s = $vray[$scr][$dbg ? 0 : 1];
-		} else {
-			$s = $scr.'.js';
-		}
-
-		if (strpos($s, '://')) return $s;
-
-		return 'components/com_meedya/static/' . $path . $s . $sfx;
-	}
-
-	public static function addScript ($scrs, $path='js/')
-	{
-		if (self::$jdoc === null) self::$jdoc = Factory::getDocument();
-		$jaso = RJC_DBUG ? null : ['version'=>'auto'];
-		if (!is_array($scrs)) $scrs = [$scrs];
-		foreach ($scrs as $k=>$v) {
-			if (is_array($v)) {
-				foreach ($v as $kk=>$vv) {
-					self::$jdoc->addScript(self::scriptVersion($vv, $kk), $jaso);
-				}
-			} else {
-				self::$jdoc->addScript(self::scriptVersion($v, $path), $jaso);
-			}
-		}
-	}
-
-	public static function styleVersion ($css, $path='css/')
-	{
-		$dbg = RJC_DBUG;
-		$sfx = $dbg ? ('?'.time()) : '';
-		$vray = [
-			'manage' => ['manage.css', 'manage.css'],
-			'echo' => ['echo.css', 'echo.min.css'],
-			'slides' => ['slides.css', 'slides.min.css'],
-			'upload' => ['upload.css', 'upload.css'],
-			'fancybox3' => ['3.5.7/jquery.fancybox.css', '3.5.7/jquery.fancybox.min.css']
-			];
-		if (isset($vray[$css])) {
-			$s = $vray[$css][$dbg ? 0 : 1];
-		} else {
-			$s = $css.'.css';
-		}
-		return 'components/com_meedya/static/' . $path . $s . $sfx;
-	}
-
-	public static function addStyle ($csss, $path='css/')
-	{
-		if (self::$jdoc === null) self::$jdoc = Factory::getDocument();
-		$jaso = RJC_DBUG ? null : ['version'=>'auto'];
-		if (!is_array($csss)) $csss = [$csss];
-		foreach ($csss as $k=>$v) {
-			if (is_array($v)) {
-				foreach ($v as $kk=>$vv) {
-					self::$jdoc->addStyleSheet(self::styleVersion($vv, $kk), $jaso);
-				}
-			} else {
-				self::$jdoc->addStyleSheet(self::styleVersion($v, $path), $jaso);
-			}
-		}
-	}
-*/
-
 	public static function getInstanceID ()
 	{
 		if (is_null(self::$instanceType)) self::getTypeOwner();
@@ -128,39 +50,6 @@ abstract class MeedyaHelper
 		if (!self::$instanceObj) self::getInstanceObject($mnuid);
 		self::$udp = RJUserCom::getStoragePath(self::$instanceObj);
 		return self::$udp;
-/*
-		$cmp = JApplicationHelper::getComponentName();
-		$result = Factory::getApplication()->triggerEvent('onRjuserDatapath');
-		$sdp = isset($result[0]) ? trim($result[0]) : 'userstor';
-		$input = Factory::getApplication()->input;
-
-		if ($pgid = $input->get('pgid', '', 'cmd')) {
-			list($gdir, $gsfx, $aid) = explode('|', base64_decode($pgid));
-			self::$udp = $sdp.'/'.$gdir.'/'.$cmp.$gsfx;
-			return self::$udp;
-		}
-
-		if (!$mnuid) {
-			$mnuid = $input->getInt('Itemid', 0);
-		}
-
-		self::getTypeOwner();
-		if (self::$ownerID < 0 && self::$instanceType < 2) return '';	//throw new Exception('ACCESS NOT ALLOWED');
-		switch (self::$instanceType) {
-			case 0:
-				$ndir = '@'. self::$ownerID;
-				break;
-			case 1:
-				$ndir = '_'. self::$ownerID;
-				break;
-			case 2:
-				$ndir = '_0';
-				break;
-		}
-
-		self::$udp = $sdp.'/'.$ndir.'/'.$cmp.'_'.$mnuid;
-		return self::$udp;
-*/
 	}
 
 	public static function getUserPermissions ($user, $params)
@@ -168,7 +57,6 @@ abstract class MeedyaHelper
 		static $perms = [];
 
 		if (!$perms) {
-	//		echo'<xmp>';var_dump($user->groups,$params);echo'</xmp>';
 			$admgrps = $params->get('admin_group', null);
 			if (!is_array($admgrps)) $admgrps = [$admgrps];
 			if ($params->get('instance_type', 3) > 0) {
@@ -201,7 +89,6 @@ abstract class MeedyaHelper
 		$cupmax = $op ?: self::componentOption('maxUpload', 4194304);
 		$cupmax = $cupmax ?: 4194304;
 		$cupmax = self::instanceOption('maxUpload', $cupmax);
-	//	return min($cupmax, JFilesystemHelper::fileUploadMaxSize(false));
 		// using my chunking uploader so no need to account for PHP max
 		return $cupmax;
 	}
@@ -331,7 +218,6 @@ abstract class MeedyaHelper
 						break;
 				}
 			}
-		//echo'<xmp>';var_dump($params,self::$instanceType,self::$ownerID);echo'</xmp>';
 		}
 	}
 
@@ -342,8 +228,6 @@ abstract class MeedyaHelper
 
 		if (empty($ip)) {
 			$ip = Factory::getApplication()->getParams();
-		//	$active = Factory::getApplication()->getMenu()->getActive();
-		//	echo'<xmp>';var_dump($active,$ip);echo'</xmp>';
 			if (RJC_DBUG) self::log('inst opts', $ip);
 		}
 

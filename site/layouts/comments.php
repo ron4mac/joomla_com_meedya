@@ -1,7 +1,7 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2023 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
 */
 defined('JPATH_BASE') or die;
@@ -9,7 +9,9 @@ defined('JPATH_BASE') or die;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
 
-$addbutton = $displayData['cancmnt']
+extract($displayData);	//cancmnt
+
+$addbutton = $cancmnt
 	? '<button type="button" class="btn btn-info" '.M34C::bs('target').'="#comment-modal" '.M34C::bs('toggle').'="modal" '.M34C::bs('dismiss').'="modal">'.Text::_('COM_MEEDYA_COMMENTS_ADD').'</button>'
 	: '';
 

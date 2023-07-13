@@ -1,7 +1,7 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2023 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
 */
 
@@ -111,7 +111,7 @@ foreach ($cssfiles as $cssf) {
 }
 $hash = $lastmod . '-' . $totsize . '-' . md5(implode(':',$csss));
 
-if (isset($_SERVER['HTTP_IF_NONE_MATCH']) && stripslashes($_SERVER['HTTP_IF_NONE_MATCH']) == $hash)
+if (stripslashes($_SERVER['HTTP_IF_NONE_MATCH'] ?? '') == $hash)
 {
 	// Return visit and no modifications, so do not send anything 
 	header ($_SERVER['SERVER_PROTOCOL'].' 304 Not Modified'); 

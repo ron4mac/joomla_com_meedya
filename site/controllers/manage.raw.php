@@ -1,8 +1,9 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2023 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
+* @since		1.3.2
 */
 defined('_JEXEC') or die;
 
@@ -22,7 +23,6 @@ class MeedyaControllerManage extends JControllerLegacy
 	public function __construct ($config = [])
 	{
 		$this->gallPath = MeedyaHelper::userDataPath();
-	//	if (RJC_DBUG) MeedyaHelper::log('MeedyaControllerManageRaw');
 		parent::__construct($config);
 	}
 
@@ -72,17 +72,6 @@ class MeedyaControllerManage extends JControllerLegacy
 		}
 	}
 
-/*	// task to remove items from an album
-	public function removeItems ()
-	{
-		$this->tokenCheck();
-		$aid = $this->input->post->get('aid','','int');
-		$parm = $this->input->post->get('items','','string');
-		$items = explode('|',$parm);
-		$m = $this->getModel('manage');
-		$m->removeItems($aid, $items);
-	}
-*/
 	// task to change the parent of an album
 	public function adjustAlbPaid ()
 	{

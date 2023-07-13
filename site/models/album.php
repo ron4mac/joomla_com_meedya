@@ -67,6 +67,45 @@ class MeedyaModelAlbum extends MeedyaModelMeedya
 		return $albs;
 	}
 
+	private function getAlbImgs ($db, $aid)
+	{
+		$db->setQuery('SELECT items FROM albums WHERE aid='.$aid);
+		if (!$ilst = trim($db->loadResult()?:'')) return [];
+		$itms = explode('|', $ilst);
+		$items = [];
+		foreach ($this->_itms as $iid) {
+			$itm = $this->getItemFile($iid);
+			if (substr($itm['mtype'],0,6) == 'image/') {
+				$items[] = $urlp . $itm['file'];
+			}
+		}
+		return $items;
+	}
+
+	public function getPlaylist ($aid, $full, $recur, $inst)
+	{
+		$db = null;
+		$dbFile = '/meedya.db3';
+		$udp = RJUserCom::getStoragePath($inst);	echo $udp; jexit();
+		$udbPath = $udp.$dbFile;
+		try {
+			$db = JDatabaseDriver::getInstance(['driver'=>'sqlite','database'=>$udbPath])->connect();
+		}
+		catch (JDatabaseExceptionConnecting $e) {
+			echo'<xmp>';var_dump($e);echo'</xmp>';
+			jexit();
+		}
+		$urlp = JUri::root() . MeedyaHelper::userDataPath() . '/med/';
+		$items = [];
+		foreach ($this->_itms as $iid) {
+			$itm = $this->getItemFile($iid);
+			if (substr($itm['mtype'],0,6) == 'image/') {
+				$items[] = $urlp . $itm['file'];
+			}
+		}
+		return $items;
+	}
+
 	public function getImageUrl ()
 	{
 

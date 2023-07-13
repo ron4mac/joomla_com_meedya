@@ -1,8 +1,9 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2023 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
+* @since		1.3.2
 */
 defined('_JEXEC') or die;
 
@@ -20,7 +21,6 @@ class MeedyaControllerManage extends JControllerLegacy
 
 	public function __construct ($config = [])
 	{
-	//	if (RJC_DBUG) MeedyaHelper::log('MeedyaControllerManage');
 		parent::__construct($config);
 		$this->mnuItm = $this->input->getInt('Itemid', 0);
 	}
@@ -28,7 +28,6 @@ class MeedyaControllerManage extends JControllerLegacy
 
 	public function display ($cachable = false, $urlparams = false)
 	{
-	//	if (RJC_DBUG) MeedyaHelper::log('MeedyaControllerManage : display');
 		if ($this->nope()) return;
 		$view = $this->getView('manage','html');
 		$view->itemId = $this->mnuItm;
@@ -47,12 +46,6 @@ class MeedyaControllerManage extends JControllerLegacy
 		$view->display();
 	}
 
-
-/*	public function upload ()
-	{
-		$this->input->set('view', 'upload');
-	}
-*/
 
 	// display a screen/form for uploading items
 	public function doUpload ()
@@ -248,7 +241,6 @@ class MeedyaControllerManage extends JControllerLegacy
 
 		$vals = array_merge($unchk, $this->input->post->get('ss',null,'array'));
 
-	//	echo'<xmp>';var_dump($vals);echo'</xmp>';jexit();
 		if ($this->input->post->get('save',0,'int')) {
 			if (!Session::checkToken()) {
 				echo Text::_('JINVALID_TOKEN');

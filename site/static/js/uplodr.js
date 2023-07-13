@@ -1,6 +1,6 @@
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2023 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
 */
 /* globals Joomla */
@@ -22,6 +22,8 @@
 			payload: () => {return {}},	// get other data to be sent along with the file data
 			maxFilesize: 134217728,
 			dropMessage: 'Drop files here to upload<br>(or click to select)',
+			acptmime: 'accept="image/*" ',
+			mimatch: 'image\/|video\/',
 			failcss: 'failure',
 			concurrent: 3,
 			maxchunksize: 16777216,		// 16M
@@ -388,7 +390,8 @@
 		$.pBar = new ProgressBar($, $.doChnk ? 'chnkpb' : 'normpb');
 
 		let errM = '';
-		if (!$.fType.match(/image\/|video\//)) {
+		let MM = new RegExp(opts.mimatch);
+		if (!$.fType.match(MM)) {
 			errM = 'File type is not allowed';
 		} else if (typeof(aft) == 'object' && aft.length) {
 			let dotParts = $.fn.split('.');
@@ -459,7 +462,7 @@
 			// create UI
 			updiv.appendChild(CreateElement(
 				'div',
-				'<input type="file" name="userpictures" id="file_field" multiple="multiple" accept="image/*,video/*" style="display:none" />'
+				'<input type="file" name="userpictures" id="file_field" multiple="multiple"'+opts.acptmime+' style="display:none" />'
 				+ '<div class="drpmsg">'+opts.dropMessage+'</div>',
 				{id:'dropArea', onclick:"this.firstElementChild.click();"}
 				)

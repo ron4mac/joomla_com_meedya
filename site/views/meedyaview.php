@@ -1,7 +1,7 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2023 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
 */
 defined('_JEXEC') or die;
@@ -25,6 +25,7 @@ HTMLHelper::_('bootstrap.tooltip', '.hastip', ['placement'=>'bottom']);
 class MeedyaView extends Joomla\CMS\MVC\View\HtmlView
 {
 	// some common properites for all views
+	public $itemId;
 	protected $app;
 	protected $state;
 	protected $items = null;
