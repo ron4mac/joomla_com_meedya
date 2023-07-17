@@ -48,12 +48,28 @@ class MeedyaViewAlbum extends MeedyaView
 		// probably unnecessary pagination 
 		$this->pagination = $this->get('Pagination');
 
+//		$this->app->setHeader('Access-Control-Allow-Origin','http://picframe.local/',true);
+//		$this->app->setHeader('Referrer-Policy','unsafe-url',true);
+
 		if ($this->items || $this->albums) {
 			$this->useFanCB = true;
 			parent::display($tpl);
 		} else {
 			parent::display('empty');
 		}
+	}
+
+	public function picframekey ()
+	{
+		require_once JPATH_COMPONENT . '/classes/crypt.php';
+		$parms = [];
+		$parms['aid'] = $this->aid;
+		$parms['obj'] = MeedyaHelper::getInstanceObject();
+
+		$jparms = json_encode($parms);
+		$key = JUri::root().'?option=com_meedya&format=raw&task=picframe&key='.urlencode(\ComMeedya\Encryption::encrypt($jparms, $this->app->get('secret')));
+		return base64_encode($key);
+		echo json_encode(['key'=>base64_encode($key),'title'=>base64_encode($title),'pcnt'=>0,'sdly'=>$sdly]);
 	}
 
 }

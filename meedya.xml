@@ -20,6 +20,7 @@
 		<filename>index.html</filename>
 		<filename>meedya.php</filename>
 		<filename>controller.php</filename>
+		<filename>controller.raw.php</filename>
 		<!-- <filename>router.php</filename> -->
 		<folder>views</folder>
 		<folder>models</folder>

@@ -229,7 +229,7 @@ $cancmnt = $this->uid || $this->params->get('pub_comments', 0);
 			<img src="components/com_meedya/static/img/slideshow.png" alt="" /></a>
 	<?php endif; ?>
 	<?php if ($this->params->get('picframe', 0) && $this->userPerms->canAdmin): ?>
-		<a href="#" title="<?=Text::_('COM_MEEDYA_PICFRAME')?>" onclick="Meedya.doPicframe()">
+		<a href="http://picframe.local/static/cgetnpl.html?nplt=<?=$this->title?>&nplk=<?=$this->picframekey()?>" title="<?=Text::_('COM_MEEDYA_PICFRAME')?>" onclick="Meedya.doNotPicframe()">
 			<img src="components/com_meedya/static/img/picframe.png" alt="" /></a>
 	<?php endif; ?>
 	</div>

@@ -209,14 +209,16 @@
 			let parms = encodeURI(data.key);
 			let pcnt = encodeURI(data.pcnt);
 			let sdly = encodeURI(data.sdly);
-			window.open('http://picframe.local?nplk='+parms+'&nplt='+titl+'&pcnt='+pcnt+'&sdly='+sdly, '', wcon);
+		//	window.open('http://picframe.local?nplk='+parms+'&nplt='+titl+'&pcnt='+pcnt+'&sdly='+sdly, '', wcon);
+		//	window.location('http://picframe.local?nplk='+parms+'&nplt='+titl+'&pcnt='+pcnt+'&sdly='+sdly);
+			window.open('http://picframe.local?nplk='+parms+'&nplt='+titl+'&pcnt='+pcnt+'&sdly='+sdly, '_blank');
 		}, true);
 
 		closMdl(pfDlg);
 	};
 
 	Meedya.doPicframe = () => {
-//		fetch('https://picframe.local', {method:'HEAD'})
+//		fetch('http://picframe.local', {method:'GET',mode:'cors'})
 //		.then(resp => { if (!resp.ok) throw new Error(`HTTP ${resp.status}`); return resp.text() })
 //		.then(data => {console.log(data); openMdl(pfDlg);})
 //		.catch(err => alert('Failure: '+err));

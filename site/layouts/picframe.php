@@ -3,6 +3,7 @@
 * @package		com_meedya
 * @copyright	Copyright (C) 2023 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
+* @since		1.3.2
 */
 defined('JPATH_BASE') or die;
 
@@ -17,14 +18,14 @@ $mmdl =  HTMLHelper::_(
 	'picframe-modal', // selector
 	array( // options
 		'title'  => Text::_('COM_MEEDYA_PICFRAME_TITLE'),
-		'footer' => '<button type="button" class="btn btn-secondary" '.M34C::bs('dismiss').'="modal">Close</button>
+		'footer' => '<button type="button" class="btn btn-secondary" '.M34C::bs('dismiss').'="modal">Cancel</button>
 					<button type="button" class="btn btn-primary" onclick="Meedya.submitPlaylist(this)">Submit to Photo Frame</button>',
 		//'modalWidth' => 30
 	),
 	'<form action="picframe.local" name="picframe" id="picframe" method="POST">
-	<input type="text" name="title" id="pl-title" size="30" value="'.$albttl.'"> <label for="pl-title">Playlist Title</label><br>
-	<input type="checkbox" name="recur" id="pl-recur" value="1"> <label for="pl-recur">Get images recursively</label><br>
-	<label for="pl-vtim">Image view time (secs)</label> <input type="number" name="vtim" id="pl-vtim" value="60"><br>
+	<label for="pl-title">Playlist Title</label> <input type="text" name="title" id="pl-title" size="30" value="'.$albttl.'"><br>
+	<input type="checkbox" name="recur" id="pl-recur" value="1"> <label for="pl-recur" style="width:auto">Get images recursively</label><br>
+	<label for="pl-vtim">Image view time (secs)</label> <input type="number" name="vtim" id="pl-vtim" value="120"><br>
 	<input type="hidden" name="pfkey" value="" />
 	<input type="hidden" name="task" value="addList" />
 	<input type="hidden" name="'.Session::getFormToken().'" value="1" />
