@@ -55,6 +55,6 @@
 		</files>
 	</administration>
 	<updateservers>
-		<server type="extension" priority="1" name="Meedya Updates">http://rjcrans.net/jupdates/com_meedya/updates.php</server>
+		<server type="extension" priority="1" name="Meedya Updates">https://rjcrans.net/jupdates/com_meedya/updates.php</server>
 	</updateservers>
 </extension>
