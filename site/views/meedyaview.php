@@ -3,6 +3,7 @@
 * @package		com_meedya
 * @copyright	Copyright (C) 2023 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
+* @since		1.3.2
 */
 defined('_JEXEC') or die;
 
@@ -80,7 +81,7 @@ class MeedyaView extends Joomla\CMS\MVC\View\HtmlView
 
 	protected function getAlbumThumb ($albrec)
 	{
-		$pics = $albrec->items ? explode('|', $albrec->items) : [];
+		$pics = ($albrec->items && !$albrec->isClone) ? explode('|', $albrec->items) : [];
 		if (!$albrec->thumb) {
 			$albrec->thumb = $pics ? $pics[0] : false;
 		}

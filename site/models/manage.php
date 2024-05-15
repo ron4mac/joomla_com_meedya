@@ -3,6 +3,7 @@
 * @package		com_meedya
 * @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
+* @since		1.3.2
 */
 defined('_JEXEC') or die;
 
@@ -133,7 +134,7 @@ class MeedyaModelManage extends MeedyaModelMeedya
 		if ($r!==false || is_null($r)) {
 			$cur = $r ? explode('|', trim($r,'|')) : [];
 			$items = array_unique(array_merge($cur, $items));
-			$q = 'UPDATE `albums` SET `items`=\''.implode('|',$items).'\' WHERE `aid`='.$album;
+			$q = 'UPDATE `albums` SET `items`=\''.implode('|',$items).'\', `tstamp`='.time().' WHERE `aid`='.$album;
 			$db->setQuery($q);
 			$db->execute();
 		} else {
@@ -214,7 +215,7 @@ class MeedyaModelManage extends MeedyaModelMeedya
 		$r = $db->loadResult();
 		$cur = explode('|',trim($r,'|'));
 		$upd = array_unique(array_diff($cur, $items));
-		$q = 'UPDATE `albums` SET `items`=\''.implode('|',$upd).'\' WHERE `aid`='.$album;
+		$q = 'UPDATE `albums` SET `items`=\''.implode('|',$upd).'\', `tstamp`='.time().' WHERE `aid`='.$album;
 		$db->setQuery($q);
 		$db->execute();
 		$db->transactionCommit($pot);
@@ -262,6 +263,44 @@ class MeedyaModelManage extends MeedyaModelMeedya
 			$db->execute();
 		}
 		return $rowid;
+	}
+
+
+	// add a cloned album to the gallery heirarchy
+	public function clnAlbum ($oaid, $anam, $parid=0, $desc='')
+	{
+		$db = $this->getDbo();
+		// get the original
+		$db->setQuery('SELECT * FROM `meedyaitems` WHERE `id`=' . $oaid);
+		$r = $db->loadAssoc();
+		
+		if ($parid) {
+			$hord = $this->getParentNextHord($parid);
+			$q = 'INSERT INTO albums (`items`,`title`,`desc`,`paid`,`hord`,`ownid`,`tstamp`) VALUES ('.$db->quote('*'.$oaid).','.$db->quote($anam).','.$db->quote($desc).','.$parid.','.$db->quote($hord).','.$this->ownid.','.time().')';
+		} else {
+			$q = 'INSERT INTO `albums` (`items`,`title`,`desc`,`ownid`,`tstamp`) VALUES ('.$db->quote('*'.$oaid).','.$db->quote($anam).','.$db->quote($desc).','.$this->ownid.','.time().')';
+		}
+		$db->setQuery($q);
+		$db->execute();
+		$rowid = $db->insertid();
+		if (!$parid) {
+			$db->setQuery('UPDATE `albums` SET `hord`='.$db->quote($rowid).' WHERE `aid`='.$rowid);
+			$db->execute();
+		}
+		return $rowid;
+	}
+
+
+	// save data for a clone album
+	public function clnAlbSave ($aid, $anam, $parid=0, $desc='')
+	{
+		$db = $this->getDbo();
+		$q = $db->getQuery(true);
+		$q->update('albums')->set('`title`='.$db->quote($anam).',`desc`='.$db->quote($desc).',`paid`='.$parid);
+		$hord = $parid ? $this->getParentNextHord($parid,$aid) : $aid;
+		$q->set('`hord`='.$db->quote($hord));
+		$q->where('aid='.$aid);
+		return $db->setQuery($q)->execute();
 	}
 
 
@@ -467,7 +506,7 @@ class MeedyaModelManage extends MeedyaModelMeedya
 			$itms = array_diff($itms, [$itm]);
 			$istr = implode('|',$itms);
 			if ($r['thumb'] == $itm) $r['thumb'] = 0;
-			$db->setQuery('UPDATE `albums` SET `items`=\''.$istr.'\', `thumb`='.$r['thumb'].' WHERE `aid`='.$alb);
+			$db->setQuery('UPDATE `albums` SET `items`=\''.$istr.'\', `thumb`='.$r['thumb'].', `tstamp`='.time().' WHERE `aid`='.$alb);
 			if (RJC_DBUG) MeedyaHelper::log('removeItemFromAlbums: '.(string)$db->getQuery());
 			try {
 				$db->execute();
@@ -501,7 +540,7 @@ class MeedyaModelManage extends MeedyaModelMeedya
 		$sets = '';
 		foreach ($fields as $k=>$v) {
 			if ($sets) $sets .= ', ';
-			$sets .= $k.' = '.$db->quote($v);
+			$sets .= $k.' = '.(is_numeric($v) ? $v : $db->quote($v));
 		}
 		$db->setQuery('UPDATE `albums` SET '.$sets.' WHERE `aid`='.$this->album['aid']);
 		if (RJC_DBUG) MeedyaHelper::log('update album', ['album'=>$this->album,'fields'=>$fields]);
@@ -521,7 +560,7 @@ class MeedyaModelManage extends MeedyaModelMeedya
 	}
 
 
-	private function getParentNextHord ($parid)
+	private function getParentNextHord ($parid, $not=-1)
 	{
 		$db = $this->getDbo();
 		$db->setQuery('SELECT `hord` FROM `albums` WHERE `aid`='.$parid);
@@ -531,6 +570,7 @@ class MeedyaModelManage extends MeedyaModelMeedya
 		$fams = $db->loadAssocList();
 		$v = 1;
 		foreach ($fams as $fam) {
+			if ($fam['aid']==$not) continue;
 			$hs = explode('.', $fam['hord']);
 			if ($hs[$lvl] >= $v) {
 				$v = $hs[$lvl] + 1;
@@ -538,7 +578,6 @@ class MeedyaModelManage extends MeedyaModelMeedya
 		}
 		return $phord . '.' . $v;
 	}
-
 
 	protected function populateState ($ordering = null, $direction = 'ASC')
 	{	//echo'####POPSTATE####';

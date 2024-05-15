@@ -3,6 +3,7 @@
 * @package		com_meedya
 * @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
+* @since		1.3.2
 */
 defined('_JEXEC') or die;
 
@@ -24,11 +25,14 @@ function buildTree(array $albums, &$html, $paid = 0) {
 	$branch = [];
 	foreach ($albums as $alb) {
 		if ($alb['paid'] == $paid) {
-			$html[] = '<div data-aid="'.$alb['aid'].'" class="album" draggable="true">';
+			$xclass = $alb['isClone'] ? (' aclone" data-oaid="'.$alb['oaid']) : '';
+			$html[] = '<div data-aid="'.$alb['aid'].'" class="album'.$xclass.'" draggable="true">';
 			$html[] = '<span class="icon-delete" title="Delete Album"> </span>';
-			$html[] = '<span class="icon-edit" title="Edit Album"> </span>';
-			$html[] = '<big><b>'.$alb['title'].'</b></big> ( '.$alb['items'].' items )';
-			$html[] = '<span class="icon-upload" title="Upload to Album"> </span>';
+			//$xclass = $alb['isClone'] ? ' clone' : '';
+			$html[] = '<span class="icon-edit'.$xclass.'" title="Edit Album"> </span>';
+			$info = $alb['isClone'] ? ' clone ' : ($alb['items'].' items');
+			$html[] = '<big><b>'.$alb['title'].'</b></big> ( '.$info.' )';
+			if (!$alb['isClone']) $html[] = '<span class="icon-upload" title="Upload to Album"> </span>';
 			if ($alb['visib']==1) {
 				$html[] = '<span class="pubalb">'.Text::_('COM_MEEDYA_PUBLIC').'</span>';
 			}
@@ -57,6 +61,15 @@ $this->btmscript[] = 'Meedya._ae("newalbdlg", "shown.bs.modal", () => Meedya._id
 // set new album dlg parent to current list selection
 $this->btmscript[] = 'Meedya._ae("newalbdlg", "show.bs.modal", () => { Meedya._id("h5u_palbum").value = Meedya.AArrange.selalb(); });';
 
+// setup clone album dlg initialization
+$this->btmscript[] = 'Meedya._ae("clnalbdlg", "show.bs.modal", (evt) => {
+	//console.log(evt);
+	if (evt.relatedTarget.tagName == "A") {
+		Meedya._id("clalbnam").value = "";
+		Meedya._id("cln_palbum").value = 0;
+		Meedya._id("clalbdesc").innerHTML = "";
+	}
+});';
 
 $hasImport = Folder::exists($this->gallpath.'/import');
 ?>
@@ -69,15 +82,21 @@ $hasImport = Folder::exists($this->gallpath.'/import');
 	overflow-y: scroll;
 }
 .modal-backdrop.fade.in {opacity:0.2}*/
+.meedya-gallery a.disabled {pointer-events:none; opacity:.5}
 #trashall {margin:0 6px 0 0;position:relative;bottom:1px;vertical-align:middle;}
 #trashall + label {display:inline}
-#gstruct div {
+/*#gstruct div {
 	border: 1px solid #AAA;
 	border-radius: 5px;
 	margin: 12px;
 	padding: 8px;
 	background-color: white;
 	color: #555;
+}
+#gstruct div.album.aclone {
+	background-image: url(css/clone2.png);
+	border-style: dotted;
+	border-width: 2px;
 }
 #gstruct div.over {
 	background-color: #EF6;
@@ -116,7 +135,7 @@ $hasImport = Folder::exists($this->gallpath.'/import');
 	font-size: large;
 	color: crimson;
 	margin-left: 1em;
-}
+}*/
 #myProgress { width:100%; background-color:#ddd; display:none; }
 #myBar { width:0; background-color:#4CAF50; font-size:larger; padding:3px 0; }
 </style>
@@ -124,7 +143,8 @@ $hasImport = Folder::exists($this->gallpath.'/import');
 	<?php if ($this->manage) echo HTMLHelper::_('meedya.manageMenu', $this->userPerms, 0, $this->itemId); ?>
 	<?php echo HTMLHelper::_('meedya.pageHeader', $this->params, $this->action/*.'XXXX'*/); ?>
 	<div id="toolbar">
-		<a href="#newalbdlg" data-toggle="modal" data-bs-toggle="modal"><?=Text::_('COM_MEEDYA_NEW_ALBUM')?></a>
+		<a href="#newalbdlg" data-toggle="modal" data-bs-toggle="modal"><?=Text::_('COM_MEEDYA_NEW_ALBUM')?></a>&nbsp;
+		<a href="#clnalbdlg" data-toggle="modal" data-bs-toggle="modal" id="clone_a" class="disabled"><?=Text::_('COM_MEEDYA_CLNALBM')?></a>
 	<?php if ($hasImport): ?>
 		<a href="#importdlg" data-toggle="modal"><?=Text::_('COM_MEEDYA_IMPORT')?></a>
 	<?php endif; ?>
@@ -141,6 +161,8 @@ $hasImport = Folder::exists($this->gallpath.'/import');
 <?php
 	echo LayoutHelper::render('newalbum', ['script'=>'Meedya.ae_createAlbum(this)', 'albums'=>$this->albums]);
 	echo LayoutHelper::render('delalbum', ['itemId'=>$this->itemId]);
+	echo LayoutHelper::render('clnalbum', ['itemId'=>$this->itemId, 'script'=>'Meedya.ae_cloneAlbum(this)', 'albums'=>$this->albums]);
+	echo LayoutHelper::render('clnalbedt', ['script'=>'Meedya.ae_cloneAlbSave(this)', 'albums'=>$this->albums]);
 ?>
 <?php if ($hasImport):
 echo HTMLHelper::_(
@@ -156,6 +178,7 @@ endif;
 ?>
 <script>
 	Meedya.alb2delete = 0;
+	Meedya.clone_a = document.getElementById('clone_a');
 <?php if ($hasImport): ?>
 	function importItems (dlg) {
 	//	jQuery("#importdlg input:checked").each(function(){console.log(jQuery(this).val())});

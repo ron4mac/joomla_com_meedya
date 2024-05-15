@@ -3,6 +3,7 @@
 * @package		com_meedya
 * @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
+* @since		1.3.2
 */
 defined('_JEXEC') or die;
 
@@ -31,6 +32,7 @@ $pubdis = $this->album['pub'] && $this->album['pub']!=$this->album['aid'] ? ' di
 	#albForm {margin-top: 1em; border-top: 1px solid #CCC; padding-top: 0.5em;}
 	.albman {display:inline-flex}
 	.mitem, .litem {width:120px; height:120px}
+	.rbutn {float: right}
 	.modal-backdrop.fade.in {opacity:0.4}
 	.modal-footer {padding: 8px 10px}
 	.pell-content {height: 100px}

@@ -3,6 +3,7 @@
 * @package		com_meedya
 * @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
+* @since		1.3.2
 */
 defined('_JEXEC') or die;
 
@@ -61,8 +62,15 @@ class MeedyaModelAlbum extends MeedyaModelMeedya
 		$db = $this->getDbo();
 		$db->setQuery('SELECT * FROM `albums` WHERE `paid`='.$aid);
 		$albs = $db->loadObjectList();
-		foreach ($albs as $k => $alb) {
-			$albs[$k]->link = '&view=album&aid='.$alb->aid;
+		foreach ($albs as &$alb) {
+			$alb->link = '&view=album&aid='.$alb->aid;
+			$alb->isClone = false;
+			if ($alb->items && substr($alb->items,0,1)=='*') {
+				$alb->isClone = true;
+				$alb->oaid = (int) substr($alb->items,1);
+			} else {
+			//	$alb->items = $alb->items ? count(explode('|',$alb->items)) : 'no';
+			}
 		}
 		return $albs;
 	}

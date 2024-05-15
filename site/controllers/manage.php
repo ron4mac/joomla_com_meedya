@@ -301,6 +301,8 @@ class MeedyaControllerManage extends JControllerLegacy
 		// don't save thumb order unless it is something valid
 		if ($thmo != '_') {
 			$flds['items'] = $thmo;
+			// update time stamp when items ar changed
+			$flds['tstamp'] = time();
 		}
 		$flds['visib'] = $this->input->post->get('pubalb',0,'int');
 
@@ -321,7 +323,9 @@ class MeedyaControllerManage extends JControllerLegacy
 		return true;
 
 		if (!Session::checkToken()) {
-			header('HTTP/1.1 403 Not Allowed');
+			//header('HTTP/1.1 403 Not Allowed');
+			$this->app->setHeader('Status', 403, true);
+			$this->app->setHeader('Errmsg', 'Not Allowed');
 			jexit(Text::_('JINVALID_TOKEN'));
 		}
 	}

@@ -1,7 +1,8 @@
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2023 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
+* @since		1.3.2
 */
 /* globals Joomla,My_bb */
 
@@ -210,6 +211,18 @@
 			case 'album':
 				Meedya.AArrange.iSelect(e, elm);
 				break;
+			case 'icon-edit aclone':
+				Meedya._pd(e);
+				let ajd = {aid: elm.parentElement.dataset.aid};
+				postAction('manage.getAlbum', ajd, (data) => {
+					//console.log(data);
+					Meedya._id('clnaid').value = data.aid;
+					Meedya._id('clalbnamed').value = data.title;
+					Meedya._id('cln_palbumed').value = data.paid;
+					Meedya._id('clalbdesced').innerHTML = data.desc;
+					openMdl('clnalbdlged');
+				}, true);
+				break;
 		}
 	};
 
@@ -241,8 +254,8 @@
 	};
 
 	// watch for entry of album name; enable create button when there is a name
-	Meedya.watchAlbNam = (elm) => {
-		let creab = Meedya._id('creab');
+	Meedya.watchAlbNam = (elm, bid='creab') => {
+		let creab = Meedya._id(bid);
 		if (elm.value.trim()) {
 			creab.disabled = false;
 		} else {
@@ -282,6 +295,32 @@
 		let ajd = {albnam: nualbnam, paralb: (albParFld ? albParFld.value : 0), albdesc: albDscFld.value};
 		ajd[formTokn] = 1;
 		postAction('manage.newAlbum', ajd, (data) => {if (data) alert(data); else w.location.reload(true);});
+	};
+
+	// request new clone of existing album
+	Meedya.ae_cloneAlbum = (elm) => {
+		elm.disabled = true;
+		let albNamFld = Meedya._id('clalbnam');
+		let albParFld = Meedya._id('cln_palbum');
+		let albDscFld = Meedya._id('clalbdesc');
+		let oaid = Meedya._id('oaid');
+		let nualbnam = albNamFld.value.trim();
+		let ajd = {albnam: nualbnam, paralb: (albParFld ? albParFld.value : 0), albdesc: albDscFld.value, oaid: oaid.value};
+		ajd[formTokn] = 1;
+		postAction('manage.clnAlbum', ajd, (data) => {if (data) alert(data); else w.location.reload(true);});
+	};
+
+	// request save of updated clone album
+	Meedya.ae_cloneAlbSave = (elm) => {
+		elm.disabled = true;
+		let albNamFld = Meedya._id('clalbnamed');
+		let albParFld = Meedya._id('cln_palbumed');
+		let albDscFld = Meedya._id('clalbdesced');
+		let aid = Meedya._id('clnaid');
+		let nualbnam = albNamFld.value.trim();
+		let ajd = {albnam: nualbnam, paralb: (albParFld ? albParFld.value : 0), albdesc: albDscFld.value, aid: aid.value};
+		ajd[formTokn] = 1;
+		postAction('manage.clnAlbSave', ajd, (data) => {if (data) alert(data); else w.location.reload(true);});
 	};
 
 	// rearrange items in an album

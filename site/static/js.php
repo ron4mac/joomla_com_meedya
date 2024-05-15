@@ -10,11 +10,11 @@ function addScript ($scr)
 	global $dbg, $jsfiles;
 
 	if (!$dbg && file_exists($scr.'.min.js')) {
-		$jsfiles[] = $scr.'.min.js';
+		$jsfiles[$scr.'.min.js'] = 1;
 		return;
 	}
 	if (file_exists($scr.'.js')) {
-		$jsfiles[] = $scr.'.js';
+		$jsfiles[$scr.'.js'] = 1;
 	}
 }
 
@@ -55,7 +55,7 @@ foreach ($codes as $c) {
 $lastmod = 0;
 $totsize = 0;
 $jss = [];
-foreach ($jsfiles as $jsf) {
+foreach ($jsfiles as $jsf => $xv) {
 	if (is_array($jsf)) {
 		$totsize += strlen($jsf['s']) + 1;
 		$jss[] = $jsf['s'];
@@ -79,7 +79,7 @@ if (stripslashes($_SERVER['HTTP_IF_NONE_MATCH'] ?? '') == $hash) {
 	header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $lastmod) . ' GMT');
 	header('ETag: ' . $hash);
 	header('Cache-Control: must-revalidate');
-	foreach ($jsfiles as $jsf) {
+	foreach ($jsfiles as $jsf => $xv) {
 		if (is_array($jsf)) {
 			echo $jsf['s'];
 		} else {

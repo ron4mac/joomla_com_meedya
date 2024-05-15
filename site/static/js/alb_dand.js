@@ -135,6 +135,7 @@ Meedya.AArrange = (function (mdya) {
 		} else {
 			iSlctd = elm;
 			iSlctd.classList.add('slctd');
+			Meedya.clone_a.classList.remove('disabled');
 		}
 	};
 

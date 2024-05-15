@@ -18,7 +18,7 @@ class MeedyaModelPicframe extends Joomla\CMS\MVC\Model\BaseDatabaseModel
 
 	public function __construct ($config=[])
 	{
-		if (!$config['dbo'] && $config['inst']) {
+		if (empty($config['dbo']) && $config['inst']) {
 			$dbFile = '/meedya.db3';
 			$this->udp = RJUserCom::getStoragePath($config['inst']);
 			$udbPath = $this->udp.$dbFile;
@@ -55,6 +55,12 @@ class MeedyaModelPicframe extends Joomla\CMS\MVC\Model\BaseDatabaseModel
 //		}
 	}
 
+	public function getThumbnails ($aid, $recur, $inst)
+	{
+		$this->galinst = base64_encode(json_encode($inst));
+		return $this->getAlbImgThms($aid);
+	}
+
 	public function getFramePic ($iid)
 	{
 		$pic = $this->getItemFile($iid);
@@ -80,6 +86,22 @@ class MeedyaModelPicframe extends Joomla\CMS\MVC\Model\BaseDatabaseModel
 			$itm = $this->getItemFile($iid);
 			if (substr($itm['mtype'],0,6) == 'image/') {
 				$items[] = $this->imgp . $itm['file'];
+			}
+		}
+		return $items;
+	}
+
+	private function getAlbImgThms ($aid)
+	{
+		$url = JUri::root() . $this->udp . '/thm/';
+		$this->db->setQuery('SELECT items FROM albums WHERE aid='.$aid);
+		if (!$ilst = trim($this->db->loadResult()?:'')) return [];
+		$itms = explode('|', $ilst);
+		$items = [];
+		foreach ($itms as $iid) {
+			$itm = $this->getItemFile($iid);
+			if (substr($itm['mtype'],0,6) == 'image/') {
+				$items[] = $url . $itm['file'];
 			}
 		}
 		return $items;

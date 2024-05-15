@@ -75,6 +75,59 @@
 /*	margin-right:3em; */
 }
 
+/* albums edit view */
+#gstruct div {
+	border: 1px solid #AAA;
+	border-radius: 5px;
+	margin: 12px;
+	padding: 8px;
+	background-color: white;
+	color: #555;
+}
+#gstruct div.album.aclone {
+	background-image: url(css/clone2.png);
+	border-style: dotted;
+	border-width: 2px;
+}
+#gstruct div.over {
+	background-color: #EF6;
+}
+#gstruct .icon-edit {
+	color: #0BD;
+	cursor: pointer;
+}
+#gstruct .icon-edit:hover {
+	color: orange;
+}
+#gstruct .icon-upload {
+	color: #0BD;
+	cursor: pointer;
+}
+#gstruct .icon-upload:hover {
+	color: blue;
+}
+#gstruct .icon-delete {
+	color: #EAA;
+	float: right;
+	cursor: pointer;
+}
+#gstruct .icon-delete:hover {
+	color: #F33;
+}
+#gstruct .slctd {
+	background-color: #E0E8FF;
+	cursor: grab;
+}
+#gstruct .album.moving {
+	cursor: grabbing;
+}
+.pubalb {
+	font-variant-caps: all-small-caps;
+	font-size: large;
+	color: crimson;
+	margin-left: 1em;
+}
+
 /* album view*/
 .anitem {
 /*	display: inline-block;*/

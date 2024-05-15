@@ -3,6 +3,7 @@
 * @package		com_meedya
 * @copyright	Copyright (C) 2023 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
+* @since		1.3.2
 */
 defined('_JEXEC') or die;
 
@@ -31,7 +32,7 @@ $this->jDoc->addScriptDeclaration('Meedya.L = '.json_encode($jslang).';
 <?php // echo HTMLHelper::_('meedya.searchField', 0); ?>
 <div class="albthumbs">
 <?php
-	echo'<xmp>';var_dump($this->items);echo'</xmp>';
+//	echo'<xmp>';var_dump($this->items);echo'</xmp>';
 	foreach ($this->items as $item) {
 		$pgid = basename(dirname($item->path));
 		$pgid .= '|'.substr($item->path, strrpos($item->path, '_'));

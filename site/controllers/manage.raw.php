@@ -55,6 +55,20 @@ class MeedyaControllerManage extends JControllerLegacy
 		}
 	}
 
+	// task to get data for a particular album
+	public function getAlbum ()
+	{
+		$aid = $this->input->post->get('aid', 0, 'int');
+		$m = $this->getModel('manage');
+		$dat = $m->getAlbum($aid);
+		if (!$dat) {
+			$this->app->setHeader('Status', 400, true);
+			$this->app->setHeader('Errmsg', "Could not get album data: {$aid}");
+		} else {
+			echo json_encode($dat);
+		}
+	}
+
 	// task to create a new album
 	public function newAlbum ()
 	{
@@ -65,7 +79,49 @@ class MeedyaControllerManage extends JControllerLegacy
 		$m = $this->getModel('manage');
 		$aid = $m->addAlbum($a, $p, $d);
 		if (!$aid) {
-			header("HTTP/1.0 400 Could not create album: {$a}");
+			//header("HTTP/1.0 400 Could not create album: {$a}");
+			$this->app->setHeader('Status', 400, true);
+			$this->app->setHeader('Errmsg', "Could not create album: {$a}");
+		} elseif ($this->input->post->get('o', 0, 'int')) {
+			$albs = $m->getAlbumsList();
+			echo HTMLHelper::_('meedya.albumsHierOptions', $albs, $aid);
+		}
+	}
+
+	// task to clone an album
+	public function clnAlbum ()
+	{
+		$this->tokenCheck();
+		$o = $this->input->post->get('oaid', 0, 'int');
+		$a = $this->input->post->get('albnam', '', 'string');
+		$p = $this->input->post->get('paralb', 0, 'int');
+		$d = $this->input->post->get('albdesc', null, 'string');
+		$m = $this->getModel('manage');
+		$aid = $m->clnAlbum($o, $a, $p, $d);
+		if (!$aid) {
+			//header("HTTP/1.0 400 Could not clone album: {$o}");
+			$this->app->setHeader('Status', 400, true);
+			$this->app->setHeader('Errmsg', "Could not clone album {$o}");
+		} elseif ($this->input->post->get('o', 0, 'int')) {
+			$albs = $m->getAlbumsList();
+			echo HTMLHelper::_('meedya.albumsHierOptions', $albs, $aid);
+		}
+	}
+
+	// task to clone an album
+	public function clnAlbSave ()
+	{
+		$this->tokenCheck();
+		$i = $this->input->post->get('aid', 0, 'int');
+		$a = $this->input->post->get('albnam', '', 'string');
+		$p = $this->input->post->get('paralb', 0, 'int');
+		$d = $this->input->post->get('albdesc', null, 'string');
+		$m = $this->getModel('manage');
+		$aid = $m->clnAlbSave($i, $a, $p, $d);
+		if (!$aid) {
+			//header("HTTP/1.0 400 Could not clone album: {$o}");
+			$this->app->setHeader('Status', 400, true);
+			$this->app->setHeader('Errmsg', "Could not save clone {$i}");
 		} elseif ($this->input->post->get('o', 0, 'int')) {
 			$albs = $m->getAlbumsList();
 			echo HTMLHelper::_('meedya.albumsHierOptions', $albs, $aid);
@@ -218,14 +274,14 @@ class MeedyaControllerManage extends JControllerLegacy
 	public function setVideoThumb ()
 	{
 		$this->tokenCheck();
-		if (empty($_POST['imgBase64'])) $this->fail('FAILED: server received no image data');
+		if (empty($_POST['imgBase64'])) $this->fail('Server received no image data');
 		$mtch = [];
-		if (!preg_match('#^data:image/(\w*);base64,#', $_POST['imgBase64'], $mtch)) $this->fail('FAILED: could not parse image data');
+		if (!preg_match('#^data:image/(\w*);base64,#', $_POST['imgBase64'], $mtch)) $this->fail('Could not parse image data');
 		if ($mtch[1]=='jpg') $mtch[1] = 'jpeg';
 		$tdir = JPATH_BASE . '/' . $this->gallPath . '/thm/';
 		$iid = $this->input->post->getInt('vid', 0);
 		$fn = 'videothumb_'.$iid.'.'.$mtch[1];
-		if (!file_put_contents($tdir.$fn, base64_decode(substr($_POST['imgBase64'], strlen($mtch[0]))))) $this->fail('FAILED: could not save thumbnail');
+		if (!file_put_contents($tdir.$fn, base64_decode(substr($_POST['imgBase64'], strlen($mtch[0]))))) $this->fail('Could not save thumbnail');
 
 		// set the item's thumb file in the db
 		$m = $this->getModel('manage');
@@ -291,14 +347,18 @@ class MeedyaControllerManage extends JControllerLegacy
 	private function tokenCheck ()
 	{
 		if (!Session::checkToken()) {
-			header('HTTP/1.1 403 Not Allowed');
+			//header('HTTP/1.1 403 Not Allowed');
+			$this->app->setHeader('Status', 403, true);
+			$this->app->setHeader('Errmsg', 'Not Allowed');
 			jexit(Text::_('JINVALID_TOKEN'));
 		}
 	}
 
 	private function fail ($msg)
 	{
-		header('HTTP/1.1 400 Failure');
+		//header('HTTP/1.1 400 Failure');
+		$this->app->setHeader('Status', 400, true);
+		$this->app->setHeader('Errmsg', 'Failure: '.$msg);
 		jexit($msg);
 	}
 

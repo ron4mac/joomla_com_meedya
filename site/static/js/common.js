@@ -44,7 +44,7 @@
 		if (task) parms.set('task', task);
 	
 		fetch(opts.rawURL, {method:'POST', body:parms})
-		.then(resp => { if (!resp.ok) throw new Error(`HTTP ${resp.status}`); if (json) return resp.json(); else return resp.text() })
+		.then(resp => { if (!resp.ok) throw new Error(`HTTP ${resp.status} `+resp.headers.get('errmsg','')); if (json) return resp.json(); else return resp.text() })
 		.then(data => cb && cb(data))
 		.catch(err => alert('Failure: '+err))
 		.then(()=>fini && fini());

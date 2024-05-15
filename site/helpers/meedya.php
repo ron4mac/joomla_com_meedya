@@ -78,7 +78,13 @@ abstract class MeedyaHelper
 	public static function getGalStruct ($list)
 	{
 		foreach ($list as &$alb) {
-			$alb['items'] = $alb['items'] ? count(explode('|',$alb['items'])) : 'no';
+			$alb['isClone'] = false;
+			if (substr($alb['items']?:' ',0,1)=='*') {
+				$alb['isClone'] = true;
+				$alb['oaid'] = (int) substr($alb['items'],1);
+			} else {
+				$alb['items'] = $alb['items'] ? count(explode('|',$alb['items'])) : 'no';
+			}
 		}
 		return $list;
 	}

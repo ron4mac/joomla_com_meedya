@@ -3,6 +3,7 @@
 * @package		com_meedya
 * @copyright	Copyright (C) 2023 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
+* @since		1.3.2
 */
 defined('_JEXEC') or die;
 
@@ -349,9 +350,9 @@ class MeedyaModelPublic extends JModelList
 		$owner = $this->getOwnerName($own);
 		$db = JDatabaseDriver::getInstance(['driver'=>'sqlite','database'=>$path.'/meedya.db3']);
 		$db->connect();
-		if ($this->full_gallery) {	echo'FULLFULL';
+		if ($this->full_gallery) {	echo'FULL FULL ';
 			$db->setQuery('SELECT aid,ownid FROM `albums` ORDER BY `hord`');
-		} else {	echo'NOT FULL';
+		} else {	//echo'NOT FULL ';
 			$db->setQuery('SELECT aid,ownid FROM `albums` WHERE `visib`>0 ORDER BY `hord`');
 		}
 		$albs = $db->loadAssocList();

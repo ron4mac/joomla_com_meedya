@@ -58,7 +58,7 @@ class MeedyaController extends JControllerLegacy
 		file_put_contents($udp.'/med/index.html', $htm);
 		$this->setRedirect(Route::_('index.php?option=com_meedya&Itemid='.$this->mnuItm, false));
 	}
-
+/*
 	// receive a rating vote
 	public function rateItem ()
 	{
@@ -120,50 +120,7 @@ class MeedyaController extends JControllerLegacy
 		$m = $this->getModel('social');
 		echo '&nbsp;'.HTMLHelper::_('meedya.cmntsIcon').' '.$m->addComment($iid, $this->uid, $cmnt);
 	}
-/*
-	public function picframekey ()
-	{
-		require_once JPATH_COMPONENT . '/classes/crypt.php';
-		file_put_contents('COMSUB.txt', print_r($this->input->post, true));
-		$parms = [];
-		$title = $this->input->post->get('title', '', 'string');
-		$parms['aid'] = $this->input->post->getInt('aid', 0);
-		$parms['rcr'] = $this->input->post->getInt('recur', 0);
-		$parms['obj'] = MeedyaHelper::getInstanceObject();
 
-		$jparms = json_encode($parms);
-		$sdly = $this->input->post->getInt('vtim', 30);
-		$key = JUri::root().'?option=com_meedya&format=raw&task=picframe&key='.urlencode(\ComMeedya\Encryption::encrypt($jparms, $this->app->get('secret')));
-		echo json_encode(['key'=>base64_encode($key),'title'=>base64_encode($title),'pcnt'=>0,'sdly'=>$sdly]);
-	}
-
-	public function picframe ()
-	{
-		header('Access-Control-Allow-Origin: *');
-		require_once JPATH_COMPONENT . '/classes/crypt.php';
-		$key = $this->input->get->get('key', '', 'base64');
-		$data = \ComMeedya\Encryption::decrypt($key, $this->app->get('secret'));
-		$prms = json_decode($data);
-		
-		$m = $this->getModel('picframe');
-		$pics = $m->getPlayList($prms->aid,$prms->rcr,$prms->obj);
-		echo "\t\t\t\t" . count($pics) . "\t" . implode("\n",$pics);
-	}
-
-	public function p4f ()
-	{
-		$file = 'test2.jpeg';
-	//	$this->app->allowCache(true);
-//		$this->app->clearHeaders()
-//			->setHeader('Content-Type','image/jpeg; charset=utf-8',true)
-//			->setHeader('Content-Length',(string)filesize($file),true)
-//			->sendHeaders();
-	//	header('Content-Type: image/jpeg');
-	//	header('Content-Length: ' . filesize($file));
-		echo '+_+_+_+_+_+_+';
-		readfile($file);
-	}
-*/
 	private function tokenCheck ()
 	{
 		if (!Session::checkToken()) {
@@ -171,6 +128,6 @@ class MeedyaController extends JControllerLegacy
 			jexit(Text::_('JINVALID_TOKEN'));
 		}
 	}
-
+*/
 
 }

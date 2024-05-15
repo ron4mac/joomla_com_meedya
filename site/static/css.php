@@ -25,11 +25,11 @@ function addStyle ($css)
 	global $dbg, $cssfiles;
 
 	if (!$dbg && file_exists($css.'.min.css')) {
-		$cssfiles[] = $css.'.min.css';
+		$cssfiles[$css.'.min.css'] = 1;
 		return;
 	}
 	if (file_exists($css.'.css')) {
-		$cssfiles[] = $css.'.css';
+		$cssfiles[$css.'.css'] = 1;
 	}
 }
 
@@ -98,7 +98,7 @@ foreach ($codes as $c) {
 $lastmod = 0;
 $totsize = 0;
 $csss = [];
-foreach ($cssfiles as $cssf) {
+foreach ($cssfiles as $cssf => $xv) {
 	if (is_array($cssf)) {
 		$totsize += strlen($cssf['s']) + 1;
 		$csss[] = $cssf['s'];
@@ -124,7 +124,7 @@ if (stripslashes($_SERVER['HTTP_IF_NONE_MATCH'] ?? '') == $hash)
 	header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $lastmod) . ' GMT');
 	header('ETag: ' . $hash);
 	header('Cache-Control: must-revalidate');
-	foreach ($cssfiles as $cssf) {
+	foreach ($cssfiles as $cssf => $xv) {
 		if (is_array($cssf)) {
 			echo $cssf['s'];
 		} else {
