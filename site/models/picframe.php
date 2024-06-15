@@ -3,7 +3,7 @@
 * @package		com_meedya
 * @copyright	Copyright (C) 2023 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.3.2
+* @since		1.3.3
 */
 defined('_JEXEC') or die;
 
@@ -101,7 +101,7 @@ class MeedyaModelPicframe extends Joomla\CMS\MVC\Model\BaseDatabaseModel
 		foreach ($itms as $iid) {
 			$itm = $this->getItemFile($iid);
 			if (substr($itm['mtype'],0,6) == 'image/') {
-				$items[] = $url . $itm['file'];
+				$items[] = ['iid'=>$iid, 'src'=>$url.$itm['file']];
 			}
 		}
 		return $items;

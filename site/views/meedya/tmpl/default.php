@@ -1,8 +1,9 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2022-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
+* @since		1.3.4
 */
 defined('_JEXEC') or die;
 
@@ -27,9 +28,9 @@ $this->jDoc->addScriptDeclaration('Meedya.L = '.json_encode($jslang).';
 ?>
 
 <div class="meedya-gallery">
-<?php echo HTMLHelper::_('meedya.pageHeader', $this->params); ?>
-<?php if ($this->userPerms->canAdmin || $this->userPerms->canUpload) echo HTMLHelper::_('meedya.manageMenu', $this->userPerms, 0, $this->itemId); ?>
-<?php echo HTMLHelper::_('meedya.searchField', 0); ?>
+<?php echo HtmlMeedya::pageHeader($this->params); ?>
+<?php if ($this->userPerms->canAdmin || $this->userPerms->canUpload) echo HtmlMeedya::manageMenu($this->userPerms, 0, $this->itemId); ?>
+<?php echo HtmlMeedya::searchField(0); ?>
 <div class="albthumbs">
 <?php
 	foreach ($this->items as $item) {

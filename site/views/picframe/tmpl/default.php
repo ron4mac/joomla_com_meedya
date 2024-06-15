@@ -1,9 +1,9 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2023 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2022-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.3.2
+* @since		1.3.4
 */
 defined('_JEXEC') or die;
 
@@ -213,8 +213,8 @@ $cancmnt = $this->uid || $this->params->get('pub_comments', 0);
 
 </style>
 <div class="meedya-gallery">
-<?php echo HTMLHelper::_('meedya.pageHeader', $this->params); ?>
-<?php if (!$this->isSearch) echo HTMLHelper::_('meedya.searchField', $this->aid); ?>
+<?php echo HtmlMeedya::pageHeader($this->params); ?>
+<?php if (!$this->isSearch) echo HtmlMeedya::searchField($this->aid); ?>
 	<div class="crumbs">
 	<?php
 		foreach ($this->pathWay as $crm) {
@@ -258,7 +258,7 @@ $cancmnt = $this->uid || $this->params->get('pub_comments', 0);
 		if ($use_ratings) $ttmpl .= '
 				<div class="strate"><div class="strback"><div class="strating" style="width:{{PCNT}}%"></div></div></div>';
 		if ($use_comments) $ttmpl .= '
-				<span class="mycmnts{{CCLAS}}">'.HTMLHelper::_('meedya.cmntsIcon').' {{CCNT}}</span>';
+				<span class="mycmnts{{CCLAS}}">'.HtmlMeedya::cmntsIcon().' {{CCNT}}</span>';
 		$ttmpl .= '
 			</div>
 ';
@@ -293,7 +293,7 @@ $cancmnt = $this->uid || $this->params->get('pub_comments', 0);
 				$thmsrc = 'img.png" data-echo="thm/'.$thumb;
 		}
 		$rplvals[] = 'components/com_meedya/static/img/'.$thmsrc;
-	//	if ($parray['use_ratings'] || $parray['use_comments']) $itemImgD->setFoot(HTMLHelper::_('meedya.starcmnt', $item, $parray['use_ratings'], $parray['use_comments']));
+	//	if ($parray['use_ratings'] || $parray['use_comments']) $itemImgD->setFoot(HtmlMeedya::starcmnt($item, $parray['use_ratings'], $parray['use_comments']));
 		$rplvals[] = $item['ratecnt'] ? $item['ratetot']/$item['ratecnt']*20 : 0;
 		$rplvals[] = $item['cmntcnt'] ? ' hasem' : ($cancmnt ? '' : 'no');
 		$rplvals[] = $item['cmntcnt'] ?: '&nbsp;';

@@ -1,9 +1,9 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2022-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.3.2
+* @since		1.3.4
 */
 defined('_JEXEC') or die;
 
@@ -52,7 +52,7 @@ $pubdis = $this->album['pub'] && $this->album['pub']!=$this->album['aid'] ? ' di
 }
 </style>
 <div class="meedya-gallery">
-<?php if ($this->manage) echo HTMLHelper::_('meedya.manageMenu', $this->userPerms, 0, $this->itemId); ?>
+<?php if ($this->manage) echo HtmlMeedya::manageMenu($this->userPerms, 0, $this->itemId); ?>
 <h3><?=Text::_('COM_MEEDYA_ALBEDIT')?> <?=$this->album['title']?></h3>
 <button type="button" class="<?=M34C::btn('ss')?>" id="albsavb" onclick="Meedya.saveAlbum()"><?=Text::_('COM_MEEDYA_SAVE')?></button>
 <button type="button" class="<?=M34C::btn('ss')?>" onclick="Meedya.cancelEdt()"><?=Text::_('JCANCEL')?></button>
@@ -86,16 +86,16 @@ $pubdis = $this->album['pub'] && $this->album['pub']!=$this->album['aid'] ? ' di
 </form>
 
 <div class="actbuts">
-	<?php //echo HTMLHelper::_('meedya.actionButtons', ['sela','seln','edts','movs','rems']); ?>
-	<?php echo HTMLHelper::_('meedya.actionButtons', ['sela','seln']); ?>
-	<?php echo HTMLHelper::_('meedya.actionSelect', ['edts','movs','rems']); ?>
+	<?php //echo HtmlMeedya::actionButtons(['sela','seln','edts','movs','rems']); ?>
+	<?php echo HtmlMeedya::actionButtons(['sela','seln']); ?>
+	<?php echo HtmlMeedya::actionSelect(['edts','movs','rems']); ?>
 </div>
 <form action="<?=Route::_('index.php?option=com_meedya&Itemid='.$this->itemId)?>" method="POST" name="adminForm" id="adminForm">
 <div id="area" style="display:flex;flex-wrap:wrap;-webkit-user-select:none;">
 <?php
 	foreach ($this->items as $item) {
 		if (!$item) continue;
-		echo HTMLHelper::_('meedya.imageThumbElement', (object)$this->getItemFile($item), true);
+		echo HtmlMeedya::imageThumbElement((object)$this->getItemFile($item), true);
 	}
 ?>
 <!-- 	<div id="itmend" class="noitem item"></div> -->
@@ -154,7 +154,7 @@ $mmdl = HTMLHelper::_(
 	'mov2albdlg',
 	[
 		'title' => Text::_('COM_MEEDYA_MANAGE_MOV2ALBUM'),
-		'footer' => HTMLHelper::_('meedya.modalButtons', 'COM_MEEDYA_MANAGE_MOVE_ITEMS', 'Meedya.movItems2Album(this)', 'creab'),
+		'footer' => HtmlMeedya::modalButtons('COM_MEEDYA_MANAGE_MOVE_ITEMS', 'Meedya.movItems2Album(this)', 'creab'),
 		//'modalWidth' => '40'
 	],
 	'',	//$this->loadTemplate('mov2alb')

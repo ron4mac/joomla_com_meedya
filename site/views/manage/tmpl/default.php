@@ -1,9 +1,9 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2022-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.3.2
+* @since		1.3.4
 */
 defined('_JEXEC') or die;
 
@@ -49,7 +49,7 @@ function buildTree(array $albums, &$html, $paid = 0) {
 
 $html = [];
 buildTree($this->galStruct, $html);
-//HTMLHelper::_('meedya.buildTree', $this->galStruct, $html);	echo'<xmp>';var_dump($html);echo'</xmp>';
+//HtmlMeedya::buildTree($this->galStruct, $html);	echo'<xmp>';var_dump($html);echo'</xmp>';
 //$this->btmscript[] = 'var albStruct = '. json_encode($this->galStruct).';';
 
 // use a catch-all click handler for the albums list
@@ -140,8 +140,8 @@ $hasImport = Folder::exists($this->gallpath.'/import');
 #myBar { width:0; background-color:#4CAF50; font-size:larger; padding:3px 0; }
 </style>
 <div class="meedya-gallery">
-	<?php if ($this->manage) echo HTMLHelper::_('meedya.manageMenu', $this->userPerms, 0, $this->itemId); ?>
-	<?php echo HTMLHelper::_('meedya.pageHeader', $this->params, $this->action/*.'XXXX'*/); ?>
+	<?php if ($this->manage) echo HtmlMeedya::manageMenu($this->userPerms, 0, $this->itemId); ?>
+	<?php echo HtmlMeedya::pageHeader($this->params, $this->action/*.'XXXX'*/); ?>
 	<div id="toolbar">
 		<a href="#newalbdlg" data-toggle="modal" data-bs-toggle="modal"><?=Text::_('COM_MEEDYA_NEW_ALBUM')?></a>&nbsp;
 		<a href="#clnalbdlg" data-toggle="modal" data-bs-toggle="modal" id="clone_a" class="disabled"><?=Text::_('COM_MEEDYA_CLNALBM')?></a>
@@ -169,7 +169,7 @@ echo HTMLHelper::_(
 	'bootstrap.renderModal',
 	'importdlg',
 	['title' => Text::_('COM_MEEDYA_IMPORT_ITEMS'),
-	'footer' => HTMLHelper::_('meedya.modalButtons', Text::_('COM_MEEDYA_IMPORT'),'importItems(this)', 'imporb'),
+	'footer' => HtmlMeedya::modalButtons(Text::_('COM_MEEDYA_IMPORT'),'importItems(this)', 'imporb'),
 	//'modalWidth' => '40'
 	],
 	$this->loadTemplate('import')

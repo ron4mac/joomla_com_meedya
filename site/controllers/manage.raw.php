@@ -1,9 +1,9 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2023 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2022-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.3.2
+* @since		1.3.4
 */
 defined('_JEXEC') or die;
 
@@ -13,7 +13,7 @@ use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Session\Session;
 use Joomla\CMS\Layout\LayoutHelper;
 
-JLoader::register('JHtmlMeedya', JPATH_COMPONENT . '/helpers/html/meedya.php');
+JLoader::register('HtmlMeedya', JPATH_COMPONENT . '/helpers/html/meedya.php');
 
 class MeedyaControllerManage extends JControllerLegacy
 {
@@ -84,7 +84,7 @@ class MeedyaControllerManage extends JControllerLegacy
 			$this->app->setHeader('Errmsg', "Could not create album: {$a}");
 		} elseif ($this->input->post->get('o', 0, 'int')) {
 			$albs = $m->getAlbumsList();
-			echo HTMLHelper::_('meedya.albumsHierOptions', $albs, $aid);
+			echo HtmlMeedya::albumsHierOptions($albs, $aid);
 		}
 	}
 
@@ -104,7 +104,7 @@ class MeedyaControllerManage extends JControllerLegacy
 			$this->app->setHeader('Errmsg', "Could not clone album {$o}");
 		} elseif ($this->input->post->get('o', 0, 'int')) {
 			$albs = $m->getAlbumsList();
-			echo HTMLHelper::_('meedya.albumsHierOptions', $albs, $aid);
+			echo HtmlMeedya::albumsHierOptions($albs, $aid);
 		}
 	}
 
@@ -124,7 +124,7 @@ class MeedyaControllerManage extends JControllerLegacy
 			$this->app->setHeader('Errmsg', "Could not save clone {$i}");
 		} elseif ($this->input->post->get('o', 0, 'int')) {
 			$albs = $m->getAlbumsList();
-			echo HTMLHelper::_('meedya.albumsHierOptions', $albs, $aid);
+			echo HtmlMeedya::albumsHierOptions($albs, $aid);
 		}
 	}
 
@@ -169,7 +169,7 @@ class MeedyaControllerManage extends JControllerLegacy
 			<select class="form-select form-select-sm" id="h5u_palbum" name="h5u_palbum">
 				<!-- <option value="">' . Text::_('COM_MEEDYA_H5U_SELPAR') . '</option> -->
 				' .$zo.'
-				' . HTMLHelper::_('meedya.albumsHierOptions', $albs) . '
+				' . HtmlMeedya::albumsHierOptions($albs) . '
 			</select>
 		</dd>
 		</dl>

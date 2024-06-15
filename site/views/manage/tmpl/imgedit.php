@@ -1,8 +1,9 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2022-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
+* @since		1.3.4
 */
 defined('_JEXEC') or die;
 
@@ -20,7 +21,7 @@ MeedyaHelper::oneScript('Mte');
 ?>
 </script>
 <form name="adminform" method="POST">
-<?=HTMLHelper::_('meedya.submissionButtons')?>
+<?=HtmlMeedya::submissionButtons()?>
 <input type="hidden" name="task" value="manage.iedSave" />
 <input type="hidden" name="referer" value="<?=base64_encode($this->referer)?>" />
 <input type="hidden" name="<?=Session::getFormToken()?>" value="1" />
@@ -58,7 +59,7 @@ MeedyaHelper::oneScript('Mte');
 	</div>
 </div>
 <?php endforeach; ?>
-<?=HTMLHelper::_('meedya.submissionButtons')?>
+<?=HtmlMeedya::submissionButtons()?>
 </form>
 <script>
 	jQuery(".itmtags").tagsInput();

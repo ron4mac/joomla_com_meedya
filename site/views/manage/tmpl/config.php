@@ -1,8 +1,9 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2022-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
+* @since		1.3.4
 */
 defined('_JEXEC') or die;
 
@@ -19,8 +20,8 @@ $jdoc = Factory::getDocument();
 
 echo '<div class="meedya-config">';
 
-if ($this->manage) echo HTMLHelper::_('meedya.manageMenu', $this->userPerms, 0, $this->itemId);
-echo HTMLHelper::_('meedya.pageHeader', $this->params, $this->action/*.'XXXX'*/);
+if ($this->manage) echo HtmlMeedya::manageMenu($this->userPerms, 0, $this->itemId);
+echo HtmlMeedya::pageHeader($this->params, $this->action/*.'XXXX'*/);
 
 echo HTMLHelper::_('bootstrap.startTabSet', 'mdya_tabs', ['active'=>'cfg-ah'])
 	,HTMLHelper::_('bootstrap.addTab', 'mdya_tabs', 'cfg-ah', Text::_('Panel Title 1'))

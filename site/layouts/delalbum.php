@@ -1,8 +1,9 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2023 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2022-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
+* @since		1.3.4
 */
 defined('JPATH_BASE') or die;
 
@@ -18,7 +19,7 @@ $mmdl = HTMLHelper::_(
 	'delact', // selector
 	array( // options
 		'title'  => Text::_('COM_MEEDYA_DELETE_ALBUM'),
-		'footer' => HTMLHelper::_('meedya.modalButtons', 'COM_MEEDYA_DELETE_ALBUM','Meedya.deleteAlbum(this)', 'deliB', false, 'btn btn-warning'),
+		'footer' => HtmlMeedya::modalButtons('COM_MEEDYA_DELETE_ALBUM','Meedya.deleteAlbum(this)', 'deliB', false, 'btn btn-warning'),
 		//'modalWidth' => 30
 	),
 	Text::_('COM_MEEDYA_DELETE_ALBUM_BLURB')

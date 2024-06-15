@@ -1,8 +1,9 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2022-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
+* @since		1.3.4
 */
 defined('_JEXEC') or die;
 
@@ -74,8 +75,8 @@ function editImg (iid) {
 </style>
 
 <div class="meedya-gallery">
-	<?php if ($this->manage) echo HTMLHelper::_('meedya.manageMenu', $this->userPerms, 0, $this->itemId); ?>
-	<?php echo HTMLHelper::_('meedya.pageHeader', $this->params, $this->action/*.'XXXX'*/); ?>
+	<?php if ($this->manage) echo HtmlMeedya::manageMenu($this->userPerms, 0, $this->itemId); ?>
+	<?php echo HtmlMeedya::pageHeader($this->params, $this->action/*.'XXXX'*/); ?>
 	<form action="<?=Route::_('index.php?option=com_meedya&view=manage&Itemid='.$this->itemId)?>" method="post" name="adminForm" id="adminForm">
 		<?php $fOpts = ['filterButton' => true]; ?>
 		<?php echo LayoutHelper::render('search', ['view' => $this, 'options' => $fOpts], JPATH_ROOT.'/components/com_meedya/layouts'); ?>
@@ -90,9 +91,9 @@ function editImg (iid) {
 			}
 		?>
 		<div class="actbuts">
-			<?php //echo HTMLHelper::_('meedya.actionButtons', ['sela','seln','edts','adds','dels']); ?>
-			<?php echo HTMLHelper::_('meedya.actionButtons', ['sela','seln']); ?>
-			<?php echo HTMLHelper::_('meedya.actionSelect', ['edts','adds','dels']); ?>
+			<?php //echo HtmlMeedya::actionButtons(['sela','seln','edts','adds','dels']); ?>
+			<?php echo HtmlMeedya::actionButtons(['sela','seln']); ?>
+			<?php echo HtmlMeedya::actionSelect(['edts','adds','dels']); ?>
 		</div>
 		<?php endif; ?>
 		<?php echo $this->loadTemplate($this->mode == 'G' ? 'grid' : 'list'); ?>
@@ -115,7 +116,7 @@ $mmdl = HTMLHelper::_(
 	'add2albdlg',
 	[
 		'title' => Text::_('COM_MEEDYA_ADD_ALBUM_ITEMS'),
-		'footer' => HTMLHelper::_('meedya.modalButtons', 'COM_MEEDYA_ADD2ALBUM', 'Meedya.addItems2Album(this)', 'creab'),
+		'footer' => HtmlMeedya::modalButtons('COM_MEEDYA_ADD2ALBUM', 'Meedya.addItems2Album(this)', 'creab'),
 		//'modalWidth' => '40'
 	],
 	$this->loadTemplate('add2alb')

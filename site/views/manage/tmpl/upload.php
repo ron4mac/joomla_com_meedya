@@ -1,8 +1,9 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2023 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2022-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
+* @since		1.3.4
 */
 defined('_JEXEC') or die;
 
@@ -125,8 +126,8 @@ if ($quota) {
 </style>
 <?php endif; ?>
 <div class="meedya-gallery">
-<?php echo HTMLHelper::_('meedya.manageMenu', $this->userPerms, 0, $this->itemId); ?>
-<?php echo HTMLHelper::_('meedya.pageHeader', $this->params, $this->action); ?>
+<?php echo HtmlMeedya::manageMenu($this->userPerms, 0, $this->itemId); ?>
+<?php echo HtmlMeedya::pageHeader($this->params, $this->action); ?>
 <?php if (false && $quota): ?>
 <h3>Storage Quota</h3>
 <div class="progress progress-<?=$bclas?>">
@@ -156,7 +157,7 @@ if (RJC_DBUG) {
 	<select id="h5u_album" name="h5u_album" onchange="Meedya.album_select(this)">
 		<option value="-1"><?=Text::_('COM_MEEDYA_H5U_NEWALBUM')?></option>
 		<option value=""<?=($this->aid?'':' selected')?>><?=Text::_('COM_MEEDYA_H5U_SELECT')?></option>
-		<?=HTMLHelper::_('meedya.albumsHierOptions', $this->albums, $this->aid)?>
+		<?=HtmlMeedya::albumsHierOptions($this->albums, $this->aid)?>
 	</select>
 </div>
 <div class="row-fluid">

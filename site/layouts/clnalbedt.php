@@ -1,9 +1,9 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2023 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2022-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.3.2
+* @since		1.3.4
 */
 defined('JPATH_BASE') or die;
 
@@ -26,7 +26,7 @@ if ($albums) $body .= '<div class="nualbtop">
 		<select class="form-select form-select-sm" id="cln_palbumed" name="cln_palbumed">
 			<!-- <option value="">' . Text::_('COM_MEEDYA_H5U_SELPAR') . '</option> -->
 			<option value="0">' . Text::_('COM_MEEDYA_H5U_NONE') . '</option>
-			' . HTMLHelper::_('meedya.albumsHierOptions', $albums) . '
+			' . HtmlMeedya::albumsHierOptions($albums) . '
 		</select>
 	</dd>
 	</dl>
@@ -43,7 +43,7 @@ $mmdl = HTMLHelper::_(
 	'bootstrap.renderModal',
 	'clnalbdlged',
 	['title' => Text::_('COM_MEEDYA_CLONE_ALBEDT'),
-	'footer' => HTMLHelper::_('meedya.modalButtons', 'COM_MEEDYA_SAVE', $script, 'clnabsv', false),
+	'footer' => HtmlMeedya::modalButtons('COM_MEEDYA_SAVE', $script, 'clnabsv', false),
 	//'modalWidth' => '40'
 	],
 	$body

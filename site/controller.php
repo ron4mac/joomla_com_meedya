@@ -1,9 +1,9 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2023 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2022-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.3.2
+* @since		1.3.4
 */
 defined('_JEXEC') or die;
 
@@ -13,7 +13,7 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Session\Session;
 
-JLoader::register('JHtmlMeedya', JPATH_COMPONENT . '/helpers/html/meedya.php');
+JLoader::register('HtmlMeedya', JPATH_COMPONENT . '/helpers/html/meedya.php');
 
 class MeedyaController extends JControllerLegacy
 {
@@ -118,7 +118,7 @@ class MeedyaController extends JControllerLegacy
 		$iid = $this->input->post->getInt('iid', 0);
 		$cmnt = $this->input->post->get('cmntext', '', 'string');
 		$m = $this->getModel('social');
-		echo '&nbsp;'.HTMLHelper::_('meedya.cmntsIcon').' '.$m->addComment($iid, $this->uid, $cmnt);
+		echo '&nbsp;'.HtmlMeedya::cmntsIcon().' '.$m->addComment($iid, $this->uid, $cmnt);
 	}
 
 	private function tokenCheck ()

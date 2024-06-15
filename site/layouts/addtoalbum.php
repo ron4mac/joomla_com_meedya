@@ -1,8 +1,9 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2023 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2022-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
+* @since		1.3.4
 */
 defined('_JEXEC') or die;
 
@@ -20,7 +21,7 @@ extract($displayData);	//albs,exca
 			<select class="form-select form-select-sm" id="h5u_album" name="h5u_album" onchange="Meedya.watchAlb(this)">
 				<option value="-1">[ NEW ALBUM ]</option>
 				<option value="0" selected="selected"><?=Text::_('COM_MEEDYA_H5U_SELECT')?></option>
-				<?=HTMLHelper::_('meedya.albumsHierOptions', $albs, 0, $exca)?>
+				<?=HtmlMeedya::albumsHierOptions($albs, 0, $exca)?>
 			</select>
 		</dd>
 		</dl>
@@ -41,7 +42,7 @@ extract($displayData);	//albs,exca
 			<select id="h5u_palbum" name="h5u_palbum">
 				<!-- <option value=""><?=Text::_('COM_MEEDYA_H5U_SELPAR')?></option> -->
 				<option value="0"><?=Text::_('COM_MEEDYA_H5U_NONE')?></option>
-				<?=HTMLHelper::_('meedya.albumsHierOptions', $albs)?>
+				<?=HtmlMeedya::albumsHierOptions($albs)?>
 			</select>
 		</dd>
 		</dl>

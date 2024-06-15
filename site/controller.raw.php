@@ -1,9 +1,9 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2023 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2022-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.3.2
+* @since		1.3.4
 */
 defined('_JEXEC') or die;
 
@@ -13,7 +13,7 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Session\Session;
 
-JLoader::register('JHtmlMeedya', JPATH_COMPONENT . '/helpers/html/meedya.php');
+JLoader::register('HtmlMeedya', JPATH_COMPONENT . '/helpers/html/meedya.php');
 
 define('PFDW', 1024);
 define('PFDH', 600);
@@ -85,7 +85,7 @@ class MeedyaController extends JControllerLegacy
 		$iid = $this->input->post->getInt('iid', 0);
 		$cmnt = $this->input->post->get('cmntext', '', 'string');
 		$m = $this->getModel('social');
-		echo '&nbsp;'.HTMLHelper::_('meedya.cmntsIcon').' '.$m->addComment($iid, $this->uid, $cmnt);
+		echo '&nbsp;'.HtmlMeedya::cmntsIcon().' '.$m->addComment($iid, $this->uid, $cmnt);
 	}
 
 
@@ -119,7 +119,7 @@ class MeedyaController extends JControllerLegacy
 		if ($this->input->get->get('act', '', 'string')=='thms') {
 			$thms = $m->getThumbnails($prms->aid,$prms->rcr,$prms->obj);
 			foreach ($thms as $thm) {
-				echo '<img class="pfthm" src="'.$thm.'">';
+				echo '<img class="pfthm" src="'.$thm['src'].'" data-iid="'.$thm['iid'].'">';
 			}
 		} else {
 			$pics = $m->getPlayList($prms->aid,$prms->rcr,$prms->obj);
@@ -140,7 +140,7 @@ class MeedyaController extends JControllerLegacy
 		//file_put_contents('OB.txt', print_r(ob_get_status(true), true), FILE_APPEND);
 		// try to clear any php notification messages that would corrupt the image data
 		// will likely only work with buffering set for php 
-		ob_end_clean();ob_end_clean();
+		@ob_end_clean();@ob_end_clean();
 
 		$this->app->clearHeaders()
 			->setHeader('Content-Type','image/jpeg; charset=utf-8',true);

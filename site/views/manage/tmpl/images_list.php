@@ -1,8 +1,9 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2022-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
+* @since		1.3.4
 */
 defined('_JEXEC') or die;
 
@@ -45,7 +46,7 @@ foreach ($this->iids as $item) {
 	echo '<tr>';
 	//echo'<xmp>';var_dump($item);echo'</xmp>';
 	echo '<td><div class="lstItem row-fluid">';
-	echo HTMLHelper::_('meedya.imageThumbElement', $item);
+	echo HtmlMeedya::imageThumbElement($item);
 	echo '</div></td>';
 	echo '<td><div class="lstText row-fluid"><dl>';
 	if ($item->title) echo '<dt>Title:</dt><dd>'.$item->title.'</dd>';

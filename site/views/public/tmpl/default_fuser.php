@@ -1,9 +1,9 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2023 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2022-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.3.2
+* @since		1.3.4
 */
 defined('_JEXEC') or die;
 
@@ -28,8 +28,8 @@ $this->jDoc->addScriptDeclaration('Meedya.L = '.json_encode($jslang).';
 ?>
 
 <div class="meedya-gallery">
-<?php echo HTMLHelper::_('meedya.pageHeader', $this->params); ?>
-<?php // echo HTMLHelper::_('meedya.searchField', 0); ?>
+<?php echo HtmlMeedya::pageHeader($this->params); ?>
+<?php // echo HtmlMeedya::searchField(0); ?>
 <div class="albthumbs">
 <?php
 	echo'<xmp>';var_dump($this->items);echo'</xmp>';
