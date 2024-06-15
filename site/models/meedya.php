@@ -1,8 +1,9 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2022-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
+* @since		1.3.4
 */
 defined('_JEXEC') or die;
 
@@ -71,6 +72,7 @@ class MeedyaModelMeedya extends Joomla\CMS\MVC\Model\ListModel
 	//
 	public function match ($pat, $fld)
 	{
+		if (is_null($fld)) return false;
 		$vals = explode(' ', trim($pat));
 		return preg_match('#'.implode('|', $vals).'#i', $fld);
 	}

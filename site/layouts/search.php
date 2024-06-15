@@ -1,8 +1,9 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2023 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2022-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
+* @since		1.3.4
 */
 defined('JPATH_BASE') or die;
 
@@ -103,5 +104,5 @@ HTMLHelper::_('searchtools.form', $options['formSelector'], $options);
 	<?php endif; ?>
 </div>
 <?php if ($options['showNoResults']) : ?>
-	<?php echo $this->sublayout('noitems', $displayData); ?>
+	<?php echo $this->sublayout('noitems', ['options'=>$options]); ?>
 <?php endif; ?>

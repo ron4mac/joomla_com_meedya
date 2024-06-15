@@ -26,7 +26,7 @@ if ($albums) $body .= '<div class="nualbtop">
 		<select class="form-select form-select-sm" id="cln_palbum" name="cln_palbum">
 			<!-- <option value="">' . Text::_('COM_MEEDYA_H5U_SELPAR') . '</option> -->
 			<option value="0">' . Text::_('COM_MEEDYA_H5U_NONE') . '</option>
-			' . HtmlMeedya::albumsHierOption, $albums) . '
+			' . HtmlMeedya::albumsHierOptions($albums) . '
 		</select>
 	</dd>
 	</dl>
