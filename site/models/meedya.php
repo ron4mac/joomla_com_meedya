@@ -3,7 +3,7 @@
 * @package		com_meedya
 * @copyright	Copyright (C) 2022-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.3.4
+* @since		1.3.5
 */
 defined('_JEXEC') or die;
 
@@ -29,8 +29,10 @@ class MeedyaModelMeedya extends Joomla\CMS\MVC\Model\ListModel
 		$doInit = !file_exists($udbPath);
 
 		try {
-			$db = JDatabaseDriver::getInstance(['driver'=>'sqlite','database'=>$udbPath]);
-			$db->connect();
+		//	$db = JDatabaseDriver::getInstance(['driver'=>'sqlite','database'=>$udbPath]);
+		//	$db->connect();
+			$db = RJUserCom::getDb(true);
+		//	$db->connect();
 			$dbc = $db->getConnection();
 			$dbc->sqliteCreateFunction('strtotime', 'strtotime', 1);
 			$dbc->sqliteCreateFunction('albhier', [$this,'albhier'], 2);
@@ -38,8 +40,8 @@ class MeedyaModelMeedya extends Joomla\CMS\MVC\Model\ListModel
 			$dbc->sqliteCreateFunction('match', [$this,'match'], 2);
 
 			if ($doInit) {
-				require_once JPATH_COMPONENT.'/helpers/db.php';
-				MeedyaHelperDb::buildDb($db);
+			//	require_once JPATH_COMPONENT.'/helpers/db.php';
+			//	MeedyaHelperDb::buildDb($db);
 			}
 
 			$config['dbo'] = $db;

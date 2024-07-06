@@ -1,9 +1,9 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2022-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.3.2
+* @since		1.3.5
 */
 defined('_JEXEC') or die;
 
@@ -360,7 +360,7 @@ class MeedyaModelManage extends MeedyaModelMeedya
 		$params = Factory::getApplication()->getParams();
 		$quota = MeedyaHelper::getStoreQuota($params);
 		if ($quota && $this->getStorageTotal() > $quota) {
-			unlink($filepath);
+			$uplodr_obj->cancel_transfer();
 			throw new Exception('Quota exceeded', 3);
 		}
 		$keep = (int)$params->get('keep_orig', 0);

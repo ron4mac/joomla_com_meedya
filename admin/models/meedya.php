@@ -1,8 +1,9 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2022-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
+* @since		1.3.5
 */
 defined('_JEXEC') or die;
 
@@ -33,11 +34,14 @@ class MeedyaModelMeedya extends JModelList
 		//$folds = MeedyaAdminHelper::getDbPaths($this->relm, 'meedya', true);
 		$folds = RJUserCom::getDbPaths($this->relm, 'meedya', true);
 		foreach ($folds as $dir => $mgis) foreach ($mgis as $mgi) {
-			$info = MeedyaHelperDb::getInfo($mgi['path']);	//var_dump($info);
-			$dbok = MeedyaHelperDb::checkDbVersion($mgi['path']);
+		//	$info = MeedyaHelperDb::getInfo($mgi['path']);	var_dump($info);
+		//	$dbok = MeedyaHelperDb::checkDbVersion($mgi['path'], $info);
+			$info = RJUserCom::getDbInfo($mgi['path'],'meedyaitems',[$this,'getStoreSizeCb']);	var_dump($info);
+			$dbok = MeedyaHelperDb::checkDbVersion($mgi['path'], $info);
+			if ($dbok) $info['warn'] = '<span style="color:red"> DB NEEDS UPDATE</span>';
 			$dbwarn = $dbok ? '' : '<span style="color:red"> DB NEEDS UPDATE</span>';
 			$userid = (int)substr($dir,1);
-		$char1 = substr($dir,0,1);
+			$char1 = substr($dir,0,1);
 			$files = count(glob(dirname($mgi['path']).'/img/[!\.]*')) -1;
 		//	if ($this->relm == 'u') {
 			if ($char1 == '@') {
@@ -58,7 +62,7 @@ class MeedyaModelMeedya extends JModelList
 	//	echo $listOrder;echo $listDirn;
 
 		foreach ($unotes as $key => $row) {
-			$name[$key]  = $row['name'];
+			$name[$key] = $row['name'];
 			$uname[$key] = $row['uname'];
 			$uid[$key] = $row['uid'];
 			$fcount[$key] = $row['fcount'];
@@ -87,6 +91,11 @@ class MeedyaModelMeedya extends JModelList
 		$this->cache[$store] = array_slice($unotes, $start, $limit ? $limit : null);
 
 		return $this->cache[$store];
+	}
+
+	public function getStoreSizeCb ($db)
+	{
+		return $db->setQuery('SELECT totuse FROM usage')->loadResult();
 	}
 
 	public function getTotal ()

@@ -1,8 +1,9 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2022-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
+* @since		1.3.5
 */
 defined('_JEXEC') or die;
 
@@ -21,8 +22,11 @@ abstract class MeedyaHelperDb
 		return ['size'=>$size,'items'=>$items,'dbv'=>$dbv];
 	}
 
-	public static function checkDbVersion ($udbPath)
+	public static function checkDbVersion ($udbPath, $info=null)
 	{
+		if (empty($info)) $info = self::getInfo($udbPath);
+		return file_exists(JPATH_COMPONENT_ADMINISTRATOR.'/sql/upd_'.$info['dbv'].'.sql');
+
 		$verf = dirname($udbPath).'/.dbver';
 		$curver = file_exists($verf) ? trim(file_get_contents($verf)) : '0.0.0';
 		$updsqlfiles = glob(JPATH_COMPONENT_ADMINISTRATOR.'/tables/upd_*.sql', GLOB_NOSORT);

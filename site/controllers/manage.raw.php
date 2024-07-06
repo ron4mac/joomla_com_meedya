@@ -3,7 +3,7 @@
 * @package		com_meedya
 * @copyright	Copyright (C) 2022-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.3.4
+* @since		1.3.5
 */
 defined('_JEXEC') or die;
 
@@ -42,8 +42,14 @@ class MeedyaControllerManage extends JControllerLegacy
 		$uplodr_obj = new Up_Load($this->input, $toname, ['target_dir'=>JPATH_BASE.'/']);
 		if ($toname) {
 			$m = $this->getModel('manage');
-			$qr = $m->storeFile($toname, $this->input->post, $uplodr_obj);
-			$resp['qp'] = $qr;
+			try {
+				$qr = $m->storeFile($toname, $this->input->post, $uplodr_obj);
+				$resp['qp'] = $qr;
+			} catch (Exception $e) {
+				ob_end_clean();
+				header('HTTP/1.1 '.(400+$e->getCode()).' Failed to store file');
+				jexit('Error storing file: ' . $e->getMessage());
+			}
 		}
 		$smsg = ob_get_contents();
 		ob_end_clean();

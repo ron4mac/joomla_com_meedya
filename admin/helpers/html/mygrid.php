@@ -1,8 +1,9 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2022-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
+* @since		1.3.5
 */
 defined('JPATH_PLATFORM') or die;
 
@@ -32,6 +33,8 @@ abstract class JHtmlMyGrid
 				case 'atts':
 					$html .= '<dt>'.'Attachments:'.'</dt><dd>'.$v.'</dd>';
 					break;
+				case 'warn':
+					$html .= '<dt>'.'Warning:'.'</dt><dd>'.$v.'</dd>';
 			}
 		}
 		return $html.'</dl>';

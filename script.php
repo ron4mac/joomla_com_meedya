@@ -1,8 +1,9 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2022-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
+* @since		1.3.5
 */
 defined('_JEXEC') or die;
 
@@ -26,7 +27,7 @@ class com_meedyaInstallerScript extends InstallerScript
 
 	public function update ($parent)
 	{
-		// perform any sqlite updates to all databases
+		Factory::getApplication()->enqueueMessage('<a href="index.php?option=com_meedya&view=groups">'.Text::_('COM_MEEDYA_UPDATE_MESSAGE').'</a>', 'warning');
 	}
 
 	/**
@@ -149,6 +150,11 @@ class com_meedyaInstallerScript extends InstallerScript
 		include JPATH_LIBRARIES . '/rjuser/com.php';
 		if (!class_exists('RJUserCom')) {
 			Log::add('The <a href="https://github.com/ron4mac/joomla_lib_rjuser" target="_blank">RJUser Library</a> is required for this component.', Log::WARNING, 'jerror');
+			return false;
+		}
+		// and is current enough
+		if (!(method_exists('RJUserCom','createDb'))) {
+			Log::add('The installed version of <a href="https://github.com/ron4mac/joomla_lib_rjuser" target="_blank">RJUser Library</a> must be updated.', Log::WARNING, 'jerror');
 			return false;
 		}
 

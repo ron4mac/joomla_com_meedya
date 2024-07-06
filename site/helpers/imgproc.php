@@ -1,8 +1,9 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2022-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
+* @since		1.3.5
 */
 defined('_JEXEC') or die;
 
@@ -42,6 +43,7 @@ class ImageProc
 	{
 		$this->src = $src;
 		list($this->img_width, $this->img_height, $this->img_type) = getimagesize($src);
+		if (!$this->img_width && !$this->img_height && !$this->img_type) throw new Exception('The image type is not supported');
 	}
 
 	// adjust a source dimension to just fit in a destination dimension, keeping aspect

@@ -3,7 +3,7 @@
 * @package		com_meedya
 * @copyright	Copyright (C) 2022-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.3.4
+* @since		1.3.5
 */
 defined('_JEXEC') or die;
 
@@ -21,7 +21,7 @@ $h5opts = [
 	'siteURL' => JUri::base().'index.php?option=com_meedya&Itemid='.$this->itemId,
 	'upURL' => Route::_('index.php?option=com_meedya&format=raw&Itemid='.$this->itemId, false),
 	'dropMessage' => 'Please drop files here to upload<br>(or click to select)',
-	'failcss' => 'alert-danger',
+//	'failcss' => 'alert-danger',
 	'concurrent' => 4,
 	'acptmime' => $this->acptmime,
 	'mimatch' => $this->mimatch,
