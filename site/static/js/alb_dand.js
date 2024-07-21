@@ -1,7 +1,8 @@
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2022-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
+* @since		1.4.0
 */
 /* globals Meedya,Joomla,My_bb */
 'use strict';
@@ -22,7 +23,7 @@ Meedya.AArrange = (function (mdya) {
 	// Private functions
 
 	let setAlbPaid = (aid, paid, func) => {
-		let prms = {task: 'manage.adjustAlbPaid', 'aid': aid, 'paid': paid};
+		let prms = {task: 'ManRaw.adjustAlbPaid', 'aid': aid, 'paid': paid};
 		prms[Joomla.getOptions('csrf.token', '')] = 1;
 		mdya.postAction(null, prms, (d) => func(d));
 	};

@@ -1,7 +1,8 @@
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2023 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2023-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
+* @since		1.4.0
 */
 /* globals Joomla */
 /* uplodr v0.9 */
@@ -227,7 +228,7 @@
 		$.numChnks = Math.ceil($.size / $.chnkSize);		//Math.max(Math.floor($.size / $.chnkSize), 1);
 		$.fData = $.pBar = null;
 		$.palod = opts.payload();
-		$.upForm = {task: 'manage.upfile', [Joomla.getOptions('csrf.token')]: 1};	// extra data can be added
+		$.upForm = {task: 'ManRaw.upfile', [Joomla.getOptions('csrf.token')]: 1};	// extra data can be added
 		$.X = new XMLHttpRequest();
 
 		const endup = (all) => {

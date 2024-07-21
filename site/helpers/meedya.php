@@ -1,9 +1,9 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2023 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2023-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.3.2
+* @since		1.4.0
 */
 defined('_JEXEC') or die;
 
@@ -20,7 +20,7 @@ abstract class MeedyaHelper
 	public static function getInstanceObject ($mid=null)	// SO
 	{
 		if (!empty(self::$instanceObj)) return self::$instanceObj;
-		self::$instanceObj = RJUserCom::getInstObject('instance_type', $mid);
+		self::$instanceObj = \RJUserCom::getInstObject($mid);
 		return self::$instanceObj;
 	}
 
@@ -48,7 +48,7 @@ abstract class MeedyaHelper
 	{
 		if (self::$udp) return self::$udp;
 		if (!self::$instanceObj) self::getInstanceObject($mnuid);
-		self::$udp = RJUserCom::getStoragePath(self::$instanceObj);
+		self::$udp = \RJUserCom::getStoragePath(self::$instanceObj);
 		return self::$udp;
 	}
 

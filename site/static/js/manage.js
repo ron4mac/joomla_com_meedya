@@ -1,12 +1,12 @@
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2023 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2023-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.3.2
+* @since		1.4.0
 */
 /* globals Joomla,My_bb */
 
-(function(Meedya, my, w) {
+(function (Meedya, my, w) {
 	'use strict';
 
 	// establish some common variables
@@ -134,7 +134,7 @@
 	Meedya.moveSelected = (e) => {
 		Meedya._pd(e);
 		const dodlg = () => {
-			postAction('manage.getAlbumSelect',
+			postAction('ManRaw.getAlbumSelect',
 				{exc: document.albForm.aid.value},
 				(data) => { document.querySelector("#mov2albdlg .modal-body").innerHTML = data },
 				false,
@@ -214,7 +214,7 @@
 			case 'icon-edit aclone':
 				Meedya._pd(e);
 				let ajd = {aid: elm.parentElement.dataset.aid};
-				postAction('manage.getAlbum', ajd, (data) => {
+				postAction('ManRaw.getAlbum', ajd, (data) => {
 					//console.log(data);
 					Meedya._id('clnaid').value = data.aid;
 					Meedya._id('clalbnamed').value = data.title;
@@ -294,7 +294,7 @@
 		let nualbnam = albNamFld.value.trim();
 		let ajd = {albnam: nualbnam, paralb: (albParFld ? albParFld.value : 0), albdesc: albDscFld.value};
 		ajd[formTokn] = 1;
-		postAction('manage.newAlbum', ajd, (data) => {if (data) alert(data); else w.location.reload(true);});
+		postAction('ManRaw.newAlbum', ajd, (data) => {if (data) alert(data); else w.location.reload(true);});
 	};
 
 	// request new clone of existing album
@@ -307,7 +307,7 @@
 		let nualbnam = albNamFld.value.trim();
 		let ajd = {albnam: nualbnam, paralb: (albParFld ? albParFld.value : 0), albdesc: albDscFld.value, oaid: oaid.value};
 		ajd[formTokn] = 1;
-		postAction('manage.clnAlbum', ajd, (data) => {if (data) alert(data); else w.location.reload(true);});
+		postAction('ManRaw.clnAlbum', ajd, (data) => {if (data) alert(data); else w.location.reload(true);});
 	};
 
 	// request save of updated clone album
@@ -320,7 +320,7 @@
 		let nualbnam = albNamFld.value.trim();
 		let ajd = {albnam: nualbnam, paralb: (albParFld ? albParFld.value : 0), albdesc: albDscFld.value, aid: aid.value};
 		ajd[formTokn] = 1;
-		postAction('manage.clnAlbSave', ajd, (data) => {if (data) alert(data); else w.location.reload(true);});
+		postAction('ManRaw.clnAlbSave', ajd, (data) => {if (data) alert(data); else w.location.reload(true);});
 	};
 
 	// rearrange items in an album
@@ -385,7 +385,7 @@
 		let dataURL = _CANVAS.toDataURL('image/jpeg', 0.8);
 		let ajd = {vid: iid, imgBase64: dataURL};
 		ajd[formTokn] = 1;
-		postAction('manage.setVideoThumb', ajd, (data) => { Meedya.thmelmsrc.src = data; Meedya.Zoom.close(); });
+		postAction('ManRaw.setVideoThumb', ajd, (data) => { Meedya.thmelmsrc.src = data; Meedya.Zoom.close(); });
 	};
 
 	let thmsDirty = false;
@@ -423,7 +423,7 @@
 	let open = (pID, elm) => {
 		if (elm) mdya.thmelmsrc = elm.parentElement.previousElementSibling.firstElementChild;
 		area = document.createElement('div');
-		mdya.postAction('manage.getZoomItem', {iid: pID}, (data) => { area.innerHTML = data });
+		mdya.postAction('ManRaw.getZoomItem', {iid: pID}, (data) => { area.innerHTML = data });
 		area.className = 'zoom-area';
 		area.tabIndex = "-1";
 		back = document.createElement('div');
@@ -467,7 +467,7 @@
 	let open = (pID, elm) => {
 		if (elm) mdya.thmelmsrc = elm.parentElement.previousElementSibling.firstElementChild;
 		area = document.createElement('div');
-		mdya.postAction('manage.getItemInfo', {iid: pID}, (data) => { area.innerHTML = data });
+		mdya.postAction('ManRaw.getItemInfo', {iid: pID}, (data) => { area.innerHTML = data });
 		area.className = 'info-area';
 		area.tabIndex = "-1";
 		back = document.createElement('div');
