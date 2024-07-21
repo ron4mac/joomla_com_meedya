@@ -1,8 +1,9 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2023 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2023-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
+* @since		1.3.6
 */
 defined('_JEXEC') or die;
 
@@ -45,12 +46,12 @@ abstract class MeedyaAdminHelper
 		return $vray[$scr][JDEBUG ? 0 : 1].$sfx;
 	}
 
-	public static function getStorageBase ()
+/*	public static function getStorageBase ()
 	{
 		$result = Factory::getApplication()->triggerEvent('onRjuserDatapath');
 		$sdp = trim($results[0] ?? '');
 		return ($sdp ?: 'userstor');
-	}
+	}*/
 
 	public static function getGalStruct ($list)
 	{

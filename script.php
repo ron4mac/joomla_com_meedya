@@ -3,13 +3,14 @@
 * @package		com_meedya
 * @copyright	Copyright (C) 2022-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.3.5
+* @since		1.3.6
 */
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
-use Joomla\CMS\Installer\InstallerScript;
 use Joomla\CMS\Log\Log;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Installer\InstallerScript;
 
 class com_meedyaInstallerScript extends InstallerScript
 {

@@ -7,7 +7,7 @@
 	<license>GNU General Public License version 3 or later; see LICENSE.txt</license>
 	<authorEmail>ron@rjconline.net</authorEmail>
 	<authorUrl>rjconline.net</authorUrl>
-	<version>1.3.5</version>
+	<version>1.3.6</version>
 	<updater jver="(3\.[89])||(3\.1\d)||(4\.[0-6])" pver="7.0" />
 	<description>COM_MEEDYA_XML_DESCRIPTION</description>
 	<scriptfile>script.php</scriptfile>
@@ -34,7 +34,7 @@
 	<administration>
 		<menu img="class:meedya">COM_MEEDYA_MENU</menu>
 		<submenu>
-			<!--Note that all & must be escaped to &amp; -->
+			<!-- Note that all & must be escaped to &amp; -->
 			<menu view="users" img="class:meedya-user" alt="Meedya/Users">Users</menu>
 			<menu view="groups" img="class:meedya-group" alt="Meedya/Groups">Groups</menu>
 		</submenu>
@@ -44,10 +44,10 @@
 			<filename>controller.php</filename>
 			<filename>index.html</filename>
 			<filename>meedya.php</filename>
-			<folder>controllers</folder>
+			<!-- <folder>controllers</folder> -->
 			<folder>helpers</folder>
 			<folder>models</folder>
-			<folder>tables</folder>
+			<!-- <folder>tables</folder> -->
 			<folder>views</folder>
 			<folder>language</folder>
 			<folder>static</folder>

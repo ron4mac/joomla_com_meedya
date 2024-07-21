@@ -1,8 +1,9 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2022-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
+* @since		1.3.6
 */
 defined('_JEXEC') or die;
 
@@ -59,7 +60,7 @@ $canDo		= MeedyaAdminHelper::getActions();
 						<?php echo $i + 1 + $this->pagination->limitstart; ?>
 					</td>
 					<td>
-						<?php echo HTMLHelper::_('grid.id', $i, $item['uid']); ?>
+						<?php echo HTMLHelper::_('grid.id', $i, $item['uid'].'|'.$item['mnun']); ?>
 					</td>
 					<td>
 						<?php echo $item['uname']; ?>

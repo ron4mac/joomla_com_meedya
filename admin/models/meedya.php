@@ -3,7 +3,7 @@
 * @package		com_meedya
 * @copyright	Copyright (C) 2022-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.3.5
+* @since		1.3.6
 */
 defined('_JEXEC') or die;
 
@@ -31,12 +31,9 @@ class MeedyaModelMeedya extends JModelList
 		}
 
 		$unotes = [];
-		//$folds = MeedyaAdminHelper::getDbPaths($this->relm, 'meedya', true);
 		$folds = RJUserCom::getDbPaths($this->relm, 'meedya', true);
 		foreach ($folds as $dir => $mgis) foreach ($mgis as $mgi) {
-		//	$info = MeedyaHelperDb::getInfo($mgi['path']);	var_dump($info);
-		//	$dbok = MeedyaHelperDb::checkDbVersion($mgi['path'], $info);
-			$info = RJUserCom::getDbInfo($mgi['path'],'meedyaitems',[$this,'getStoreSizeCb']);	var_dump($info);
+			$info = RJUserCom::getDbInfo($mgi['path'],'meedyaitems',[$this,'getStoreSizeCb']);
 			$dbok = MeedyaHelperDb::checkDbVersion($mgi['path'], $info);
 			if ($dbok) $info['warn'] = '<span style="color:red"> DB NEEDS UPDATE</span>';
 			$dbwarn = $dbok ? '' : '<span style="color:red"> DB NEEDS UPDATE</span>';
