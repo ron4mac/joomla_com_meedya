@@ -11,6 +11,7 @@ defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Component\ComponentHelper;
+use RJCreations\Component\Meedya\Site\Helper\MeedyaHelper;
 
 class SearchModel extends MeedyaModel
 {
@@ -33,7 +34,7 @@ class SearchModel extends MeedyaModel
 		} else {
 			$query->where($terms,'OR');
 		}
-		if (RJC_DBUG) \MeedyaHelper::log('ModelSearch search', (string)$query);
+		if (RJC_DBUG) MeedyaHelper::log('ModelSearch search', (string)$query);
 
 		$db->setQuery($query);
 		$r = $db->loadAssocList();
@@ -103,7 +104,7 @@ class SearchModel extends MeedyaModel
 				$query->where('album='.$aid);
 			}
 			}
-			if (RJC_DBUG) \MeedyaHelper::log('ModelManage getListQuery(items)', $query);
+			if (RJC_DBUG) MeedyaHelper::log('ModelManage getListQuery(items)', $query);
 			return $query;
 		}
 

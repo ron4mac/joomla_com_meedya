@@ -12,9 +12,11 @@ defined('_JEXEC') or die;
 use Joomla\CMS\Factory;
 use Joomla\CMS\MVC\Model\ListModel;
 use Joomla\CMS\Component\ComponentHelper;
+use RJCreations\Component\Meedya\Site\Helper\MeedyaHelper;
 
 class MeedyaModel extends ListModel
 {
+	protected $userId = 0;
 	protected $curAlbID = 0;
 	protected $_album = null;
 
@@ -22,7 +24,7 @@ class MeedyaModel extends ListModel
 	public function __construct ($config = [], $factory = null)
 	{
 		$dbFile = '/meedya.db3';
-		$udbDir = \MeedyaHelper::userDataPath();
+		$udbDir = \RJUserCom::getStoragePath();
 		if (!$udbDir) {
 			throw new Exception('ACCESS NOT ALLOWED', 403);
 		}
@@ -44,10 +46,11 @@ class MeedyaModel extends ListModel
 
 			$config['dbo'] = $db;
 		}
-		catch (JDatabaseExceptionConnecting $e) {
+		catch (\JDatabaseExceptionConnecting $e) {
 			echo'<xmp>';var_dump($e);echo'</xmp>';
 			jexit();
 		}
+		$this->userId = \RJUserCom::getInstObject()->uid;
 		parent::__construct($config, $factory);
 	}
 
@@ -172,7 +175,7 @@ class MeedyaModel extends ListModel
 		$query->from('albums');
 		$query->where('paid='.$this->curAlbID);
 		$query->order($albord[$ordopt]);
-		if (RJC_DBUG) \MeedyaHelper::log('ModelMeedya getListQuery', (string)$query);
+		if (RJC_DBUG) MeedyaHelper::log('ModelMeedya getListQuery', (string)$query);
 		return $query;
 	}
 
@@ -237,11 +240,11 @@ class MeedyaModel extends ListModel
 
 	private function getAlbum ()
 	{
-		if (RJC_DBUG) \MeedyaHelper::log('ModelMeedya getAlbum', $this->_album);
+		if (RJC_DBUG) MeedyaHelper::log('ModelMeedya getAlbum', $this->_album);
 		if (true || !$this->_album) {
 //			$items = parent::getItems();
 			$items = $this->getItems();
-			if (RJC_DBUG) \MeedyaHelper::log('ModelMeedya getAlbum items', $items);
+			if (RJC_DBUG) MeedyaHelper::log('ModelMeedya getAlbum items', $items);
 			$this->_album = $items[0];
 		}
 	}

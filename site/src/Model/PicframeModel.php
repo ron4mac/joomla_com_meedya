@@ -1,13 +1,19 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2023 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2023-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.3.3
+* @since		1.4.0
 */
+namespace RJCreations\Component\Meedya\Site\Model;
+
 defined('_JEXEC') or die;
 
-class MeedyaModelPicframe extends Joomla\CMS\MVC\Model\BaseDatabaseModel
+use Joomla\CMS\Uri\Uri;
+use Joomla\CMS\Router\Route;
+use Joomla\Database\DatabaseDriver;
+
+class PicframeModel extends \Joomla\CMS\MVC\Model\BaseDatabaseModel
 {
 	protected $db = null;
 	protected $imgp = '';
@@ -20,10 +26,10 @@ class MeedyaModelPicframe extends Joomla\CMS\MVC\Model\BaseDatabaseModel
 	{
 		if (empty($config['dbo']) && $config['inst']) {
 			$dbFile = '/meedya.db3';
-			$this->udp = RJUserCom::getStoragePath($config['inst']);
+			$this->udp = \RJUserCom::getStoragePath($config['inst']);
 			$udbPath = $this->udp.$dbFile;
 			try {
-				$db = JDatabaseDriver::getInstance(['driver'=>'sqlite','database'=>$udbPath]);
+				$db = DatabaseDriver::getInstance(['driver'=>'sqlite','database'=>$udbPath]);
 				$db->connect();
 				$this->db = $db;
 				$config['dbo'] = $db;
@@ -39,20 +45,8 @@ class MeedyaModelPicframe extends Joomla\CMS\MVC\Model\BaseDatabaseModel
 	public function getPlayList ($aid, $recur, $inst)
 	{
 		$this->galinst = base64_encode(json_encode($inst));
-//		$dbFile = '/meedya.db3';
-//		$udp = RJUserCom::getStoragePath($inst);	//echo $udp; jexit();
-		$this->imgp = JUri::root() . $this->udp . '/med/';
-//		$udbPath = $udp.$dbFile;
-//		try {
-//			$db = JDatabaseDriver::getInstance(['driver'=>'sqlite','database'=>$udbPath]);
-//			$db->connect();
-//			$this->db = $db;
-			return $this->getAlbImgs($aid);
-//		}
-//		catch (JDatabaseExceptionConnecting $e) {
-//			echo'<xmp>';var_dump($e);echo'</xmp>';
-//			jexit();
-//		}
+		$this->imgp = Uri::root() . $this->udp . '/med/';
+		return $this->getAlbImgs($aid);
 	}
 
 	public function getThumbnails ($aid, $recur, $inst)
@@ -69,7 +63,7 @@ class MeedyaModelPicframe extends Joomla\CMS\MVC\Model\BaseDatabaseModel
 
 	private function getAlbImgs ($aid)
 	{
-		$url = Joomla\CMS\Router\Route::_('index.php?option=com_meedya&format=raw&task=p4f&p=', false, 0, true);
+		$url = Route::_('index.php?option=com_meedya&format=raw&task=DispRaw.p4f&p=', false, 0, true);
 	//	$url = JUri::root() . 'picframe.php/?gi=';
 		$this->db->setQuery('SELECT items FROM albums WHERE aid='.$aid);
 		if (!$ilst = trim($this->db->loadResult()?:'')) return [];
@@ -93,7 +87,7 @@ class MeedyaModelPicframe extends Joomla\CMS\MVC\Model\BaseDatabaseModel
 
 	private function getAlbImgThms ($aid)
 	{
-		$url = JUri::root() . $this->udp . '/thm/';
+		$url = Uri::root() . $this->udp . '/thm/';
 		$this->db->setQuery('SELECT items FROM albums WHERE aid='.$aid);
 		if (!$ilst = trim($this->db->loadResult()?:'')) return [];
 		$itms = explode('|', $ilst);

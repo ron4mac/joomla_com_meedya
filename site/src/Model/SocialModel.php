@@ -1,14 +1,17 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2022-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
+* @since		1.4.0
 */
+namespace RJCreations\Component\Meedya\Site\Model;
+
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
 
-class MeedyaModelSocial extends MeedyaModelMeedya
+class SocialModel extends MeedyaModel
 {
 
 	// store submitted ratings for items
@@ -37,15 +40,13 @@ class MeedyaModelSocial extends MeedyaModelMeedya
 			return 0;
 		}
 
-		// MAY WANT TO PROVIDE A METHOD TO CLEAR AWAY OLD RECORDS (maybe older than 90 days: time()-7776000)
-//		if (false) {
-			$bfd = time()-7776000;	// 90 days (could make configurable)
-			$db->setQuery('DELETE FROM uratings WHERE rdate<'.$bfd)->execute();
-			$db->setQuery('DELETE FROM gratings WHERE rdate<'.$bfd)->execute();
-//		}
+		// clear away ratings records older that 90 days	%%%%% MAY WANT TO MAKE CONFIGURABLE IN THE FUTURE %%%%%
+		$bfd = time()-7776000;	// 90 days (could make configurable)
+		$db->setQuery('DELETE FROM uratings WHERE rdate<'.$bfd)->execute();
+		$db->setQuery('DELETE FROM gratings WHERE rdate<'.$bfd)->execute();
 
 		// remember where the rating came from to inhibit multiples
-		$uid = Factory::getUser()->get('id');
+		$uid = $this->userId;
 		if ($uid) {
 			$db->setQuery('INSERT INTO uratings (iid,uid,rdate) VALUES('.$iid.','.$uid.','.time().')');
 		} else {
@@ -62,7 +63,7 @@ class MeedyaModelSocial extends MeedyaModelMeedya
 	public function rateChk ($iid)
 	{
 		$db = $this->getDbo();
-		$uid = Factory::getUser()->get('id');
+		$uid = $this->userId;
 		if ($uid) {
 			$db->setQuery('SELECT rdate FROM uratings WHERE iid='.$iid.' AND uid='.$uid);
 		} else {

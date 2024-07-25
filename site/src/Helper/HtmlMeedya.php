@@ -3,13 +3,16 @@
 * @package		com_meedya
 * @copyright	Copyright (C) 2022-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.3.4
+* @since		1.4.0
 */
+namespace RJCreations\Component\Meedya\Site\Helper;
+
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Language\Text;
+//use RJCreations\Component\Meedya\Site\Helper\M34C;
 
 abstract class HtmlMeedya
 {
@@ -21,7 +24,7 @@ abstract class HtmlMeedya
 			$html .= $params->get('page_title');
 			switch ($params->get('instance_type', 3)) {
 				case 0:
-					$user = Factory::getUser();
+					$user = Factory::getApplication()->getIdentity();
 					$html .= ' <small>- '.$user->name.'</small>';
 					break;
 				case 1:
@@ -63,7 +66,7 @@ EOD;
 		$itmid = $Itemid ? ('&Itemid='.$Itemid) : '';
 		$html = '<div class="mgmenu btn-group dropdown">
 	<button class="btn btn-small dropdown-toggle" '.M34C::bs('toggle').'="dropdown" type="button" id="mmnulink">
-		<i class="icon-pencil"></i>'.Text::_('COM_MEEDYA_MENU_MANAGE').' <span class="caret"></span>
+		<i class="fa fa-edit"></i>'.Text::_('COM_MEEDYA_MENU_MANAGE').' <span class="caret"></span>
 	</button>
 	<div class="dropdown-menu dropdown-menu-end" aria-labelledby="mmnulink">';
 		if ($perms->canAdmin || $perms->canUpload) {
@@ -88,7 +91,7 @@ EOD;
 		$itmid = $Itemid ? ('&Itemid='.$Itemid) : '';
 		$html = '<div class="btn-group mgmenu dropdown">
 	<a class="btn btn-small dropdown-toggle" '.M34C::bs('toggle').'="dropdown" href="#">
-		<i class="icon-pencil"></i> '.Text::_('COM_MEEDYA_MENU_MANAGE').' <span class="caret"></span>
+		<i class="fa fa-edit"></i> '.Text::_('COM_MEEDYA_MENU_MANAGE').' <span class="caret"></span>
 	</a>
 	<ul class="dropdown-menu">';
 		if ($perms->canAdmin || $perms->canUpload) {
@@ -271,9 +274,9 @@ EOD;
 		return $branch;
 	}
 
-	public static function cmntsIcon ()
+	public static function cmntsIcon ($has=false)
 	{
-		return ((int)JVERSION < 4) ? '&nbsp;<span class="icon-comments-2"> </span>' : '&nbsp;<i class="far fa-comments"></i>';
+		return $has ? '&nbsp;<i class="fas fa-comments"></i>' : '&nbsp;<i class="{{CICLS}} fa-comments"></i>';
 	}
 
 	public static function starcmnt ($item, $star, $cmnt)

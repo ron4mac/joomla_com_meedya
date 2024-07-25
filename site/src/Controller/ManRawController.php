@@ -15,10 +15,12 @@ use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Session\Session;
 use Joomla\CMS\Layout\LayoutHelper;
 use Joomla\CMS\MVC\Controller\BaseController;
+use RJCreations\Component\Meedya\Site\Helper\HtmlMeedya;
+use RJCreations\Component\Meedya\Site\Helper\MeedyaHelper;
 
 \JLoader::register('RJUserCom', JPATH_LIBRARIES . '/rjuser/com.php');
-\JLoader::register('MeedyaHelper', JPATH_COMPONENT.'/helpers/meedya.php');
-\JLoader::register('HtmlMeedya', JPATH_COMPONENT . '/helpers/html/meedya.php');
+//\JLoader::register('MeedyaHelper', JPATH_COMPONENT.'/helpers/meedya.php');
+//\JLoader::register('HtmlMeedya', JPATH_COMPONENT . '/helpers/html/meedya.php');
 
 define('RJC_DBUG', (true || JDEBUG) && file_exists(JPATH_ROOT.'/rjcdev.php'));
 
@@ -39,7 +41,7 @@ class ManRawController extends BaseController
 	// task to receive and store uploaded files
 	public function upfile ()
 	{
-	//	if (RJC_DBUG) \MeedyaHelper::log('upfile:', $this->input);
+	//	if (RJC_DBUG) MeedyaHelper::log('upfile:', $this->input);
 		$this->_tokenCheck();
 
 		require_once JPATH_COMPONENT.'/classes/uplodr.php';
@@ -99,7 +101,7 @@ class ManRawController extends BaseController
 			$this->app->setHeader('Errmsg', "Could not create album: {$a}");
 		} elseif ($this->input->post->get('o', 0, 'int')) {
 			$albs = $m->getAlbumsList();
-			echo \HtmlMeedya::albumsHierOptions($albs, $aid);
+			echo HtmlMeedya::albumsHierOptions($albs, $aid);
 		}
 		$this->app->close();
 	}
@@ -274,7 +276,7 @@ class ManRawController extends BaseController
 				echo '<dt>KEYWORDS</dt><dd>'.$item['kywrd'].'</dd>';
 				echo '<dt>FILENAME</dt><dd>'.$item['file'].'</dd>';
 				echo '<dt>MIMETYPE</dt><dd>'.$item['mtype'].'</dd>';
-				echo '<dt>STORAGE</dt><dd>'. \MeedyaHelper::formatBytes($item['tsize']).'</dd>';
+				echo '<dt>STORAGE</dt><dd>'. MeedyaHelper::formatBytes($item['tsize']).'</dd>';
 				echo '<dt>UPLOAD</dt><dd>'.$item['timed'].'</dd>';
 				echo '<dt>EXPOSURE</dt><dd>'.$item['expodt'].'</dd>';
 				echo '<dt>ALBUMS</dt><dd>'.$m->getAlbumTitles($item['album']).'</dd>';

@@ -1,12 +1,22 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2022-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
+* @since		1.4.0
 */
+namespace RJCreations\Component\Meedya\Site\View\Slides;
+
 defined('_JEXEC') or die;
 
-class MeedyaViewSlides extends MeedyaView
+use Joomla\Application\Web\WebClient;
+use RJCreations\Component\Meedya\Site\View\MeedyaView;
+use RJCreations\Component\Meedya\Site\Helper\MeedyaHelper;
+
+
+//require_once JPATH_BASE . '/components/com_meedya/src/View/MeedyaView.php';
+
+class HtmlView extends MeedyaView
 {
 	protected $slides = [];
 	protected $album;
@@ -27,7 +37,7 @@ class MeedyaViewSlides extends MeedyaView
 		if (!$this->html5slideshowCfg) {
 			$this->html5slideshowCfg = MeedyaHelper::$ssDefault;
 		}
-		$jawc = new JApplicationWebClient();
+		$jawc = new WebClient();
 		if (true || $jawc->mobile) {
 			$this->html5slideshowCfg['tT'] = 'n';
 		}

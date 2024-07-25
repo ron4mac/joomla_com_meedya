@@ -3,7 +3,7 @@
 * @package		com_meedya
 * @copyright	Copyright (C) 2022-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.3.4
+* @since		1.4.0
 */
 defined('_JEXEC') or die;
 
@@ -13,6 +13,9 @@ use Joomla\CMS\Router\Route;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Layout\LayoutHelper;
+use RJCreations\Component\Meedya\Site\Helper\M34C;
+use RJCreations\Component\Meedya\Site\Helper\HtmlMeedya;
+use RJCreations\Component\Meedya\Site\Helper\MeedyaHelper;
 
 define('MYG_FB4', 1);
 $ttscript = 'Meedya.albumID = '.$this->aid.';';
@@ -80,7 +83,7 @@ if ($this->items) {		//var_dump($this->items);
 }
 
 $ttscript .= '
-	Meedya.pflURL = "'.Route::_('index.php?option=com_meedya&aid='.$this->aid.'&task=picframe&format=raw&I='.$this->instance.'&Itemid='.$this->itemId, false, 0, true).'";
+	Meedya.pflURL = "'.Route::_('index.php?option=com_meedya&aid='.$this->aid.'&task=picframe&format=raw&Itemid='.$this->itemId, false, 0, true).'";
 	Meedya.datatog = "'.M34C::bs('toggle').'";
 	Meedya.FB4 = '.(defined('MYG_FB4')?1:0).';
 	Meedya.initIV();
@@ -229,8 +232,8 @@ $cancmnt = $this->uid || $this->params->get('pub_comments', 0);
 		<a href="<?=Route::_('index.php?option=com_meedya&view=slides&tmpl=component&aid='.$this->aid.'&Itemid='.$this->itemId, false) ?>" title="<?=Text::_('COM_MEEDYA_SLIDESHOW')?>">
 			<img src="components/com_meedya/static/img/slideshow.png" alt="" /></a>
 	<?php endif; ?>
-	<?php if ($this->params->get('picframe', 0) && $this->userPerms->canAdmin): ?>
-		<a href="http://picframe.local/static/cgetnpl.html?nplt=<?=$this->title?>&nplk=<?=$this->picframekey()?>" title="<?=Text::_('COM_MEEDYA_PICFRAME')?>" onclick="Meedya.doNotPicframe()">
+	<?php if ($this->params->get('picframe', 0) && (!$this->sterm) && $this->userPerms->canAdmin): ?>
+		<a href="http://picframe.local/static/cgetnpl.html?nplt=<?=$this->title?>&nplk=<?=$this->picframekey()?>" title="<?=Text::_('COM_MEEDYA_PICFRAME')?>" target="_blank">
 			<img src="components/com_meedya/static/img/picframe.png" alt="" /></a>
 	<?php endif; ?>
 	</div>
@@ -269,7 +272,7 @@ $cancmnt = $this->uid || $this->params->get('pub_comments', 0);
 </div>
 ';
 
-	$rplcds = ['{{IX}}','{{IID}}','{{TITLE}}','{{SRC}}','{{PCNT}}','{{CCLAS}}','{{CCNT}}','{{TCLAS}}'];
+	$rplcds = ['{{IX}}','{{IID}}','{{TITLE}}','{{SRC}}','{{PCNT}}','{{CCLAS}}','{{CCNT}}','{{CICLS}}','{{TCLAS}}'];
 
 	foreach ($this->items as $ix=>$item) {
 		if (!$item) continue;
@@ -297,6 +300,7 @@ $cancmnt = $this->uid || $this->params->get('pub_comments', 0);
 		$rplvals[] = $item['ratecnt'] ? $item['ratetot']/$item['ratecnt']*20 : 0;
 		$rplvals[] = $item['cmntcnt'] ? ' hasem' : ($cancmnt ? '' : 'no');
 		$rplvals[] = $item['cmntcnt'] ?: '&nbsp;';
+		$rplvals[] = $item['cmntcnt'] ? 'fas' : 'far';
 		$rplvals[] = $ttd ? 'hastip' : 'notip';
 		echo str_replace($rplcds, $rplvals, $ttmpl);
 	}
@@ -316,9 +320,6 @@ if ($use_comments) {
 }
 if ($use_ratings && ($this->uid || $pub_ratings)) {
 	echo LayoutHelper::render('rating');
-}
-if ($this->userPerms->canAdmin) {
-	echo LayoutHelper::render('picframe', ['albttl'=>$this->title]);
 }
 ?>
 <script>

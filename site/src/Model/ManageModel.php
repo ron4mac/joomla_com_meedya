@@ -11,6 +11,7 @@ defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Component\ComponentHelper;
+use RJCreations\Component\Meedya\Site\Helper\MeedyaHelper;
 
 class ManageModel extends MeedyaModel
 {
@@ -29,9 +30,8 @@ class ManageModel extends MeedyaModel
 				'tag'
 			];
 		}
-	//	if (RJC_DBUG) \MeedyaHelper::log('MeedyaModelManage');
+		if (RJC_DBUG) MeedyaHelper::log('ManageModel');
 		parent::__construct($config, $factory);
-		$this->ownid = Factory::getUser()->get('id');
 	}
 
 
@@ -116,20 +116,9 @@ class ManageModel extends MeedyaModel
 	}
 
 
-/*	public function removeItems ($aid, $list)
-	{
-		if (RJC_DBUG) \MeedyaHelper::log('removeItems', ['album'=>$aid,'items'=>$list]);
-		if (is_null($this->album) || $this->album['aid']!=$aid) $this->album = $this->getAlbum($aid);
-		$cur = explode('|', $this->album['items']);
-		$mod = array_diff($cur, $list);
-		$items = '\''.implode('|',$mod).'\'';
-		$this->updateAlbum(['items'=>$items]);
-	}
-*/
-
 	public function addItems2Album ($items, $album, $pot=false)
 	{
-		if (RJC_DBUG) \MeedyaHelper::log('addItems', ['album'=>$album,'items'=>$items]);
+		if (RJC_DBUG) MeedyaHelper::log('addItems', ['album'=>$album,'items'=>$items]);
 		$db = $this->getDbo();
 		$db->transactionStart($pot);
 		$db->setQuery('SELECT `items` FROM `albums` WHERE `aid`='.$album);
@@ -141,7 +130,7 @@ class ManageModel extends MeedyaModel
 			$db->setQuery($q);
 			$db->execute();
 		} else {
-			$q = 'INSERT INTO albums (items,ownid,title,tstamp) VALUES ('.$db->quote(implode('|',$items)).','.$this->ownid.',\'New Album\','.time().')';
+			$q = 'INSERT INTO albums (items,ownid,title,tstamp) VALUES ('.$db->quote(implode('|',$items)).','.$this->userId.',\'New Album\','.time().')';
 			$db->setQuery($q);
 			$db->execute();
 			$album = $db->insertid();
@@ -155,7 +144,7 @@ class ManageModel extends MeedyaModel
 	// moves items from one album to another
 	public function movItems2Album ($items, $from, $album, $pot=false)
 	{
-		if (RJC_DBUG) \MeedyaHelper::log('movItems', ['from'=>$from,'toalb'=>$album,'items'=>$items]);
+		if (RJC_DBUG) MeedyaHelper::log('movItems', ['from'=>$from,'toalb'=>$album,'items'=>$items]);
 
 		// add (merge) items to the target album
 		$this->addItems2Album($items, $album);
@@ -230,18 +219,18 @@ class ManageModel extends MeedyaModel
 	{
 		$db = $this->getDbo();
 		$flds = $db->quoteName(['file','mtype','ownid','title','kywrd','album','fsize','tsize','expodt']);
-		$vals = $db->quote([$fnam, $mtype, $this->ownid, $ittl, $itgs, $albm, (int)$fsize, (int)$tsize, $xpdt], false);
+		$vals = $db->quote([$fnam, $mtype, $this->userId, $ittl, $itgs, $albm, (int)$fsize, (int)$tsize, $xpdt], false);
 		if (count($vals) < 7) $vals[] = 'NULL';
 		$db->transactionStart();
 		$db->setQuery('INSERT INTO `meedyaitems` ('.implode(',', $flds).') VALUES ('.implode(',', $vals).')');
-		if (RJC_DBUG) \MeedyaHelper::log('addItem: '.(string)$db->getQuery());
+		if (RJC_DBUG) MeedyaHelper::log('addItem: '.(string)$db->getQuery());
 		try {
 			$db->execute();
 			$iid = $db->insertid();
 			// and add the item to the album's list of items
 			$this->addItems2Album([$iid], $albm, true);
 		} catch (RuntimeException $e) {
-			if (RJC_DBUG) \MeedyaHelper::log('addItem error: '.$e->getMessage());
+			if (RJC_DBUG) MeedyaHelper::log('addItem error: '.$e->getMessage());
 			JError::raiseError(500, $e->getMessage());
 		}
 		$db->transactionCommit();
@@ -254,9 +243,9 @@ class ManageModel extends MeedyaModel
 		$db = $this->getDbo();
 		if ($parid) {
 			$hord = $this->getParentNextHord($parid);
-			$q = 'INSERT INTO albums (`title`,`desc`,`paid`,`hord`,`ownid`,`tstamp`) VALUES ('.$db->quote($anam).','.$db->quote($desc).','.$parid.','.$db->quote($hord).','.$this->ownid.','.time().')';
+			$q = 'INSERT INTO albums (`title`,`desc`,`paid`,`hord`,`ownid`,`tstamp`) VALUES ('.$db->quote($anam).','.$db->quote($desc).','.$parid.','.$db->quote($hord).','.$this->userId.','.time().')';
 		} else {
-			$q = 'INSERT INTO `albums` (`title`,`desc`,`ownid`,`tstamp`) VALUES ('.$db->quote($anam).','.$db->quote($desc).','.$this->ownid.','.time().')';
+			$q = 'INSERT INTO `albums` (`title`,`desc`,`ownid`,`tstamp`) VALUES ('.$db->quote($anam).','.$db->quote($desc).','.$this->userId.','.time().')';
 		}
 		$db->setQuery($q);
 		$db->execute();
@@ -279,9 +268,9 @@ class ManageModel extends MeedyaModel
 		
 		if ($parid) {
 			$hord = $this->getParentNextHord($parid);
-			$q = 'INSERT INTO albums (`items`,`title`,`desc`,`paid`,`hord`,`ownid`,`tstamp`) VALUES ('.$db->quote('*'.$oaid).','.$db->quote($anam).','.$db->quote($desc).','.$parid.','.$db->quote($hord).','.$this->ownid.','.time().')';
+			$q = 'INSERT INTO albums (`items`,`title`,`desc`,`paid`,`hord`,`ownid`,`tstamp`) VALUES ('.$db->quote('*'.$oaid).','.$db->quote($anam).','.$db->quote($desc).','.$parid.','.$db->quote($hord).','.$this->userId.','.time().')';
 		} else {
-			$q = 'INSERT INTO `albums` (`items`,`title`,`desc`,`ownid`,`tstamp`) VALUES ('.$db->quote('*'.$oaid).','.$db->quote($anam).','.$db->quote($desc).','.$this->ownid.','.time().')';
+			$q = 'INSERT INTO `albums` (`items`,`title`,`desc`,`ownid`,`tstamp`) VALUES ('.$db->quote('*'.$oaid).','.$db->quote($anam).','.$db->quote($desc).','.$this->userId.','.time().')';
 		}
 		$db->setQuery($q);
 		$db->execute();
@@ -358,17 +347,17 @@ class ManageModel extends MeedyaModel
 	public function storeFile ($name, $post, $uplodr_obj)
 	{
 		$alb = $post->get('album', 0);
-		if (RJC_DBUG) \MeedyaHelper::log("store ... album: {$alb} file: {$name}");
+		if (RJC_DBUG) MeedyaHelper::log("store ... album: {$alb} file: {$name}");
 
 		$params = Factory::getApplication()->getParams();
-		$quota = \MeedyaHelper::getStoreQuota($params);
+		$quota = MeedyaHelper::getStoreQuota($params);
 		if ($quota && $this->getStorageTotal() > $quota) {
 			$uplodr_obj->cancel_transfer();
 			throw new Exception('Quota exceeded', 3);
 		}
 		$keep = (int)$params->get('keep_orig', 0);
 
-		$mdydir = JPATH_ROOT.'/'.\MeedyaHelper::userDataPath();
+		$mdydir = JPATH_ROOT.'/'.\RJUserCom::getStoragePath();
 		$fPath = $mdydir.'/img/';
 		$fPathM = $mdydir.'/med/';
 
@@ -411,7 +400,7 @@ class ManageModel extends MeedyaModel
 		$fsize = $keep ? filesize($fpath) : 0;
 		$xpdt = null;
 		$xf = @exif_read_data($fpath, 'IFD0,EXIF', true);
-		if (RJC_DBUG) \MeedyaHelper::log('exif:',$xf);
+		if (RJC_DBUG) MeedyaHelper::log('exif:',$xf);
 		if (isset($xf['EXIF']['DateTimeOriginal'])) {
 			if ($xf['EXIF']['DateTimeOriginal'] != '0000:00:00 00:00:00') {
 				$xpdt = $xf['EXIF']['DateTimeOriginal'];
@@ -421,18 +410,18 @@ class ManageModel extends MeedyaModel
 				$xpdt = $xf['IFD0']['DateTime'];
 			}
 		}
-		$imgP = \MeedyaHelper::getImgProc($fpath);
-		if (RJC_DBUG && $imgP->getErrors()) \MeedyaHelper::log(implode("\n",$imgP->getErrors()));
-		$mdydir = realpath(\MeedyaHelper::userDataPath());
+		$imgP = MeedyaHelper::getImgProc($fpath);
+		if (RJC_DBUG && $imgP->getErrors()) MeedyaHelper::log(implode("\n",$imgP->getErrors()));
+		$mdydir = realpath(\RJUserCom::getStoragePath());
 		$fnp = pathinfo($fname);
 		$base_name = $fnp['filename'];
 		$ext = isset($fnp['extension']) ? ('.'.$fnp['extension']) : '';
 		$xsize = $imgP->orientImage($fpath);
-		if (RJC_DBUG && $xsize) \MeedyaHelper::log('image rotated');
+		if (RJC_DBUG && $xsize) MeedyaHelper::log('image rotated');
 		if (!$keep) $xsize = 0;
-		$maxw = \MeedyaHelper::getResolvedOption('max_width', 1200);
-		$maxh = \MeedyaHelper::getResolvedOption('max_height', 1200);
-		if (RJC_DBUG) \MeedyaHelper::log("sizing medium image ... maxW: {$maxw} maxH: {$maxh}");
+		$maxw = MeedyaHelper::getResolvedOption('max_width', 1200);
+		$maxh = MeedyaHelper::getResolvedOption('max_height', 1200);
+		if (RJC_DBUG) MeedyaHelper::log("sizing medium image ... maxW: {$maxw} maxH: {$maxh}");
 		$xsize += $imgP->createMedium($mdydir.'/med/'.$base_name, $ext, $maxw, $maxh);
 		$xsize += $imgP->createThumb($mdydir.'/thm/'.$base_name, $ext);
 		$this->addItem($fname, $mtype, $ittl, $itgs, $alb, $fsize, $fsize+$xsize, $xpdt);
@@ -447,7 +436,7 @@ class ManageModel extends MeedyaModel
 	//	$db->setQuery('SELECT SUM(`tsize`) FROM `meedyaitems`');
 		$db->setQuery('SELECT totuse FROM `usage` LIMIT 1');
 		$r = $db->loadResult();
-		return (is_null($r) ? 0 : $r) + filesize(\MeedyaHelper::userDataPath().'/meedya.db3');
+		return (is_null($r) ? 0 : $r) + filesize(\RJUserCom::getStoragePath().'/meedya.db3');
 	}
 
 
@@ -457,7 +446,7 @@ class ManageModel extends MeedyaModel
 	public function deleteItems ($itms, $igna=0)
 	{
 //		require_once JPATH_COMPONENT.'/helpers/meedya.php';
-		$mdydir = \MeedyaHelper::userDataPath();
+		$mdydir = \RJUserCom::getStoragePath();
 		$db = $this->getDbo();
 		foreach ($itms as $itm) {
 			//remove files
@@ -510,11 +499,11 @@ class ManageModel extends MeedyaModel
 			$istr = implode('|',$itms);
 			if ($r['thumb'] == $itm) $r['thumb'] = 0;
 			$db->setQuery('UPDATE `albums` SET `items`=\''.$istr.'\', `thumb`='.$r['thumb'].', `tstamp`='.time().' WHERE `aid`='.$alb);
-			if (RJC_DBUG) \MeedyaHelper::log('removeItemFromAlbums: '.(string)$db->getQuery());
+			if (RJC_DBUG) MeedyaHelper::log('removeItemFromAlbums: '.(string)$db->getQuery());
 			try {
 				$db->execute();
 			} catch (RuntimeException $e) {
-				if (RJC_DBUG) \MeedyaHelper::log('removeItemFromAlbums error: '.$e->getMessage());
+				if (RJC_DBUG) MeedyaHelper::log('removeItemFromAlbums error: '.$e->getMessage());
 				JError::raiseError(500, $e->getMessage());
 			}
 		}
@@ -546,7 +535,7 @@ class ManageModel extends MeedyaModel
 			$sets .= $k.' = '.(is_numeric($v) ? $v : $db->quote($v));
 		}
 		$db->setQuery('UPDATE `albums` SET '.$sets.' WHERE `aid`='.$this->album['aid']);
-		if (RJC_DBUG) \MeedyaHelper::log('update album', ['album'=>$this->album,'fields'=>$fields]);
+		if (RJC_DBUG) MeedyaHelper::log('update album', ['album'=>$this->album,'fields'=>$fields]);
 	//	echo $db->getQuery();
 		$db->execute();
 	}
@@ -590,7 +579,7 @@ class ManageModel extends MeedyaModel
 		$input = $app->input;
 //echo '<xmp>';var_dump($input,$app->get('list_limit'),$this->context);echo'</xmp>';
 
-		if (RJC_DBUG) \MeedyaHelper::log('populateState', $input);
+		if (RJC_DBUG) MeedyaHelper::log('populateState', $input);
 
 		// album ID
 		$aid = $input->get('album', 0, 'INT');
@@ -666,7 +655,7 @@ class ManageModel extends MeedyaModel
 		$query = $db->getQuery(true);
 		$query->select('*');
 		$query->from('albums');
-		if (RJC_DBUG) \MeedyaHelper::log('ModelManage getListQuery(albums)', (string)$query);
+		if (RJC_DBUG) MeedyaHelper::log('ModelManage getListQuery(albums)', (string)$query);
 		return $query;
 	}
 
@@ -688,7 +677,7 @@ class ManageModel extends MeedyaModel
 				$query->where('album='.$aid);
 			}
 			}
-			if (RJC_DBUG) \MeedyaHelper::log('ModelManage getListQuery(items)', (string)$query);
+			if (RJC_DBUG) MeedyaHelper::log('ModelManage getListQuery(items)', (string)$query);
 			return $query;
 		}
 

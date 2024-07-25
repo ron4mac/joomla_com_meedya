@@ -10,18 +10,23 @@ namespace RJCreations\Component\Meedya\Site\Controller;
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
-use Joomla\CMS\Router\Route;
+//use Joomla\CMS\Router\Route;
 use Joomla\CMS\Language\Text;
-use Joomla\CMS\HTML\HTMLHelper;
+//use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Session\Session;
 use Joomla\CMS\MVC\Controller\BaseController;
+use Joomla\CMS\Uri\Uri;
+use RJCreations\Component\Meedya\Site\Helper\HtmlMeedya;
 
-//JLoader::register('HtmlMeedya', JPATH_COMPONENT . '/helpers/html/meedya.php');
+
+\JLoader::register('RJUserCom', JPATH_LIBRARIES . '/rjuser/com.php');
+//\JLoader::register('MeedyaHelper', JPATH_COMPONENT.'/helpers/meedya.php');
+//\JLoader::register('HtmlMeedya', JPATH_COMPONENT . '/helpers/html/meedya.php');
 
 define('PFDW', 1024);
 define('PFDH', 600);
 
-class DisplayController extends BaseController
+class DispRawController extends BaseController
 {
 //	public function __construct ($config = [])
 //	{
@@ -64,7 +69,7 @@ class DisplayController extends BaseController
 	// get all the comments for an item
 	public function getComments ()
 	{
-		$this->tokenCheck();
+		//$this->tokenCheck();
 		$m = $this->getModel('social');
 		$iid = $this->input->getInt('iid', 0);
 		try {
@@ -88,7 +93,7 @@ class DisplayController extends BaseController
 		$iid = $this->input->post->getInt('iid', 0);
 		$cmnt = $this->input->post->get('cmntext', '', 'string');
 		$m = $this->getModel('social');
-		echo '&nbsp;'.HtmlMeedya::cmntsIcon().' '.$m->addComment($iid, $this->uid, $cmnt);
+		echo '&nbsp;'.HtmlMeedya::cmntsIcon(true).' '.$m->addComment($iid, \RJUserCom::getInstObject()->uid, $cmnt);
 	}
 
 
@@ -100,11 +105,11 @@ class DisplayController extends BaseController
 		$title = $this->input->post->get('title', '', 'string');
 		$parms['aid'] = $this->input->post->getInt('aid', 0);
 		$parms['rcr'] = $this->input->post->getInt('recur', 0);
-		$parms['obj'] = MeedyaHelper::getInstanceObject();
+		$parms['obj'] = \RJUserCom::getInstObject();
 
 		$jparms = json_encode($parms);
 		$sdly = $this->input->post->getInt('vtim', 30);
-		$key = JUri::root().'?option=com_meedya&format=raw&task=picframe&key='.urlencode(\ComMeedya\Encryption::encrypt($jparms, $this->app->get('secret')));
+		$key = Uri::root().'?option=com_meedya&format=raw&task=picframe&key='.urlencode(\ComMeedya\Encryption::encrypt($jparms, $this->app->get('secret')));
 		echo json_encode(['key'=>base64_encode($key),'title'=>base64_encode($title),'pcnt'=>0,'sdly'=>$sdly]);
 	}
 

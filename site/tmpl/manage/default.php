@@ -3,7 +3,7 @@
 * @package		com_meedya
 * @copyright	Copyright (C) 2022-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.3.4
+* @since		1.4.0
 */
 defined('_JEXEC') or die;
 
@@ -11,6 +11,8 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Filesystem\Folder;
 use Joomla\CMS\Layout\LayoutHelper;
+use RJCreations\Component\Meedya\Site\Helper\HtmlMeedya;
+use RJCreations\Component\Meedya\Site\Helper\MeedyaHelper;
 
 Text::script('COM_MEEDYA_MOVE_FAIL');
 Text::script('COM_MEEDYA_IMPORT');

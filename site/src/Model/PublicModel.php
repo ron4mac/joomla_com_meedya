@@ -13,6 +13,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\MVC\Model\ListModel;
 use Joomla\Database\DatabaseDriver;
 use Joomla\CMS\Component\ComponentHelper;
+use RJCreations\Component\Meedya\Site\Helper\MeedyaHelper;
 
 class PublicModel extends ListModel
 {
@@ -127,7 +128,7 @@ class PublicModel extends ListModel
 	{	//echo $this->getState('pgid'); return [];
 		//$this->curAlbID = $this->getState('album.id') ? : 0;
 		$this->getAlbum();
-	//	if (RJC_DBUG) \MeedyaHelper::log('ModelMeedya getAlbumItems', debug_backtrace(2));
+	//	if (RJC_DBUG) MeedyaHelper::log('ModelMeedya getAlbumItems', debug_backtrace(2));
 		$this->_itms = explode('|', $this->_album->items?:'');
 		$this->_total = count($this->_itms);
 		$aid = $this->getState('album.id') ? : 0;
@@ -221,7 +222,7 @@ class PublicModel extends ListModel
 		$query->from('albums');
 		$query->where('paid='.$this->curAlbID);
 		$query->order($albord[$ordopt]);
-		if (RJC_DBUG) \MeedyaHelper::log('ModelMeedya getListQuery', (string)$query);
+		if (RJC_DBUG) MeedyaHelper::log('ModelMeedya getListQuery', (string)$query);
 		return $query;
 	}
 

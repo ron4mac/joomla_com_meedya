@@ -12,10 +12,11 @@ defined('_JEXEC') or die;
 //use Joomla\CMS\Factory;
 //use Joomla\CMS\Router\Route;
 //use Joomla\CMS\MVC\View\HtmlView as BaseHtmlView;
+use RJCreations\Component\Meedya\Site\View\MeedyaView;
 
-require_once JPATH_BASE . '/components/com_meedya/src/View/meedyaview.php';
+//require_once JPATH_BASE . '/components/com_meedya/src/View/MeedyaView.php';
 
-class HtmlView extends \MeedyaView
+class HtmlView extends MeedyaView
 {
 	protected $manage = 1;
 //	protected $userPerms = null;

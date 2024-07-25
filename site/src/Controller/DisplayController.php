@@ -16,10 +16,10 @@ use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Session\Session;
 use Joomla\CMS\MVC\Controller\BaseController;
 
-\JLoader::register('MeedyaHelper', JPATH_COMPONENT.'/helpers/meedya.php');
+//\JLoader::register('MeedyaHelper', JPATH_COMPONENT.'/helpers/meedya.php');
 \JLoader::register('RJUserCom', JPATH_LIBRARIES . '/rjuser/com.php');
-\JLoader::register('HtmlMeedya', JPATH_COMPONENT . '/helpers/html/meedya.php');
-\JLoader::register('M34C', JPATH_COMPONENT.'/helpers/m34c.php');
+//\JLoader::register('HtmlMeedya', JPATH_COMPONENT . '/helpers/html/meedya.php');
+//\JLoader::register('M34C', JPATH_COMPONENT.'/helpers/m34c.php');
 
 define('RJC_DBUG', (true || JDEBUG) && file_exists(JPATH_ROOT.'/rjcdev.php'));
 
@@ -33,15 +33,12 @@ class DisplayController extends BaseController
 		parent::__construct($config, $factory, $app, $input);
 		$this->uid = Factory::getUser()->get('id');
 		$this->mnuItm = $this->input->getInt('Itemid', 0);
-		if ($this->mnuItm) {
-			Factory::getApplication()->setUserState('com_meedya.instance', $this->mnuItm.':'.\MeedyaHelper::getInstanceID().':'.$this->uid);
-		}
 	}
 
 	public function display ($cachable = false, $urlparams = []): DisplayController
 	{
 		if ($this->input->getString('view') == 'public') return parent::display($cachable, $urlparams);
-		if (file_exists(\MeedyaHelper::userDataPath($this->mnuItm))) {
+		if (file_exists(\RJUserCom::getStoragePath())) {
 			$view = $this->getView('meedya','html');
 		} else {
 			//set to a view that has no model
@@ -56,7 +53,7 @@ class DisplayController extends BaseController
 	{
 		if (!$this->uid) return;
 		$htm = '<!DOCTYPE html><title></title>';
-		$udp = \MeedyaHelper::userDataPath($this->mnuItm);
+		$udp = \RJUserCom::getStoragePath();
 		mkdir($udp.'/img', 0777, true);
 		mkdir($udp.'/thm', 0777, true);
 		mkdir($udp.'/med', 0777, true);

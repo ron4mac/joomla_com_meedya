@@ -10,6 +10,8 @@ defined('_JEXEC') or die;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
+use RJCreations\Component\Meedya\Site\Helper\HtmlMeedya;
+use RJCreations\Component\Meedya\Site\Helper\MeedyaHelper;
 
 HTMLHelper::_('jquery.framework');
 //MeedyaHelper::addStyle('gallery');
@@ -28,9 +30,9 @@ $this->jDoc->addScriptDeclaration('Meedya.L = '.json_encode($jslang).';
 ?>
 
 <div class="meedya-gallery">
-<?php echo \HtmlMeedya::pageHeader($this->params); ?>
-<?php if ($this->userPerms->canAdmin || $this->userPerms->canUpload) echo \HtmlMeedya::manageMenu($this->userPerms, 0, $this->itemId); ?>
-<?php echo \HtmlMeedya::searchField(0); ?>
+<?php echo HtmlMeedya::pageHeader($this->params); ?>
+<?php if ($this->userPerms->canAdmin || $this->userPerms->canUpload) echo HtmlMeedya::manageMenu($this->userPerms, 0, $this->itemId); ?>
+<?php echo HtmlMeedya::searchField(0); ?>
 <div class="albthumbs">
 <?php
 	foreach ($this->items as $item) {

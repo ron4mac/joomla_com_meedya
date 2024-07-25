@@ -11,16 +11,19 @@ defined('_JEXEC') or die;
 
 //use Joomla\CMS\Factory;
 use Joomla\CMS\Router\Route;
+use Joomla\CMS\Uri\Uri;
+use RJCreations\Component\Meedya\Site\View\MeedyaView;
+use RJCreations\Component\Meedya\Site\Helper\MeedyaHelper;
 
-require_once JPATH_BASE . '/components/com_meedya/src/View/meedyaview.php';
+//require_once JPATH_BASE . '/components/com_meedya/src/View/MeedyaView.php';
 
-class HtmlView extends \MeedyaView
+class HtmlView extends MeedyaView
 {
 	protected $aid;
 
 	public function __construct ($config = [])
 	{
-		if (RJC_DBUG) { \MeedyaHelper::log('MeedyaViewAlbum'); }
+		if (RJC_DBUG) { MeedyaHelper::log('MeedyaViewAlbum'); }
 		parent::__construct($config);
 	}
 
@@ -69,10 +72,10 @@ class HtmlView extends \MeedyaView
 		require_once JPATH_COMPONENT . '/classes/crypt.php';
 		$parms = [];
 		$parms['aid'] = $this->aid;
-		$parms['obj'] = \RJUserCom::getInstObject($mid);
+		$parms['obj'] = \RJUserCom::getInstObject();
 
 		$jparms = json_encode($parms);
-		$key = JUri::root().'?option=com_meedya&format=raw&task=picframe&key='.urlencode(\ComMeedya\Encryption::encrypt($jparms, $this->app->get('secret')));
+		$key = Uri::root().'?option=com_meedya&format=raw&task=DispRaw.picframe&key='.urlencode(\ComMeedya\Encryption::encrypt($jparms, $this->app->get('secret')));
 		return base64_encode($key);
 		echo json_encode(['key'=>base64_encode($key),'title'=>base64_encode($title),'pcnt'=>0,'sdly'=>$sdly]);
 	}

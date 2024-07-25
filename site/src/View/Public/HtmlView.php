@@ -11,10 +11,12 @@ defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Router\Route;
+use RJCreations\Component\Meedya\Site\View\MeedyaView;
+use RJCreations\Component\Meedya\Site\Helper\MeedyaHelper;
 
-require_once JPATH_BASE . '/components/com_meedya/src/View/meedyaview.php';
+//require_once JPATH_BASE . '/components/com_meedya/src/View/MeedyaView.php';
 
-class HtmlView extends \MeedyaView
+class HtmlView extends MeedyaView
 {
 	protected $pgid;
 	protected $aid;
@@ -22,7 +24,7 @@ class HtmlView extends \MeedyaView
 
 	public function __construct ($config = [])
 	{
-		if (RJC_DBUG) { \MeedyaHelper::log('MeedyaViewPublic'); }
+		if (RJC_DBUG) { MeedyaHelper::log('MeedyaViewPublic'); }
 		parent::__construct($config);
 		$this->pgid = $this->app->input->get('pgid','','cmd');
 	}

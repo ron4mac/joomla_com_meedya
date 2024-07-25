@@ -8,6 +8,7 @@ defined('JPATH_BASE') or die;
 
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
+use RJCreations\Component\Meedya\Site\Helper\M34C;
 
 extract($displayData);	//cancmnt
 

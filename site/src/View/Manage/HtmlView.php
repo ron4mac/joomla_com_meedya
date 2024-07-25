@@ -13,11 +13,12 @@ defined('_JEXEC') or die;
 use Joomla\CMS\Language\Text;
 use Joomla\Registry\Registry;
 use Joomla\CMS\Filesystem\FilesystemHelper;
-//use Joomla\CMS\MVC\View\HtmlView as BaseHtmlView;
+use RJCreations\Component\Meedya\Site\View\MeedyaView;
+use RJCreations\Component\Meedya\Site\Helper\MeedyaHelper;
 
-require_once JPATH_BASE . '/components/com_meedya/src/View/meedyaview.php';
+//require_once JPATH_BASE . '/components/com_meedya/src/View/MeedyaView.php';
 
-class HtmlView extends \MeedyaView
+class HtmlView extends MeedyaView
 {
 	public $aid = 0;
 	protected $_defaultModel = 'manage';
@@ -100,9 +101,9 @@ class HtmlView extends \MeedyaView
 				$this->action = 'Configure Gallery';
 				$this->items = [];		// keep parent view from loading items
 				if (!$this->html5slideshowCfg) {
-					$this->html5slideshowCfg = \MeedyaHelper::$ssDefault;
+					$this->html5slideshowCfg = MeedyaHelper::$ssDefault;
 				}
-				$this->galStruct = \MeedyaHelper::getGalStruct($this->get('AllAlbums'));
+				$this->galStruct = MeedyaHelper::getGalStruct($this->get('AllAlbums'));
 				break;
 
 			case 'upload':
@@ -121,9 +122,9 @@ class HtmlView extends \MeedyaView
 				$this->acptmime = $this->params->get('videok', 0) ? 'accept="image/*,video/*" ' : 'accept="image/*" ';
 				$this->mimatch = $this->params->get('videok', 0) ? 'image\/|video\/' : 'image\/';
 			//	$this->albums = $this->get('AlbumsList');
-				$this->maxUploadFS = \MeedyaHelper::maxUpload($this->mparams->get('maxUpload'));
-				$this->maxupld = \MeedyaHelper::formatBytes($this->maxUploadFS);
-				$this->phpupld = \MeedyaHelper::formatBytes(FilesystemHelper::fileUploadMaxSize(false));
+				$this->maxUploadFS = MeedyaHelper::maxUpload($this->mparams->get('maxUpload'));
+				$this->maxupld = MeedyaHelper::formatBytes($this->maxUploadFS);
+				$this->phpupld = MeedyaHelper::formatBytes(FilesystemHelper::fileUploadMaxSize(false));
 			//	$this->dbTime = $this->get('DbTime');
 				$this->items = [];		// keep parent view from loading items
 				break;
@@ -132,7 +133,7 @@ class HtmlView extends \MeedyaView
 				$this->action = 'Edit Albums';
 				$this->albums = $this->get('AlbumsList');
 				$this->totStore = (int)$this->get('StorageTotal');
-				$this->galStruct = \MeedyaHelper::getGalStruct($this->get('AllAlbums'));
+				$this->galStruct = MeedyaHelper::getGalStruct($this->get('AllAlbums'));
 				break;
 
 		}

@@ -5,7 +5,7 @@
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
 * @since		1.4.0
 */
-//namespace RJCreations\Component\Meedya\Site\Class\MeedyaView;
+namespace RJCreations\Component\Meedya\Site\View;
 
 defined('_JEXEC') or die;
 
@@ -16,9 +16,11 @@ defined('_JEXEC') or die;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\HTML\HTMLHelper;
+use RJCreations\Component\Meedya\Site\Helper\MeedyaHelper;
+use RJCreations\Component\Meedya\Site\Helper\HtmlMeedya;
 
 // provide all views with a HTMLHelper class
-\JLoader::register('JHtmlMeedya', JPATH_COMPONENT . '/helpers/html/meedya.php');
+//\JLoader::register('JHtmlMeedya', JPATH_COMPONENT . '/helpers/html/meedya.php');
 // and our htmlobject class
 \JLoader::register('HtmlElementObject', JPATH_COMPONENT . '/classes/HtmlObject.php');
 
@@ -41,7 +43,7 @@ class MeedyaView extends \Joomla\CMS\MVC\View\HtmlView
 	protected $pagination;
 	protected $btmscript = [];	// accumulate here any scripts that will render at the bottom of content
 
-	protected $instance;
+//	protected $instance;
 	protected $jDoc;
 
 	public function __construct ($config = [])
@@ -58,10 +60,10 @@ class MeedyaView extends \Joomla\CMS\MVC\View\HtmlView
 			$this->itemId = $this->app->input->getInt('Itemid', 0);
 		}
 		$this->userPerms = MeedyaHelper::getUserPermissions($this->user, $this->params);
-		$this->meedyaID = MeedyaHelper::getInstanceID();
-		$this->gallpath = MeedyaHelper::userDataPath($this->itemId);
+	//	$this->meedyaID = MeedyaHelper::getInstanceID();
+		$this->gallpath = \RJUserCom::getStoragePath();
 
-		$this->instance = $this->app->getUserState('com_meedya.instance', '::');		var_dump([$this->meedyaID,$this->instance]);
+//		$this->instance = $this->app->getUserState('com_meedya.instance', '::');		//var_dump([$this->meedyaID,$this->instance]);
 		$this->jDoc = Factory::getDocument();
 		$pgidparm = isset($this->pgid) ? '&pgid='.$this->pgid : '';
 		$aurl = Route::_('index.php?option=com_meedya&view='.$pgidparm.'&Itemid='.$this->itemId.'&task=', false);

@@ -5,6 +5,8 @@
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
 * @since		1.4.0
 */
+namespace RJCreations\Component\Meedya\Site\Helper;
+
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
@@ -17,7 +19,7 @@ abstract class MeedyaHelper
 	protected static $udp = null;
 	protected static $jdoc = null;
 
-	public static function getInstanceObject ($mid=null)	// SO
+	public static function xxgetInstanceObject ($mid=null)	// SO
 	{
 		if (!empty(self::$instanceObj)) return self::$instanceObj;
 		self::$instanceObj = \RJUserCom::getInstObject($mid);
@@ -44,7 +46,7 @@ abstract class MeedyaHelper
 		return base64_encode(self::$instanceType.':'.self::$ownerID);
 	}
 
-	public static function userDataPath ($mnuid=0)
+	public static function xxuserDataPath ($mnuid=0)
 	{
 		if (self::$udp) return self::$udp;
 		if (!self::$instanceObj) self::getInstanceObject($mnuid);
@@ -130,7 +132,7 @@ abstract class MeedyaHelper
 			}
 		}
 		require_once JPATH_COMPONENT.'/helpers/graphic'.$imp.'.php';
-		return new ImageProcessor($imgf);
+		return new \ImageProcessor($imgf);
 	}
 
 	public static $ssDefault = [
@@ -186,20 +188,20 @@ abstract class MeedyaHelper
 
 	public static function log ($msg, $data=null)
 	{
-		if ($msg) JLog::add($msg, JLog::INFO, 'com_meedya');
+		if ($msg) \JLog::add($msg, \JLog::INFO, 'com_meedya');
 		if ($data) {
 			$msg = '';
 			if (!is_array($data)) $data = [$data];
 			foreach ($data as $wh=>$dat) {
 				$msg .= "\n".$wh.': '.print_r($dat, true);
 			}
-			JLog::add($msg, JLog::DEBUG, 'com_meedya');
+			\JLog::add($msg, \JLog::DEBUG, 'com_meedya');
 		}
 	}
 
 
 // PRIVATE METHODS
-	private static function getTypeOwner ()
+	private static function xxgetTypeOwner ()
 	{
 		if (is_null(self::$instanceType)) {
 			$app = Factory::getApplication();
@@ -245,7 +247,7 @@ abstract class MeedyaHelper
 		static $cp;
 
 		if (empty($cp)) {
-			$cp = JComponentHelper::getParams('com_meedya');
+			$cp = \JComponentHelper::getParams('com_meedya');
 			if (RJC_DBUG) self::log('comp opts', $cp);
 		}
 

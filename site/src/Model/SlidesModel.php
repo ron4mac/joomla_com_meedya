@@ -1,16 +1,18 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2022-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
+* @since		1.4.0
 */
+namespace RJCreations\Component\Meedya\Site\Model;
+
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
+use Joomla\CMS\Component\ComponentHelper;
 
-require_once __DIR__ . '/meedya.php';
-
-class MeedyaModelSlides extends MeedyaModelMeedya
+class SlidesModel extends MeedyaModel
 {
 	protected $_album = null;
 	protected $_itms = null;
@@ -77,7 +79,7 @@ class MeedyaModelSlides extends MeedyaModelMeedya
 	{	//echo'####POPSTATE####';
 		// Initialise variables.
 		$app = Factory::getApplication();
-		$params = JComponentHelper::getParams('com_meedya');
+		$params = ComponentHelper::getParams('com_meedya');
 		$input = $app->input;
 
 		// album ID

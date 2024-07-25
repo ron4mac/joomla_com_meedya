@@ -13,6 +13,8 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Session\Session;
 use Joomla\CMS\Layout\LayoutHelper;
+use RJCreations\Component\Meedya\Site\Helper\HtmlMeedya;
+use RJCreations\Component\Meedya\Site\Helper\MeedyaHelper;
 
 HTMLHelper::addIncludePath(JPATH_COMPONENT.'/helpers');
 
