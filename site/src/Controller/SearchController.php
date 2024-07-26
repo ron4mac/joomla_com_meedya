@@ -13,11 +13,6 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\BaseController;
 
-\JLoader::register('RJUserCom', JPATH_LIBRARIES . '/rjuser/com.php');
-//\JLoader::register('MeedyaHelper', JPATH_COMPONENT.'/helpers/meedya.php');
-//\JLoader::register('HtmlMeedya', JPATH_COMPONENT . '/helpers/html/meedya.php');
-//\JLoader::register('M34C', JPATH_COMPONENT.'/helpers/m34c.php');
-
 define('RJC_DBUG', (true || JDEBUG) && file_exists(JPATH_ROOT.'/rjcdev.php'));
 
 class SearchController extends BaseController

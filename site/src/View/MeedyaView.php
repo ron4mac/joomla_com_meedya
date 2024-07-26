@@ -16,6 +16,7 @@ defined('_JEXEC') or die;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\HTML\HTMLHelper;
+use RJCreations\Library\RJUserCom;
 use RJCreations\Component\Meedya\Site\Helper\MeedyaHelper;
 use RJCreations\Component\Meedya\Site\Helper\HtmlMeedya;
 
@@ -61,7 +62,7 @@ class MeedyaView extends \Joomla\CMS\MVC\View\HtmlView
 		}
 		$this->userPerms = MeedyaHelper::getUserPermissions($this->user, $this->params);
 	//	$this->meedyaID = MeedyaHelper::getInstanceID();
-		$this->gallpath = \RJUserCom::getStoragePath();
+		$this->gallpath = RJUserCom::getStoragePath();
 
 //		$this->instance = $this->app->getUserState('com_meedya.instance', '::');		//var_dump([$this->meedyaID,$this->instance]);
 		$this->jDoc = Factory::getDocument();

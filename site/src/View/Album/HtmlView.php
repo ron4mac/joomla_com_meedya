@@ -12,6 +12,7 @@ defined('_JEXEC') or die;
 //use Joomla\CMS\Factory;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Uri\Uri;
+use RJCreations\Library\RJUserCom;
 use RJCreations\Component\Meedya\Site\View\MeedyaView;
 use RJCreations\Component\Meedya\Site\Helper\MeedyaHelper;
 
@@ -72,7 +73,7 @@ class HtmlView extends MeedyaView
 		require_once JPATH_COMPONENT . '/classes/crypt.php';
 		$parms = [];
 		$parms['aid'] = $this->aid;
-		$parms['obj'] = \RJUserCom::getInstObject();
+		$parms['obj'] = RJUserCom::getInstObject();
 
 		$jparms = json_encode($parms);
 		$key = Uri::root().'?option=com_meedya&format=raw&task=DispRaw.picframe&key='.urlencode(\ComMeedya\Encryption::encrypt($jparms, $this->app->get('secret')));

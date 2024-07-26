@@ -232,7 +232,7 @@ $cancmnt = $this->uid || $this->params->get('pub_comments', 0);
 		<a href="<?=Route::_('index.php?option=com_meedya&view=slides&tmpl=component&aid='.$this->aid.'&Itemid='.$this->itemId, false) ?>" title="<?=Text::_('COM_MEEDYA_SLIDESHOW')?>">
 			<img src="components/com_meedya/static/img/slideshow.png" alt="" /></a>
 	<?php endif; ?>
-	<?php if ($this->params->get('picframe', 0) && (!$this->sterm) && $this->userPerms->canAdmin): ?>
+	<?php if ($this->params->get('picframe', 0) && empty($this->sterm) && $this->userPerms->canAdmin): ?>
 		<a href="http://picframe.local/static/cgetnpl.html?nplt=<?=$this->title?>&nplk=<?=$this->picframekey()?>" title="<?=Text::_('COM_MEEDYA_PICFRAME')?>" target="_blank">
 			<img src="components/com_meedya/static/img/picframe.png" alt="" /></a>
 	<?php endif; ?>

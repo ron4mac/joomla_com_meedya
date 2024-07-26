@@ -12,6 +12,7 @@ defined('_JEXEC') or die;
 use Joomla\CMS\Factory;
 use Joomla\CMS\MVC\Model\ListModel;
 use Joomla\CMS\Component\ComponentHelper;
+use RJCreations\Library\RJUserCom;
 use RJCreations\Component\Meedya\Site\Helper\MeedyaHelper;
 
 class MeedyaModel extends ListModel
@@ -24,7 +25,7 @@ class MeedyaModel extends ListModel
 	public function __construct ($config = [], $factory = null)
 	{
 		$dbFile = '/meedya.db3';
-		$udbDir = \RJUserCom::getStoragePath();
+		$udbDir = RJUserCom::getStoragePath();
 		if (!$udbDir) {
 			throw new Exception('ACCESS NOT ALLOWED', 403);
 		}
@@ -32,7 +33,7 @@ class MeedyaModel extends ListModel
 		$doInit = !file_exists($udbPath);
 
 		try {
-			$db = \RJUserCom::getDb(true);
+			$db = RJUserCom::getDb(true);
 			$dbc = $db->getConnection();
 			$dbc->sqliteCreateFunction('strtotime', 'strtotime', 1);
 			$dbc->sqliteCreateFunction('albhier', [$this,'albhier'], 2);
@@ -50,7 +51,7 @@ class MeedyaModel extends ListModel
 			echo'<xmp>';var_dump($e);echo'</xmp>';
 			jexit();
 		}
-		$this->userId = \RJUserCom::getInstObject()->uid;
+		$this->userId = RJUserCom::getInstObject()->uid;
 		parent::__construct($config, $factory);
 	}
 

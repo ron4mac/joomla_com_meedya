@@ -16,12 +16,8 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\Session\Session;
 use Joomla\CMS\MVC\Controller\BaseController;
 use Joomla\CMS\Uri\Uri;
+use RJCreations\Library\RJUserCom;
 use RJCreations\Component\Meedya\Site\Helper\HtmlMeedya;
-
-
-\JLoader::register('RJUserCom', JPATH_LIBRARIES . '/rjuser/com.php');
-//\JLoader::register('MeedyaHelper', JPATH_COMPONENT.'/helpers/meedya.php');
-//\JLoader::register('HtmlMeedya', JPATH_COMPONENT . '/helpers/html/meedya.php');
 
 define('PFDW', 1024);
 define('PFDH', 600);
@@ -93,7 +89,7 @@ class DispRawController extends BaseController
 		$iid = $this->input->post->getInt('iid', 0);
 		$cmnt = $this->input->post->get('cmntext', '', 'string');
 		$m = $this->getModel('social');
-		echo '&nbsp;'.HtmlMeedya::cmntsIcon(true).' '.$m->addComment($iid, \RJUserCom::getInstObject()->uid, $cmnt);
+		echo '&nbsp;'.HtmlMeedya::cmntsIcon(true).' '.$m->addComment($iid, RJUserCom::getInstObject()->uid, $cmnt);
 	}
 
 
@@ -105,7 +101,7 @@ class DispRawController extends BaseController
 		$title = $this->input->post->get('title', '', 'string');
 		$parms['aid'] = $this->input->post->getInt('aid', 0);
 		$parms['rcr'] = $this->input->post->getInt('recur', 0);
-		$parms['obj'] = \RJUserCom::getInstObject();
+		$parms['obj'] = RJUserCom::getInstObject();
 
 		$jparms = json_encode($parms);
 		$sdly = $this->input->post->getInt('vtim', 30);

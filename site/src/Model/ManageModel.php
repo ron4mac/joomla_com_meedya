@@ -11,6 +11,7 @@ defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Component\ComponentHelper;
+use RJCreations\Library\RJUserCom;
 use RJCreations\Component\Meedya\Site\Helper\MeedyaHelper;
 
 class ManageModel extends MeedyaModel
@@ -357,7 +358,7 @@ class ManageModel extends MeedyaModel
 		}
 		$keep = (int)$params->get('keep_orig', 0);
 
-		$mdydir = JPATH_ROOT.'/'.\RJUserCom::getStoragePath();
+		$mdydir = JPATH_ROOT.'/'.RJUserCom::getStoragePath();
 		$fPath = $mdydir.'/img/';
 		$fPathM = $mdydir.'/med/';
 
@@ -412,7 +413,7 @@ class ManageModel extends MeedyaModel
 		}
 		$imgP = MeedyaHelper::getImgProc($fpath);
 		if (RJC_DBUG && $imgP->getErrors()) MeedyaHelper::log(implode("\n",$imgP->getErrors()));
-		$mdydir = realpath(\RJUserCom::getStoragePath());
+		$mdydir = realpath(RJUserCom::getStoragePath());
 		$fnp = pathinfo($fname);
 		$base_name = $fnp['filename'];
 		$ext = isset($fnp['extension']) ? ('.'.$fnp['extension']) : '';
@@ -436,7 +437,7 @@ class ManageModel extends MeedyaModel
 	//	$db->setQuery('SELECT SUM(`tsize`) FROM `meedyaitems`');
 		$db->setQuery('SELECT totuse FROM `usage` LIMIT 1');
 		$r = $db->loadResult();
-		return (is_null($r) ? 0 : $r) + filesize(\RJUserCom::getStoragePath().'/meedya.db3');
+		return (is_null($r) ? 0 : $r) + filesize(RJUserCom::getStoragePath().'/meedya.db3');
 	}
 
 
@@ -446,7 +447,7 @@ class ManageModel extends MeedyaModel
 	public function deleteItems ($itms, $igna=0)
 	{
 //		require_once JPATH_COMPONENT.'/helpers/meedya.php';
-		$mdydir = \RJUserCom::getStoragePath();
+		$mdydir = RJUserCom::getStoragePath();
 		$db = $this->getDbo();
 		foreach ($itms as $itm) {
 			//remove files

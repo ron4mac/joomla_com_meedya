@@ -15,12 +15,9 @@ use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Session\Session;
 use Joomla\CMS\Layout\LayoutHelper;
 use Joomla\CMS\MVC\Controller\BaseController;
+use RJCreations\Library\RJUserCom;
 use RJCreations\Component\Meedya\Site\Helper\HtmlMeedya;
 use RJCreations\Component\Meedya\Site\Helper\MeedyaHelper;
-
-\JLoader::register('RJUserCom', JPATH_LIBRARIES . '/rjuser/com.php');
-//\JLoader::register('MeedyaHelper', JPATH_COMPONENT.'/helpers/meedya.php');
-//\JLoader::register('HtmlMeedya', JPATH_COMPONENT . '/helpers/html/meedya.php');
 
 define('RJC_DBUG', (true || JDEBUG) && file_exists(JPATH_ROOT.'/rjcdev.php'));
 
@@ -31,7 +28,7 @@ class ManRawController extends BaseController
 
 	public function __construct ($config = [], $factory = null, $app = null, $input = null)
 	{
-		$this->gallPath = \RJUserCom::getStoragePath();
+		$this->gallPath = RJUserCom::getStoragePath();
 		parent::__construct($config, $factory, $app, $input);
 	}
 

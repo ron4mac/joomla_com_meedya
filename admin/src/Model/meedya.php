@@ -11,6 +11,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\User\User;
 use Joomla\CMS\MVC\Model\ListModel;
 use Joomla\CMS\Component\ComponentHelper;
+use RJCreations\Library\RJUserCom;
 
 class MeedyaModelMeedya extends ListModel
 {
@@ -34,9 +35,9 @@ class MeedyaModelMeedya extends ListModel
 		}
 
 		$unotes = [];
-		$folds = \RJUserCom::getDbPaths($this->relm, 'meedya', true);
+		$folds = RJUserCom::getDbPaths($this->relm, 'meedya', true);
 		foreach ($folds as $dir => $mgis) foreach ($mgis as $mgi) {
-			$info = \RJUserCom::getDbInfo($mgi['path'],'meedyaitems',[$this,'getStoreSizeCb']);
+			$info = RJUserCom::getDbInfo($mgi['path'],'meedyaitems',[$this,'getStoreSizeCb']);
 			$dbok = \MeedyaHelperDb::checkDbVersion($mgi['path'], $info);
 			if ($dbok) $info['warn'] = '<span style="color:red"> DB NEEDS UPDATE</span>';
 			$dbwarn = $dbok ? '' : '<span style="color:red"> DB NEEDS UPDATE</span>';

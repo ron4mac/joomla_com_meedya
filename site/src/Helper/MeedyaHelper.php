@@ -10,6 +10,7 @@ namespace RJCreations\Component\Meedya\Site\Helper;
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
+use RJCreations\Library\RJUserCom;
 
 abstract class MeedyaHelper
 {
@@ -22,7 +23,7 @@ abstract class MeedyaHelper
 	public static function xxgetInstanceObject ($mid=null)	// SO
 	{
 		if (!empty(self::$instanceObj)) return self::$instanceObj;
-		self::$instanceObj = \RJUserCom::getInstObject($mid);
+		self::$instanceObj = RJUserCom::getInstObject($mid);
 		return self::$instanceObj;
 	}
 
@@ -50,7 +51,7 @@ abstract class MeedyaHelper
 	{
 		if (self::$udp) return self::$udp;
 		if (!self::$instanceObj) self::getInstanceObject($mnuid);
-		self::$udp = \RJUserCom::getStoragePath(self::$instanceObj);
+		self::$udp = RJUserCom::getStoragePath(self::$instanceObj);
 		return self::$udp;
 	}
 

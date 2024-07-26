@@ -14,8 +14,8 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\Session\Session;
 use Joomla\CMS\MVC\Controller\BaseController;
 use Joomla\CMS\Application\ApplicationHelper;
+use RJCreations\Library\RJUserCom;
 
-\JLoader::register('RJUserCom', JPATH_LIBRARIES . '/rjuser/com.php');
 \JLoader::register('MeedyaHelperDb', JPATH_COMPONENT_ADMINISTRATOR.'/helpers/db.php');
 
 //require_once JPATH_COMPONENT.'/helpers/meedya.php';
@@ -27,7 +27,7 @@ class DisplayController extends BaseController
 
 	public function __construct ($config = [], $factory = null, $app = null, $input = null)
 	{
-		$this->storBase = \RJUserCom::getStorageBase();
+		$this->storBase = RJUserCom::getStorageBase();
 		parent::__construct($config, $factory, $app, $input);
 	}
 /*
@@ -106,7 +106,7 @@ class DisplayController extends BaseController
 		foreach ($cids as $cid) {
 			list($uid,$iid) = explode('|', $cid);
 			$mid = $iid ? ('_'.$iid) : '';
-			$msgs += \RJUserCom::updateDb(JPATH_ROOT.'/'.$this->storBase.'/'.$uid.'/'.ApplicationHelper::getComponentName().$mid.'/meedya.db3');
+			$msgs += RJUserCom::updateDb(JPATH_ROOT.'/'.$this->storBase.'/'.$uid.'/'.ApplicationHelper::getComponentName().$mid.'/meedya.db3');
 		}
 		if ($msgs) {
 			$msg = Text::_('COM_MEEDYA_DBUP_ISSUE').($msgs ? '<br>'.implode('<br>',$msgs) : '');

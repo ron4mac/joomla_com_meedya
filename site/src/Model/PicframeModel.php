@@ -12,6 +12,7 @@ defined('_JEXEC') or die;
 use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Router\Route;
 use Joomla\Database\DatabaseDriver;
+use RJCreations\Library\RJUserCom;
 
 class PicframeModel extends \Joomla\CMS\MVC\Model\BaseDatabaseModel
 {
@@ -26,7 +27,7 @@ class PicframeModel extends \Joomla\CMS\MVC\Model\BaseDatabaseModel
 	{
 		if (empty($config['dbo']) && $config['inst']) {
 			$dbFile = '/meedya.db3';
-			$this->udp = \RJUserCom::getStoragePath($config['inst']);
+			$this->udp = RJUserCom::getStoragePath($config['inst']);
 			$udbPath = $this->udp.$dbFile;
 			try {
 				$db = DatabaseDriver::getInstance(['driver'=>'sqlite','database'=>$udbPath]);
