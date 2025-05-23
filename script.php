@@ -1,9 +1,9 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022-2024 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2022-2025 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.3.6
+* @since		1.4.1
 */
 defined('_JEXEC') or die;
 
@@ -14,7 +14,7 @@ use Joomla\CMS\Installer\InstallerScript;
 
 class com_meedyaInstallerScript extends InstallerScript
 {
-	protected $minimumJoomla = '3.8';
+	protected $minimumJoomla = '4.1';
 	protected $com_name = 'com_meedya';
 
 	public function install ($parent)
@@ -148,13 +148,12 @@ class com_meedyaInstallerScript extends InstallerScript
 		}
 
 		// ensure that the RJUser library is installed
-		include JPATH_LIBRARIES . '/rjuser/com.php';
-		if (!class_exists('RJUserCom')) {
+		if (!class_exists('RJCreations\Library\RJUserCom',true)) {
 			Log::add('The <a href="https://github.com/ron4mac/joomla_lib_rjuser" target="_blank">RJUser Library</a> is required for this component.', Log::WARNING, 'jerror');
 			return false;
 		}
 		// and is current enough
-		if (!(method_exists('RJUserCom','createDb'))) {
+		if (!(method_exists('RJCreations\Library\RJUserCom','Igaa'))) {
 			Log::add('The installed version of <a href="https://github.com/ron4mac/joomla_lib_rjuser" target="_blank">RJUser Library</a> must be updated.', Log::WARNING, 'jerror');
 			return false;
 		}

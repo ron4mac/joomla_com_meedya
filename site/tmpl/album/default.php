@@ -26,9 +26,11 @@ $styles = 'a';
 //MeedyaHelper::addScript(['common','meedya','rating','echo']);
 $scripts = 'mre';
 if (defined('MYG_FB4')) {
-	$styles .= 'F';
+//	$styles .= 'F';
+	$this->jDoc->addStyleSheet("https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.css");
 //	MeedyaHelper::addStyle('fancybox', 'vendor/fancybox/4.0.27/');
-	$scripts .= 'F';
+//	$scripts .= 'F';
+	$this->jDoc->addScript("https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js");
 //	MeedyaHelper::addScript('fancybox.umd', 'vendor/fancybox/4.0.27/');
 	$ttscript .= '
 	Fancybox.defaults.infinite = 0;
