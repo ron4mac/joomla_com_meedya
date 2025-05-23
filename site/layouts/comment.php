@@ -1,14 +1,16 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2022-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
+* @since		1.4.0
 */
 defined('JPATH_BASE') or die;
 
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Session\Session;
+use RJCreations\Component\Meedya\Site\Helper\M34C;
 
 $mmdl =  HTMLHelper::_(
 	'bootstrap.renderModal',
@@ -21,7 +23,7 @@ $mmdl =  HTMLHelper::_(
 	),
 	'<form id="newcmnt">
 	<div class="new-comment"><textarea id="cmnt-text" name="cmntext"></textarea></div>
-	<input type="hidden" name="task" value="addComment" />
+	<input type="hidden" name="task" value="DispRaw.addComment" />
 	<input type="hidden" name="'.Session::getFormToken().'" value="1" />
 	</form>'
 );
