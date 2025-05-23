@@ -16,6 +16,17 @@ class com_meedyaInstallerScript extends InstallerScript
 {
 	protected $minimumJoomla = '4.1';
 	protected $com_name = 'com_meedya';
+	protected $deleteFolders = [
+		'components/com_meedya/controllers',
+		'components/com_meedya/models',
+		'components/com_meedya/views',
+		'administrator/components/com_meedya/models'];
+	protected $deleteFiles = [
+		'components/com_meedya/controller.php',
+		'components/com_meedya/controller.raw.php',
+		'components/com_meedya/meedya.php',
+		'administrator/components/com_meedya/controller.php',
+		'administrator/components/com_meedya/meedya.php'];
 
 	public function install ($parent)
 	{
@@ -181,6 +192,9 @@ class com_meedyaInstallerScript extends InstallerScript
 			$params['thm_height'] = 120;
 			$params['show_version'] = true;
 			$this->mySetParams($params);
+		}
+		if ($type === 'update') {
+			$this->removeFiles();
 		}
 	}
 
