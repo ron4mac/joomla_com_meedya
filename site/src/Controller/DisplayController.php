@@ -1,9 +1,9 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022-2024 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2022-2025 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.0
+* @since		1.4.2
 */
 namespace RJCreations\Component\Meedya\Site\Controller;
 
@@ -33,7 +33,7 @@ class DisplayController extends BaseController
 
 	public function display ($cachable = false, $urlparams = []): DisplayController
 	{
-		if ($this->input->getString('view') == 'public') return parent::display($cachable, $urlparams);
+		if (in_array($this->input->getString('view'),['picframe','public'])) return parent::display($cachable, $urlparams);
 		if (file_exists(RJUserCom::getStoragePath())) {
 			$view = $this->getView('meedya','html');
 		} else {

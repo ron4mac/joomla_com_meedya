@@ -1,9 +1,9 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022-2024 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2022-2025 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.0
+* @since		1.4.2
 */
 namespace RJCreations\Component\Meedya\Site\Controller;
 
@@ -19,8 +19,12 @@ use Joomla\CMS\Uri\Uri;
 use RJCreations\Library\RJUserCom;
 use RJCreations\Component\Meedya\Site\Helper\HtmlMeedya;
 
-define('PFDW', 1024);
-define('PFDH', 600);
+include JPATH_COMPONENT.'/lpf.php';
+if (!defined('PFDW')) {
+	define('PFDW', 1024);
+	define('PFDH', 600);
+	define('IMGBKG', 'bgi3.jpeg');
+}
 
 class DispRawController extends BaseController
 {
@@ -28,6 +32,7 @@ class DispRawController extends BaseController
 //	{
 //		error_reporting(0);
 //		parent::__construct($config);
+//		include JPATH_COMPONENT.'/lpf.php';
 //	}
 
 	// receive a rating vote
@@ -125,6 +130,8 @@ class DispRawController extends BaseController
 			foreach ($thms as $thm) {
 				echo '<img class="pfthm" src="'.$thm['src'].'" data-iid="'.$thm['iid'].'">';
 			}
+		} elseif ($this->input->getInt('pco', 0)) {
+			echo $m->getPlayListCount($prms->aid,$prms->rcr,$prms->obj);
 		} else {
 			$pics = $m->getPlayList($prms->aid,$prms->rcr,$prms->obj);
 			echo "\t\t\t\t" . count($pics) . "\t" . implode("\n",$pics);
@@ -147,13 +154,14 @@ class DispRawController extends BaseController
 		@ob_end_clean();@ob_end_clean();
 
 		$this->app->clearHeaders()
-			->setHeader('Content-Type','image/jpeg; charset=utf-8',true);
+			->setHeader('Content-Type','image/jpeg',true);
 		//	->setHeader('Content-Length',(string)filesize($file),true);
 //			->sendHeaders();
 	//	header('Content-Type: image/jpeg');
 	//	header('Content-Length: ' . filesize($file));
 	//	echo '+_+_+_+_+_+_+';
 	//	readfile($file);
+	header('Content-Type: image/jpeg; charset=utf-8',true);
 		$this->makeFimg($file);
 	}
 
@@ -201,7 +209,7 @@ class DispRawController extends BaseController
 
 		return [$fW, $fH, $x, 0];
 	}
-	
+
 	private function getimgRes ($name, $type)
 	{
 		switch ($type) {
@@ -217,29 +225,33 @@ class DispRawController extends BaseController
 			}
 		return $im;
 	}
-	
+
+	private function newImg ($new_w, $new_h)
+	{
+		if (function_exists('imagecreatetruecolor')) return imagecreatetruecolor($new_w, $new_h);
+		return imagecreate($new_w, $new_h);
+	}
+
 	private function createImage ($new_w, $new_h, $matte)
 	{
 		if ($matte) {
-			return imagecreatefromjpeg(JPATH_COMPONENT.'/static/img/'.$matte);
+			$m = imagecreatefromjpeg(JPATH_COMPONENT.'/static/img/'.$matte);
+			$im = $this->newImg($new_w, $new_h);
+			$result = imagecopyresampled($im, $m, 0, 0, 0, 0, $new_w, $new_h, imagesx($m), imagesy($m));
+			if (!$result) {
+				$result = @imagecopyresized($im, $m, 0, 0, 0, 0, $new_w, $new_h, $new_w, $new_h);
+			}
+			return $im;
 		}
-		if (function_exists('imagecreatetruecolor')) {
-			$retval = imagecreatetruecolor($new_w, $new_h);
-		}
-	
-		if (!$retval) {
-			$retval = imagecreate($new_w, $new_h);
-		}
-	
-		return $retval;
+		return $this->newImg($new_w, $new_h);
 	}
-	
+
 	private function makeFimg ($simg)
 	{
 		list($w,$h,$t) = getimagesize($simg);
 		list($nw,$nh,$x,$y) = $h>$w ? $this->inFrameRect($w,$h,PFDW,PFDH) : $this->frameRect($w,$h,PFDW,PFDH);
 		$src_img = $this->getimgRes($simg, $t);
-		$dst_img = $this->createImage(PFDW, PFDH, $h>$w ? 'bgi3.jpeg' : null);
+		$dst_img = $this->createImage(PFDW, PFDH, $h>$w ? IMGBKG : null);
 
 		if ($h>$w) {
 			$result = imagecopyresampled($dst_img, $src_img, $x, $y, 0, 0, $nw, $nh, $w, $h);

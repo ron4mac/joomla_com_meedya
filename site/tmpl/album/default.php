@@ -1,9 +1,9 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022-2024 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2022-2025 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.0
+* @since		1.4.2
 */
 defined('_JEXEC') or die;
 
@@ -16,6 +16,11 @@ use Joomla\CMS\Layout\LayoutHelper;
 use RJCreations\Component\Meedya\Site\Helper\M34C;
 use RJCreations\Component\Meedya\Site\Helper\HtmlMeedya;
 use RJCreations\Component\Meedya\Site\Helper\MeedyaHelper;
+
+include JPATH_COMPONENT.'/lpf.php';
+if (!defined('LOCALPF')) {
+	define('LOCALPF', 'http://picframe.local');
+}
 
 define('MYG_FB4', 1);
 $ttscript = 'Meedya.albumID = '.$this->aid.';';
@@ -235,7 +240,7 @@ $cancmnt = $this->uid || $this->params->get('pub_comments', 0);
 			<img src="components/com_meedya/static/img/slideshow.png" alt="" /></a>
 	<?php endif; ?>
 	<?php if ($this->params->get('picframe', 0) && empty($this->sterm) && $this->userPerms->canAdmin): ?>
-		<a href="http://picframe.local/static/cgetnpl.html?nplt=<?=$this->title?>&nplk=<?=$this->picframekey()?>" title="<?=Text::_('COM_MEEDYA_PICFRAME')?>" target="_blank">
+		<a href="<?=LOCALPF?>/static/cgetnpl.html?nplt=<?=$this->title?>&nplk=<?=$this->picframekey()?>" title="<?=Text::_('COM_MEEDYA_PICFRAME')?>" target="_blank">
 			<img src="components/com_meedya/static/img/picframe.png" alt="" /></a>
 	<?php endif; ?>
 	</div>

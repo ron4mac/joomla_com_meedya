@@ -3,7 +3,7 @@
 * @package		com_meedya
 * @copyright	Copyright (C) 2022-2025 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.1
+* @since		1.4.2
 */
 defined('_JEXEC') or die;
 
@@ -25,6 +25,12 @@ class com_meedyaInstallerScript extends InstallerScript
 		'components/com_meedya/controller.php',
 		'components/com_meedya/controller.raw.php',
 		'components/com_meedya/meedya.php',
+		'components/com_meedya/helpers/imgproc.php',
+		'components/com_meedya/helpers/graphicgd.php',
+		'components/com_meedya/helpers/graphicim.php',
+		'components/com_meedya/helpers/graphicimx.php',
+		'components/com_meedya/helpers/meedya.php',
+		'components/com_meedya/src/Helper/meedya.php',
 		'administrator/components/com_meedya/controller.php',
 		'administrator/components/com_meedya/meedya.php'];
 

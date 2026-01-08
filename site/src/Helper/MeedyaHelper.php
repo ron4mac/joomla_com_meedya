@@ -1,9 +1,9 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2023-2024 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2023-2025 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.0
+* @since		1.4.2
 */
 namespace RJCreations\Component\Meedya\Site\Helper;
 
@@ -129,10 +129,11 @@ abstract class MeedyaHelper
 				$sps = explode(':', getenv('PATH'));
 				foreach ($sps as $sp) {
 					if (file_exists($sp.'/convert')) $imp = 'im';
+					if (file_exists($sp.'/magick')) $imp = 'im7';
 				}
 			}
 		}
-		require_once JPATH_COMPONENT.'/helpers/graphic'.$imp.'.php';
+		require_once JPATH_COMPONENT.'/classes/graphic'.$imp.'.php';
 		return new \ImageProcessor($imgf);
 	}
 

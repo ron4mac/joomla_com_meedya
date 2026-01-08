@@ -1,9 +1,9 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2023-2024 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2023-2025 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.0
+* @since		1.4.2
 */
 namespace RJCreations\Component\Meedya\Site\Model;
 
@@ -50,6 +50,13 @@ class PicframeModel extends \Joomla\CMS\MVC\Model\BaseDatabaseModel
 		return $this->getAlbImgs($aid);
 	}
 
+	public function getPlayListCount ($aid, $recur, $inst)
+	{
+		$this->galinst = base64_encode(json_encode($inst));
+		$this->imgp = Uri::root() . $this->udp . '/med/';
+		return $this->getAlbImgCount($aid);
+	}
+
 	public function getThumbnails ($aid, $recur, $inst)
 	{
 		$this->galinst = base64_encode(json_encode($inst));
@@ -81,6 +88,23 @@ class PicframeModel extends \Joomla\CMS\MVC\Model\BaseDatabaseModel
 			$itm = $this->getItemFile($iid);
 			if (substr($itm['mtype'],0,6) == 'image/') {
 				$items[] = $this->imgp . $itm['file'];
+			}
+		}
+		return $items;
+	}
+
+	private function getAlbImgCount ($aid)
+	{
+		$url = Route::_('index.php?option=com_meedya&format=raw&task=DispRaw.p4f&p=', false, 0, true);
+	//	$url = JUri::root() . 'picframe.php/?gi=';
+		$this->db->setQuery('SELECT items FROM albums WHERE aid='.$aid);
+		if (!$ilst = trim($this->db->loadResult()?:'')) return [];
+		$itms = explode('|', $ilst);
+		$items = 0;
+		foreach ($itms as $iid) {
+			$itm = $this->getItemFile($iid);
+			if (substr($itm['mtype'],0,6) == 'image/') {
+				$items++;
 			}
 		}
 		return $items;
