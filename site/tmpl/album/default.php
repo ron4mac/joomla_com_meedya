@@ -1,14 +1,15 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022-2025 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2022-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.2
+* @since		1.4.3
 */
 defined('_JEXEC') or die;
 
 /* ========== NOTICE! THIS TEMPLATE IS REUSED BY SEARCH DISPLAY AND PUBLIC ALBUM DISPLAY ========== */
 
+use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
@@ -17,7 +18,7 @@ use RJCreations\Component\Meedya\Site\Helper\M34C;
 use RJCreations\Component\Meedya\Site\Helper\HtmlMeedya;
 use RJCreations\Component\Meedya\Site\Helper\MeedyaHelper;
 
-include JPATH_COMPONENT.'/lpf.php';
+if (file_exists(JPATH_COMPONENT.'/lpf.php')) include JPATH_COMPONENT.'/lpf.php';
 if (!defined('LOCALPF')) {
 	define('LOCALPF', 'http://picframe.local');
 }
@@ -43,7 +44,7 @@ if (defined('MYG_FB4')) {
 	Fancybox.defaults.hideClass = false;
 	Fancybox.defaults.autoFocus = false;
 	Fancybox.Plugins.Thumbs.defaults.autoStart = false;
-	Fancybox.Plugins.Toolbar.defaults.display = ["zoom","slideshow","fullscreen","download","close"];
+	Fancybox.Plugins.Toolbar.defaults.display = [{ id: "counter", position: "left" },"zoom","slideshow","fullscreen","download","close"];
 //	Carousel.defaults.friction = 0.75;';
 } else {
 	$styles .= 'f';		//MeedyaHelper::addStyle('fancybox3','vendor/fancybox/');
@@ -75,7 +76,7 @@ if ($this->items) {		//var_dump($this->items);
 		$txtinfo .= (($txtinfo && $desc) ? ' ... ' : '') . $desc;
 		$mTyp = substr($file['mtype'], 0, 5);
 		if (defined('MYG_FB4') && $mTyp=='video') $mTyp = 'html5video';
-		$murl = JUri::root(true).'/'.$this->gallpath.($mTyp=='image' ? '/med/' : '/img/').$file['file'];
+		$murl = Uri::root(true).'/'.$this->gallpath.($mTyp=='image' ? '/med/' : '/img/').$file['file'];
 		$fileentry = [
 			'src' => $murl,
 			'type' => $mTyp
@@ -331,7 +332,7 @@ if ($use_ratings && ($this->uid || $pub_ratings)) {
 ?>
 <script>
 	echo.init({
-		baseUrl: "<?=JUri::root(true).'/'.$this->gallpath?>/",
+		baseUrl: "<?=Uri::root(true).'/'.$this->gallpath?>/",
 		offset: 200,
 		throttle: 250,
 		debounce: false

@@ -1,31 +1,34 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022-2024 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2022-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.3.5
+* @since		1.4.3
 */
-defined('JPATH_PLATFORM') or die;
+namespace RJCreations\Component\Meedya\Administrator\Helper\Html;
+
+defined('_JEXEC') or die;
 
 use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\HTML\Helpers\Number;
 
-abstract class JHtmlMyGrid
+class Mygrid
 {
 
-	public static function checkall ()
+	public function checkall ()
 	{
 		$html = HTMLHelper::_('grid.checkall');
 		return $html;
 	}
 
-	public static function info ($data)
+	public function info ($data)
 	{
 		if (!is_array($data)) return $data;
 		$html = '<dl class="MDY-info">';
 		foreach ($data as $k=>$v) {
 			switch ($k) {
 				case 'size':
-					$html .= '<dt>'.'Storage Use:'.'</dt><dd>'.JHtmlNumber::bytes($v, 'auto', 1).'</dd>';
+					$html .= '<dt>'.'Storage Use:'.'</dt><dd>'.Number::bytes($v, 'auto', 1).'</dd>';
 					break;
 				case 'items':
 					$html .= '<dt>'.'Items:'.'</dt><dd>'.$v.'</dd>';

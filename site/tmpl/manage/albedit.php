@@ -1,12 +1,13 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022-2024 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2022-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.0
+* @since		1.4.3
 */
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
@@ -14,10 +15,7 @@ use RJCreations\Component\Meedya\Site\Helper\M34C;
 use RJCreations\Component\Meedya\Site\Helper\HtmlMeedya;
 use RJCreations\Component\Meedya\Site\Helper\MeedyaHelper;
 
-//MeedyaHelper::addStyle(['gallery','manage',['vendor/pell/'=>'pell.min']]);
 MeedyaHelper::oneStyle('gMp');
-//HTMLHelper::_('jquery.framework');
-//MeedyaHelper::addScript(['common','manage','itm_dand','my_bb',['vendor/pell/'=>'pell.min']]);
 MeedyaHelper::oneScript('cMabpe');
 
 HTMLHelper::_('bootstrap.modal');
@@ -129,7 +127,7 @@ Meedya.cancelEdt = () => {
 	window.location = atob(document.albForm.referer.value);
 }
 echo.init({
-	baseUrl: "<?=JUri::root(true).'/'.$this->gallpath?>/",
+	baseUrl: "<?=Uri::root(true).'/'.$this->gallpath?>/",
 	offset: 200,
 	throttle: 250,
 	debounce: false

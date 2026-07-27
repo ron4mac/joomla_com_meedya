@@ -1,13 +1,16 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022-2024 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2022-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.3.5
+* @since		1.4.3
 */
+namespace RJCreations\Component\Meedya\Administrator\Helper;
+
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
+use Joomla\Database\DatabaseDriver;
 
 abstract class MeedyaHelperDb
 {
@@ -15,7 +18,7 @@ abstract class MeedyaHelperDb
 	{
 		if (!file_exists($udbPath)) return [];
 		$size = filesize($udbPath);
-		$db = JDatabaseDriver::getInstance(['driver'=>'sqlite', 'database'=>$udbPath]);
+		$db = self::getDb($udbPath);
 		$items = $db->setQuery('SELECT COUNT(*) FROM meedyaitems')->loadResult();
 		$size += $db->setQuery('SELECT totuse FROM usage')->loadResult();
 		$dbv = $db->setQuery('PRAGMA user_version')->loadResult();
@@ -41,7 +44,7 @@ abstract class MeedyaHelperDb
 	{
 		if (!file_exists($udbPath)) return;
 		$imgsDir = $udbPath.'/img/';
-		$db = JDatabaseDriver::getInstance(array('driver'=>'sqlite', 'database'=>$udbPath.'/meedya.db3'));
+		$db = self::getDb($udbPath.'/meedya.db3');
 
 		// get image exif exposure dates and add them to the database
 		$db->setQuery('SELECT id,file FROM meedyaitems');
@@ -63,7 +66,7 @@ abstract class MeedyaHelperDb
 	//	$medFils = self::storedFiles($udbPath.'/med/');
 	//	$thmFils = self::storedFiles($udbPath.'/thm/');
 
-		$db = JDatabaseDriver::getInstance(array('driver'=>'sqlite', 'database'=>$udbPath.'/meedya.db3'));
+		$db = self::getDb($udbPath.'/meedya.db3');
 
 		// get files listed in the database
 		$db->setQuery('SELECT file FROM meedyaitems');
@@ -86,7 +89,7 @@ abstract class MeedyaHelperDb
 	{
 		if (!file_exists($udbPath)) return;
 
-		$db = JDatabaseDriver::getInstance(array('driver'=>'sqlite', 'database'=>$udbPath.'/meedya.db3'));
+		$db = self::getDb($udbPath.'/meedya.db3');
 
 		// get files listed in the database
 		$db->setQuery('SELECT id,file FROM meedyaitems');
@@ -119,7 +122,7 @@ abstract class MeedyaHelperDb
 //	file_put_contents('UPDS.txt', print_r($updsqlfiles, true));
 		$dbfile = $udbPath.'/meedya.db3';
 		if (!file_exists($dbfile)) throw new Exception('COM_MEEDYA_MISSING_DB');
-		$db = JDatabaseDriver::getInstance(array('driver'=>'sqlite', 'database'=>$dbfile));
+		$db = self::getDb($dbfile);
 		$errs = [];
 		foreach ($updsqlfiles as $sqlf) {
 			preg_match('#upd_(.+)\.sql#', basename($sqlf), $m);
@@ -150,7 +153,7 @@ abstract class MeedyaHelperDb
 	{
 		if (!file_exists($udbPath)) return;
 
-		$db = JDatabaseDriver::getInstance(array('driver'=>'sqlite', 'database'=>$udbPath.'/meedya.db3'));
+		$db = self::getDb($udbPath.'/meedya.db3');
 
 		// get files listed in the database
 		$db->setQuery('SELECT id,album FROM meedyaitems');
@@ -186,6 +189,12 @@ abstract class MeedyaHelperDb
 		}
 
 		return $files;
+	}
+
+	private static function getDb ($path)
+	{
+		$db = DatabaseDriver::getInstance(array('driver'=>'sqlite', 'database'=>$path));
+		return $db;
 	}
 
 }

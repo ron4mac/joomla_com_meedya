@@ -1,20 +1,21 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022-2025 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2022-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.2
+* @since		1.4.3
 */
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Log\Log;
 use Joomla\CMS\Language\Text;
+use Joomla\Database\DatabaseDriver;
 use Joomla\CMS\Installer\InstallerScript;
 
 class com_meedyaInstallerScript extends InstallerScript
 {
-	protected $minimumJoomla = '4.1';
+	protected $minimumJoomla = '5.1';
 	protected $com_name = 'com_meedya';
 	protected $deleteFolders = [
 		'components/com_meedya/controllers',
@@ -48,117 +49,13 @@ class com_meedyaInstallerScript extends InstallerScript
 		Factory::getApplication()->enqueueMessage('<a href="index.php?option=com_meedya&view=groups">'.Text::_('COM_MEEDYA_UPDATE_MESSAGE').'</a>', 'warning');
 	}
 
-	/**
-	 * Method to extract the name of a discreet installation sql file from the installation manifest file.
-	 *
-	 * @param   object  $element  The XML node to process
-	 *
-	 * @return  mixed  Number of queries processed or False on error
-	 *
-	 * @since   3.1
-	 */
-	public function parseSQLFiles($element)
-	{
-		if (!$element || !count($element->children()))
-		{
-			// The tag does not exist.
-			return 0;
-		}
-
-		$db = & $this->_db;
-
-		// TODO - At 4.0 we can change this to use `getServerType()` since SQL Server will not be supported
-		$dbDriver = strtolower($db->name);
-
-		if ($db->getServerType() === 'mysql')
-		{
-			$dbDriver = 'mysql';
-		}
-		elseif ($db->getServerType() === 'postgresql')
-		{
-			$dbDriver = 'postgresql';
-		}
-
-		$update_count = 0;
-
-		// Get the name of the sql file to process
-		foreach ($element->children() as $file)
-		{
-			$fCharset = strtolower($file->attributes()->charset) === 'utf8' ? 'utf8' : '';
-			$fDriver  = strtolower($file->attributes()->driver);
-
-			if ($fDriver === 'mysqli' || $fDriver === 'pdomysql')
-			{
-				$fDriver = 'mysql';
-			}
-			elseif ($fDriver === 'pgsql')
-			{
-				$fDriver = 'postgresql';
-			}
-
-			if ($fCharset === 'utf8' && $fDriver == $dbDriver)
-			{
-				$sqlfile = $this->getPath('extension_root') . '/' . trim($file);
-
-				// Check that sql files exists before reading. Otherwise raise error for rollback
-				if (!file_exists($sqlfile))
-				{
-					\JLog::add(\JText::sprintf('JLIB_INSTALLER_ERROR_SQL_FILENOTFOUND', $sqlfile), \JLog::WARNING, 'jerror');
-
-					return false;
-				}
-
-				$buffer = file_get_contents($sqlfile);
-
-				// Graceful exit and rollback if read not successful
-				if ($buffer === false)
-				{
-					\JLog::add(\JText::_('JLIB_INSTALLER_ERROR_SQL_READBUFFER'), \JLog::WARNING, 'jerror');
-
-					return false;
-				}
-
-				// Create an array of queries from the sql file
-				$queries = \JDatabaseDriver::splitSql($buffer);
-
-				if (count($queries) === 0)
-				{
-					// No queries to process
-					continue;
-				}
-
-				// Process each query in the $queries array (split out of sql file).
-				foreach ($queries as $query)
-				{
-					$db->setQuery($db->convertUtf8mb4QueryToUtf8($query));
-
-					try
-					{
-						$db->execute();
-					}
-					catch (\JDatabaseExceptionExecuting $e)
-					{
-						\JLog::add(\JText::sprintf('JLIB_INSTALLER_ERROR_SQL_ERROR', $e->getMessage()), \JLog::WARNING, 'jerror');
-
-						return false;
-					}
-
-					$update_count++;
-				}
-			}
-		}
-
-		return $update_count;
-	}
-
-
 	public function preflight ($type, $parent)
 	{
 		// give the parent first shot
 		if (parent::preflight($type, $parent) === false) return false;
 
 		// ensure that SQLite is active in joomla
-		$dbs = JDatabaseDriver::getConnectors();
+		$dbs = DatabaseDriver::getConnectors();
 		if (!in_array('sqlite', $dbs) && !in_array('Sqlite', $dbs)) {
 			Log::add('Joomla support for SQLite(3) is required for this component.', Log::WARNING, 'jerror');
 			return false;

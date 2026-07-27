@@ -1,20 +1,17 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022-2024 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2022-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.0
+* @since		1.4.3
 */
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
-//use RJCreations\Meedya\Administrator\Service\Html\MyGrid;
+use RJCreations\Component\Meedya\Administrator\Helper\Html\Mygrid;
 
-// Include the component HTML helpers.
-HTMLHelper::addIncludePath(JPATH_COMPONENT.'/helpers/html');
-//HTMLHelper::_('behavior.tooltip');
 HTMLHelper::_('behavior.multiselect');
 
 //var_dump('vdf',$this);jexit();
@@ -32,7 +29,7 @@ $canDo		= MeedyaAdminHelper::getActions();
 			<thead>
 				<tr>
 					<th width="1%"></th>
-					<th width="1%"><?php echo HTMLHelper::_('myGrid.checkall'); ?></th>
+					<th width="1%"><?php echo HTMLHelper::_('mygrid.checkall'); ?></th>
 					<th width="15%">
 						<?php echo HTMLHelper::_('grid.sort', $relmtext[0], 'username', $listDirn, $listOrder); ?>
 					</th>
@@ -74,7 +71,7 @@ $canDo		= MeedyaAdminHelper::getActions();
 						<?php echo $item['mnut'] ?>
 					</td>
 					<td>
-						<?php echo HTMLHelper::_('myGrid.info', $item['info']); ?>
+						<?php echo HTMLHelper::_('mygrid.info', $item['info']); ?>
 					</td>
 				</tr>
 			<?php endforeach; ?>

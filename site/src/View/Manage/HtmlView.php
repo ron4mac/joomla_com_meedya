@@ -1,9 +1,9 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2023-2024 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2023-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.0
+* @since		1.4.3
 */
 namespace RJCreations\Component\Meedya\Site\View\Manage;
 
@@ -12,11 +12,9 @@ defined('_JEXEC') or die;
 //use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\Registry\Registry;
-use Joomla\CMS\Filesystem\FilesystemHelper;
+use Joomla\Filesystem\Helper as FilesystemHelper;
 use RJCreations\Component\Meedya\Site\View\MeedyaView;
 use RJCreations\Component\Meedya\Site\Helper\MeedyaHelper;
-
-//require_once JPATH_BASE . '/components/com_meedya/src/View/MeedyaView.php';
 
 class HtmlView extends MeedyaView
 {
@@ -124,7 +122,7 @@ class HtmlView extends MeedyaView
 			//	$this->albums = $this->get('AlbumsList');
 				$this->maxUploadFS = MeedyaHelper::maxUpload($this->mparams->get('maxUpload'));
 				$this->maxupld = MeedyaHelper::formatBytes($this->maxUploadFS);
-				$this->phpupld = MeedyaHelper::formatBytes(FilesystemHelper::fileUploadMaxSize(false));
+				$this->phpupld = MeedyaHelper::formatBytes(FilesystemHelper::getFileUploadMaxSize(false));
 			//	$this->dbTime = $this->get('DbTime');
 				$this->items = [];		// keep parent view from loading items
 				break;

@@ -1,9 +1,9 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022-2024 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2022-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.0
+* @since		1.4.3
 */
 defined('_JEXEC') or die;
 
@@ -12,6 +12,7 @@ use Joomla\CMS\User\User;
 use Joomla\CMS\MVC\Model\ListModel;
 use Joomla\CMS\Component\ComponentHelper;
 use RJCreations\Library\RJUserCom;
+use RJCreations\Component\Meedya\Administrator\Helper\MeedyaHelperDb;
 
 class MeedyaModelMeedya extends ListModel
 {
@@ -38,7 +39,7 @@ class MeedyaModelMeedya extends ListModel
 		$folds = RJUserCom::getDbPaths($this->relm, 'meedya', true);
 		foreach ($folds as $dir => $mgis) foreach ($mgis as $mgi) {
 			$info = RJUserCom::getDbInfo($mgi['path'],'meedyaitems',[$this,'getStoreSizeCb']);
-			$dbok = \MeedyaHelperDb::checkDbVersion($mgi['path'], $info);
+			$dbok = MeedyaHelperDb::checkDbVersion($mgi['path'], $info);
 			if ($dbok) $info['warn'] = '<span style="color:red"> DB NEEDS UPDATE</span>';
 			$dbwarn = $dbok ? '' : '<span style="color:red"> DB NEEDS UPDATE</span>';
 			$userid = (int)substr($dir,1);

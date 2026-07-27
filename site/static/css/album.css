@@ -12,6 +12,9 @@
 	font-size: large;
 	margin-bottom: 0.5em;
 }
+.crumbs a {
+	display: inline-flex;
+}
 .anitem {
 /*	display: inline-block;*/
 	margin: 1px;

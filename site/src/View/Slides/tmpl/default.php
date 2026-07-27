@@ -1,14 +1,15 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022-2024 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2022-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.0
+* @since		1.4.3
 */
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Uri\Uri;
 
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
@@ -56,13 +57,13 @@ $dcolors = $H5ss_cfg['dC'];		//explode(',', $H5ss_cfg['dC']);
 	div#controls { background-color:<?=$dcolors[0]?>; color:<?=$dcolors[1]?>; }
 	div#ptext { background-color:<?=$dcolors[2]?>; color:<?=$dcolors[3]?>; }
 	div#screen { background-color:<?=$dcolors[4]?>;padding-left:12px;padding-right:12px;position:relative; }
-	div.spribut { background: url('<?=JUri::root(true)?>/components/com_meedya/static/css/icons/<?=$icons?>.png') no-repeat; }
+	div.spribut { background: url('<?=Uri::root(true)?>/components/com_meedya/static/css/icons/<?=$icons?>.png') no-repeat; }
 </style>
 <script type="text/javascript">
 	var albumID = '<?=$this->aid?>';
 	var popdwin = <?=$popdwin?'true':'false'?>;
-	var baseUrl = "<?=JUri::root(true).'/'.$this->gallpath?>/med/";
-	var _imgP = "<?=JUri::root(true)?>/components/com_meedya/static/img/";
+	var baseUrl = "<?=Uri::root(true).'/'.$this->gallpath?>/med/";
+	var _imgP = "<?=Uri::root(true)?>/components/com_meedya/static/img/";
 	var viderror = "COULD NOT PLAY VIDEO";
 	var imagelist = <?=json_encode($filelist)?>;
 	var imgerror = "<?=Text::_('COM_MEEDYA_SS_IMGERROR')?>";

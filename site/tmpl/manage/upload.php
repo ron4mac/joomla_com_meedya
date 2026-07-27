@@ -1,13 +1,14 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022-2024 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2022-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.0
+* @since		1.4.3
 */
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
+use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
@@ -20,7 +21,7 @@ HTMLHelper::addIncludePath(JPATH_COMPONENT.'/helpers');
 
 // build and add javascript options
 $h5opts = [
-	'siteURL' => JUri::base().'index.php?option=com_meedya&Itemid='.$this->itemId,
+	'siteURL' => Uri::base().'index.php?option=com_meedya&Itemid='.$this->itemId,
 	'upURL' => Route::_('index.php?option=com_meedya&format=raw&Itemid='.$this->itemId, false),
 	'dropMessage' => 'Please drop files here to upload<br>(or click to select)',
 //	'failcss' => 'alert-danger',
@@ -36,9 +37,7 @@ $this->jDoc->addScriptOptions('H5uOpts', $h5opts);
 
 // add stylesheets and javascript
 HTMLHelper::_('jquery.framework');
-//MeedyaHelper::addStyle(['gallery','manage','uplodr',['vendor/tags/'=>'jquery.tagsinput']]);
 MeedyaHelper::oneStyle('gMUt');
-//MeedyaHelper::addScript(['common','manage','fileup','uplodr',['vendor/tags/'=>'jquery.tagsinput']]);
 MeedyaHelper::oneScript('MuUtb');
 
 $script = '

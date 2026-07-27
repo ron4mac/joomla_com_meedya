@@ -1,14 +1,15 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022-2024 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2022-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.0
+* @since		1.4.3
 */
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Session\Session;
 use Joomla\CMS\Layout\LayoutHelper;
@@ -17,14 +18,7 @@ use RJCreations\Component\Meedya\Site\Helper\MeedyaHelper;
 
 HTMLHelper::_('jquery.framework');
 
-//HTMLHelper::_('bootstrap.framework');
-//HTMLHelper::_('behavior.multiselect');
-//HTMLHelper::_('formbehavior.chosen', 'select');
-//HTMLHelper::_('bootstrap.tooltip');
-
-//MeedyaHelper::addStyle(['gallery','manage',['vendor/tags/'=>'jquery.tagsinput']]);
 MeedyaHelper::oneStyle('gMt');
-//MeedyaHelper::addScript(['common','manage','my_bb',['vendor/tags/'=>'jquery.tagsinput']]);
 MeedyaHelper::oneScript('Mbte');
 
 Text::script('COM_MEEDYA_PERM_DELETE');
@@ -129,7 +123,7 @@ echo str_replace(' modal-lg', '', $mmdl);
 <script>
 jQuery('#system-message-container').delay(5000).slideUp("slow");
 echo.init({
-	baseUrl: "<?=JUri::root(true).'/'.$this->gallpath?>/",
+	baseUrl: "<?=Uri::root(true).'/'.$this->gallpath?>/",
 	offset: 200,
 	throttle: 250,
 	debounce: false

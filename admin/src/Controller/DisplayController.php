@@ -1,9 +1,9 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022-2024 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2022-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.0
+* @since		1.4.3
 */
 namespace RJCreations\Component\Meedya\Administrator\Controller;
 
@@ -15,10 +15,7 @@ use Joomla\CMS\Session\Session;
 use Joomla\CMS\MVC\Controller\BaseController;
 use Joomla\CMS\Application\ApplicationHelper;
 use RJCreations\Library\RJUserCom;
-
-\JLoader::register('MeedyaHelperDb', JPATH_COMPONENT_ADMINISTRATOR.'/helpers/db.php');
-
-//require_once JPATH_COMPONENT.'/helpers/meedya.php';
+use RJCreations\Component\Meedya\Administrator\Helper\MeedyaHelperDb;
 
 class DisplayController extends BaseController
 {
@@ -55,6 +52,20 @@ class DisplayController extends BaseController
 		return $this;
 	}
 */
+
+	public function remove ()
+	{
+		$this->tokenCheck();
+		$cids = $this->input->get('cid',array(),'array');
+		$view = $this->input->get('view');
+		foreach ($cids as $cid) {
+			list($guid,$iid) = explode('|', $cid);
+			$mid = $iid ?: '';
+			RJUserCom::deleteStorageInstance($guid, $mid);
+		}
+		$this->setRedirect('index.php?option=com_meedya&view='.$view, Text::_('COM_MEEDYA_MSG_COMPLETE'));
+	}
+
 	public function rebuildExpodt ()
 	{
 		$this->tokenCheck();

@@ -1,15 +1,15 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022-2024 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2022-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.0
+* @since		1.4.3
 */
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
-use Joomla\CMS\Filesystem\Folder;
+use Joomla\Filesystem\Folder;
 use Joomla\CMS\Layout\LayoutHelper;
 use RJCreations\Component\Meedya\Site\Helper\HtmlMeedya;
 use RJCreations\Component\Meedya\Site\Helper\MeedyaHelper;
@@ -17,10 +17,7 @@ use RJCreations\Component\Meedya\Site\Helper\MeedyaHelper;
 Text::script('COM_MEEDYA_MOVE_FAIL');
 Text::script('COM_MEEDYA_IMPORT');
 
-//MeedyaHelper::addStyle(['gallery','manage']);
 MeedyaHelper::oneStyle('gM');
-//HTMLHelper::_('jquery.framework');
-//MeedyaHelper::addScript(['common','manage','alb_dand']);
 MeedyaHelper::oneScript('MA');
 
 function buildTree(array $albums, &$html, $paid = 0) {
@@ -76,68 +73,9 @@ $this->btmscript[] = 'Meedya._ae("clnalbdlg", "show.bs.modal", (evt) => {
 $hasImport = Folder::exists($this->gallpath.'/import');
 ?>
 <style>
-/*.modal-body {
-	padding:1em;
-	width:100%;
-	box-sizing:border-box;
-	max-height: 400px;
-	overflow-y: scroll;
-}
-.modal-backdrop.fade.in {opacity:0.2}*/
 .meedya-gallery a.disabled {pointer-events:none; opacity:.5}
 #trashall {margin:0 6px 0 0;position:relative;bottom:1px;vertical-align:middle;}
 #trashall + label {display:inline}
-/*#gstruct div {
-	border: 1px solid #AAA;
-	border-radius: 5px;
-	margin: 12px;
-	padding: 8px;
-	background-color: white;
-	color: #555;
-}
-#gstruct div.album.aclone {
-	background-image: url(css/clone2.png);
-	border-style: dotted;
-	border-width: 2px;
-}
-#gstruct div.over {
-	background-color: #EF6;
-}
-#gstruct .icon-edit {
-	color: #0BD;
-	cursor: pointer;
-}
-#gstruct .icon-edit:hover {
-	color: orange;
-}
-#gstruct .icon-upload {
-	color: #0BD;
-	cursor: pointer;
-}
-#gstruct .icon-upload:hover {
-	color: blue;
-}
-#gstruct .icon-delete {
-	color: #EAA;
-	float: right;
-	cursor: pointer;
-}
-#gstruct .icon-delete:hover {
-	color: #F33;
-}
-#gstruct .slctd {
-	background-color: #E0E8FF;
-	cursor: grab;
-}
-#gstruct .album.moving {
-	cursor: grabbing;
-}
-.pubalb {
-	font-variant-caps: all-small-caps;
-	font-size: large;
-	color: crimson;
-	margin-left: 1em;
-}*/
 #myProgress { width:100%; background-color:#ddd; display:none; }
 #myBar { width:0; background-color:#4CAF50; font-size:larger; padding:3px 0; }
 </style>

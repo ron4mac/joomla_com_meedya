@@ -1,9 +1,9 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022-2025 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2022-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.2
+* @since		1.4.3
 */
 namespace RJCreations\Component\Meedya\Site\Controller;
 
@@ -123,7 +123,7 @@ class DispRawController extends BaseController
 		$data = \ComMeedya\Encryption::decrypt($key, $this->app->get('secret'));
 		$prms = json_decode($data);
 		if (empty($prms->rcr)) $prms->rcr = 0;
-		
+
 		$m = $this->getModel('picframe','',['inst'=>$prms->obj]);
 		if ($this->input->get->get('act', '', 'string')=='thms') {
 			$thms = $m->getThumbnails($prms->aid,$prms->rcr,$prms->obj);
@@ -143,6 +143,8 @@ class DispRawController extends BaseController
 	public function p4f ()
 	{
 		list($key,$pid) = explode('.',$this->input->get->get('p', '', 'string'));
+		$dim = array_map('intval', explode('x',$this->input->get->get('ddim', PFDW.'x'.PFDH, 'string')));
+		file_put_contents('COMSUB.txt', print_r($dim, true), FILE_APPEND);
 		$inst = json_decode(base64_decode($key));
 		$m = $this->getModel('picframe','',['inst'=>$inst]);
 		
@@ -162,7 +164,8 @@ class DispRawController extends BaseController
 	//	echo '+_+_+_+_+_+_+';
 	//	readfile($file);
 	header('Content-Type: image/jpeg; charset=utf-8',true);
-		$this->makeFimg($file);
+		//$this->makeFimg($file, $dim);
+		$this->resizeAndCenterImage($file, $dim[0], $dim[1]);
 	}
 
 
@@ -185,7 +188,7 @@ class DispRawController extends BaseController
 		$fH = $sH;
 		$x = 0;
 		$y = 0;
-	
+
 		if ($dar>$sar) {
 			$fH = round($sW/$dar);
 			$y = ($sH-$fH)>>1;
@@ -246,12 +249,13 @@ class DispRawController extends BaseController
 		return $this->newImg($new_w, $new_h);
 	}
 
-	private function makeFimg ($simg)
+	private function makeFimg ($simg, $dim)
 	{
 		list($w,$h,$t) = getimagesize($simg);
-		list($nw,$nh,$x,$y) = $h>$w ? $this->inFrameRect($w,$h,PFDW,PFDH) : $this->frameRect($w,$h,PFDW,PFDH);
+		list($dimW,$dimH) = $dim;
+		list($nw,$nh,$x,$y) = $h>$w ? $this->inFrameRect($w,$h,$dimW,$dimH) : $this->frameRect($w,$h,$dimW,$dimH);
 		$src_img = $this->getimgRes($simg, $t);
-		$dst_img = $this->createImage(PFDW, PFDH, $h>$w ? IMGBKG : null);
+		$dst_img = $this->createImage($dimW, $dimH, $h>$w ? IMGBKG : null);
 
 		if ($h>$w) {
 			$result = imagecopyresampled($dst_img, $src_img, $x, $y, 0, 0, $nw, $nh, $w, $h);
@@ -259,12 +263,75 @@ class DispRawController extends BaseController
 				$result = @imagecopyresized($dst_img, $src_img, $x, $y, 0, 0, $nw, $nh, $w, $h);
 			}
 		} else {
-			$result = imagecopyresampled($dst_img, $src_img, 0, 0, $x, $y, PFDW, PFDH, $nw, $nh);
+			$result = imagecopyresampled($dst_img, $src_img, 0, 0, $x, $y, $dimW, $dimH, $nw, $nh);
 			if (!$result) {
-				$result = @imagecopyresized($dst_img, $src_img, 0, 0, $x, $y, PFDW, PFDH, $nw, $nh);
+				$result = @imagecopyresized($dst_img, $src_img, 0, 0, $x, $y, $dimW, $dimH, $nw, $nh);
 			}
 		}
 		imagejpeg($dst_img, null, 90);
+	}
+
+	private function resizeAndCenterImage (string $sourcePath, int $boxWidth, int $boxHeight): bool
+	{
+		// 1. Get original dimensions and image type
+		$imageInfo = getimagesize($sourcePath);
+		if (!$imageInfo) {
+			return false;
+		}
+		list($origWidth, $origHeight, $imageType) = $imageInfo;
+
+		// 2. Load the source image based on type
+		switch ($imageType) {
+			case IMAGETYPE_JPEG:
+				$sourceImage = imagecreatefromjpeg($sourcePath);
+				break;
+			case IMAGETYPE_PNG:
+				$sourceImage = imagecreatefrompng($sourcePath);
+				break;
+			case IMAGETYPE_GIF:
+				$sourceImage = imagecreatefromgif($sourcePath);
+				break;
+			case IMAGETYPE_WEBP:
+				$sourceImage = imagecreatefromwebp($sourcePath);
+				break;
+			default:
+				return false; // Unsupported format
+		}
+		if (!$sourceImage) {
+			return false;
+		}
+
+		// 3. Calculate scaling factor (take the smaller factor so it fits completely inside)
+		$scale = min($boxWidth / $origWidth, $boxHeight / $origHeight);
+		// Calculate new scaled dimensions
+		$newWidth  = (int) round($origWidth * $scale);
+		$newHeight = (int) round($origHeight * $scale);
+
+		// 4. Calculate offset to center the scaled image inside the bounding box
+		$dstX = (int) floor(($boxWidth - $newWidth) / 2);
+		$dstY = (int) floor(($boxHeight - $newHeight) / 2);
+
+		// 5. Create the canvas matching the exact prescribed box size, using the background image
+		$canvas = $this->createImage($boxWidth, $boxHeight, $origHeight>$origWidth ? IMGBKG : IMGBKG);			// null);
+
+		// 6. Resample and copy the image into the center position
+		imagecopyresampled(
+			$canvas,
+			$sourceImage,
+			$dstX, $dstY,			// Destination X, Y (centered offsets)
+			0, 0,					// Source X, Y
+			$newWidth, $newHeight,	// Destination target width, height
+			$origWidth, $origHeight	// Source width, height
+		);
+
+		// 7. Send output image (defaults to JPEG here, adjust as needed)
+		$success = imagejpeg($canvas, null, 90);
+
+		// 8. Clean up memory
+		imagedestroy($sourceImage);
+		imagedestroy($canvas);
+
+		return $success;
 	}
 
 }

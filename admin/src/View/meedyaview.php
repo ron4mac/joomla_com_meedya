@@ -1,15 +1,17 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2022-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.0
+* @since		1.4.3
 */
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\HTML\Helpers\Sidebar;
+use Joomla\CMS\Toolbar\ToolbarHelper;
 use Joomla\CMS\MVC\View\HtmlView;
 
 require_once JPATH_BASE . '/components/com_meedya/src/Helper/meedya.php';
@@ -43,7 +45,7 @@ class MeedyaView extends HtmlView
 		//		}
 
 		$this->addToolbar();
-		$this->sidebar = JHtmlSidebar::render();
+		$this->sidebar = Sidebar::render();
 		parent::display($tpl);
 	}
 
@@ -54,26 +56,26 @@ class MeedyaView extends HtmlView
 	{
 		$canDo	= MeedyaAdminHelper::getActions();
 
-		JToolBarHelper::title(Text::_('COM_MEEDYA_MENU').': '.Text::_('COM_MEEDYA_MANAGER_'.strtoupper($this->relm)), 'stack meedya');
+		ToolBarHelper::title(Text::_('COM_MEEDYA_MENU').': '.Text::_('COM_MEEDYA_MANAGER_'.strtoupper($this->relm)), 'stack meedya');
 
-		JToolBarHelper::deleteList(Text::_('COM_MEEDYA_MANAGER_DELETEOK'));
+		ToolBarHelper::deleteList(Text::_('COM_MEEDYA_MANAGER_DELETEOK'));
 		//JToolBarHelper::trash('usernotes.trash');
 
 	//	if ($canDo->get('core.edit.state')) {
 	//		JToolBarHelper::custom('notes.reset', 'refresh.png', 'refresh_f2.png', 'JUSERSCHED_RESET', false);
 	//	}
 
-		JToolBarHelper::custom('rebuildExpodt', 'wrench', '', 'Rebuild exposure dates');
-		JToolBarHelper::custom('cleanOrphans', 'scissors', '', 'Clean orphan files');
-		JToolBarHelper::custom('recalcStorage', 'database', '', 'Re-calculate storage');
-		JToolBarHelper::custom('dbaseFixes', 'wand', '', 'Fix database issues');
+		ToolBarHelper::custom('rebuildExpodt', 'wrench', '', 'Rebuild exposure dates');
+		ToolBarHelper::custom('cleanOrphans', 'scissors', '', 'Clean orphan files');
+		ToolBarHelper::custom('recalcStorage', 'database', '', 'Re-calculate storage');
+		ToolBarHelper::custom('dbaseFixes', 'wand', '', 'Fix database issues');
 
-		JToolBarHelper::divider();
-		if ($canDo->get('core.admin')) {
-			JToolBarHelper::preferences('com_meedya');
+		ToolBarHelper::divider();
+		if ($canDo->{'core.admin'}) {
+			ToolBarHelper::preferences('com_meedya');
 		}
-		JToolBarHelper::divider();
-		JToolBarHelper::help('meedya_manage', true);
+		ToolBarHelper::divider();
+		ToolBarHelper::help('meedya_manage', true);
 	}
 
 	protected function state ($vari, $set=false, $val='', $glb=false)

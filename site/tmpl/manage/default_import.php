@@ -1,17 +1,19 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2022-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
+* @since		1.4.3
 */
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Language\Text;
+use Joomla\Filesystem\Folder;
 
 echo '<div id="impcbs">';
 echo '<input type="checkbox" name="fast" id="fast" value="1"><label for="fast">'.Text::_('COM_MEEDYA_FILEASTITLE').'</label><br><br>';
 echo '<span>'.Text::_('COM_MEEDYA_IMPSELECT').'</span><br>';
-$folds = JFolder::folders($this->gallpath.'/import');
+$folds = Folder::folders($this->gallpath.'/import');
 foreach ($folds as $k => $fold) {
 	echo '<div class="impfld"><input type="checkbox" id="infld'.$k.'" name="impflds[]" value="'.$fold.'" class="impflds" onchange="watchFolders()">';
 	echo '<label for="infld'.$k.'">'.$fold.'</label></div>';

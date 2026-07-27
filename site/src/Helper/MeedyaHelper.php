@@ -1,15 +1,17 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2023-2025 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2023-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.2
+* @since		1.4.3
 */
 namespace RJCreations\Component\Meedya\Site\Helper;
 
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
+use Joomla\CMS\Log\Log;
+use Joomla\CMS\Component\ComponentHelper;
 use RJCreations\Library\RJUserCom;
 
 abstract class MeedyaHelper
@@ -190,14 +192,14 @@ abstract class MeedyaHelper
 
 	public static function log ($msg, $data=null)
 	{
-		if ($msg) \JLog::add($msg, \JLog::INFO, 'com_meedya');
+		if ($msg) Log::add($msg, Log::INFO, 'com_meedya');
 		if ($data) {
 			$msg = '';
 			if (!is_array($data)) $data = [$data];
 			foreach ($data as $wh=>$dat) {
 				$msg .= "\n".$wh.': '.print_r($dat, true);
 			}
-			\JLog::add($msg, \JLog::DEBUG, 'com_meedya');
+			Log::add($msg, Log::DEBUG, 'com_meedya');
 		}
 	}
 
@@ -249,7 +251,7 @@ abstract class MeedyaHelper
 		static $cp;
 
 		if (empty($cp)) {
-			$cp = \JComponentHelper::getParams('com_meedya');
+			$cp = ComponentHelper::getParams('com_meedya');
 			if (RJC_DBUG) self::log('comp opts', $cp);
 		}
 

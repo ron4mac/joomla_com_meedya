@@ -1,9 +1,9 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2015-2024 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.0
+* @since		1.4.3
 */
 defined('_JEXEC') or die;
 
@@ -17,9 +17,9 @@ use Joomla\CMS\Extension\Service\Provider\MVCFactory;
 use Joomla\CMS\Extension\Service\Provider\RouterFactory;
 use Joomla\CMS\HTML\Registry;
 use Joomla\CMS\MVC\Factory\MVCFactoryInterface;
-use J4xdemos\Component\Mywalks\Administrator\Extension\MywalksComponent;
 use Joomla\DI\Container;
 use Joomla\DI\ServiceProviderInterface;
+use RJCreations\Component\Meedya\Administrator\Extension\MeedyaComponent;
 
 return new class implements ServiceProviderInterface
 {
@@ -31,8 +31,9 @@ return new class implements ServiceProviderInterface
 				ComponentInterface::class,
 				function (Container $container)
 				{
-					$component = new MVCComponent($container->get(ComponentDispatcherFactoryInterface::class));
+					$component = new MeedyaComponent($container->get(ComponentDispatcherFactoryInterface::class));
 					$component->setMVCFactory($container->get(MVCFactoryInterface::class));
+					$component->setRegistry($container->get(Registry::class));
 					return $component;
 		}
 		);

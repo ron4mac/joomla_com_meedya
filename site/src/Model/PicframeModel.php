@@ -1,9 +1,9 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2023-2025 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2023-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.2
+* @since		1.4.3
 */
 namespace RJCreations\Component\Meedya\Site\Model;
 
@@ -35,7 +35,7 @@ class PicframeModel extends \Joomla\CMS\MVC\Model\BaseDatabaseModel
 				$this->db = $db;
 				$config['dbo'] = $db;
 			}
-			catch (JDatabaseExceptionConnecting $e) {
+			catch (\Exception $e) {
 				echo'<xmp>';var_dump($e);echo'</xmp>';
 				jexit();
 			}

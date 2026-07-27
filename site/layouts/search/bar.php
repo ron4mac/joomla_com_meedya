@@ -1,14 +1,15 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2023 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2023-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
+* @since		1.4.3
 */
 defined('JPATH_BASE') or die;
 
 use Joomla\Registry\Registry;
-use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\HTML\HTMLHelper;
 
 extract($displayData);	//view,options
 
@@ -39,7 +40,7 @@ $filters = $view->filterForm->getGroup('filter');
 		<div class="btn-wrapper input-append">
 			<?php echo $filters['filter_search']->input; ?>
 			<?php if ($filters['filter_search']->description) : ?>
-				<?php JHtmlBootstrap::tooltip('#filter_search', ['title' => Text::_($filters['filter_search']->description)]); ?>
+				<?php HtmlHelper::_('bootstrap.tooltip', '#filter_search', ['title' => Text::_($filters['filter_search']->description)]); ?>
 			<?php endif; ?>
 			<button type="submit" class="btn hasTooltip" title="<?php echo HTMLHelper::_('tooltipText', 'JSEARCH_FILTER_SUBMIT'); ?>" aria-label="<?php echo Text::_('JSEARCH_FILTER_SUBMIT'); ?>">
 				<span class="icon-search" aria-hidden="true"></span>

@@ -1,15 +1,16 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022-2024 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2022-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.0
+* @since		1.4.3
 */
 namespace RJCreations\Component\Meedya\Site\Controller;
 
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
+use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Session\Session;
@@ -311,7 +312,7 @@ class ManRawController extends BaseController
 		$m->setItemThumb($iid, $fn);
 
 		// return an image source path to the client
-		echo JUri::root(true).'/'.$this->gallPath.'/thm/'.$fn;
+		echo Uri::root(true).'/'.$this->gallPath.'/thm/'.$fn;
 		$this->app->close();
 	}
 

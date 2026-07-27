@@ -1,9 +1,9 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022-2024 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2022-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.0
+* @since		1.4.3
 */
 namespace RJCreations\Component\Meedya\Site\Model;
 
@@ -230,11 +230,12 @@ class ManageModel extends MeedyaModel
 			$iid = $db->insertid();
 			// and add the item to the album's list of items
 			$this->addItems2Album([$iid], $albm, true);
-		} catch (RuntimeException $e) {
+			$db->transactionCommit();
+		} catch (\Exception $e) {
+			$db->transactionRollback();
 			if (RJC_DBUG) MeedyaHelper::log('addItem error: '.$e->getMessage());
-			JError::raiseError(500, $e->getMessage());
+			throw new \RuntimeException($e->getMessage(), 500);
 		}
-		$db->transactionCommit();
 	}
 
 
@@ -505,7 +506,7 @@ class ManageModel extends MeedyaModel
 				$db->execute();
 			} catch (RuntimeException $e) {
 				if (RJC_DBUG) MeedyaHelper::log('removeItemFromAlbums error: '.$e->getMessage());
-				JError::raiseError(500, $e->getMessage());
+				throw new \RuntimeException($e->getMessage(), 500);
 			}
 		}
 	}
