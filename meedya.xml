@@ -36,7 +36,6 @@
 			<filename>config.xml</filename>
 			<folder>fields</folder>
 			<folder>forms</folder>
-			<folder>helpers</folder>
 			<folder>language</folder>
 			<folder>services</folder>
 			<folder>sql</folder>
