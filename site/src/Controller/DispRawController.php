@@ -20,7 +20,7 @@ use RJCreations\Library\RJUserCom;
 use RJCreations\Component\Meedya\Site\Helper\HtmlMeedya;
 use RJCreations\Component\Meedya\Site\Helper\MeedyaHelper;
 
-include JPATH_COMPONENT.'/lpf.php';
+if (file_exists(JPATH_COMPONENT.'/lpf.php')) include JPATH_COMPONENT.'/lpf.php';
 if (!defined('PFDW')) {
 	define('PFDW', 1024);
 	define('PFDH', 600);
