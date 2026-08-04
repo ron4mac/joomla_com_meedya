@@ -113,7 +113,7 @@ abstract class MeedyaHelper
 		if (strlen($key)>99) {
 			$prms = \ComMeedya\Encryption::decrypt($key, $secret);
 		} else {
-			$prms = \ComMeedya\Encryption::simpleXor(base64_decode($key), $secret);
+			$prms = \ComMeedya\Encryption::simpleXor($key, $secret);
 		}
 		return $prms;
 	}

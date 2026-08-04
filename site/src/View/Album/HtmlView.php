@@ -96,7 +96,7 @@ class HtmlView extends MeedyaView
 		$parms['obj'] = RJUserCom::getInstObject();
 
 		$jparms = json_encode($parms);
-		$rout = Route::_('?option=com_meedya&view=album&key='.urlencode(base64_encode(MeedyaHelper::encodeKey($jparms))), false);
+		$rout = Route::_('?option=com_meedya&view=album&key='.urlencode(MeedyaHelper::encodeKey($jparms)), false);
 		$key = Uri::root() . ltrim($rout, '/');
 		return $key;
 	}

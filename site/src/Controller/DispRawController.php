@@ -118,7 +118,7 @@ class DispRawController extends BaseController
 	public function picframe ()
 	{
 		header('Access-Control-Allow-Origin: *');
-		$key = $this->input->get->get('key', '', 'base64');
+		$key = base64_decode($this->input->get->get('key', '', 'base64'));
 		$data = MeedyaHelper::decodeKey($key);
 		$prms = json_decode($data);
 		if (empty($prms->rcr)) $prms->rcr = 0;
