@@ -3,7 +3,7 @@
 * @package		com_meedya
 * @copyright	Copyright (C) 2022-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.3
+* @since		1.5.0
 */
 namespace RJCreations\Component\Meedya\Site\Controller;
 
@@ -18,6 +18,7 @@ use Joomla\CMS\MVC\Controller\BaseController;
 use Joomla\CMS\Uri\Uri;
 use RJCreations\Library\RJUserCom;
 use RJCreations\Component\Meedya\Site\Helper\HtmlMeedya;
+use RJCreations\Component\Meedya\Site\Helper\MeedyaHelper;
 
 include JPATH_COMPONENT.'/lpf.php';
 if (!defined('PFDW')) {
@@ -100,7 +101,6 @@ class DispRawController extends BaseController
 
 	public function picframekey ()
 	{
-		require_once JPATH_COMPONENT . '/classes/crypt.php';
 		file_put_contents('COMSUB.txt', print_r($this->input->post, true));
 		$parms = [];
 		$title = $this->input->post->get('title', '', 'string');
@@ -110,7 +110,7 @@ class DispRawController extends BaseController
 
 		$jparms = json_encode($parms);
 		$sdly = $this->input->post->getInt('vtim', 30);
-		$key = Uri::root().'?option=com_meedya&format=raw&task=picframe&key='.urlencode(\ComMeedya\Encryption::encrypt($jparms, $this->app->get('secret')));
+		$key = Uri::root().'?option=com_meedya&format=raw&task=picframe&key='.urlencode(MeedyaHelper::encodeKey($jparms));
 		echo json_encode(['key'=>base64_encode($key),'title'=>base64_encode($title),'pcnt'=>0,'sdly'=>$sdly]);
 	}
 
@@ -118,9 +118,8 @@ class DispRawController extends BaseController
 	public function picframe ()
 	{
 		header('Access-Control-Allow-Origin: *');
-		require_once JPATH_COMPONENT . '/classes/crypt.php';
 		$key = $this->input->get->get('key', '', 'base64');
-		$data = \ComMeedya\Encryption::decrypt($key, $this->app->get('secret'));
+		$data = MeedyaHelper::decodeKey($key);
 		$prms = json_decode($data);
 		if (empty($prms->rcr)) $prms->rcr = 0;
 

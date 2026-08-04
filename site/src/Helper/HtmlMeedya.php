@@ -1,9 +1,9 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022-2024 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2022-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.0
+* @since		1.5.0
 */
 namespace RJCreations\Component\Meedya\Site\Helper;
 
@@ -290,6 +290,53 @@ EOD;
 		return ($star || $cmnt) ? '<div class="starcmnt"><span class="mystars">stars(12)</span><span class="mycmnts">5 <i class="far fa-comments"></i></span></div>' : null;
 	}
 
+	public static function sharing ($w)
+	{
+		$L = function($str) { return Text::_($str); };
+		$htm = <<<EOD
+<div class="dropdown">
+	<!-- Trigger Icon Button -->
+	<button 
+		class="btn btn-light btn-sm dropdown-toggle no-caret" 
+		type="button" 
+		id="actionMenuButton" 
+		data-bs-toggle="dropdown" 
+		aria-expanded="false"
+		title="Actions">
+		<span class="fa fa-share-alt" aria-hidden="true"></span>
+		<span class="visually-hidden">Actions</span>
+	</button>
+	<!-- Dropdown Action List -->
+	<ul class="dropdown-menu" aria-labelledby="actionMenuButton">
+EOD;
+		if (strpos($w, 's') !== false) $htm .= <<<EOD
+		<li>
+			<a class="dropdown-menu-item" href="#shareDlg" data-toggle="modal" data-bs-toggle="modal">
+				<span class="far fa-share-square" aria-hidden="true"></span>{$L('COM_MEEDYA_SHARE_ALBUM')}
+			</a>
+		</li>
+EOD;
+		if (strpos($w, 'f') !== false) $htm .= <<<EOD
+		<li>
+			<a class="dropdown-menu-item" href="#frameDlg" data-toggle="modal" data-bs-toggle="modal">
+				<span class="far fa-image" aria-hidden="true"></span>{$L('COM_MEEDYA_FRAME_ALBUM')}
+			</a>
+		</li>
+EOD;
+		if (strpos($w, 'd') !== false) $htm .= <<<EOD
+		<li><hr class="dropdown-divider"></li>
+		<li>
+			<a class="dropdown-menu-item text-danger" href="#">
+				<span class="icon-trash me-2" aria-hidden="true"></span>Delete
+			</a>
+		</li>
+EOD;
+		$htm .=  <<<EOD
+	</ul>
+</div>
+EOD;
+		return $htm;
+	}
 
 /***** private functions *****/
 

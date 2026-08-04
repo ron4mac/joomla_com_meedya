@@ -1,9 +1,9 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022-2024 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2022-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.0
+* @since		1.5.0
 */
 namespace RJCreations\Component\Meedya\Site\Model;
 
@@ -20,10 +20,15 @@ class AlbumModel extends MeedyaModel
 	protected $_itms = null;
 	protected $_total = null;
 	protected $_pagination = null;
+	protected $shraid = null;
 
 	public function __construct ($config = [], $factory = null)
 	{
-		if (RJC_DBUG) { MeedyaHelper::log('MeedyaModelAlbum'); }
+		if (RJC_DBUG) MeedyaHelper::log('MeedyaModelAlbum');
+		if (RJC_DBUG) MeedyaHelper::log(print_r($config,true));
+		if (!empty($config['inst'])) {
+			$this->shraid = $config['inst']->aid;
+		}
 		parent::__construct($config, $factory);
 	}
 
@@ -133,7 +138,7 @@ class AlbumModel extends MeedyaModel
 		$input = $app->input;
 
 		// album ID
-		$aid = $input->get('aid', 0, 'INT');
+		$aid = $this->shraid ?: $input->get('aid', 0, 'INT');
 		$this->state->set('album.id', $aid);	//echo'<xmp>';var_dump($this->state);echo'</xmp>';
 
 		// List state information

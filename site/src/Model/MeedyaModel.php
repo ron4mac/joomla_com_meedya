@@ -1,9 +1,9 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022-2024 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2022-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.0
+* @since		1.5.0
 */
 namespace RJCreations\Component\Meedya\Site\Model;
 
@@ -25,7 +25,8 @@ class MeedyaModel extends ListModel
 	public function __construct ($config = [], $factory = null)
 	{
 		$dbFile = '/meedya.db3';
-		$udbDir = RJUserCom::getStoragePath();
+	//	$udbDir = RJUserCom::getStoragePath();
+		$udbDir = RJUserComm::getStoragePath(empty($config['inst']) ? null : $config['inst']->obj);
 		if (!$udbDir) {
 			throw new Exception('ACCESS NOT ALLOWED', 403);
 		}
@@ -47,7 +48,7 @@ class MeedyaModel extends ListModel
 
 			$config['dbo'] = $db;
 		}
-		catch (\JDatabaseExceptionConnecting $e) {
+		catch (\Exception $e) {
 			echo'<xmp>';var_dump($e);echo'</xmp>';
 			jexit();
 		}
@@ -250,4 +251,19 @@ class MeedyaModel extends ListModel
 		}
 	}
 
+}
+
+class RJUserComm extends RJUserCom
+{
+	public static function getStoragePath ($instObj=null)
+	{
+		if (!$instObj) {
+			$instObj = self::getInstObject();
+		} else {
+			self::$instObj = $instObj;
+		}
+		$cmp = \Joomla\CMS\Application\ApplicationHelper::getComponentName().'_'.$instObj->menuid;
+		return self::getStorageBase().'/'.$instObj->path.'/'.$cmp;
+	}
+	
 }

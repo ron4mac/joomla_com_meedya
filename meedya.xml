@@ -3,12 +3,12 @@
 <extension type="component" method="upgrade">
 	<name>com_meedya</name>
 	<author>Ron Crans</author>
-	<creationDate>July 2026</creationDate>
+	<creationDate>August 2026</creationDate>
 	<copyright>(C) 2015-2026 RJCreations. All rights reserved.</copyright>
 	<license>GNU General Public License version 3 or later; see LICENSE.txt</license>
 	<authorEmail>ron@rjconline.net</authorEmail>
 	<authorUrl>rjconline.net</authorUrl>
-	<version>1.4.3</version>
+	<version>1.5.0</version>
 	<updater jver="(4\.[0-9])||(5\.[0-3])" pver="7.0" />
 	<description>COM_MEEDYA_XML_DESCRIPTION</description>
 	<namespace path="src">RJCreations\Component\Meedya</namespace>

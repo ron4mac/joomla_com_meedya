@@ -3,7 +3,7 @@
 * @package		com_meedya
 * @copyright	Copyright (C) 2022-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.3
+* @since		1.5.0
 */
 defined('_JEXEC') or die;
 
@@ -19,9 +19,6 @@ use RJCreations\Component\Meedya\Site\Helper\HtmlMeedya;
 use RJCreations\Component\Meedya\Site\Helper\MeedyaHelper;
 
 if (file_exists(JPATH_COMPONENT.'/lpf.php')) include JPATH_COMPONENT.'/lpf.php';
-if (!defined('LOCALPF')) {
-	define('LOCALPF', 'http://picframe.local');
-}
 
 define('MYG_FB4', 1);
 $ttscript = 'Meedya.albumID = '.$this->aid.';';
@@ -86,6 +83,7 @@ if ($this->items) {		//var_dump($this->items);
 		} else {
 			$fileentry['opts'] = ['caption' => $txtinfo];
 		}
+	//	$fileentry['downloadFilename'] = 'myImage.jpeg';
 		$filelist[] = $fileentry;
 	}
 }
@@ -111,6 +109,8 @@ $use_ratings = $this->params->get('use_ratings', 0);
 $use_comments = $this->params->get('use_comments', 0);
 $pub_ratings = $this->params->get('pub_ratings', 0);
 $cancmnt = $this->uid || $this->params->get('pub_comments', 0);
+$shareOK = (int)$this->params->get('albshare', 0);
+$frameOK = (int)$this->params->get('picframe', 0);
 ?>
 <style>
 .tooltip.in {
@@ -224,8 +224,8 @@ $cancmnt = $this->uid || $this->params->get('pub_comments', 0);
 
 </style>
 <div class="meedya-gallery">
-<?php echo HtmlMeedya::pageHeader($this->params); ?>
-<?php if (!$this->isSearch) echo HtmlMeedya::searchField($this->aid); ?>
+<?php if ($this->fulv) echo HtmlMeedya::pageHeader($this->params); ?>
+<?php if ($this->fulv && !$this->isSearch) echo HtmlMeedya::searchField($this->aid); ?>
 	<div class="crumbs">
 	<?php
 		foreach ($this->pathWay as $crm) {
@@ -236,14 +236,19 @@ $cancmnt = $this->uid || $this->params->get('pub_comments', 0);
 	<?php if (false && !$this->isSearch && count($this->items)>1): ?>
 		<a href="#" title="<?=Text::_('COM_MEEDYA_SLIDESHOW')?>" onclick="Meedya.viewer.slideShow(event);return false">
 			<img src="components/com_meedya/static/img/slideshow.png" alt="" /></a>
-	<?php elseif (!$this->isSearch && count($this->items)>1): ?>
+	<?php elseif (false && $this->fulv && !$this->isSearch && count($this->items)>1): ?>
 		<a href="<?=Route::_('index.php?option=com_meedya&view=slides&tmpl=component&aid='.$this->aid.'&Itemid='.$this->itemId, false) ?>" title="<?=Text::_('COM_MEEDYA_SLIDESHOW')?>">
 			<img src="components/com_meedya/static/img/slideshow.png" alt="" /></a>
 	<?php endif; ?>
-	<?php if ($this->params->get('picframe', 0) && empty($this->sterm) && $this->userPerms->canAdmin): ?>
-		<a href="<?=LOCALPF?>/static/cgetnpl.html?nplt=<?=$this->title?>&nplk=<?=$this->picframekey()?>" title="<?=Text::_('COM_MEEDYA_PICFRAME')?>" target="_blank">
-			<img src="components/com_meedya/static/img/picframe.png" alt="" /></a>
-	<?php endif; ?>
+	<?php
+	//echo'<xmp>';var_dump([$this->fulv,$shareOK,$frameOK,$this->params]);echo'</xmp>';
+	if ($this->fulv && ($shareOK || $frameOK) && empty($this->sterm) && $this->userPerms->canAdmin) {
+		$shopt = '';
+		$shopt .= $shareOK ? 's' : '';
+		$shopt .= $frameOK ? 'f' : '';
+		echo HtmlMeedya::sharing($shopt);
+	}
+	?>
 	</div>
 	<div id="albdesc"><?php echo $this->desc; ?></div>
 	<div id="area">
@@ -328,6 +333,10 @@ if ($use_comments) {
 }
 if ($use_ratings && ($this->uid || $pub_ratings)) {
 	echo LayoutHelper::render('rating');
+}
+if ($this->fulv) {
+	if ($shareOK) echo LayoutHelper::render('shareDlg', ['link'=>$this->sharekey(),'parent'=>$this]);
+	if ($frameOK) echo LayoutHelper::render('frameDlg', ['name'=>urlencode($this->title), 'link'=>$this->picframekey(),'parent'=>$this]);
 }
 ?>
 <script>

@@ -1,9 +1,9 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2023-2024 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2023-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.0
+* @since		1.5.0
 */
 namespace RJCreations\Component\Meedya\Site\View;
 
@@ -49,9 +49,7 @@ class MeedyaView extends \Joomla\CMS\MVC\View\HtmlView
 
 	public function __construct ($config = [])
 	{
-		if (RJC_DBUG) {
-			MeedyaHelper::log('MeedyaView');
-		}
+		if (RJC_DBUG) MeedyaHelper::log('MeedyaView');
 		parent::__construct($config);
 		$this->user = Factory::getUser();
 		$this->uid = $this->user->get('id');
@@ -62,7 +60,7 @@ class MeedyaView extends \Joomla\CMS\MVC\View\HtmlView
 		}
 		$this->userPerms = MeedyaHelper::getUserPermissions($this->user, $this->params);
 	//	$this->meedyaID = MeedyaHelper::getInstanceID();
-		$this->gallpath = RJUserCom::getStoragePath();
+		$this->gallpath = RJUserCom::getStoragePath(empty($config['inst']) ? null : $config['inst']->obj);
 
 //		$this->instance = $this->app->getUserState('com_meedya.instance', '::');		//var_dump([$this->meedyaID,$this->instance]);
 		$this->jDoc = Factory::getDocument();
@@ -81,7 +79,12 @@ class MeedyaView extends \Joomla\CMS\MVC\View\HtmlView
 //		MeedyaHelper::addScript('echo');
 
 		parent::display($tpl);
-		if ($this->btmscript) echo "<script type=\"text/javascript\">\n".implode("\n", $this->btmscript)."\n</script>";
+		if ($this->btmscript) echo "<script id=\"btms\" type=\"text/javascript\">\n".implode("\n", $this->btmscript)."\n</script>";
+	}
+
+	public function add2btmscript ($scr)
+	{
+		$this->btmscript[] = $scr;
 	}
 
 	protected function getAlbumThumb ($albrec)

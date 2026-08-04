@@ -1,9 +1,9 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022-2025 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2022-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.2
+* @since		1.5.0
 */
 namespace RJCreations\Component\Meedya\Site\Controller;
 
@@ -16,26 +16,37 @@ use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Session\Session;
 use Joomla\CMS\MVC\Controller\BaseController;
 use RJCreations\Library\RJUserCom;
+use RJCreations\Component\Meedya\Site\Helper\MeedyaHelper;
 
-define('RJC_DBUG', (true || JDEBUG) && file_exists(JPATH_ROOT.'/rjcdev.php'));
+define('RJC_DBUG', (JDEBUG) && file_exists(JPATH_ROOT.'/rjcdev.php'));
 
 class DisplayController extends BaseController
 {
 	protected $uid = 0;
 	protected $mnuItm;
+	protected $shrk = null;
+	protected $instObj = null;
 
 	public function __construct ($config = [], $factory = null, $app = null, $input = null)
 	{
 		parent::__construct($config, $factory, $app, $input);
 		$this->uid = Factory::getUser()->get('id');
+		$key = base64_decode($this->input->get->get('key', '', 'base64'));
+		if ($key) {
+			$data = MeedyaHelper::decodeKey($key);
+			$prms = json_decode($data);
+			$config['inst'] = $prms;
+			$this->shrk = $prms;
+			$this->instObj = $prms->obj;
+		}
 		$this->mnuItm = $this->input->getInt('Itemid', 0);
 	}
 
 	public function display ($cachable = false, $urlparams = []): DisplayController
 	{
 		if (in_array($this->input->getString('view'),['picframe','public'])) return parent::display($cachable, $urlparams);
-		if (file_exists(RJUserCom::getStoragePath())) {
-			$view = $this->getView('meedya','html');
+		if (file_exists(RJUserCom::getStoragePath($this->instObj))) {
+			$view = $this->getView('meedya','html','site',$this->shrk ? ['inst'=>$this->shrk] : null);
 		} else {
 			//set to a view that has no model
 			$this->input->set('view', 'startup');
@@ -59,76 +70,20 @@ class DisplayController extends BaseController
 		file_put_contents($udp.'/med/index.html', $htm);
 		$this->setRedirect(Route::_('index.php?option=com_meedya&Itemid='.$this->mnuItm, false));
 	}
-/*
-	// receive a rating vote
-	public function rateItem ()
-	{
-		$this->tokenCheck();
-		$m = $this->getModel('social');
-		$iid = $this->input->getInt('iid', 0);
-		$val = $this->input->getInt('val', 0);
-		try {
-			// return 0-100 (percent) for a 5 point rating system
-			echo (int)($m->rate($iid, $val) * 20);
-		} catch (Exception $e) {
-				header('HTTP/1.1 404 Database Error');
-				jexit($e->getMessage());
-		}
-	}
 
-	// check to see whether already has been rated
-	public function rateChk ()
+	// provide an instance object to the model when the request if from a shared album link						*** can probably use what was gathered in __construct above
+	public function getModel($name = '', $prefix = '', $config = array())
 	{
-		$m = $this->getModel('social');
-		$iid = $this->input->getInt('iid', 0);
-		try {
-			if ($m->rateChk($iid)) {
-			//	header('HTTP/1.1 400 Duplicate Submission');
-				jexit(Text::_('COM_MEEDYA_ALREADY_RATED'));
+		if ($name == 'album') {
+			$key = base64_decode($this->input->get->get('key', '', 'base64'));
+			if ($key) {
+				$data = MeedyaHelper::decodeKey($key);
+				$prms = json_decode($data);
+				$config['inst'] = $prms;
+				$this->instObj = $prms->obj;
 			}
-		} catch (Exception $e) {
-				header('HTTP/1.1 404 Database Error');
-				jexit($e->getMessage());
 		}
+		return parent::getModel($name, $prefix, $config);
 	}
-
-	// get all the comments for an item
-	public function getComments ()
-	{
-		$this->tokenCheck();
-		$m = $this->getModel('social');
-		$iid = $this->input->getInt('iid', 0);
-		try {
-			$comments = $m->getComments($iid);
-			$html = [];
-			foreach ($comments as $comment) {
-				$html[] = '<div class="mycomment"><div>'.$comment['cmnt'].'</div>';
-				$html[] = '<div class="mycommentn">'.Factory::getUser($comment['uid'])->name.'&nbsp;&nbsp;'.date(Text::_('DATE_FORMAT_LC5'),$comment['ctime']).'</div></div>';
-			}
-			echo implode("\n", $html);
-		} catch (Exception $e) {
-				header('HTTP/1.1 404 Database Error');
-				jexit($e->getMessage());
-		}
-	}
-
-	public function addComment ()
-	{
-		$this->tokenCheck();
-		file_put_contents('COMSUB.txt', print_r($this->input->post, true));
-		$iid = $this->input->post->getInt('iid', 0);
-		$cmnt = $this->input->post->get('cmntext', '', 'string');
-		$m = $this->getModel('social');
-		echo '&nbsp;'.HtmlMeedya::cmntsIcon().' '.$m->addComment($iid, $this->uid, $cmnt);
-	}
-
-	private function tokenCheck ()
-	{
-		if (!Session::checkToken()) {
-			header('HTTP/1.1 403 Not Allowed');
-			jexit(Text::_('JINVALID_TOKEN'));
-		}
-	}
-*/
 
 }

@@ -1,15 +1,15 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2023-2024 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2023-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.0
+* @since		1.5.0
 */
 namespace RJCreations\Component\Meedya\Site\View\Album;
 
 defined('_JEXEC') or die;
 
-//use Joomla\CMS\Factory;
+use Joomla\CMS\Factory;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Uri\Uri;
 use RJCreations\Library\RJUserCom;
@@ -21,10 +21,20 @@ use RJCreations\Component\Meedya\Site\Helper\MeedyaHelper;
 class HtmlView extends MeedyaView
 {
 	protected $aid;
+	protected $fulv = true;
 
 	public function __construct ($config = [])
 	{
-		if (RJC_DBUG) { MeedyaHelper::log('MeedyaViewAlbum'); }
+		if (RJC_DBUG) MeedyaHelper::log('MeedyaViewAlbum');
+		$app = Factory::getApplication();
+		$key = base64_decode($app->input->get->get('key', '', 'base64'));
+		if ($key) {
+			$data = MeedyaHelper::decodeKey($key);
+			$prms = json_decode($data);
+			$config['inst'] = $prms;
+			$this->fulv = false;
+			if (RJC_DBUG) MeedyaHelper::log(print_r($config,true));
+		}
 		parent::__construct($config);
 	}
 
@@ -35,7 +45,7 @@ class HtmlView extends MeedyaView
 		$this->items = $this->get('Items');
 		$this->title = $this->get('Title');
 		$this->desc = $this->get('Desc');
-		$this->albums = $this->get('Albums');
+		$this->albums = $this->fulv ? $this->get('Albums') : [];
 		$m = $this->getModel();
 
 		$this->isSearch = false;
@@ -70,15 +80,25 @@ class HtmlView extends MeedyaView
 
 	public function picframekey ()
 	{
-		require_once JPATH_COMPONENT . '/classes/crypt.php';
 		$parms = [];
 		$parms['aid'] = $this->aid;
 		$parms['obj'] = RJUserCom::getInstObject();
 
 		$jparms = json_encode($parms);
-		$key = Uri::root().'?option=com_meedya&format=raw&task=DispRaw.picframe&key='.urlencode(\ComMeedya\Encryption::encrypt($jparms, $this->app->get('secret')));
+		$key = Uri::root().'?option=com_meedya&format=raw&task=DispRaw.picframe&key='.urlencode(MeedyaHelper::encodeKey($jparms));
 		return base64_encode($key);
-		echo json_encode(['key'=>base64_encode($key),'title'=>base64_encode($title),'pcnt'=>0,'sdly'=>$sdly]);
+	}
+
+	public function sharekey ()
+	{
+		$parms = [];
+		$parms['aid'] = $this->aid;
+		$parms['obj'] = RJUserCom::getInstObject();
+
+		$jparms = json_encode($parms);
+		$rout = Route::_('?option=com_meedya&view=album&key='.urlencode(base64_encode(MeedyaHelper::encodeKey($jparms))), false);
+		$key = Uri::root() . ltrim($rout, '/');
+		return $key;
 	}
 
 }

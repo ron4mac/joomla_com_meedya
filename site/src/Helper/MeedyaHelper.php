@@ -3,7 +3,7 @@
 * @package		com_meedya
 * @copyright	Copyright (C) 2023-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.3
+* @since		1.5.0
 */
 namespace RJCreations\Component\Meedya\Site\Helper;
 
@@ -22,13 +22,6 @@ abstract class MeedyaHelper
 	protected static $udp = null;
 	protected static $jdoc = null;
 
-	public static function xxgetInstanceObject ($mid=null)	// SO
-	{
-		if (!empty(self::$instanceObj)) return self::$instanceObj;
-		self::$instanceObj = RJUserCom::getInstObject($mid);
-		return self::$instanceObj;
-	}
-
 	public static function oneScript ($str)
 	{
 		if (self::$jdoc === null) self::$jdoc = Factory::getDocument();
@@ -41,20 +34,6 @@ abstract class MeedyaHelper
 		if (self::$jdoc === null) self::$jdoc = Factory::getDocument();
 		$s = (RJC_DBUG && Factory::getUser()->get('id') ? 'D' : '') . $str;
 		self::$jdoc->addStyleSheet('components/com_meedya/static/css.php?c='.$str);
-	}
-
-	public static function xxgetInstanceID ()
-	{
-		if (is_null(self::$instanceType)) self::getTypeOwner();
-		return base64_encode(self::$instanceType.':'.self::$ownerID);
-	}
-
-	public static function xxuserDataPath ($mnuid=0)
-	{
-		if (self::$udp) return self::$udp;
-		if (!self::$instanceObj) self::getInstanceObject($mnuid);
-		self::$udp = RJUserCom::getStoragePath(self::$instanceObj);
-		return self::$udp;
 	}
 
 	public static function getUserPermissions ($user, $params)
@@ -118,6 +97,25 @@ abstract class MeedyaHelper
 		$isq = $prms->get('storQuota');
 		if (!$isq) $isq = self::componentOption('storQuota', 268435456);
 		return $isq;
+	}
+
+	public static function encodeKey ($parms)
+	{
+		require_once JPATH_COMPONENT.'/classes/crypt.php';
+		$key = \ComMeedya\Encryption::simpleXor($parms, Factory::getApplication()->get('secret'));
+		return base64_encode($key);
+	}
+
+	public static function decodeKey ($key)
+	{
+		require_once JPATH_COMPONENT.'/classes/crypt.php';
+		$secret = Factory::getApplication()->get('secret');
+		if (strlen($key)>99) {
+			$prms = \ComMeedya\Encryption::decrypt($key, $secret);
+		} else {
+			$prms = \ComMeedya\Encryption::simpleXor(base64_decode($key), $secret);
+		}
+		return $prms;
 	}
 
 	public static function getImgProc ($imgf)
