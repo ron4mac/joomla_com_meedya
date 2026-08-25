@@ -1,9 +1,9 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2023-2025 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2023-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.2
+* @since		1.5.5
 */
 namespace RJCreations\Component\Meedya\Site\View\Public;
 
@@ -85,7 +85,7 @@ class HtmlView extends MeedyaView
 			$gallpath = $m->getGallpath($albrec->paix);
 			$thum = $gallpath.'/thm/'.$this->getItemThumbP($albrec->thumb, $albrec->paix);
 		} else {
-			$thum = 'components/com_meedya/static/img/noimages.jpg';
+			$thum = 'media/com_meedya/img/noimages.jpg';
 		}
 		return $thum;
 	}

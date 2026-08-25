@@ -1,0 +1,105 @@
+{
+  "$schema": "https://developer.joomla.org/schemas/json-schema/web_assets.json",
+  "name": "com_meedya",
+  "version": "1.5.5",
+  "description": "Meedya Gallery",
+  "license": "GPL-3.0+",
+  "assets": [
+    {
+      "name": "com_meedya.common",
+      "type": "script",
+      "uri": "com_meedya/common.js",
+      "dependencies": [
+        "core"
+      ]
+    },
+    {
+      "name": "com_meedya.meedya",
+      "type": "script",
+      "uri": "com_meedya/meedya.js",
+      "dependencies": [
+        "com_meedya.common"
+      ]
+    },
+    {
+      "name": "com_meedya.echo",
+      "type": "script",
+      "uri": "com_meedya/echo.js"
+    },
+    {
+      "name": "com_meedya.manage",
+      "type": "script",
+      "uri": "com_meedya/manage.js"
+    },
+	{
+      "name": "com_meedya.alb_dand",
+      "type": "script",
+      "uri": "com_meedya/alb_dand.js"
+    },
+	{
+      "name": "com_meedya.itm_dand",
+      "type": "script",
+      "uri": "com_meedya/itm_dand.js"
+    },
+    {
+      "name": "com_meedya.pell",
+      "type": "script",
+      "uri": "com_meedya/pell/pell.min.js"
+    },
+	{
+      "name": "com_meedya.my_bb",
+      "type": "script",
+      "uri": "com_meedya/my_bb.js"
+    },
+	{
+      "name": "com_meedya.tags",
+      "type": "script",
+      "uri": "com_meedya/tags/jquery.tagsinput.js"
+    },
+    {
+      "name": "com_meedya.fileup",
+      "type": "script",
+      "uri": "com_meedya/fileup.js"
+    },
+    {
+      "name": "com_meedya.uplodr",
+      "type": "script",
+      "uri": "com_meedya/uplodr.js"
+    },
+    {
+      "name": "com_meedya.rating",
+      "type": "script",
+      "uri": "com_meedya/rating.js"
+    },
+    {
+      "name": "com_meedya.css.gallery",
+      "type": "style",
+      "uri": "com_meedya/gallery.css"
+    },
+    {
+      "name": "com_meedya.css.album",
+      "type": "style",
+      "uri": "com_meedya/album.css"
+    },
+    {
+      "name": "com_meedya.css.manage",
+      "type": "style",
+      "uri": "com_meedya/manage.css"
+    },
+    {
+      "name": "com_meedya.css.tags",
+      "type": "style",
+      "uri": "com_meedya/tags/jquery.tagsinput.css"
+    },
+    {
+      "name": "com_meedya.css.uplodr",
+      "type": "style",
+      "uri": "com_meedya/uplodr.css"
+    },
+    {
+      "name": "com_meedya.css.pell",
+      "type": "style",
+      "uri": "com_meedya/pell/pell.min.css"
+    }
+  ]
+}

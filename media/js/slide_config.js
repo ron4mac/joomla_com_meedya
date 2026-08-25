@@ -1,7 +1,8 @@
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2023-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
+* @since		1.5.5
 */
 var H5ss_icons = null;
 var H5ss_ctrl = null;
@@ -44,7 +45,7 @@ function H5applybg() {
 }
 
 function H5applyis(elem) {
-	H5ss_icons.src = "components/com_meedya/static/img/sldctl/"+elem.value+".png";
+	H5ss_icons.src = "media/com_meedya/img/sldctl/"+elem.value+".png";
 }
 
 jQuery(document).ready(function() {

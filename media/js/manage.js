@@ -1,8 +1,8 @@
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2023-2024 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2023-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.0
+* @since		1.5.5
 */
 /* globals Joomla,My_bb */
 
@@ -13,7 +13,7 @@
 	const formTokn = Joomla.getOptions('csrf.token');
 
 	const _removeAlbThm = () => {
-		Meedya._id('albthmimg').src = 'components/com_meedya/static/img/img.png';
+		Meedya._id('albthmimg').src = 'media/com_meedya/img/img.png';
 		Meedya._id('albthmid').value = 0;
 	};
 

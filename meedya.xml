@@ -8,7 +8,7 @@
 	<license>GNU General Public License version 3 or later; see LICENSE.txt</license>
 	<authorEmail>ron@rjconline.net</authorEmail>
 	<authorUrl>rjconline.net</authorUrl>
-	<version>1.5.0</version>
+	<version>1.5.5</version>
 	<updater jver="(4\.[0-9])||(5\.[0-3])" pver="7.0" />
 	<description>COM_MEEDYA_XML_DESCRIPTION</description>
 	<namespace path="src">RJCreations\Component\Meedya</namespace>
@@ -17,13 +17,18 @@
 		<folder>classes</folder>
 		<folder>fields</folder>
 		<folder>forms</folder>
-		<folder>helpers</folder>
 		<folder>language</folder>
 		<folder>layouts</folder>
 		<folder>src</folder>
 		<folder>static</folder>
 		<folder>tmpl</folder>
 	</files>
+	<media destination="com_meedya" folder="media">
+		<filename>joomla.asset.json</filename>
+		<folder>css</folder>
+		<folder>img</folder>
+		<folder>js</folder>
+	</media>
 	<administration>
 		<menu img="class:meedya">COM_MEEDYA_MENU</menu>
 		<submenu>

@@ -3,7 +3,7 @@
 * @package		com_meedya
 * @copyright	Copyright (C) 2023-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.3
+* @since		1.5.5
 */
 namespace RJCreations\Component\Meedya\Site\View\Manage;
 
@@ -87,7 +87,7 @@ class HtmlView extends MeedyaView
 				//echo'<xmp>';var_dump($this->album);echo'</xmp>';
 			//	$this->pagination = $this->get('Pagination');
 				$this->items = explode('|', $this->album['items']?:'');
-				$this->aThum = $this->album['thumb'] ? $this->getAlbumThumb((object)$this->album) : 'components/com_meedya/static/img/img.png';
+				$this->aThum = $this->album['thumb'] ? $this->getAlbumThumb((object)$this->album) : 'media/com_meedya/img/img.png';
 				break;
 
 			case 'imgedit':

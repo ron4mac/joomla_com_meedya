@@ -3,7 +3,7 @@
 * @package		com_meedya
 * @copyright	Copyright (C) 2023-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.0
+* @since		1.5.5
 */
 namespace RJCreations\Component\Meedya\Site\Helper;
 
@@ -24,16 +24,55 @@ abstract class MeedyaHelper
 
 	public static function oneScript ($str)
 	{
+		$c2js = [
+			'c' => 'com_meedya.common',
+			'm' => 'com_meedya.meedya',
+			'M' => 'com_meedya.manage',
+			'f' => 'vendor/fancybox/3.5.7/jquery.fancybox',
+			// NOTE: the v4 fancybox code wrapper has to be removed for it to work here
+			'F' => 'vendor/fancybox/4.0.27/fancybox.umd',
+			'r' => 'com_meedya.rating',
+			'b' => 'com_meedya.my_bb',
+			'a' => 'com_meedya.itm_dand',
+			'A' => 'com_meedya.alb_dand',
+			'u' => 'com_meedya.fileup',
+			'U' => 'com_meedya.uplodr',
+			'p' => 'com_meedya.pell',
+			't' => 'com_meedya.tags',
+			'e' => 'com_meedya.echo',	//(lazy load)
+			's' => 'js/slides'
+		];
 		if (self::$jdoc === null) self::$jdoc = Factory::getDocument();
-		$s = (RJC_DBUG && Factory::getUser()->get('id') ? 'Dc' : 'c') . $str;
-		self::$jdoc->addScript('components/com_meedya/static/js.php?c='.$s);
+		$wa = self::$jdoc->getWebAssetManager();
+		$codes = str_split('c'.$str);
+		foreach ($codes as $c) {
+			$wa->useScript($c2js[$c]);
+		}
+//		$s = (RJC_DBUG && Factory::getUser()->get('id') ? 'Dc' : 'c') . $str;
+//		self::$jdoc->addScript('components/com_meedya/js.php?c='.$s);
 	}
 
 	public static function oneStyle ($str)
 	{
+		$c2css = [
+			'g' => 'com_meedya.css.gallery',
+			'a' => 'com_meedya.css.album',
+			'm' => 'css/meedya',
+			'M' => 'com_meedya.css.manage',
+			'f' => 'vendor/fancybox/3.5.7/jquery.fancybox',
+			'F' => 'vendor/fancybox/4.0.27/fancybox',
+			'r' => 'css/rating',
+			'U' => 'com_meedya.css.uplodr',
+			'p' => 'com_meedya.css.pell',
+			't' => 'com_meedya.css.tags',
+			's' => 'css/slides'
+		];
 		if (self::$jdoc === null) self::$jdoc = Factory::getDocument();
-		$s = (RJC_DBUG && Factory::getUser()->get('id') ? 'D' : '') . $str;
-		self::$jdoc->addStyleSheet('components/com_meedya/static/css.php?c='.$str);
+		$wa = self::$jdoc->getWebAssetManager();
+		$codes = str_split($str);
+		foreach ($codes as $c) {
+			$wa->useStyle($c2css[$c]);
+		}
 	}
 
 	public static function getUserPermissions ($user, $params)

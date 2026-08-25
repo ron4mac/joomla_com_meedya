@@ -3,7 +3,7 @@
 * @package		com_meedya
 * @copyright	Copyright (C) 2022-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.0
+* @since		1.5.5
 */
 namespace RJCreations\Component\Meedya\Site\Helper;
 
@@ -232,7 +232,7 @@ EOD;
 		return '
 		<div class="'.$iclss.$nah.'" data-id="'.$id.'">
 			<label for="slctimg'.$id.'">
-			<img src="components/com_meedya/static/img/'.$iDat.'" class="mitem" />
+			<img src="media/com_meedya/img/'.$iDat.'" class="mitem" />
 			</label>
 			<div class="item-overlay top">
 				'.$acts.'
@@ -288,6 +288,11 @@ EOD;
 		$cmntelm = $cmnt ? new HtmlElementObject('span.mycmnts','&nbsp;&nbsp;5 <i class="far fa-comments"></i>') : null;
 		return (new HtmlElementObject('div.starcmnt', null, $starelm, $cmntelm))->setAttr('data-iid', $item['id']);
 		return ($star || $cmnt) ? '<div class="starcmnt"><span class="mystars">stars(12)</span><span class="mycmnts">5 <i class="far fa-comments"></i></span></div>' : null;
+	}
+
+	public static function image ()
+	{
+		
 	}
 
 	public static function sharing ($w)

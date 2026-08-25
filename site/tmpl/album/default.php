@@ -3,7 +3,7 @@
 * @package		com_meedya
 * @copyright	Copyright (C) 2022-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.0
+* @since		1.5.5
 */
 defined('_JEXEC') or die;
 
@@ -235,10 +235,10 @@ $frameOK = (int)$this->params->get('picframe', 0);
 	?>
 	<?php if (false && !$this->isSearch && count($this->items)>1): ?>
 		<a href="#" title="<?=Text::_('COM_MEEDYA_SLIDESHOW')?>" onclick="Meedya.viewer.slideShow(event);return false">
-			<img src="components/com_meedya/static/img/slideshow.png" alt="" /></a>
+			<img src="media/com_meedya/img/slideshow.png" alt="" /></a>
 	<?php elseif (false && $this->fulv && !$this->isSearch && count($this->items)>1): ?>
 		<a href="<?=Route::_('index.php?option=com_meedya&view=slides&tmpl=component&aid='.$this->aid.'&Itemid='.$this->itemId, false) ?>" title="<?=Text::_('COM_MEEDYA_SLIDESHOW')?>">
-			<img src="components/com_meedya/static/img/slideshow.png" alt="" /></a>
+			<img src="media/com_meedya/img/slideshow.png" alt="" /></a>
 	<?php endif; ?>
 	<?php
 	//echo'<xmp>';var_dump([$this->fulv,$shareOK,$frameOK,$this->params]);echo'</xmp>';
@@ -308,7 +308,7 @@ $frameOK = (int)$this->params->get('picframe', 0);
 			default:
 				$thmsrc = 'img.png" data-echo="thm/'.$thumb;
 		}
-		$rplvals[] = 'components/com_meedya/static/img/'.$thmsrc;
+		$rplvals[] = 'media/com_meedya/img/'.$thmsrc;
 	//	if ($parray['use_ratings'] || $parray['use_comments']) $itemImgD->setFoot(HtmlMeedya::starcmnt($item, $parray['use_ratings'], $parray['use_comments']));
 		$rplvals[] = $item['ratecnt'] ? $item['ratetot']/$item['ratecnt']*20 : 0;
 		$rplvals[] = $item['cmntcnt'] ? ' hasem' : ($cancmnt ? '' : 'no');

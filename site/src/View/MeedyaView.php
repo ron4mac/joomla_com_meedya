@@ -3,7 +3,7 @@
 * @package		com_meedya
 * @copyright	Copyright (C) 2023-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.0
+* @since		1.5.5
 */
 namespace RJCreations\Component\Meedya\Site\View;
 
@@ -96,7 +96,7 @@ class MeedyaView extends \Joomla\CMS\MVC\View\HtmlView
 		if ($albrec->thumb) {
 			$thum = $this->gallpath.'/thm/'.$this->getItemThumb($albrec->thumb);
 		} else {
-			$thum = 'components/com_meedya/static/img/noimages.jpg';
+			$thum = 'media/com_meedya/img/noimages.jpg';
 		}
 		return $thum;
 	}

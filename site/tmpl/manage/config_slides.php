@@ -3,7 +3,7 @@
 * @package		com_meedya
 * @copyright	Copyright (C) 2022-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.3
+* @since		1.5.5
 */
 defined('_JEXEC') or die;
 
@@ -47,7 +47,7 @@ echo <<<EOT
 	</td>
 	<td class="tableb">
 		<input type="checkbox" value="1" name="ss[aA]" {$atAlbum_checked} />
-		<img src="components/com_meedya/static/img/slideshow.png" style="margin-left:12px;vertical-align:text-bottom" />
+		<img src="media/com_meedya/img/slideshow.png" style="margin-left:12px;vertical-align:text-bottom" />
 	</td>
 </tr>
 <tr>
@@ -219,9 +219,9 @@ echo <<<EOT
 	<td class="tableb">
 		<div id="smpl">
 			<div>{$ctrlSet}</div>
-			<div id="smpl_c">controls<img id="h5ssicons" src="components/com_meedya/static/img/sldctl/{$iconset}.png" alt="iconset"/></div>
+			<div id="smpl_c">controls<img id="h5ssicons" src="media/com_meedya/img/sldctl/{$iconset}.png" alt="iconset"/></div>
 			<div id="smpl_t">{$ptext}</div>
-			<div id="smpl_p"><img src="components/com_meedya/static/img/smplpic.jpg" alt="" /></div>
+			<div id="smpl_p"><img src="media/com_meedya/img/smplpic.jpg" alt="" /></div>
 		</div>
 		<table class="dspcolr" style="margin-top:1em">
 			<tr><th></th><th>background</th><th>foreground</th></tr>

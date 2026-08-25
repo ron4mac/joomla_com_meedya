@@ -3,7 +3,7 @@
 * @package		com_meedya
 * @copyright	Copyright (C) 2022-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.3
+* @since		1.5.5
 */
 defined('_JEXEC') or die;
 
@@ -14,7 +14,6 @@ use Joomla\CMS\Uri\Uri;
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
 
-//HTMLHelper::stylesheet('components/com_meedya/static/css/slides.css');
 MeedyaHelper::oneStyle('s');
 MeedyaHelper::oneScript('s');
 
@@ -57,13 +56,13 @@ $dcolors = $H5ss_cfg['dC'];		//explode(',', $H5ss_cfg['dC']);
 	div#controls { background-color:<?=$dcolors[0]?>; color:<?=$dcolors[1]?>; }
 	div#ptext { background-color:<?=$dcolors[2]?>; color:<?=$dcolors[3]?>; }
 	div#screen { background-color:<?=$dcolors[4]?>;padding-left:12px;padding-right:12px;position:relative; }
-	div.spribut { background: url('<?=Uri::root(true)?>/components/com_meedya/static/css/icons/<?=$icons?>.png') no-repeat; }
+	div.spribut { background: url('<?=Uri::root(true)?>/media/com_meedya/css/icons/<?=$icons?>.png') no-repeat; }
 </style>
 <script type="text/javascript">
 	var albumID = '<?=$this->aid?>';
 	var popdwin = <?=$popdwin?'true':'false'?>;
 	var baseUrl = "<?=Uri::root(true).'/'.$this->gallpath?>/med/";
-	var _imgP = "<?=Uri::root(true)?>/components/com_meedya/static/img/";
+	var _imgP = "<?=Uri::root(true)?>/media/com_meedya/img/";
 	var viderror = "COULD NOT PLAY VIDEO";
 	var imagelist = <?=json_encode($filelist)?>;
 	var imgerror = "<?=Text::_('COM_MEEDYA_SS_IMGERROR')?>";
@@ -105,7 +104,7 @@ $dcolors = $H5ss_cfg['dC'];		//explode(',', $H5ss_cfg['dC']);
 		</div>
 		<div id="ptext"></div>
 		<div id="screen">
-			<div id="loading" style="display:none"><img src="components/com_meedya/static/img/eclipse.svg" /></div>
+			<div id="loading" style="display:none"><img src="media/com_meedya/img/eclipse.svg" /></div>
 		</div>
 		<!-- <div id="status"></div> -->
 	</div>

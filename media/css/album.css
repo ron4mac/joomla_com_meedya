@@ -27,7 +27,7 @@
 .dropdown-toggle::after {
 	display: none !important;
 }
-.dropdown-menu {
+.dropdown-menu.show {
 	padding-left: 5px;
 	padding-right: 5px;
 }

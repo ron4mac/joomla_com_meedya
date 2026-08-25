@@ -3,7 +3,7 @@
 * @package		com_meedya
 * @copyright	Copyright (C) 2022-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.3
+* @since		1.5.5
 */
 namespace RJCreations\Component\Meedya\Site\Controller;
 
@@ -236,20 +236,20 @@ class ManRawController extends BaseController
 	{
 		$iid = $this->input->post->getInt('iid', 0);
 		if (!$iid) return;
-		$url = $this->gallPath;
+		$url = Uri::root(true).'/'.$this->gallPath;
 		$m = $this->getModel('manage');
 		$item = $m->getItem($iid);
 		$mime = explode('/',$item['mtype']);
 		echo '<div class="zoom-ctnr"><div class="zoom-closex" onclick="Meedya.Zoom.close(event)">X</div>';
 		switch ($mime[0]) {
 			case 'image':
-				echo '<img class="eclipse" src="components/com_meedya/static/img/eclipse.svg" /><img class="zoom-zimg" src="'.$url.'/med/'.$item['file'].'" onload="this.previousSibling.style.opacity=0;this.style.opacity=1" />';
+				echo '<img class="eclipse" src="'.Uri::root(true).'/media/com_meedya/img/eclipse.svg" /><img class="zoom-zimg" src="'.$url.'/med/'.$item['file'].'" onload="this.previousSibling.style.opacity=0;this.style.opacity=1" />';
 				break;
 			case 'video':
 				//return '<video class="zoom-zvid" autoplay><source src="'.$url.'" type="'.$ftyp['mime'].'"></video>';
 				echo '<div><button class="btn btn-sm btn-secondary" onclick="Meedya.setVideoThumb(event,'.$iid.')">'.Text::_('COM_MEEDYA_SETVIDTHM').'</button></div>';
 				echo '<div class="zoom-vid"><video class="zoom-zvid" id="zoom-zvid" controls autoplay><source src="'.$url.'/img/'.$item['file'].'"></video></div>';
-				echo '<div style="display:none"><canvas id="my-video-canvas"></canvas><img id="my-vidover" src="components/com_meedya/static/img/vidovero.png" /></div>';
+				echo '<div style="display:none"><canvas id="my-video-canvas"></canvas><img id="my-vidover" src="media/com_meedya/img/vidovero.png" /></div>';
 				break;
 			default:
 				echo '<div style="color:white">UNSUPPORTED FILE TYPE #'.$item['mtype'].'# '.$item['file'].'</div>';
@@ -286,7 +286,7 @@ class ManRawController extends BaseController
 				//return '<video class="zoom-zvid" autoplay><source src="'.$url.'" type="'.$ftyp['mime'].'"></video>';
 				echo '<div><button class="btn btn-sm btn-secondary" onclick="Meedya.setVideoThumb(event,'.$iid.')">'.Text::_('COM_MEEDYA_SETVIDTHM').'</button></div>';
 				echo '<div class="zoom-vid"><video class="zoom-zvid" id="zoom-zvid" controls autoplay><source src="'.$url.'/img/'.$item['file'].'"></video></div>';
-				echo '<div style="display:none"><canvas id="my-video-canvas"></canvas><img id="my-vidover" src="components/com_meedya/static/img/vidovero.png" /></div>';
+				echo '<div style="display:none"><canvas id="my-video-canvas"></canvas><img id="my-vidover" src="media/com_meedya/img/vidovero.png" /></div>';
 				break;
 			default:
 				echo '<div style="color:white">UNSUPPORTED FILE TYPE #'.$item['mtype'].'# '.$item['file'].'</div>';
