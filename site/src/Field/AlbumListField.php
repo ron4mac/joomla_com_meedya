@@ -1,17 +1,19 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2022-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
+* @since		1.5.8
 */
-defined('JPATH_BASE') or die;
+namespace RJCreations\Component\Meedya\Site\Field;
+
+defined('_JEXEC') or die;
 
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Form\FormHelper;
+use Joomla\CMS\Form\Field\ListField;
 
-FormHelper::loadFieldClass('list');
-
-class JFormFieldAlbumList extends JFormFieldList
+class AlbumListField extends ListField
 {
 	protected $type = 'AlbumList';
 

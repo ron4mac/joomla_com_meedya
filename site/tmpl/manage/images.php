@@ -3,7 +3,7 @@
 * @package		com_meedya
 * @copyright	Copyright (C) 2022-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.3
+* @since		1.5.8
 */
 defined('_JEXEC') or die;
 
@@ -38,11 +38,13 @@ function editImg (iid) {
 </script>
 
 <style>
+.form-control:focus {outline:none}
 .btn-group {display:inline-block;}
 .ordering-select {display:inline-flex; margin-left:8px;}
 .js-stools {margin-bottom:0.5rem}
-.js-stools-container-filters-visible {display:inline-flex;padding:10px 0;}
+.js-stools-container-filters-visible {/*display:inline-flex;*/padding:10px 0;margin-bottom:0}
 .js-stools-container-bar {display:inline-flex; padding:0;}
+.js-stools-container-bar .ordering-select {margin-inline-start:8px}
 .btn-wrapper.input-append {display:inline-flex;}
 .js-stools-container-list {display:inline-flex;}
 .mitem, .litem {width:120px; height:120px;}
@@ -52,7 +54,7 @@ function editImg (iid) {
 .litem {cursor:pointer;}
 .islct {border-color:blue;}
 /* icons and buttons */
-.actbuts {display:inline-block;}
+.actbuts {display:inline-flex; white-space:nowrap;}
 .action-icon {
 	font-size: larger;
 	margin-right: 0.5em;
@@ -75,7 +77,8 @@ function editImg (iid) {
 	<?php echo HtmlMeedya::pageHeader($this->params, $this->action/*.'XXXX'*/); ?>
 	<form action="<?=Route::_('index.php?option=com_meedya&view=manage&Itemid='.$this->itemId)?>" method="post" name="adminForm" id="adminForm">
 		<?php $fOpts = ['filterButton' => true]; ?>
-		<?php echo LayoutHelper::render('search', ['view' => $this, 'options' => $fOpts], JPATH_ROOT.'/components/com_meedya/layouts'); ?>
+		<?php //echo LayoutHelper::render('search', ['view' => $this, 'options' => $fOpts], JPATH_ROOT.'/components/com_meedya/layouts'); ?>
+		<?php echo LayoutHelper::render('joomla.searchtools.default', ['view' => $this, 'options' => $fOpts]); ?>
 		<?php if ($this->iids): ?>
 		<?php
 			if ($this->mode == 'L') {

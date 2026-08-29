@@ -3,7 +3,7 @@
 * @package		com_meedya
 * @copyright	Copyright (C) 2023-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.5
+* @since		1.5.8
 */
 namespace RJCreations\Component\Meedya\Site\View;
 
@@ -20,10 +20,7 @@ use RJCreations\Library\RJUserCom;
 use RJCreations\Component\Meedya\Site\Helper\MeedyaHelper;
 use RJCreations\Component\Meedya\Site\Helper\HtmlMeedya;
 
-// provide all views with a HTMLHelper class
-//\JLoader::register('JHtmlMeedya', JPATH_COMPONENT . '/helpers/html/meedya.php');
-// and our htmlobject class
-\JLoader::register('HtmlElementObject', JPATH_COMPONENT . '/classes/HtmlObject.php');
+\JLoader::register('HtmlElementObject', JPATH_SITE . '/components/com_meedya/classes/HtmlObject.php');
 
 HTMLHelper::_('bootstrap.dropdown');
 HTMLHelper::_('bootstrap.tooltip', '.hastip', ['placement'=>'bottom']);

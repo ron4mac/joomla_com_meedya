@@ -3,7 +3,7 @@
 * @package		com_meedya
 * @copyright	Copyright (C) 2022-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.5
+* @since		1.5.8
 */
 defined('_JEXEC') or die;
 
@@ -12,18 +12,18 @@ defined('_JEXEC') or die;
 use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Language\Text;
-use Joomla\CMS\HTML\HTMLHelper;
+//use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Layout\LayoutHelper;
 use RJCreations\Component\Meedya\Site\Helper\M34C;
 use RJCreations\Component\Meedya\Site\Helper\HtmlMeedya;
 use RJCreations\Component\Meedya\Site\Helper\MeedyaHelper;
 
-if (file_exists(JPATH_COMPONENT.'/lpf.php')) include JPATH_COMPONENT.'/lpf.php';
+if (file_exists(JPATH_SITE.'/components/com_meedya/lpf.php')) include JPATH_SITE.'/components/com_meedya/lpf.php';
 
 define('MYG_FB4', 1);
 $ttscript = 'Meedya.albumID = '.$this->aid.';';
 
-HTMLHelper::_('jquery.framework');
+//HTMLHelper::_('jquery.framework');
 //MeedyaHelper::addStyle('album');
 $styles = 'a';
 //MeedyaHelper::addScript(['common','meedya','rating','echo']);

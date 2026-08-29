@@ -3,16 +3,14 @@
 * @package		com_meedya
 * @copyright	Copyright (C) 2022-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.0
+* @since		1.5.8
 */
 namespace RJCreations\Component\Meedya\Site\Controller;
 
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
-//use Joomla\CMS\Router\Route;
 use Joomla\CMS\Language\Text;
-//use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Session\Session;
 use Joomla\CMS\MVC\Controller\BaseController;
 use Joomla\CMS\Uri\Uri;
@@ -20,7 +18,8 @@ use RJCreations\Library\RJUserCom;
 use RJCreations\Component\Meedya\Site\Helper\HtmlMeedya;
 use RJCreations\Component\Meedya\Site\Helper\MeedyaHelper;
 
-if (file_exists(JPATH_COMPONENT.'/lpf.php')) include JPATH_COMPONENT.'/lpf.php';
+$lpf = JPATH_SITE.'/components/com_meedya/lpf.php';
+if (file_exists($lpf)) include $lpf;
 if (!defined('PFDW')) {
 	define('PFDW', 1024);
 	define('PFDH', 600);
@@ -29,12 +28,6 @@ if (!defined('PFDW')) {
 
 class DispRawController extends BaseController
 {
-//	public function __construct ($config = [])
-//	{
-//		error_reporting(0);
-//		parent::__construct($config);
-//		include JPATH_COMPONENT.'/lpf.php';
-//	}
 
 	// receive a rating vote
 	public function rateItem ()
@@ -237,7 +230,7 @@ class DispRawController extends BaseController
 	private function createImage ($new_w, $new_h, $matte)
 	{
 		if ($matte) {
-			$m = imagecreatefromjpeg(JPATH_COMPONENT.'/static/img/'.$matte);
+			$m = imagecreatefromjpeg(JPATH_SITE.'/media/com_meedya/img/'.$matte);
 			$im = $this->newImg($new_w, $new_h);
 			$result = imagecopyresampled($im, $m, 0, 0, 0, 0, $new_w, $new_h, imagesx($m), imagesy($m));
 			if (!$result) {

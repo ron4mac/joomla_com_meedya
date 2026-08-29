@@ -8,14 +8,13 @@
 	<license>GNU General Public License version 3 or later; see LICENSE.txt</license>
 	<authorEmail>ron@rjconline.net</authorEmail>
 	<authorUrl>rjconline.net</authorUrl>
-	<version>1.5.5</version>
+	<version>1.5.8</version>
 	<updater jver="(4\.[0-9])||(5\.[0-3])" pver="7.0" />
 	<description>COM_MEEDYA_XML_DESCRIPTION</description>
 	<namespace path="src">RJCreations\Component\Meedya</namespace>
 	<scriptfile>script.php</scriptfile>
 	<files folder="site">
 		<folder>classes</folder>
-		<folder>fields</folder>
 		<folder>forms</folder>
 		<folder>language</folder>
 		<folder>layouts</folder>

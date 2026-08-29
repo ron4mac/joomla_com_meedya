@@ -3,7 +3,7 @@
 * @package		com_meedya
 * @copyright	Copyright (C) 2022-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.3
+* @since		1.5.8
 */
 namespace RJCreations\Component\Meedya\Site\Model;
 
@@ -447,7 +447,6 @@ class ManageModel extends MeedyaModel
 	// $igna - album id number to ignore because it will be removed anyway
 	public function deleteItems ($itms, $igna=0)
 	{
-//		require_once JPATH_COMPONENT.'/helpers/meedya.php';
 		$mdydir = RJUserCom::getStoragePath();
 		$db = $this->getDbo();
 		foreach ($itms as $itm) {
@@ -581,7 +580,7 @@ class ManageModel extends MeedyaModel
 		$input = $app->input;
 //echo '<xmp>';var_dump($input,$app->get('list_limit'),$this->context);echo'</xmp>';
 
-		if (RJC_DBUG) MeedyaHelper::log('populateState', $input);
+//		if (RJC_DBUG) MeedyaHelper::log('populateState', $input);
 
 		// album ID
 		$aid = $input->get('album', 0, 'INT');

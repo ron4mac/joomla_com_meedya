@@ -3,7 +3,7 @@
 * @package		com_meedya
 * @copyright	Copyright (C) 2023-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.5
+* @since		1.5.8
 */
 namespace RJCreations\Component\Meedya\Site\Helper;
 
@@ -140,14 +140,14 @@ abstract class MeedyaHelper
 
 	public static function encodeKey ($parms)
 	{
-		require_once JPATH_COMPONENT.'/classes/crypt.php';
+		require_once JPATH_SITE.'/components/com_meedya/classes/crypt.php';
 		$key = \ComMeedya\Encryption::simpleXor($parms, Factory::getApplication()->get('secret'));
 		return base64_encode($key);
 	}
 
 	public static function decodeKey ($key)
 	{
-		require_once JPATH_COMPONENT.'/classes/crypt.php';
+		require_once JPATH_SITE.'/components/com_meedya/classes/crypt.php';
 		$secret = Factory::getApplication()->get('secret');
 		if (strlen($key)>99) {
 			$prms = \ComMeedya\Encryption::decrypt($key, $secret);
@@ -172,7 +172,7 @@ abstract class MeedyaHelper
 				}
 			}
 		}
-		require_once JPATH_COMPONENT.'/classes/graphic'.$imp.'.php';
+		require_once JPATH_SITE.'/components/com_meedya/classes/graphic'.$imp.'.php';
 		return new \ImageProcessor($imgf);
 	}
 

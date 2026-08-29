@@ -3,7 +3,7 @@
 * @package		com_meedya
 * @copyright	Copyright (C) 2022-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.0
+* @since		1.5.8
 */
 namespace RJCreations\Component\Meedya\Site\Model;
 
@@ -25,13 +25,11 @@ class MeedyaModel extends ListModel
 	public function __construct ($config = [], $factory = null)
 	{
 		$dbFile = '/meedya.db3';
-	//	$udbDir = RJUserCom::getStoragePath();
 		$udbDir = RJUserComm::getStoragePath(empty($config['inst']) ? null : $config['inst']->obj);
 		if (!$udbDir) {
 			throw new Exception('ACCESS NOT ALLOWED', 403);
 		}
 		$udbPath = $udbDir.$dbFile;
-		$doInit = !file_exists($udbPath);
 
 		try {
 			$db = RJUserCom::getDb(true);
@@ -40,12 +38,6 @@ class MeedyaModel extends ListModel
 			$dbc->sqliteCreateFunction('albhier', [$this,'albhier'], 2);
 			$dbc->sqliteCreateFunction('inpsv', [$this,'inpsv'], 2);
 			$dbc->sqliteCreateFunction('match', [$this,'match'], 2);
-
-			if ($doInit) {
-			//	require_once JPATH_COMPONENT.'/helpers/db.php';
-			//	MeedyaHelperDb::buildDb($db);
-			}
-
 			$config['dbo'] = $db;
 		}
 		catch (\Exception $e) {

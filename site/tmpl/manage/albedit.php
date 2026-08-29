@@ -3,7 +3,7 @@
 * @package		com_meedya
 * @copyright	Copyright (C) 2022-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.3
+* @since		1.5.8
 */
 defined('_JEXEC') or die;
 
@@ -18,8 +18,6 @@ use RJCreations\Component\Meedya\Site\Helper\MeedyaHelper;
 MeedyaHelper::oneStyle('gMp');
 MeedyaHelper::oneScript('cMabpe');
 
-HTMLHelper::_('bootstrap.modal');
-
 Text::script('COM_MEEDYA_REMOVE');
 Text::script('COM_MEEDYA_VRB_REMOVE');
 Text::script('COM_MEEDYA_ONE_PUBALB');
@@ -30,25 +28,25 @@ $pubdis = $this->album['pub'] && $this->album['pub']!=$this->album['aid'] ? ' di
 //var_dump($this->album);
 ?>
 <style>
-	#albForm {margin-top: 1em; border-top: 1px solid #CCC; padding-top: 0.5em;}
+	#albForm {margin-top:1em; border-top:1px solid #CCC; padding-top:0.5em;}
 	.albman {display:inline-flex}
 	.mitem, .litem {width:120px; height:120px}
 	.rbutn {float: right}
 	.modal-backdrop.fade.in {opacity:0.4}
-	.modal-footer {padding: 8px 10px}
-	.pell-content {height: 100px}
-	.actbuts {margin-top: 1em}
-	.albdesc > div {margin-top: 1em}
+	.modal-footer {padding:8px 10px}
+	.pell-content {height:100px}
+	.actbuts {margin-top:1em; display:inline-flex; white-space:nowrap;}
+	.albdesc > div {margin-top:1em}
 	#pubalb {/*vertical-align: text-bottom*/}
-	.item img {user-drag: none;}
+	.item img {user-drag:none;}
 	.itemxxx img {
-		-webkit-user-select: none;
-		-webkit-touch-callout: none;
-		-webkit-user-drag: none;
+		-webkit-user-select:none;
+		-webkit-touch-callout:none;
+		-webkit-user-drag:none;
 	}
-	@media only screen and (min-width: 768px) {
+	@media only screen and (min-width:768px) {
 		/* For desktop: */
-		.item imgxxx {-webkit-user-drag: inherit;}
+		.item imgxxx {-webkit-user-drag:inherit;}
 	}
 }
 </style>

@@ -3,7 +3,7 @@
 * @package		com_meedya
 * @copyright	Copyright (C) 2022-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.5
+* @since		1.5.8
 */
 defined('_JEXEC') or die;
 
@@ -22,6 +22,7 @@ class com_meedyaInstallerScript extends InstallerScript
 		'components/com_meedya/models',
 		'components/com_meedya/views',
 		'components/com_meedya/static',
+		'components/com_meedya/fields',
 		'components/com_meedya/helpers',
 		'administrator/components/com_meedya/models'];
 	protected $deleteFiles = [

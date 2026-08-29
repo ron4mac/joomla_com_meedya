@@ -3,7 +3,7 @@
 * @package		com_meedya
 * @copyright	Copyright (C) 2023-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.3
+* @since		1.5.8
 */
 defined('_JEXEC') or die;
 
@@ -100,23 +100,6 @@ abstract class MeedyaAdminHelper
 	{
 		if (is_null(self::$instanceType)) self::getTypeOwner();
 		return base64_encode(self::$instanceType.':'.self::$ownerID);
-	}
-
-	public static function getImgProc ($imgf)
-	{
-	//	if (JDEBUG) { JLog::add('@@ENV@@'.print_r(getenv(), true), JLog::DEBUG, 'com_meedya'); }
-
-		$imp = 'gd';	// default to GD
-		if (class_exists('Imagick')) {
-			$imp = 'imx';
-		} else {
-			$sps = explode(':', getenv('PATH'));
-			foreach ($sps as $sp) {
-				if (file_exists($sp.'/convert')) $imp = 'im';
-			}
-		}
-		require_once JPATH_COMPONENT.'/helpers/graphic'.$imp.'.php';
-		return new ImageProcessor($imgf);
 	}
 
 	// return the max file upload size as set by the php config

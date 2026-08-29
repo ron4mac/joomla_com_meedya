@@ -3,7 +3,7 @@
 * @package		com_meedya
 * @copyright	Copyright (C) 2022-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.3
+* @since		1.5.8
 */
 namespace RJCreations\Component\Meedya\Administrator\Helper;
 
@@ -28,11 +28,11 @@ abstract class MeedyaHelperDb
 	public static function checkDbVersion ($udbPath, $info=null)
 	{
 		if (empty($info)) $info = self::getInfo($udbPath);
-		return file_exists(JPATH_COMPONENT_ADMINISTRATOR.'/sql/upd_'.$info['dbv'].'.sql');
+		return file_exists(JPATH_ADMINISTRATOR.'/components/com_meedya/sql/upd_'.$info['dbv'].'.sql');
 
 		$verf = dirname($udbPath).'/.dbver';
 		$curver = file_exists($verf) ? trim(file_get_contents($verf)) : '0.0.0';
-		$updsqlfiles = glob(JPATH_COMPONENT_ADMINISTRATOR.'/tables/upd_*.sql', GLOB_NOSORT);
+		$updsqlfiles = glob(JPATH_ADMINISTRATOR.'/components/com_meedya/tables/upd_*.sql', GLOB_NOSORT);
 		if (!$updsqlfiles) return true;
 		natsort($updsqlfiles);
 		preg_match('#upd_(.+)\.sql#', basename(array_pop($updsqlfiles)), $m);
@@ -115,7 +115,7 @@ abstract class MeedyaHelperDb
 
 		$curver = file_exists($udbPath.'/.dbver') ? trim(file_get_contents($udbPath.'/.dbver')) : '0.0.0';
 
-		$updsqlfiles = glob(JPATH_COMPONENT_ADMINISTRATOR.'/tables/upd_*.sql', GLOB_NOSORT);
+		$updsqlfiles = glob(JPATH_ADMINISTRATOR.'/components/com_meedya/tables/upd_*.sql', GLOB_NOSORT);
 		if (!$updsqlfiles) return;
 
 		natsort($updsqlfiles);

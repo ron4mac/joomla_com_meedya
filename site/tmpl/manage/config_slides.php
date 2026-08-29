@@ -3,14 +3,12 @@
 * @package		com_meedya
 * @copyright	Copyright (C) 2022-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.5
+* @since		1.5.8
 */
 defined('_JEXEC') or die;
 
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\Filesystem\Folder;
-
-jimport('joomla.filesystem.folder');
 
 HTMLHelper::_('jquery.framework', false);
 
@@ -71,7 +69,7 @@ EOT;
 
 $iconset = $cfg['iS'];
 
-$iconsets = Folder::files(JPATH_COMPONENT.'/static/img/sldctl');	//form_get_foldercontent('plugins/html5slideshow/css/icons/', 'file', 'png');
+$iconsets = Folder::files(JPATH_SITE.'/media/com_meedya/img/sldctl');	//form_get_foldercontent('plugins/html5slideshow/css/icons/', 'file', 'png');
 $ichoices = '';
 foreach ($iconsets as $value) {
 	$info = pathinfo($value);

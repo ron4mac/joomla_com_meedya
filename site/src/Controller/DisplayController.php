@@ -3,7 +3,7 @@
 * @package		com_meedya
 * @copyright	Copyright (C) 2022-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.0
+* @since		1.5.8
 */
 namespace RJCreations\Component\Meedya\Site\Controller;
 
@@ -11,9 +11,6 @@ defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Router\Route;
-use Joomla\CMS\Language\Text;
-use Joomla\CMS\HTML\HTMLHelper;
-use Joomla\CMS\Session\Session;
 use Joomla\CMS\MVC\Controller\BaseController;
 use RJCreations\Library\RJUserCom;
 use RJCreations\Component\Meedya\Site\Helper\MeedyaHelper;

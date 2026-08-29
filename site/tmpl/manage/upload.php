@@ -3,7 +3,7 @@
 * @package		com_meedya
 * @copyright	Copyright (C) 2022-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.3
+* @since		1.5.8
 */
 defined('_JEXEC') or die;
 
@@ -17,7 +17,7 @@ use Joomla\CMS\Layout\LayoutHelper;
 use RJCreations\Component\Meedya\Site\Helper\HtmlMeedya;
 use RJCreations\Component\Meedya\Site\Helper\MeedyaHelper;
 
-HTMLHelper::addIncludePath(JPATH_COMPONENT.'/helpers');
+HTMLHelper::addIncludePath(JPATH_SITE.'/components/com_meedya/helpers');
 
 // build and add javascript options
 $h5opts = [

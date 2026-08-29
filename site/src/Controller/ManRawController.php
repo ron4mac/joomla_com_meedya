@@ -3,7 +3,7 @@
 * @package		com_meedya
 * @copyright	Copyright (C) 2022-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.5
+* @since		1.5.8
 */
 namespace RJCreations\Component\Meedya\Site\Controller;
 
@@ -12,7 +12,6 @@ defined('_JEXEC') or die;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Language\Text;
-use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Session\Session;
 use Joomla\CMS\Layout\LayoutHelper;
 use Joomla\CMS\MVC\Controller\BaseController;
@@ -42,7 +41,7 @@ class ManRawController extends BaseController
 	//	if (RJC_DBUG) MeedyaHelper::log('upfile:', $this->input);
 		$this->_tokenCheck();
 
-		require_once JPATH_COMPONENT.'/classes/uplodr.php';
+		require_once JPATH_SITE.'/components/com_meedya/classes/uplodr.php';
 		$toname = null;
 		$resp = [];
 		ob_start();
