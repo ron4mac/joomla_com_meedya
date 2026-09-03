@@ -3,7 +3,7 @@
 * @package		com_meedya
 * @copyright	Copyright (C) 2022-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.8
+* @since		1.6.0
 */
 defined('_JEXEC') or die;
 
@@ -12,6 +12,7 @@ use Joomla\CMS\Log\Log;
 use Joomla\CMS\Language\Text;
 use Joomla\Database\DatabaseDriver;
 use Joomla\CMS\Installer\InstallerScript;
+use RJCreations\Library\RJUserCom;
 
 class com_meedyaInstallerScript extends InstallerScript
 {
@@ -24,6 +25,8 @@ class com_meedyaInstallerScript extends InstallerScript
 		'components/com_meedya/static',
 		'components/com_meedya/fields',
 		'components/com_meedya/helpers',
+		'components/com_meedya/layouts/search',
+		'administrator/components/com_meedya/forms',
 		'administrator/components/com_meedya/models'];
 	protected $deleteFiles = [
 		'components/com_meedya/controller.php',
@@ -34,6 +37,8 @@ class com_meedyaInstallerScript extends InstallerScript
 		'components/com_meedya/helpers/graphicim.php',
 		'components/com_meedya/helpers/graphicimx.php',
 		'components/com_meedya/helpers/meedya.php',
+		'components/com_meedya/layouts/search.php',
+		'components/com_meedya/layouts/search_.php',
 		'components/com_meedya/src/Helper/meedya.php',
 		'administrator/components/com_meedya/controller.php',
 		'administrator/components/com_meedya/meedya.php'];
@@ -70,7 +75,7 @@ class com_meedyaInstallerScript extends InstallerScript
 			return false;
 		}
 		// and is current enough
-		if (!(method_exists('RJCreations\Library\RJUserCom','Igaa'))) {
+		if (!(method_exists('RJCreations\Library\RJUserCom','Igaa')) || RJUserCom::Igaa()<5) {
 			Log::add('The installed version of <a href="https://github.com/ron4mac/joomla_lib_rjuser" target="_blank">RJUser Library</a> must be updated.', Log::WARNING, 'jerror');
 			return false;
 		}
@@ -108,7 +113,7 @@ class com_meedyaInstallerScript extends InstallerScript
 	{
 		if (count($param_array) > 0) {
 			// read the existing component value(s)
-			$db = Factory::getDbo();
+			$db = Factory::getDatabase();
 			$db->setQuery('SELECT params FROM #__extensions WHERE name = "'.$this->com_name.'"');
 			$params = json_decode($db->loadResult(), true);
 			// add the new variable(s) to the existing one(s), replacing existing only if requested

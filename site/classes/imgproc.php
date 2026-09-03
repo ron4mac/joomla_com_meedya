@@ -9,7 +9,6 @@ defined('_JEXEC') or die;
 
 class ImageProc
 {
-	protected $src = null;
 	protected $img_width;
 	protected $img_height;
 	protected $img_type;
@@ -39,15 +38,14 @@ class ImageProc
 		8 => [90, false]	// rotate(90)
 	];
 
-	public function __construct ($src)
+	public function __construct (protected $src)
 	{
-		$this->src = $src;
-		list($this->img_width, $this->img_height, $this->img_type) = getimagesize($src);
+		[$this->img_width, $this->img_height, $this->img_type] = getimagesize($this->src);
 		if (!$this->img_width && !$this->img_height && !$this->img_type) throw new Exception('The image type is not supported');
 	}
 
 	// adjust a source dimension to just fit in a destination dimension, keeping aspect
-	protected function fitInRect ($sW, $sH, $dW, $dH)
+	protected function fitInRect ($sW, $sH, $dW, $dH): array
 	{
 		$sar = $sW/$sH;
 		$dar = $dW/$dH;
@@ -64,7 +62,7 @@ class ImageProc
 	// call to get new attribuutes for modified file
 	protected function refresh ()
 	{
-		list($this->img_width, $this->img_height, $this->img_type) = getimagesize($this->src);
+		[$this->img_width, $this->img_height, $this->img_type] = getimagesize($this->src);
 	}
 
 }

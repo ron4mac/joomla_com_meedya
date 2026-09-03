@@ -3,9 +3,11 @@
 * @package		com_meedya
 * @copyright	Copyright (C) 2023-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.3
+* @since		1.6.0
 */
 namespace RJCreations\Component\Meedya\Site\Model;
+
+use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 
 defined('_JEXEC') or die;
 
@@ -14,12 +16,12 @@ use Joomla\CMS\Router\Route;
 use Joomla\Database\DatabaseDriver;
 use RJCreations\Library\RJUserCom;
 
-class PicframeModel extends \Joomla\CMS\MVC\Model\BaseDatabaseModel
+class PicframeModel extends BaseDatabaseModel
 {
-	protected $db = null;
+	protected $db;
 	protected $imgp = '';
 	protected $curAlbID = 0;
-	protected $_album = null;
+	protected $_album;
 	protected $galinst;
 	protected $udp;
 
@@ -69,7 +71,7 @@ class PicframeModel extends \Joomla\CMS\MVC\Model\BaseDatabaseModel
 		return $this->udp . '/med/' . $pic['file'];
 	}
 
-	private function getAlbImgs ($aid)
+	private function getAlbImgs ($aid): array
 	{
 		$url = Route::_('index.php?option=com_meedya&format=raw&task=DispRaw.p4f&p=', false, 0, true);
 	//	$url = JUri::root() . 'picframe.php/?gi=';
@@ -79,23 +81,16 @@ class PicframeModel extends \Joomla\CMS\MVC\Model\BaseDatabaseModel
 		$items = [];
 		foreach ($itms as $iid) {
 			$itm = $this->getItemFile($iid);
-			if (substr($itm['mtype'],0,6) == 'image/') {
+			if (str_starts_with($itm['mtype'], 'image/')) {
 				$items[] = $url . $this->galinst . '.' . $iid;
-			}
-		}
-		return $items;
-		foreach ($itms as $iid) {
-			$itm = $this->getItemFile($iid);
-			if (substr($itm['mtype'],0,6) == 'image/') {
-				$items[] = $this->imgp . $itm['file'];
 			}
 		}
 		return $items;
 	}
 
-	private function getAlbImgCount ($aid)
+	private function getAlbImgCount ($aid): array|int
 	{
-		$url = Route::_('index.php?option=com_meedya&format=raw&task=DispRaw.p4f&p=', false, 0, true);
+		Route::_('index.php?option=com_meedya&format=raw&task=DispRaw.p4f&p=', false, 0, true);
 	//	$url = JUri::root() . 'picframe.php/?gi=';
 		$this->db->setQuery('SELECT items FROM albums WHERE aid='.$aid);
 		if (!$ilst = trim($this->db->loadResult()?:'')) return [];
@@ -103,14 +98,14 @@ class PicframeModel extends \Joomla\CMS\MVC\Model\BaseDatabaseModel
 		$items = 0;
 		foreach ($itms as $iid) {
 			$itm = $this->getItemFile($iid);
-			if (substr($itm['mtype'],0,6) == 'image/') {
+			if (str_starts_with($itm['mtype'], 'image/')) {
 				$items++;
 			}
 		}
 		return $items;
 	}
 
-	private function getAlbImgThms ($aid)
+	private function getAlbImgThms ($aid): array
 	{
 		$url = Uri::root() . $this->udp . '/thm/';
 		$this->db->setQuery('SELECT items FROM albums WHERE aid='.$aid);
@@ -119,7 +114,7 @@ class PicframeModel extends \Joomla\CMS\MVC\Model\BaseDatabaseModel
 		$items = [];
 		foreach ($itms as $iid) {
 			$itm = $this->getItemFile($iid);
-			if (substr($itm['mtype'],0,6) == 'image/') {
+			if (str_starts_with($itm['mtype'], 'image/')) {
 				$items[] = ['iid'=>$iid, 'src'=>$url.$itm['file']];
 			}
 		}
@@ -130,9 +125,8 @@ class PicframeModel extends \Joomla\CMS\MVC\Model\BaseDatabaseModel
 	{
 		if (!$iid) return false;
 		$this->db->setQuery('SELECT * FROM `meedyaitems` WHERE `id`='.$iid);
-		$r = $this->db->loadAssoc();
 		//var_dump($r);
-		return $r;
+		return $this->db->loadAssoc();
 	}
 
 

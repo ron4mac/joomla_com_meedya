@@ -53,74 +53,74 @@ class DisplayController extends BaseController
 	}
 */
 
-	public function remove ()
+	public function remove (): void
 	{
 		$this->tokenCheck();
-		$cids = $this->input->get('cid',array(),'array');
+		$cids = $this->input->get('cid',[],'array');
 		$view = $this->input->get('view');
 		foreach ($cids as $cid) {
-			list($guid,$iid) = explode('|', $cid);
+			[$guid, $iid] = explode('|', $cid);
 			$mid = $iid ?: '';
 			RJUserCom::deleteStorageInstance($guid, $mid);
 		}
 		$this->setRedirect('index.php?option=com_meedya&view='.$view, Text::_('COM_MEEDYA_MSG_COMPLETE'));
 	}
 
-	public function rebuildExpodt ()
+	public function rebuildExpodt (): void
 	{
 		$this->tokenCheck();
-		$cids = $this->input->get('cid',array(),'array');
+		$cids = $this->input->get('cid',[],'array');
 		$view = $this->input->get('view');
 //		$tc = $view == 'meedya' ? '@' : '_';
 		foreach ($cids as $cid) {
-			list($uid,$iid) = explode('|', $cid);
+			[$uid, $iid] = explode('|', $cid);
 			$mid = $iid ? ('_'.$iid) : '';
 			MeedyaHelperDb::rebuildExpodt(JPATH_ROOT.'/'.$this->storBase.'/'.$uid.'/'.ApplicationHelper::getComponentName().$mid);
 		}
 		$this->setRedirect('index.php?option=com_meedya&view='.$view, Text::_('COM_MEEDYA_MSG_COMPLETE'));
 	}
 
-	public function cleanOrphans ()
+	public function cleanOrphans (): void
 	{
 		$this->tokenCheck();
-		$cids = $this->input->get('cid',array(),'array');
+		$cids = $this->input->get('cid',[],'array');
 		$view = $this->input->get('view');
 //		$tc = $view == 'meedya' ? '@' : '_';
 		foreach ($cids as $cid) {
-			list($uid,$iid) = explode('|', $cid);
+			[$uid, $iid] = explode('|', $cid);
 			$mid = $iid ? ('_'.$iid) : '';
 			MeedyaHelperDb::cleanOrphans(JPATH_ROOT.'/'.$this->storBase.'/'.$uid.'/'.ApplicationHelper::getComponentName().$mid);
 		}
 		$this->setRedirect('index.php?option=com_meedya&view='.$view, Text::_('COM_MEEDYA_MSG_COMPLETE'));
 	}
 
-	public function recalcStorage ()
+	public function recalcStorage (): void
 	{
 		$this->tokenCheck();
-		$cids = $this->input->get('cid',array(),'array');
+		$cids = $this->input->get('cid',[],'array');
 		$view = $this->input->get('view');
 //		$tc = $view == 'meedya' ? '@' : '_';
 		foreach ($cids as $cid) {
-			list($uid,$iid) = explode('|', $cid);
+			[$uid, $iid] = explode('|', $cid);
 			$mid = $iid ? ('_'.$iid) : '';
 			MeedyaHelperDb::recalcStorage(JPATH_ROOT.'/'.$this->storBase.'/'.$uid.'/'.ApplicationHelper::getComponentName().$mid);
 		}
 		$this->setRedirect('index.php?option=com_meedya&view='.$view, Text::_('COM_MEEDYA_MSG_COMPLETE'));
 	}
 
-	public function dbaseFixes ()
+	public function dbaseFixes (): void
 	{
 		$this->tokenCheck();
-		$cids = $this->input->get('cid',array(),'array');
+		$cids = $this->input->get('cid',[],'array');
 		$view = $this->input->get('view');
 		$msgs = [];
 		foreach ($cids as $cid) {
-			list($uid,$iid) = explode('|', $cid);
+			[$uid, $iid] = explode('|', $cid);
 			$mid = $iid ? ('_'.$iid) : '';
 			$msgs += RJUserCom::updateDb(JPATH_ROOT.'/'.$this->storBase.'/'.$uid.'/'.ApplicationHelper::getComponentName().$mid.'/meedya.db3');
 		}
-		if ($msgs) {
-			$msg = Text::_('COM_MEEDYA_DBUP_ISSUE').($msgs ? '<br>'.implode('<br>',$msgs) : '');
+		if ($msgs !== []) {
+			$msg = Text::_('COM_MEEDYA_DBUP_ISSUE').($msgs !== [] ? '<br>'.implode('<br>',$msgs) : '');
 			$notice = 'warning';
 		} else {
 			$msg = Text::_('COM_MEEDYA_DBUP_DONE');
@@ -129,7 +129,7 @@ class DisplayController extends BaseController
 		$this->setRedirect('index.php?option=com_meedya&view='.$view, $msg, $notice);
 	}
 
-	private function tokenCheck ()
+	private function tokenCheck (): void
 	{
 		if (!Session::checkToken()) {
 			header('HTTP/1.1 403 Not Allowed');

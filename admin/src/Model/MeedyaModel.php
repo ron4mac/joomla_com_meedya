@@ -3,8 +3,10 @@
 * @package		com_meedya
 * @copyright	Copyright (C) 2022-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.3
+* @since		1.6.0
 */
+namespace RJCreations\Component\Meedya\Administrator\Model;
+
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
@@ -13,8 +15,9 @@ use Joomla\CMS\MVC\Model\ListModel;
 use Joomla\CMS\Component\ComponentHelper;
 use RJCreations\Library\RJUserCom;
 use RJCreations\Component\Meedya\Administrator\Helper\MeedyaHelperDb;
+use RJCreations\Component\Meedya\Administrator\Helper\MeedyaAdminHelper;
 
-class MeedyaModelMeedya extends ListModel
+class MeedyaModel extends ListModel
 {
 	protected $relm = 'u';
 	protected $_total = -1;
@@ -38,7 +41,7 @@ class MeedyaModelMeedya extends ListModel
 		$unotes = [];
 		$folds = RJUserCom::getDbPaths($this->relm, 'meedya', true);
 		foreach ($folds as $dir => $mgis) foreach ($mgis as $mgi) {
-			$info = RJUserCom::getDbInfo($mgi['path'],'meedyaitems',[$this,'getStoreSizeCb']);
+			$info = RJUserCom::getDbInfo($mgi['path'],'meedyaitems',$this->getStoreSizeCb(...));
 			$dbok = MeedyaHelperDb::checkDbVersion($mgi['path'], $info);
 			if ($dbok) $info['warn'] = '<span style="color:red"> DB NEEDS UPDATE</span>';
 			$dbwarn = $dbok ? '' : '<span style="color:red"> DB NEEDS UPDATE</span>';
@@ -46,13 +49,13 @@ class MeedyaModelMeedya extends ListModel
 			$char1 = substr($dir,0,1);
 			$files = count(glob(dirname($mgi['path']).'/img/[!\.]*')) -1;
 		//	if ($this->relm == 'u') {
-			if ($char1 == '@') {
+			if ($char1 === '@') {
 				$user = User::getInstance($userid);
 			//	$unotes[] = ['name'=>$user->name,'uname'=>$user->username,'uid'=>$userid,'mnu'=>$mgi['mnu'],'fcount'=>$files];
 				$unotes[] = ['name'=>$user->name,'uname'=>$user->username,'uid'=>$dir,'mnun'=>$mgi['mnun'],'mnut'=>$mgi['mnut'],'fcount'=>$files,'info'=>$info];
 			} else {
 			//	$unotes[] = ['uname'=>MeedyaAdminHelper::getGroupTitle($userid),'name'=>'group','uid'=>$userid,'mnu'=>$mgi['mnu'],'fcount'=>$files];
-				$unotes[] = ['uname'=>\MeedyaAdminHelper::getGroupTitle($userid),'name'=>'group','uid'=>$dir,'mnun'=>$mgi['mnun'],'mnut'=>$mgi['mnut'],'fcount'=>$files,'info'=>$info];
+				$unotes[] = ['uname'=>MeedyaAdminHelper::getGroupTitle($userid),'name'=>'group','uid'=>$dir,'mnun'=>$mgi['mnun'],'mnut'=>$mgi['mnut'],'fcount'=>$files,'info'=>$info];
 			}
 		}
 		$this->_total = count($unotes);
@@ -60,7 +63,7 @@ class MeedyaModelMeedya extends ListModel
 		$start = $this->getState('list.start');
 		$limit = $this->getState('list.limit');
 		$listOrder = $this->getState('list.ordering');
-		$listDirn = $this->getState('list.direction');
+		$this->getState('list.direction');
 	//	echo $listOrder;echo $listDirn;
 
 		foreach ($unotes as $key => $row) {
@@ -123,8 +126,8 @@ class MeedyaModelMeedya extends ListModel
 //		parent::populateState('username', 'ASC');
 		// Initialize variables
 		$app = Factory::getApplication();
-		$params = ComponentHelper::getParams('com_usernotes');
-		$input = $app->input;
+		ComponentHelper::getParams('com_usernotes');
+		$input = $app->getInput();
 
 
 		// album ID

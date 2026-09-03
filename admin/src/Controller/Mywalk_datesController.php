@@ -38,7 +38,7 @@ class Mywalk_datesController extends AdminController
 	 *
 	 * @since   1.5
 	 */
-	public function display($cachable = false, $urlparams = array())
+	public function display($cachable = false, $urlparams = [])
 	{
 		$view   = $this->input->get('view', $this->default_view);
 		$layout = $this->input->get('layout', 'default');
@@ -68,7 +68,7 @@ class Mywalk_datesController extends AdminController
 	 *
 	 * @since   1.6
 	 */
-	public function getModel($name = 'Mywalk_date', $prefix = 'Administrator', $config = array('ignore_request' => true))
+	public function getModel($name = 'Mywalk_date', $prefix = 'Administrator', $config = ['ignore_request' => true])
 	{
 		return parent::getModel($name, $prefix, $config);
 	}

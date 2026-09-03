@@ -1,10 +1,11 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022-2024 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2022-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.0
+* @since		1.6.0
 */
+/** @var \RJCreations\Component\Meedya\Site\View\Picframe\HtmlView $this */
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Router\Route;
@@ -35,7 +36,7 @@ $this->jDoc->addScriptDeclaration('Meedya.L = '.json_encode($jslang).';
 <?php
 	echo'<xmp>';var_dump($this->items);echo'</xmp>';
 	foreach ($this->items as $item) {
-		$pgid = isset() ? basename(dirname($item->path));
+		$pgid = isset($item->path) ? basename(dirname($item->path)) : '?';
 		$pgid .= '|'.substr($item->path, strrpos($item->path, '_'));
 		$pgid .= '|'.$item->aid;
 		$pgid = base64_encode($pgid);

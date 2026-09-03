@@ -3,7 +3,7 @@
 * @package		com_meedya
 * @copyright	Copyright (C) 2022-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.8
+* @since		1.6.0
 */
 namespace RJCreations\Component\Meedya\Administrator\Helper;
 
@@ -29,15 +29,6 @@ abstract class MeedyaHelperDb
 	{
 		if (empty($info)) $info = self::getInfo($udbPath);
 		return file_exists(JPATH_ADMINISTRATOR.'/components/com_meedya/sql/upd_'.$info['dbv'].'.sql');
-
-		$verf = dirname($udbPath).'/.dbver';
-		$curver = file_exists($verf) ? trim(file_get_contents($verf)) : '0.0.0';
-		$updsqlfiles = glob(JPATH_ADMINISTRATOR.'/components/com_meedya/tables/upd_*.sql', GLOB_NOSORT);
-		if (!$updsqlfiles) return true;
-		natsort($updsqlfiles);
-		preg_match('#upd_(.+)\.sql#', basename(array_pop($updsqlfiles)), $m);
-		$updver = $m[1];
-		return version_compare($updver, $curver, '<=');
 	}
 	
 	public static function rebuildExpodt ($udbPath)
@@ -75,8 +66,6 @@ abstract class MeedyaHelperDb
 		$imgFils = self::storedFiles($udbPath.'/img/', $files);
 		$medFils = self::storedFiles($udbPath.'/med/', $files);
 		$thmFils = self::storedFiles($udbPath.'/thm/', $files);
-
-		$dcnt = 0;
 	//	$imgFils = array_diff($imgFils, $files);
 //		foreach
 	//	$medFils = array_diff($medFils, $files);
@@ -111,12 +100,12 @@ abstract class MeedyaHelperDb
 	public static function updateDatabase ($udbPath)
 	{
 //	file_put_contents('UPDS.txt', print_r($udbPath, true));
-		if (!file_exists($udbPath)) return;
+		if (!file_exists($udbPath)) return null;
 
 		$curver = file_exists($udbPath.'/.dbver') ? trim(file_get_contents($udbPath.'/.dbver')) : '0.0.0';
 
 		$updsqlfiles = glob(JPATH_ADMINISTRATOR.'/components/com_meedya/tables/upd_*.sql', GLOB_NOSORT);
-		if (!$updsqlfiles) return;
+		if (!$updsqlfiles) return null;
 
 		natsort($updsqlfiles);
 //	file_put_contents('UPDS.txt', print_r($updsqlfiles, true));
@@ -137,7 +126,7 @@ abstract class MeedyaHelperDb
 					break;
 				}
 			}
-			if ($errs) {
+			if ($errs !== []) {
 				$msg = $udbPath . ' :: ' . print_r($errs, true).$curver.$updver;
 				Factory::getApplication()->enqueueMessage($msg, 'error');
 				break;
@@ -162,7 +151,7 @@ abstract class MeedyaHelperDb
 		foreach ($itms as $itm) {
 			$albs = explode('|', $itm['album']);
 			$vals = []; 
-			foreach ($albs as $k=>$v) {    
+			foreach ($albs as $v) {    
 				$vals[$v] = true; 
 			} 
 			$albs = array_keys($vals); 
@@ -171,12 +160,12 @@ abstract class MeedyaHelperDb
 		}
 	}
 
-	private static function storedFiles ($dir, &$indb)
+	private static function storedFiles (string $dir, &$indb): array
 	{
 		$files = [];
 		if ($h = opendir($dir)) {
 			while (false !== ($entry = readdir($h))) {
-				if (($entry[0] != '.') && ($entry != 'index.html')) {
+				if (($entry[0] != '.') && ($entry !== 'index.html')) {
 					$files[] = $entry;
 				}
 			}
@@ -193,8 +182,7 @@ abstract class MeedyaHelperDb
 
 	private static function getDb ($path)
 	{
-		$db = DatabaseDriver::getInstance(array('driver'=>'sqlite', 'database'=>$path));
-		return $db;
+		return DatabaseDriver::getInstance(['driver'=>'sqlite', 'database'=>$path]);
 	}
 
 }

@@ -1,11 +1,13 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2023-2025 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2023-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.2
+* @since		1.6.0
 */
 namespace RJCreations\Component\Meedya\Site\View\Picframe;
+
+use RJCreations\Component\Meedya\Site\Model\PicframeModel;
 
 defined('_JEXEC') or die;
 
@@ -16,6 +18,13 @@ use RJCreations\Component\Meedya\Site\Helper\MeedyaHelper;
 
 class HtmlView extends MeedyaView
 {
+	public $title;
+	public $desc;
+	public $albums;
+	public $isSearch;
+	public $six;
+	public $pathWay;
+	public $useFanCB;
 	protected $aid;
 
 	public function __construct ($config = [])
@@ -24,15 +33,15 @@ class HtmlView extends MeedyaView
 		parent::__construct($config);
 	}
 
-	function display ($tpl = null)
+	public function display ($tpl = null): void
 	{
-		$this->state = $this->get('State');	//echo'<xmp>';var_dump($this->state);echo'</xmp>';	//echo get_class($this->state);
-		$this->aid = $this->state->get('album.id');
-		$this->items = $this->get('Items');
-		$this->title = $this->get('Title');
-		$this->desc = $this->get('Desc');
-		$this->albums = $this->get('Albums');
 		$m = $this->getModel();
+		$this->state = $m->getState();	//echo'<xmp>';var_dump($this->state);echo'</xmp>';	//echo get_class($this->state);
+		$this->aid = $this->state->get('album.id');
+		$this->items = $m->getItems();
+		$this->title = $m->getTitle();
+		$this->desc = $m->getDesc();
+		$this->albums = $m->getAlbums();
 
 		$this->isSearch = false;
 		$this->six = 0;
@@ -51,7 +60,7 @@ class HtmlView extends MeedyaView
 		$this->pathWay = $pw->getPathway();
 
 		// probably unnecessary pagination 
-		$this->pagination = $this->get('Pagination');
+		$this->pagination = $m->getPagination();
 
 		if ($this->items || $this->albums) {
 			$this->useFanCB = true;

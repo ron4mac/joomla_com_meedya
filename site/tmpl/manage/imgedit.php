@@ -5,6 +5,7 @@
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
 * @since		1.5.5
 */
+/** @var \RJCreations\Component\Meedya\Site\View\Manage\HtmlView $this */
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Router\Route;
@@ -33,7 +34,7 @@ MeedyaHelper::oneScript('Mte');
 	$namx = $iid->id;
 	$idx = '_'.$namx;
 	$mTyp = substr($iid->mtype, 0, 1);
-	if ($mTyp == 'v') {
+	if ($mTyp === 'v') {
 		$tPath = 'media/com_meedya/img/video.png';
 		if ($iid->thumb) {
 			$tPath = $this->gallpath.'/thm/'.$iid->thumb;

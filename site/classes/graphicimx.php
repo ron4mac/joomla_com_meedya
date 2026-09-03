@@ -1,9 +1,9 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2023-2024 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2023-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.0
+* @since		1.6.0
 */
 defined('_JEXEC') or die;
 
@@ -47,7 +47,7 @@ abstract class MeedyaHelperGraphics
 		$flp = 0; $rot = 0;
 		$osize = filesize(realpath($src));
 		$exif = @exif_read_data(realpath($src));		//file_put_contents('exif.txt', print_r($exif,true), FILE_APPEND);
-		if (!$exif) return;
+		if (!$exif) return null;
 		$ort = $exif['Orientation'];
 		switch ($ort) {
 			case 1: // nothing
@@ -79,8 +79,8 @@ abstract class MeedyaHelperGraphics
 		if (($flp + $rot) !== 0) {
 			try {
 				$imgk = new Imagick(realpath($src));
-				if ($flp==1) { $imgk->flipImage(); }
-				else if ($flp==2) { $imgk->flopImage(); }
+				if ($flp === 1) { $imgk->flipImage(); }
+				else if ($flp === 2) { $imgk->flopImage(); }
 				if ($rot!==0) { $imgk->rotateImage(new ImagickPixel('#00000000'), $rot); }
 				$imgk->setImageOrientation(imagick::ORIENTATION_TOPLEFT);
 				$imgk->writeImage(realpath($dest));
@@ -127,7 +127,7 @@ class ImageProcessor extends ImageProc
 	}
 
 
-	public function createThumb ($dest, $ext, $maxW=0, $maxH=100, $sqr=true)
+	public function createThumb ($dest, $ext, $maxW=0, $maxH=100, $sqr=true): int|false|null
 	{
 		try {
 			$this->imgk->cropThumbnailImage(120, 120);
@@ -139,13 +139,14 @@ class ImageProcessor extends ImageProc
 		//	die('Error when creating a thumbnail: ' . $e->getMessage());
 			$this->errs[] = 'Error when creating thumbnail: ' . $e->getMessage();
 		}
+		return null;
 	}
 
 
-	public function createMedium ($dest, $ext, $maxW=0, $maxH=1200)
+	public function createMedium ($dest, $ext, $maxW=0, $maxH=1200): int|false|null
 	{
 		try {
-			$this->imgk->scaleImage($maxW, $maxH, (bool)($maxW && $maxH));
+			$this->imgk->scaleImage($maxW, $maxH, $maxW && $maxH);
 			$this->imgk->writeImage($dest.$ext);
 			return filesize($dest.$ext);
 		}
@@ -153,15 +154,16 @@ class ImageProcessor extends ImageProc
 		//	die('Error when creating medium image: ' . $e->getMessage());
 			$this->errs[] = 'Error when creating medium image: ' . $e->getMessage();
 		}
+		return null;
 	}
 
 
-	public function orientImage ($dest)
+	public function orientImage ($dest): ?int
 	{
 		$flp = 0; $rot = 0;
 		$osize = filesize(realpath($this->src));
 		$exif = @exif_read_data(realpath($this->src));		//file_put_contents('exif.txt', print_r($exif,true), FILE_APPEND);
-		if (!$exif) return;
+		if (!$exif) return null;
 		$ort = $exif['Orientation'] ?? 0;
 		switch ($ort) {
 			case 1: // nothing
@@ -192,8 +194,8 @@ class ImageProcessor extends ImageProc
 		}
 		if (($flp + $rot) !== 0) {
 			try {
-				if ($flp==1) { $this->imgk->flipImage(); }
-				else if ($flp==2) { $this->imgk->flopImage(); }
+				if ($flp === 1) { $this->imgk->flipImage(); }
+				else if ($flp === 2) { $this->imgk->flopImage(); }
 				if ($rot!==0) { $this->imgk->rotateImage(new ImagickPixel('#00000000'), $rot); }
 				$this->imgk->setImageOrientation(imagick::ORIENTATION_TOPLEFT);
 				$this->imgk->writeImage(realpath($dest));

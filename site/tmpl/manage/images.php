@@ -5,6 +5,7 @@
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
 * @since		1.5.8
 */
+/** @var \RJCreations\Component\Meedya\Site\View\Manage\HtmlView $this */
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Router\Route;
@@ -25,7 +26,7 @@ Text::script('COM_MEEDYA_PERM_DELETE');
 Text::script('JCANCEL');
 Text::script('JACTION_DELETE');
 
-function dateF ($dt)
+function dateF ($dt): string
 {
 	if (!$dt) return '';
 	return date('M j, Y, g:i a', strtotime($dt));

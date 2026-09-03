@@ -13,7 +13,7 @@ use Joomla\CMS\HTML\HTMLHelper;
 extract($displayData);	//view,options
 
 // Receive overridable options
-$options = $options ?? [];
+$options ??= [];
 
 if (is_array($options))
 {
@@ -39,7 +39,7 @@ $filters = $view->filterForm->getGroup('filter');
 		<div class="btn-wrapper input-append">
 			<?php echo $filters['filter_search']->input; ?>
 			<?php if ($filters['filter_search']->description) : ?>
-				<?php JHtmlBootstrap::tooltip('#filter_search', ['title' => Text::_($filters['filter_search']->description)]); ?>
+				<?php \Joomla\CMS\HTML\Helpers\Bootstrap::tooltip('#filter_search', ['title' => Text::_($filters['filter_search']->description)]); ?>
 			<?php endif; ?>
 			<button type="submit" class="btn hasTooltip" title="<?php echo HTMLHelper::_('tooltipText', 'JSEARCH_FILTER_SUBMIT'); ?>" aria-label="<?php echo Text::_('JSEARCH_FILTER_SUBMIT'); ?>">
 				<span class="icon-search" aria-hidden="true"></span>

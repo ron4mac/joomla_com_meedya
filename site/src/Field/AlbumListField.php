@@ -3,7 +3,7 @@
 * @package		com_meedya
 * @copyright	Copyright (C) 2022-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.8
+* @since		1.6.0
 */
 namespace RJCreations\Component\Meedya\Site\Field;
 
@@ -26,7 +26,7 @@ class AlbumListField extends ListField
 		// Build the options array.
 		foreach ($albs as $alb) {
 			$d = count(explode('.', $alb->hord));
-			$options[] = HTMLHelper::_('select.option', $alb->aid, str_repeat('_ ',$d-1).$alb->title);
+			$options[] = HTMLHelper::_('select.option', $alb->aid, str_repeat('&nbsp;&nbsp;',$d-1).($d>1?'&#x21B3; ':'').$alb->title);
 		}
 
 		return $options;

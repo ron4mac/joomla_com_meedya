@@ -3,7 +3,7 @@
 * @package		com_meedya
 * @copyright	Copyright (C) 2023-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.8
+* @since		1.6.0
 */
 namespace RJCreations\Component\Meedya\Site\View;
 
@@ -19,23 +19,24 @@ use Joomla\CMS\HTML\HTMLHelper;
 use RJCreations\Library\RJUserCom;
 use RJCreations\Component\Meedya\Site\Helper\MeedyaHelper;
 use RJCreations\Component\Meedya\Site\Helper\HtmlMeedya;
+use Joomla\CMS\MVC\View\HtmlView as BaseHtmlView;
 
 \JLoader::register('HtmlElementObject', JPATH_SITE . '/components/com_meedya/classes/HtmlObject.php');
 
 HTMLHelper::_('bootstrap.dropdown');
 HTMLHelper::_('bootstrap.tooltip', '.hastip', ['placement'=>'bottom']);
 
-class MeedyaView extends \Joomla\CMS\MVC\View\HtmlView
+class MeedyaView extends BaseHtmlView
 {
 	// some common properites for all views
 	public $itemId;
 	protected $app;
 	protected $state;
-	protected $items = null;
+	protected $items;
 	protected $user;
 	protected $uid;
 	protected $params;
-	protected $userPerms = null;
+	protected $userPerms;
 	protected $meedyaID;
 	protected $gallpath;
 	protected $pagination;
@@ -48,9 +49,9 @@ class MeedyaView extends \Joomla\CMS\MVC\View\HtmlView
 	{
 		if (RJC_DBUG) MeedyaHelper::log('MeedyaView');
 		parent::__construct($config);
-		$this->user = Factory::getUser();
-		$this->uid = $this->user->get('id');
 		$this->app = Factory::getApplication();
+		$this->user = $this->app->getIdentity();
+		$this->uid = $this->user->get('id');
 		$this->params = $this->app->getParams();
 		if (empty($this->itemId)) {
 			$this->itemId = $this->app->input->getInt('Itemid', 0);
@@ -61,16 +62,16 @@ class MeedyaView extends \Joomla\CMS\MVC\View\HtmlView
 
 //		$this->instance = $this->app->getUserState('com_meedya.instance', '::');		//var_dump([$this->meedyaID,$this->instance]);
 		$this->jDoc = Factory::getDocument();
-		$pgidparm = isset($this->pgid) ? '&pgid='.$this->pgid : '';
+		$pgidparm = property_exists($this, 'pgid') && $this->pgid !== null ? '&pgid='.$this->pgid : '';
 		$aurl = Route::_('index.php?option=com_meedya&view='.$pgidparm.'&Itemid='.$this->itemId.'&task=', false);
 		$rurl = Route::_('index.php?option=com_meedya&format=raw'.$pgidparm.'&Itemid='.$this->itemId, false);
 		$this->jDoc->addScriptOptions('Meedya',['aURL' => $aurl,'rawURL' => $rurl,'isAdmin' => $this->userPerms->canAdmin]);
 	}
 
-	public function display ($tpl = null)
+	public function display ($tpl = null): void
 	{
 		if (RJC_DBUG) { MeedyaHelper::log('MeedyaView - display'); }
-		$this->pagination = $this->get('Pagination');
+		$this->pagination = $this->getModel()->getPagination();
 
 		// add javascript to fetch images only when scrolled into view
 //		MeedyaHelper::addScript('echo');
@@ -79,7 +80,7 @@ class MeedyaView extends \Joomla\CMS\MVC\View\HtmlView
 		if ($this->btmscript) echo "<script id=\"btms\" type=\"text/javascript\">\n".implode("\n", $this->btmscript)."\n</script>";
 	}
 
-	public function add2btmscript ($scr)
+	public function add2btmscript ($scr): void
 	{
 		$this->btmscript[] = $scr;
 	}
@@ -88,14 +89,12 @@ class MeedyaView extends \Joomla\CMS\MVC\View\HtmlView
 	{
 		$pics = ($albrec->items && !$albrec->isClone) ? explode('|', $albrec->items) : [];
 		if (!$albrec->thumb) {
-			$albrec->thumb = $pics ? $pics[0] : false;
+			$albrec->thumb = $pics !== [] ? $pics[0] : false;
 		}
 		if ($albrec->thumb) {
-			$thum = $this->gallpath.'/thm/'.$this->getItemThumb($albrec->thumb);
-		} else {
-			$thum = 'media/com_meedya/img/noimages.jpg';
+			return $this->gallpath.'/thm/'.$this->getItemThumb($albrec->thumb);
 		}
-		return $thum;
+		return 'media/com_meedya/img/noimages.jpg';
 	}
 
 	protected function getItemThumb ($iid)

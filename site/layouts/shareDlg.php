@@ -47,10 +47,10 @@ $parent->add2btmscript($script);
 $smmdl = HTMLHelper::_(
 	'bootstrap.renderModal',
 	'shareDlg', // selector
-	array( // options
+	[ // options
 		'title'  => Text::_('COM_MEEDYA_SHARE_ALBUM_TITLE'),
 		//'modalWidth' => 20
-	),
+	],
 	'<div class="clipboard"><span id="shrLink" class="shrLink">'.$link.'</span><button id="copyBtn" aria-label="Copy to clipboard"><i class="fa fa-light fa-copy"></i></button></div>'
 );
 

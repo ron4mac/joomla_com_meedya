@@ -17,8 +17,7 @@ class Mygrid
 
 	public function checkall ()
 	{
-		$html = HTMLHelper::_('grid.checkall');
-		return $html;
+		return HTMLHelper::_('grid.checkall');
 	}
 
 	public function info ($data)

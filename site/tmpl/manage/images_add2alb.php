@@ -5,6 +5,7 @@
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
 * @since		1.5.8
 */
+/** @var \RJCreations\Component\Meedya\Site\View\Manage\HtmlView $this */
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Language\Text;

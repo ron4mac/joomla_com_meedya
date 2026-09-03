@@ -14,13 +14,13 @@ use Joomla\CMS\Layout\LayoutHelper;
 extract($displayData);	//view,options
 
 // Receive overridable options
-$options = $options ?? [];
+$options ??= [];
 
 $noResultsText     = '';
 $hideActiveFilters = false;
 $showFilterButton  = false;
 $showSelector      = false;
-$selectorFieldName = isset($options['selectorFieldName']) ? $options['selectorFieldName'] : 'client_id';
+$selectorFieldName = $options['selectorFieldName'] ?? 'client_id';
 
 // If a filter form exists.
 if (isset($view->filterForm) && !empty($view->filterForm))
@@ -62,12 +62,12 @@ if (isset($view->filterForm) && !empty($view->filterForm))
 $customOptions = [
 	'filtersHidden'       => $options['filtersHidden'] ?? $hideActiveFilters,
 	'filterButton'        => $options['filterButton'] ?? $showFilterButton,
-	'defaultLimit'        => isset($options['defaultLimit']) ? $options['defaultLimit'] : Factory::getApplication()->get('list_limit', 20),
+	'defaultLimit'        => $options['defaultLimit'] ?? Factory::getApplication()->get('list_limit', 20),
 	'searchFieldSelector' => '#filter_search',
 	'selectorFieldName'   => $selectorFieldName,
 	'showSelector'        => $showSelector,
 	'orderFieldSelector'  => '#list_fullordering',
-	'showNoResults'       => empty($noResultsText) ? false : true,
+	'showNoResults'       => !empty($noResultsText),
 	'noResultsText'       => $noResultsText ?? '',
 	'formSelector'        => $options['formSelector'] ?? '#adminForm',
 ];

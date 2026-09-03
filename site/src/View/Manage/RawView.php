@@ -7,23 +7,3 @@
 */
 namespace RJCreations\Component\Meedya\Site\View\Manage;
 die('ZXZXZXZZXZXZXXZ');
-defined('_JEXEC') or die;
-
-use Joomla\CMS\MVC\View\HtmlView as BaseHtmlView;
-
-class RawView extends BaseHtmlView
-{
-
-	public function __construct ($config = [])
-	{
-	//	if (RJC_DBUG) { MeedyaHelper::log('MeedyaViewManageRaw'); }
-		parent::__construct($config);
-	}
-
-	public function display ($tpl=null)
-	{
-	//	echo $this->get('Content');
-	echo 'tmpl=component& tmpl=component& tmpl=component& tmpl=component&';
-	}
-
-}

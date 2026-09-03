@@ -3,9 +3,11 @@
 * @package		com_meedya
 * @copyright	Copyright (C) 2022-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.8
+* @since		1.6.0
 */
 namespace RJCreations\Component\Meedya\Site\Model;
+
+use Joomla\CMS\Application\ApplicationHelper;
 
 defined('_JEXEC') or die;
 
@@ -19,25 +21,23 @@ class MeedyaModel extends ListModel
 {
 	protected $userId = 0;
 	protected $curAlbID = 0;
-	protected $_album = null;
+	protected $_album;
 
 
 	public function __construct ($config = [], $factory = null)
 	{
-		$dbFile = '/meedya.db3';
 		$udbDir = RJUserComm::getStoragePath(empty($config['inst']) ? null : $config['inst']->obj);
 		if (!$udbDir) {
 			throw new Exception('ACCESS NOT ALLOWED', 403);
 		}
-		$udbPath = $udbDir.$dbFile;
 
 		try {
 			$db = RJUserCom::getDb(true);
 			$dbc = $db->getConnection();
 			$dbc->sqliteCreateFunction('strtotime', 'strtotime', 1);
-			$dbc->sqliteCreateFunction('albhier', [$this,'albhier'], 2);
-			$dbc->sqliteCreateFunction('inpsv', [$this,'inpsv'], 2);
-			$dbc->sqliteCreateFunction('match', [$this,'match'], 2);
+			$dbc->sqliteCreateFunction('albhier', $this->albhier(...), 2);
+			$dbc->sqliteCreateFunction('inpsv', $this->inpsv(...), 2);
+			$dbc->sqliteCreateFunction('match', $this->match(...), 2);
 			$config['dbo'] = $db;
 		}
 		catch (\Exception $e) {
@@ -55,9 +55,8 @@ class MeedyaModel extends ListModel
 	{
 		if ($paid == 0) {
 			return $aid * 1000;
-		} else {
-			return $paid * 1000 + $aid;
 		}
+		return $paid * 1000 + $aid;
 	}
 	// an album's items and an item's albums are in PSV (pipe separated variable) fields
 	// this will determine if a speciific value is in the field
@@ -98,15 +97,14 @@ class MeedyaModel extends ListModel
 		$limit = $this->state->get('list.limit'.$aid);
 		if ($limit) {
 			return array_slice($this->_itms, $this->state->get('list.start'.$aid), $limit);
-		} else {
-			return array_slice($this->_itms, $this->state->get('list.start'.$aid));
 		}
+		return array_slice($this->_itms, $this->state->get('list.start'.$aid));
 	}
 
 
 	public function getCfg ($which)
 	{
-		$db = $this->getDbo();
+		$db = $this->getDatabase();
 		$db->setQuery('SELECT `vals` FROM `config` WHERE `type`='.$db->quote($which));
 		$r = $db->loadResult();
 		return json_decode($r?:'{}', true);
@@ -115,7 +113,7 @@ class MeedyaModel extends ListModel
 
 	public function getItemThumbFile ($iid)
 	{
-		$db = $this->getDbo();
+		$db = $this->getDatabase();
 		$db->setQuery('SELECT `file`,`thumb` FROM `meedyaitems` WHERE `id`='.$iid);
 		$r = $db->loadAssoc();
 		//var_dump($r);
@@ -125,7 +123,7 @@ class MeedyaModel extends ListModel
 
 	public function getItemThumbFilePlus ($iid)
 	{
-		$db = $this->getDbo();
+		$db = $this->getDatabase();
 		$db->setQuery('SELECT `file`,`mtype`,`thumb`,`title`,`desc` FROM `meedyaitems` WHERE `id`='.$iid);
 		$r = $db->loadAssoc();
 		$thm = $r['thumb'] ?: $r['file'];
@@ -135,18 +133,17 @@ class MeedyaModel extends ListModel
 
 	public function getAlbumsList ()
 	{
-		$db = $this->getDbo();
+		$db = $this->getDatabase();
 		$db->setQuery('SELECT * FROM `albums`');
-		$r = $db->loadObjectList();
 		//var_dump($r);
-		return $r;
+		return $db->loadObjectList();
 	}
 
 
 	// returns an array of aid=>title to the specified album
 	public function getAlbumPath ($to)
 	{
-		$db = $this->getDbo();
+		$db = $this->getDatabase();
 		$albs = [];
 		while ($to) {
 			$db->setQuery('SELECT paid,title FROM albums WHERE aid='.$to);
@@ -163,7 +160,7 @@ class MeedyaModel extends ListModel
 		$albord = ['`tstamp` DESC','`tstamp` ASC','`title` DESC','`title` ASC'];
 		$params = Factory::getApplication()->getParams();
 		$ordopt = (int)$params->get('album_order', 0);
-		$db = $this->getDbo();
+		$db = $this->getDatabase();
 		$query = $db->getQuery(true);
 		$query->select('*');
 		$query->from('albums');
@@ -178,7 +175,7 @@ class MeedyaModel extends ListModel
 	{
 		if ($this->_album) return $this->_album;
 		$aid = $aid ?: ($this->state->get('album.id') ?: 0);
-		$db = $this->getDbo();
+		$db = $this->getDatabase();
 		$db->setQuery('SELECT * FROM `albums` WHERE `aid`='.$aid);
 		$this->_album = $db->loadObject();
 		return $this->_album;
@@ -188,11 +185,10 @@ class MeedyaModel extends ListModel
 	public function getItemFile ($iid)
 	{
 		if (!$iid) return false;
-		$db = $this->getDbo();
+		$db = $this->getDatabase();
 		$db->setQuery('SELECT * FROM `meedyaitems` WHERE `id`='.$iid);
-		$r = $db->loadAssoc();
 		//var_dump($r);
-		return $r;
+		return $db->loadAssoc();
 	}
 
 
@@ -208,7 +204,7 @@ class MeedyaModel extends ListModel
 		// Initialize variables
 		$app = Factory::getApplication();
 		$params = ComponentHelper::getParams('com_meedya');
-		$input = $app->input;
+		$input = $app->getInput();
 
 		// menu params
 		$mparams = $app->getParams();
@@ -232,7 +228,7 @@ class MeedyaModel extends ListModel
 	}
 
 
-	private function getAlbum ()
+	private function getAlbum (): void
 	{
 		if (RJC_DBUG) MeedyaHelper::log('ModelMeedya getAlbum', $this->_album);
 		if (true || !$this->_album) {
@@ -254,8 +250,8 @@ class RJUserComm extends RJUserCom
 		} else {
 			self::$instObj = $instObj;
 		}
-		$cmp = \Joomla\CMS\Application\ApplicationHelper::getComponentName().'_'.$instObj->menuid;
+		$cmp = ApplicationHelper::getComponentName().'_'.$instObj->menuid;
 		return self::getStorageBase().'/'.$instObj->path.'/'.$cmp;
 	}
-	
+
 }

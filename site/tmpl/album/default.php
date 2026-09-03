@@ -3,8 +3,9 @@
 * @package		com_meedya
 * @copyright	Copyright (C) 2022-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.8
+* @since		1.6.0
 */
+/** @var \RJCreations\Component\Meedya\Site\View\Album\HtmlView $this */
 defined('_JEXEC') or die;
 
 /* ========== NOTICE! THIS TEMPLATE IS REUSED BY SEARCH DISPLAY AND PUBLIC ALBUM DISPLAY ========== */
@@ -72,8 +73,8 @@ if ($this->items) {		//var_dump($this->items);
 		$desc = trim($file['desc'] ?: '');
 		$txtinfo .= (($txtinfo && $desc) ? ' ... ' : '') . $desc;
 		$mTyp = substr($file['mtype'], 0, 5);
-		if (defined('MYG_FB4') && $mTyp=='video') $mTyp = 'html5video';
-		$murl = Uri::root(true).'/'.$this->gallpath.($mTyp=='image' ? '/med/' : '/img/').$file['file'];
+		if (defined('MYG_FB4') && $mTyp === 'video') $mTyp = 'html5video';
+		$murl = Uri::root(true).'/'.$this->gallpath.($mTyp === 'image' ? '/med/' : '/img/').$file['file'];
 		$fileentry = [
 			'src' => $murl,
 			'type' => $mTyp
@@ -135,14 +136,17 @@ $frameOK = (int)$this->params->get('picframe', 0);
 	border-bottom-color: #EA9;
 }
 #albdesc {
-	font-size: large;
-	padding: 4px;
+	font-size: x-large;
+	border: 1px dashed #999;
+	padding: .5rem;
+	margin-bottom: .5rem;
 	clear: both;
 }
 #area {
 	clear: both;
 	display: flex;
 	flex-wrap: wrap;
+	justify-content: center;
 }
 .anitem img {
 	width: 160px;
@@ -292,13 +296,13 @@ $frameOK = (int)$this->params->get('picframe', 0);
 		$rplvals = [];
 		$rplvals[] = $ix;
 		$rplvals[] = $item['id'];
-		list($thumb, $ititle, $idesc, $mtype) = $this->getItemThumbPlus($item['id']);
+		[$thumb, $ititle, $idesc, $mtype] = $this->getItemThumbPlus($item['id']);
 		$ttd = ($ititle && $idesc) ? $ititle.'<br />'.$idesc : $ititle.$idesc;
 		$rplvals[] = $ttd;
 		switch (strstr($mtype, '/', true)) {
 			case 'video':
 				$thmsrc = 'video.png';
-				if (substr($thumb, -5)=='.jpeg') {
+				if (str_ends_with($thumb, '.jpeg')) {
 					$thmsrc = 'img.png" data-echo="thm/'.$thumb;
 				}
 				break;

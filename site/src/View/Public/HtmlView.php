@@ -3,9 +3,11 @@
 * @package		com_meedya
 * @copyright	Copyright (C) 2023-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.5
+* @since		1.6.0
 */
 namespace RJCreations\Component\Meedya\Site\View\Public;
+
+use RJCreations\Component\Meedya\Site\Model\PublicModel;
 
 defined('_JEXEC') or die;
 
@@ -16,6 +18,14 @@ use RJCreations\Component\Meedya\Site\Helper\MeedyaHelper;
 
 class HtmlView extends MeedyaView
 {
+	public $isSearch;
+	public $useFanCB;
+
+	public $pathWay;
+	public $title;
+	public $desc;
+	public $albums;
+
 	protected $pgid;
 	protected $aid;
 	protected $ownername;
@@ -27,21 +37,22 @@ class HtmlView extends MeedyaView
 		$this->pgid = $this->app->input->get('pgid','','cmd');
 	}
 
-	function display ($tpl=null)
+	public function display ($tpl=null): void
 	{
-		$this->state = $this->get('State');
+		$m = $this->getModel();
+		$this->state = $m->getState();
 
 		switch ($this->getLayout()) {
 			case 'album':
-				list($gdir, $gsfx, $this->aid) = explode('|', base64_decode($this->pgid));
+				[$gdir, $gsfx, $this->aid] = explode('|', base64_decode($this->pgid));
 				$this->isSearch = true;
 				$this->useFanCB = true;
-				$this->ownername = $this->getModel()->getOwnerName($gdir);
+				$this->ownername = $m->getOwnerName($gdir);
 				$pw = $this->app->getPathWay();
 				$pw->setItemName(0, $this->params->get('page_title'));
 				$pw->addItem($this->ownername, Route::_('index.php?option=com_meedya&view=public&layout=album&pgid='.$this->pgid.'&Itemid='.$this->itemId, false));
 
-				$apw = $this->get('AlbumPath');  //$m->getAlbumPath($this->aid);
+				$apw = $m->getAlbumPath();  //$m->getAlbumPath($this->aid);
 				foreach ($apw as $ap) {
 					foreach ($ap as $k => $v) {
 						if ($k != $this->aid) {
@@ -51,43 +62,37 @@ class HtmlView extends MeedyaView
 				}
 				//$this->pathWay = [$this->params->get('page_title')];
 				$this->pathWay = $pw->getPathway();
-				$this->gallpath = $this->get('Gallpath');
-				$this->title = $this->get('Title');
-				$this->desc = $this->get('Desc');
-				$this->albums = $this->get('Albums');
-				$this->items = $this->get('AlbumItems');
+				$this->gallpath = $m->getGallpath();
+				$this->title = $m->getTitle();
+				$this->desc = $m->getDesc();
+				$this->albums = $m->getAlbums();
+				$this->items = $m->getAlbumItems();
 				$this->params->set('owner', $this->ownername);
 				break;
 			default:
 				if ($this->params->get('full_gallery', 0)) {
 					$tpl = $this->pgid ? 'fuser' : 'full';
-					$this->items = $this->get($this->pgid ? 'Albums' : 'Items');
+					$this->items = $this->pgid ? $m->getAlbums() : $m->getItems();
 				} else {
-					$this->items = $this->get('Items');
+					$this->items = $m->getItems();
 				}
 		}
-
-//		$app = Factory::getApplication();
-		$pathway = $this->app->getPathway();
-//		$pathway->addItem('My Added Breadcrumb Link', Route::_(''));
 		parent::display($tpl);
 	}
 
-	protected function getAlbumThumb ($albrec)
+	protected function getAlbumThumb ($albrec): string
 	{
 		$pics = $albrec->items ? explode('|', $albrec->items) : [];
 		if (!$albrec->thumb) {
-			$albrec->thumb = $pics ? $pics[0] : false;
+			$albrec->thumb = $pics !== [] ? $pics[0] : false;
 		}
 		if ($albrec->thumb) {
 			$m = $this->getModel();
-			if (!isset($albrec->paix)) $albrec->paix = false;
+			$albrec->paix ??= false;
 			$gallpath = $m->getGallpath($albrec->paix);
-			$thum = $gallpath.'/thm/'.$this->getItemThumbP($albrec->thumb, $albrec->paix);
-		} else {
-			$thum = 'media/com_meedya/img/noimages.jpg';
+			return $gallpath.'/thm/'.$this->getItemThumbP($albrec->thumb, $albrec->paix);
 		}
-		return $thum;
+		return 'media/com_meedya/img/noimages.jpg';
 	}
 
 	protected function getItemThumbP ($iid, $paix)

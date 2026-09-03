@@ -3,21 +3,24 @@
 * @package		com_meedya
 * @copyright	Copyright (C) 2023-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.8
+* @since		1.6.0
 */
+namespace RJCreations\Component\Meedya\Administrator\Helper;
+
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Access\Access;
+use Joomla\Database\DatabaseInterface;
 use Joomla\CMS\Component\ComponentHelper;
 use Joomla\Event\Dispatcher as EventDispatcher;
 
 abstract class MeedyaAdminHelper
 {
-	protected static $instanceType = null;
-	protected static $siteMenu = null;
-	protected static $ownerID = null;
-	protected static $udp = null;
+	protected static $instanceType;
+	protected static $siteMenu;
+	protected static $ownerID;
+	protected static $udp;
 
 	public static $ssDefault = [
 			'aA' => 1,	//slideshow action icon at album header
@@ -36,7 +39,7 @@ abstract class MeedyaAdminHelper
 			'iS' => 'cb1' //iconset
 		];
 
-	public static function scriptVersion ($scr)
+	public static function scriptVersion (string $scr)
 	{
 		$sfx = JDEBUG ? ('?'.time()) : '';
 		$vray = [
@@ -59,31 +62,27 @@ abstract class MeedyaAdminHelper
 	public static function userAuth ($uid)
 	{
 		self::getTypeOwner();
-		$user = Factory::getUser();
+		$user = Factory::getApplication()->getIdentity();
 		$uid = $user->get('id');
-		$ugrps = $user->get('groups');	//var_dump('ug:',$ugrps);
-		switch (self::$instanceType) {
-			case 0:
-				return $uid == self::$ownerID ? 2 : 0;
-				break;
-			case 1:
-			case 2:
-				return in_array(self::$ownerID, $ugrps) ? 2 : 1;
-				break;
-		}
+		$ugrps = $user->get('groups');
+		return match (self::$instanceType) {
+			0 => $uid == self::$ownerID ? 2 : 0,
+			1, 2 => in_array(self::$ownerID, $ugrps) ? 2 : 1,
+			default => null
+		};
 	}
 
 	public static function getGroupTitle ($gid)
 	{
-		$db = Factory::getDbo();
+		$db = Factory::getContainer()->get(DatabaseInterface::class);
 		$db->setQuery('SELECT title FROM #__usergroups WHERE id='.$gid);
 		return ($db->loadResult()?:'- ??? -');
 	}
 
 	public static function getActions ()
 	{
-		$user = Factory::getUser();
-		$result = new stdClass();
+		$user = Factory::getApplication()->getIdentity();
+		$result = new \stdClass();
 		$assetName = 'com_meedya';
 
 		$actions = Access::getActionsFromFile(JPATH_ADMINISTRATOR . '/components/com_meedya/access.xml');
@@ -114,7 +113,7 @@ abstract class MeedyaAdminHelper
 	public static function getStoreQuota ($prms)
 	{
 		$isq = $prms->get('storQuota', null);
-		if (!$isq) $isq = self::componentOption('storQuota', 268435456);
+		if (!$isq) return self::componentOption('storQuota', 268435456);
 		return $isq;
 	}
 
@@ -139,7 +138,7 @@ abstract class MeedyaAdminHelper
 		$bytes = max($bytes, 0);
 		$pow = floor(($bytes ? log($bytes) : 0) / log(1024));
 		$pow = min($pow, count($units) - 1);
-		$bytes /= pow(1024, $pow);
+		$bytes /= 1024 ** $pow;
 		return round($bytes, $precision) . ' ' . $units[$pow];
 	}
 
@@ -147,7 +146,7 @@ abstract class MeedyaAdminHelper
 	{
 		if (is_null(self::$instanceType)) {
 			$app = Factory::getApplication();
-			$id = $app->input->getBase64('mID', false);
+			$id = $app->getInput()->getBase64('mID', false);
 			if ($id) {
 				$ids = explode(':',base64_decode($id));
 				self::$instanceType = $ids[0];
@@ -157,7 +156,7 @@ abstract class MeedyaAdminHelper
 				self::$instanceType = $params->get('instance_type');
 				switch (self::$instanceType) {
 					case 0:
-						self::$ownerID = Factory::getUser()->get('id');
+						self::$ownerID = Factory::getApplication()->getIdentity()->get('id');
 						if (!self::$ownerID) self::$ownerID = -1;
 						break;
 					case 1:
@@ -172,7 +171,7 @@ abstract class MeedyaAdminHelper
 		}
 	}
 
-	private static function componentOption ($key, $dflt)
+	private static function componentOption (string $key, int $dflt)
 	{
 		static $co;
 

@@ -3,7 +3,7 @@
 * @package		com_meedya
 * @copyright	Copyright (C) 2022-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.3
+* @since		1.6.0
 */
 defined('_JEXEC') or die;
 
@@ -11,6 +11,7 @@ use Joomla\CMS\Router\Route;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
 use RJCreations\Component\Meedya\Administrator\Helper\Html\Mygrid;
+use RJCreations\Component\Meedya\Administrator\Helper\MeedyaAdminHelper;
 
 HTMLHelper::_('behavior.multiselect');
 

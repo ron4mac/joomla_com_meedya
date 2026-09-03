@@ -12,10 +12,10 @@ use Joomla\CMS\HTML\HTMLHelper;
 $smmdl = HTMLHelper::_(
 	'bootstrap.renderModal',
 	'rating-modal', // selector
-	array( // options
+	[ // options
 		'title'  => Text::_('COM_MEEDYA_RATING_TITLE'),
 		//'modalWidth' => 20
-	),
+	],
 	'<div class="rated"><span id="unrating" class="rating"></span></div>'
 );
 

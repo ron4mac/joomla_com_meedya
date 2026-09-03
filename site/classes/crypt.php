@@ -13,7 +13,7 @@ class Encryption
 {
 	const METHOD = 'aes-128-ctr';
 
-	public static function encrypt ($message, $key)
+	public static function encrypt ($message, $key): string
 	{
 		$nonceSize = openssl_cipher_iv_length(self::METHOD);
 		$nonce = openssl_random_pseudo_bytes($nonceSize);
@@ -29,26 +29,24 @@ class Encryption
 		return base64_encode($nonce.$ciphertext);
 	}
 
-	public static function decrypt ($message, $key)
+	public static function decrypt ($message, $key): string|false
 	{
 		$message = base64_decode($message);
 		$nonceSize = openssl_cipher_iv_length(self::METHOD);
 		$nonce = mb_substr($message, 0, $nonceSize, '8bit');
 		$ciphertext = mb_substr($message, $nonceSize, null, '8bit');
 
-		$plaintext = openssl_decrypt(
+		return openssl_decrypt(
 			$ciphertext,
 			self::METHOD,
 			$key,
 			OPENSSL_RAW_DATA,
 			$nonce
 		);
-
-		return $plaintext;
 	}
 
 	// simple but sufficiently effective XOR encrypt/decrypt
-	public static function orca ($p, $q)
+	public static function orca ($p, $q): string
 	{
 		$l = strlen($q);
 		$r = '';
@@ -59,7 +57,7 @@ class Encryption
 		return $r;
 	}
 
-	public static function simpleXor ($input, $key)
+	public static function simpleXor ($input, $key): string
 	{
 		$output = '';
 		$keyLength = strlen($key);

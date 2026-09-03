@@ -1,11 +1,13 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022-2024 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2022-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.0
+* @since		1.6.0
 */
 namespace RJCreations\Component\Meedya\Site\View\Slides;
+
+use RJCreations\Component\Meedya\Site\Model\SlidesModel;
 
 defined('_JEXEC') or die;
 
@@ -18,15 +20,17 @@ use RJCreations\Component\Meedya\Site\Helper\MeedyaHelper;
 
 class HtmlView extends MeedyaView
 {
+	public $aid;
+	public $html5slideshowCfg;
 	protected $slides = [];
 	protected $album;
 
-	function display ($tpl = null)
+	public function display ($tpl = null): void
 	{
-		$this->state = $this->get('State');
-		$this->aid = $this->state->get('album.id');
-		$items = $this->get('Items');
 		$m = $this->getModel();
+		$this->state = $m->getState();
+		$this->aid = $this->state->get('album.id');
+		$items = $m->getItems();
 		$this->album = $m->getAlbum($this->aid);
 		if ($items)
 			foreach ($items as $item)  {

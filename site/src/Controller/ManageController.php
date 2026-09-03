@@ -1,9 +1,9 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022-2024 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2022-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.0
+* @since		1.6.0
 */
 namespace RJCreations\Component\Meedya\Site\Controller;
 
@@ -40,7 +40,7 @@ class ManageController extends BaseController
 
 
 	// display a screen/form for editing an album
-	public function editAlbum ()
+	public function editAlbum (): void
 	{
 		if ($this->nope()) return;
 		$view = $this->getView('manage','html');
@@ -52,11 +52,12 @@ class ManageController extends BaseController
 
 
 	// display a screen/form for uploading items
-	public function doUpload ()
+	public function doUpload (): void
 	{
 		if ($this->nope()) return;
 		$view = $this->getView('manage','html');
 		$m = $this->getModel('manage');
+		$view->setModel($m);
 		$view->aid = $this->input->get->get('aid',0,'int');
 		$view->albums = $m->getAlbumsList();
 		$view->dbTime = $m->getDbTime();
@@ -68,7 +69,7 @@ class ManageController extends BaseController
 
 
 	// display screen(s) of all items for editing purposes
-	public function editImgs ()
+	public function editImgs (): void
 	{
 		if ($this->nope()) return;
 		$view = $this->getView('manage','html');
@@ -88,7 +89,7 @@ class ManageController extends BaseController
 
 
 	// display a screen/form for editing gallery configuration
-	public function doConfig ()
+	public function doConfig (): void
 	{
 		if ($this->nope()) return;
 		$view = $this->getView('manage','html');
@@ -104,7 +105,7 @@ class ManageController extends BaseController
 
 
 	// present a selected set of items to edit
-	public function imgsEdit ()
+	public function imgsEdit (): void
 	{
 		if ($this->nope()) return;
 		$view = $this->getView('manage','html');
@@ -117,7 +118,7 @@ class ManageController extends BaseController
 	}
 
 
-	public function imgEdit ()
+	public function imgEdit (): void
 	{
 		if ($this->nope()) return;
 		$view = $this->getView('manage','html');
@@ -131,7 +132,7 @@ class ManageController extends BaseController
 	}
 
 
-	public function iedSave ()
+	public function iedSave (): void
 	{
 		if (!$this->tokenCheck()) return;
 
@@ -147,7 +148,7 @@ class ManageController extends BaseController
 	}
 
 
-	public function delAlbum ()
+	public function delAlbum (): void
 	{
 		if (!$this->tokenCheck()) return;
 
@@ -163,7 +164,7 @@ class ManageController extends BaseController
 	}
 
 
-	public function addItemsToAlbum ()
+	public function addItemsToAlbum (): void
 	{
 		if (!$this->tokenCheck()) return;
 
@@ -187,7 +188,7 @@ class ManageController extends BaseController
 	}
 
 
-	public function movItemsToAlbum ()
+	public function movItemsToAlbum (): void
 	{
 		if (!$this->tokenCheck()) return;
 
@@ -212,7 +213,7 @@ class ManageController extends BaseController
 	}
 
 
-	public function imgsAddAlbum ()
+	public function imgsAddAlbum (): void
 	{
 		$this->setRedirect($_SERVER['HTTP_REFERER']);
 		if (!$this->tokenCheck()) return;
@@ -228,7 +229,7 @@ class ManageController extends BaseController
 	}
 
 
-	public function deleteItems ()
+	public function deleteItems (): void
 	{
 		$this->setRedirect($_SERVER['HTTP_REFERER']);
 		if (!$this->tokenCheck()) return;
@@ -239,7 +240,7 @@ class ManageController extends BaseController
 	}
 
 
-	public function saveConfig ()
+	public function saveConfig (): void
 	{
 		$unchk = ['aA'=>0,'aT'=>0,'uA'=>0,'nW'=>0,'sI'=>0,'aP'=>0,'lS'=>0,'vT'=>0,'vD'=>0];
 
@@ -251,14 +252,14 @@ class ManageController extends BaseController
 				return;
 			}
 			$m = $this->getModel('manage');
-		//	$m->updateConfig('ss', $vals);
+			$m->updateConfig('ss', $vals);
 			$this->_nqMsg('Gallery settings sucessfully saved', 'success');
 		}
 		$this->setRedirect(base64_decode($this->input->post->get('return','','base64')));
 	}
 
 
-	public function importMeedya ()
+	public function importMeedya (): void
 	{
 		$iobj = RJUserCom::getInstObject($this->mnuItm);
 		$bpath = realpath(RJUserCom::getStoragePath($iobj)).'/import/';
@@ -266,13 +267,13 @@ class ManageController extends BaseController
 	}
 
 
-	private function importDir ($base, $paid, $mdl)
+	private function importDir (string $base, $paid, $mdl): void
 	{
 		static $pp = 1;
 
 		if ($h = opendir($base)) {
 			while (false !== ($entry = readdir($h))) {
-				if ($entry[0] != '.' && $entry != 'index.html') {
+				if ($entry[0] != '.' && $entry !== 'index.html') {
 					if (is_dir($base.$entry)) {
 						// make album
 						echo "[{$entry}]<br />";
@@ -292,7 +293,7 @@ class ManageController extends BaseController
 
 
 	// save changes made to an album
-	public function saveAlbum ()
+	public function saveAlbum (): void
 	{
 		$this->setRedirect($_SERVER['HTTP_REFERER']);
 		if (!$this->tokenCheck()) return;
@@ -319,26 +320,19 @@ class ManageController extends BaseController
 	}
 
 
-	private function tokenCheck ()
+	private function tokenCheck (): bool
 	{
 		if (!Session::checkToken()) {
 			$this->_nqMsg(Text::_('JINVALID_TOKEN'), 'error');
 			return false;
 		}
 		return true;
-
-		if (!Session::checkToken()) {
-			//header('HTTP/1.1 403 Not Allowed');
-			$this->app->setHeader('Status', 403, true);
-			$this->app->setHeader('Errmsg', 'Not Allowed');
-			jexit(Text::_('JINVALID_TOKEN'));
-		}
 	}
 
 
-	private function nope ()
+	private function nope (): bool
 	{
-		$uid = Factory::getUser()->get('id');
+		$uid = Factory::getApplication()->getIdentity()->get('id');
 		if ($uid) return false;
 		$this->_nqMsg(Text::_('JERROR_ALERTNOAUTHOR'), 'error');
 	//	$this->setRedirect('index.php');
@@ -346,15 +340,9 @@ class ManageController extends BaseController
 	}
 
 
-	private function _nqMsg ($msg, $tone='info')
+	private function _nqMsg ($msg, string $tone='info'): void
 	{
 		$this->app->enqueueMessage($msg, $tone);
-	}
-
-
-	private function _log ($msg)
-	{
-		if (RJC_DBUG) file_put_contents('ILOG.txt', $msg, FILE_APPEND);
 	}
 
 

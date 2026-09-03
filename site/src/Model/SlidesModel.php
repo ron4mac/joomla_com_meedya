@@ -1,9 +1,9 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022-2024 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2022-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.0
+* @since		1.6.0
 */
 namespace RJCreations\Component\Meedya\Site\Model;
 
@@ -14,17 +14,17 @@ use Joomla\CMS\Component\ComponentHelper;
 
 class SlidesModel extends MeedyaModel
 {
-	protected $_album = null;
-	protected $_itms = null;
-	protected $_total = null;
+	public $state;
+	protected $_album;
+	protected $_itms;
+	protected $_total;
 
 	public function getTitle ()
 	{
 		$aid = $this->getState('album.id') ? : 0;
-		$db = $this->getDbo();
+		$db = $this->getDatabase();
 		$db->setQuery('SELECT `title` FROM `albums` WHERE `aid`='.$aid);
-		$r = $db->loadResult();
-		return $r;
+		return $db->loadResult();
 	}
 
 	public function getItems ()
@@ -43,7 +43,7 @@ class SlidesModel extends MeedyaModel
 	{
 		if ($this->_album) return $this->_album;
 		$aid = $aid ?: ($this->state->get('album.id') ?: 0);
-		$db = $this->getDbo();
+		$db = $this->getDatabase();
 		$db->setQuery('SELECT * FROM `albums` WHERE `aid`='.$aid);
 		$this->_album = $db->loadObject();
 		return $this->_album;
@@ -52,11 +52,10 @@ class SlidesModel extends MeedyaModel
 	public function getItemFile ($iid)
 	{
 		if (!$iid) return false;
-		$db = $this->getDbo();
+		$db = $this->getDatabase();
 		$db->setQuery('SELECT * FROM `meedyaitems` WHERE `id`='.$iid);
-		$r = $db->loadAssoc();
 		//var_dump($r);
-		return $r;
+		return $db->loadAssoc();
 	}
 
 	public function getTotal ()
@@ -67,7 +66,7 @@ class SlidesModel extends MeedyaModel
 	protected function getListQuery ()
 	{	//echo'<xmp>';var_dump($this);echo'</xmp>';
 		$aid = $this->getState('album.id') ? : 0;
-		$db = $this->getDbo();
+		$db = $this->getDatabase();
 		$query = $db->getQuery(true);
 		$query->select('*');
 		$query->from('albums');
@@ -80,7 +79,7 @@ class SlidesModel extends MeedyaModel
 		// Initialise variables.
 		$app = Factory::getApplication();
 		$params = ComponentHelper::getParams('com_meedya');
-		$input = $app->input;
+		$input = $app->getInput();
 
 		// album ID
 		$aid = $input->get('aid', 0, 'INT');	//echo'<xmp>';var_dump($this->state);echo'</xmp>';

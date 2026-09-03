@@ -3,7 +3,7 @@
 * @package		com_meedya
 * @copyright	Copyright (C) 2022-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.5
+* @since		1.6.0
 */
 namespace RJCreations\Component\Meedya\Site\Helper;
 
@@ -28,7 +28,6 @@ abstract class HtmlMeedya
 					$html .= ' <small>- '.$user->name.'</small>';
 					break;
 				case 1:
-					break;
 				case 2:
 					break;
 				case 3:
@@ -79,10 +78,9 @@ EOD;
 		<div class="dropdown-item"><a href="' . Route::_('index.php?option=com_meedya&task=manage.editImgs'.$itmid, false) . '"><i class="icon-images"></i>'.Text::_('COM_MEEDYA_MENU_EDIMGS').'</a></div>';
 //		<div class="dropdown-item"><a href="' . Route::_('index.php?option=com_meedya&task=manage.doConfig'.$itmid, false) . '"><i class="icon-options"></i>'.Text::_('COM_MEEDYA_MENU_CONFIG').'</a></div>';
 		}
-		$html .= '</div>
+		return $html . '</div>
 </div>
 ';
-		return $html;
 	}
 
 	public static function manageMenu ($perms, $aid=0, $Itemid=0)
@@ -104,16 +102,15 @@ EOD;
 		<li><a href="' . Route::_('index.php?option=com_meedya&task=manage.editImgs'.$itmid, false) . '"><i class="icon-images"></i> '.Text::_('COM_MEEDYA_MENU_EDIMGS').'</a></li>';
 //		<li><a href="' . Route::_('index.php?option=com_meedya&task=manage.doConfig'.$itmid, false) . '"><i class="icon-options"></i>'.Text::_('COM_MEEDYA_MENU_CONFIG').'</a></li>';
 		}
-		$html .= '</ul>
+		return $html . '</ul>
 </div>
 ';
-		return $html;
 	}
 
 	public static function albumsHierOptions ($albs, $sel=0, $exc=[])
 	{
 		$html='';
-		usort($albs, function ($a, $b) { return strnatcmp($a->hord,$b->hord); });
+		usort($albs, fn($a, $b): int => strnatcmp($a->hord,$b->hord));
 		if (!is_array($exc)) $exc = [$exc];
 		foreach ($albs as $alb) {
 			$d = count(explode('.',$alb->hord));
@@ -133,8 +130,7 @@ EOD;
 		$html = '<div class="subbuts">';
 		$html .= '<button type="submit" name="cancel" value="1" class="btn">'.Text::_('cancel').'</button>';
 		$html .= '<button type="submit" name="save" value="1" class="btn btn-primary">'.Text::_($save).'</button>';
-		$html .= '</div>';
-		return $html;
+		return $html . '</div>';
 	}
 
 	public static function actionButtons ($whch)
@@ -142,31 +138,16 @@ EOD;
 		$html = [];
 		$b = M34C::btn('ss');
 		foreach ($whch as $but) {
-			switch ($but) {
-			case 'sela':
-				$html[] = '<button class="'.$b.'" onclick="Meedya.selAllImg(event, true)">'.Text::_('COM_MEEDYA_MANAGE_SELECT_ALL').'</button>';
-				break;
-			case 'seln':
-				$html[] = '<button class="'.$b.'" onclick="Meedya.selAllImg(event, false)">'.Text::_('COM_MEEDYA_MANAGE_SELECT_NONE').'</button>';
-				break;
-			case 'edts':
-				$html[] = '<button class="'.$b.'" onclick="Meedya.editSelected(event)">'.'<i class="icon-pencil"></i> '.Text::_('COM_MEEDYA_MANAGE_EDIT_ITEMS').'</button>';
-				break;
-			case 'movs':
-				$html[] = '<button class="'.$b.'" onclick="Meedya.moveSelected(event)">'.'<i class="icon-move"></i> '.Text::_('COM_MEEDYA_MANAGE_MOVE_ITEMS').'</button>';
-				break;
-			case 'adds':
-				$html[] = '<button class="'.$b.'" onclick="return Meedya.addSelected(event);">'.'<i class="icon-plus-circle"></i> '.Text::_('COM_MEEDYA_MANAGE_ADD2ALBUM').'</button>';
-				break;
-			case 'rems':
-				$html[] = '<button class="'.$b.'" onclick="Meedya.removeSelected(event)">'.'<i class="icon-minus-circle"></i> '.Text::_('COM_MEEDYA_MANAGE_REMOVE').'</button>';
-				break;
-			case 'dels':
-				$html[] = '<button class="'.$b.'" onclick="Meedya.deleteSelected(event)">'.'<i class="icon-minus-circle"></i> '.Text::_('COM_MEEDYA_MANAGE_TOTAL_DEL').'</button>';
-				break;
-			default:
-				$html[] = 'NOACTION';
-			}
+			$html[] = match ($but) {
+				'sela' => '<button class="'.$b.'" onclick="Meedya.selAllImg(event, true)">'.Text::_('COM_MEEDYA_MANAGE_SELECT_ALL').'</button>',
+				'seln' => '<button class="'.$b.'" onclick="Meedya.selAllImg(event, false)">'.Text::_('COM_MEEDYA_MANAGE_SELECT_NONE').'</button>',
+				'edts' => '<button class="'.$b.'" onclick="Meedya.editSelected(event)">'.'<i class="icon-pencil"></i> '.Text::_('COM_MEEDYA_MANAGE_EDIT_ITEMS').'</button>',
+				'movs' => '<button class="'.$b.'" onclick="Meedya.moveSelected(event)">'.'<i class="icon-move"></i> '.Text::_('COM_MEEDYA_MANAGE_MOVE_ITEMS').'</button>',
+				'adds' => '<button class="'.$b.'" onclick="return Meedya.addSelected(event);">'.'<i class="icon-plus-circle"></i> '.Text::_('COM_MEEDYA_MANAGE_ADD2ALBUM').'</button>',
+				'rems' => '<button class="'.$b.'" onclick="Meedya.removeSelected(event)">'.'<i class="icon-minus-circle"></i> '.Text::_('COM_MEEDYA_MANAGE_REMOVE').'</button>',
+				'dels' => '<button class="'.$b.'" onclick="Meedya.deleteSelected(event)">'.'<i class="icon-minus-circle"></i> '.Text::_('COM_MEEDYA_MANAGE_TOTAL_DEL').'</button>',
+				default => 'NOACTION',
+			};
 		}
 		return implode("\n\t",$html);
 	}
@@ -174,7 +155,6 @@ EOD;
 	public static function actionSelect ($acts)
 	{
 		$html = ['<option value="">'.Text::_('COM_MEEDYA_MANAGE_WITH_SELECTED').'</option>'];
-		$b = M34C::btn('ss');
 		foreach ($acts as $act) {
 			switch ($act) {
 			case 'edts':
@@ -182,19 +162,15 @@ EOD;
 				break;
 			case 'movs':
 				$html[] = '<option value="movs">'.Text::_('COM_MEEDYA_MANAGE_MOVE_ITEMS').'</option>';
-			//	$html[] = '<button class="'.$b.'" onclick="Meedya.moveSelected(event)">'.'<i class="icon-move"></i> '.Text::_('COM_MEEDYA_MANAGE_MOVE_ITEMS').'</button>';
 				break;
 			case 'adds':
 				$html[] = '<option value="adds">'.Text::_('COM_MEEDYA_MANAGE_ADD2ALBUM').'</option>';
-			//	$html[] = '<button class="'.$b.'" onclick="return Meedya.addSelected(event);">'.'<i class="icon-plus-circle"></i> '.Text::_('COM_MEEDYA_MANAGE_ADD2ALBUM').'</button>';
 				break;
 			case 'rems':
 				$html[] = '<option value="rems">'.Text::_('COM_MEEDYA_MANAGE_REMOVE').'</option>';
-			//	$html[] = '<button class="'.$b.'" onclick="Meedya.removeSelected(event)">'.'<i class="icon-minus-circle"></i> '.Text::_('COM_MEEDYA_MANAGE_REMOVE').'</button>';
 				break;
 			case 'dels':
 				$html[] = '<option value="dels">'.Text::_('COM_MEEDYA_MANAGE_TOTAL_DEL').'</option>';
-			//	$html[] = '<button class="'.$b.'" onclick="Meedya.deleteSelected(event)">'.'<i class="icon-minus-circle"></i> '.Text::_('COM_MEEDYA_MANAGE_TOTAL_DEL').'</button>';
 				break;
 			default:
 			//	$html[] = 'NOACTION';
@@ -206,9 +182,9 @@ EOD;
 	public static function imageThumbElement ($item, $edt=false, $iclss='item')
 	{	//var_dump($item);
 		$id = $item->id;
-		$escfn = str_replace('\'','\\\'',$item->file);
+		str_replace('\'','\\\'',$item->file);
 
-		if (substr($item->mtype, 0, 1) == 'v') {
+		if (str_starts_with($item->mtype, 'v')) {
 			$iDat = 'video.png';
 			if ($item->thumb) {
 				$iDat = 'img.png" data-echo="thm/'.$item->thumb;
@@ -249,8 +225,7 @@ EOD;
 		$html .= '<button type="button" id="'.$id.'" class="'.($bclass ?: M34C::btn('p')).'"';
 		$html .= ' onclick="'.$script.';"';
 		if ($disab) $html .= ' disabled';
-		$html .= '>'.Text::_($verb).'</button>';
-		return $html;
+		return $html . ('>' . Text::_($verb) . '</button>');
 	}
 
 	public static function buildTree (array $albums, &$html, $paid = 0)
@@ -279,7 +254,7 @@ EOD;
 		return $has ? '&nbsp;<i class="fas fa-comments"></i>' : '&nbsp;<i class="{{CICLS}} fa-comments"></i>';
 	}
 
-	public static function starcmnt ($item, $star, $cmnt)
+	public static function starcmnt (array $item, $star, $cmnt)
 	{
 		$strate = '<div class="strback"><div class="strating" style="width:50%"></div></div>';
 		$starelm = $star ? new HtmlElementObject('div.strate', $strate) : null;
@@ -287,7 +262,6 @@ EOD;
 //		$starelm = $star ? new HtmlElementObject('span.mystars','stars(12)') : null;
 		$cmntelm = $cmnt ? new HtmlElementObject('span.mycmnts','&nbsp;&nbsp;5 <i class="far fa-comments"></i>') : null;
 		return (new HtmlElementObject('div.starcmnt', null, $starelm, $cmntelm))->setAttr('data-iid', $item['id']);
-		return ($star || $cmnt) ? '<div class="starcmnt"><span class="mystars">stars(12)</span><span class="mycmnts">5 <i class="far fa-comments"></i></span></div>' : null;
 	}
 
 	public static function image ()
@@ -297,7 +271,7 @@ EOD;
 
 	public static function sharing ($w)
 	{
-		$L = function($str) { return Text::_($str); };
+		$L = (fn($str) => Text::_($str));
 		$htm = <<<EOD
 <div class="dropdown">
 	<!-- Trigger Icon Button -->
@@ -314,21 +288,21 @@ EOD;
 	<!-- Dropdown Action List -->
 	<ul class="dropdown-menu" aria-labelledby="actionMenuButton">
 EOD;
-		if (strpos($w, 's') !== false) $htm .= <<<EOD
+		if (str_contains($w, 's')) $htm .= <<<EOD
 		<li>
 			<a class="dropdown-menu-item" href="#shareDlg" data-toggle="modal" data-bs-toggle="modal">
 				<span class="far fa-share-square" aria-hidden="true"></span>{$L('COM_MEEDYA_SHARE_ALBUM')}
 			</a>
 		</li>
 EOD;
-		if (strpos($w, 'f') !== false) $htm .= <<<EOD
+		if (str_contains($w, 'f')) $htm .= <<<EOD
 		<li>
 			<a class="dropdown-menu-item" href="#frameDlg" data-toggle="modal" data-bs-toggle="modal">
 				<span class="far fa-image" aria-hidden="true"></span>{$L('COM_MEEDYA_FRAME_ALBUM')}
 			</a>
 		</li>
 EOD;
-		if (strpos($w, 'd') !== false) $htm .= <<<EOD
+		if (str_contains($w, 'd')) $htm .= <<<EOD
 		<li><hr class="dropdown-divider"></li>
 		<li>
 			<a class="dropdown-menu-item text-danger" href="#">
@@ -336,16 +310,15 @@ EOD;
 			</a>
 		</li>
 EOD;
-		$htm .=  <<<EOD
+		return $htm . <<<EOD
 	</ul>
 </div>
 EOD;
-		return $htm;
 	}
 
 /***** private functions *****/
 
-	private static function aiUrl ($prms, $xml=true)
+	private static function aiUrl (string $prms, $xml=true)
 	{
 		static $mnuId = 0;
 
@@ -353,8 +326,7 @@ EOD;
 			$mnuId = Factory::getApplication()->input->getInt('Itemid', 0);
 		}
 		if (is_array($prms)) $prms = http_build_query($prms);
-		$url = Route::_('index.php?option=com_meedya'.($prms?('&'.$prms):'').'&Itemid='.$mnuId, $xml);
-		return $url;
+		return Route::_('index.php?option=com_meedya'.($prms?('&'.$prms):'').'&Itemid='.$mnuId, $xml);
 	}
 
 

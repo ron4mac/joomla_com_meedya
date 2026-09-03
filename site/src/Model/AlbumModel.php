@@ -3,7 +3,7 @@
 * @package		com_meedya
 * @copyright	Copyright (C) 2022-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.0
+* @since		1.6.0
 */
 namespace RJCreations\Component\Meedya\Site\Model;
 
@@ -16,16 +16,19 @@ use RJCreations\Component\Meedya\Site\Helper\MeedyaHelper;
 
 class AlbumModel extends MeedyaModel
 {
-	protected $_album = null;
-	protected $_itms = null;
-	protected $_total = null;
-	protected $_pagination = null;
-	protected $shraid = null;
+	public $state;
+	protected $_album;
+	protected $_itms;
+	protected $_total;
+	protected $_pagination;
+	protected $shraid;
 
 	public function __construct ($config = [], $factory = null)
 	{
-		if (RJC_DBUG) MeedyaHelper::log('MeedyaModelAlbum');
-		if (RJC_DBUG) MeedyaHelper::log(print_r($config,true));
+		if (RJC_DBUG) {
+			MeedyaHelper::log('MeedyaModelAlbum');
+			MeedyaHelper::log(print_r($config,true));
+		}
 		if (!empty($config['inst'])) {
 			$this->shraid = $config['inst']->aid;
 		}
@@ -69,13 +72,13 @@ class AlbumModel extends MeedyaModel
 	public function getAlbums ()
 	{
 		$aid = $this->getState('album.id') ? : 0;
-		$db = $this->getDbo();
+		$db = $this->getDatabase();
 		$db->setQuery('SELECT * FROM `albums` WHERE `paid`='.$aid);
 		$albs = $db->loadObjectList();
 		foreach ($albs as &$alb) {
 			$alb->link = '&view=album&aid='.$alb->aid;
 			$alb->isClone = false;
-			if ($alb->items && substr($alb->items,0,1)=='*') {
+			if ($alb->items && str_starts_with($alb->items, '*')) {
 				$alb->isClone = true;
 				$alb->oaid = (int) substr($alb->items,1);
 			} else {
@@ -83,21 +86,6 @@ class AlbumModel extends MeedyaModel
 			}
 		}
 		return $albs;
-	}
-
-	private function getAlbImgs ($db, $aid)
-	{
-		$db->setQuery('SELECT items FROM albums WHERE aid='.$aid);
-		if (!$ilst = trim($db->loadResult()?:'')) return [];
-		$itms = explode('|', $ilst);
-		$items = [];
-		foreach ($this->_itms as $iid) {
-			$itm = $this->getItemFile($iid);
-			if (substr($itm['mtype'],0,6) == 'image/') {
-				$items[] = $urlp . $itm['file'];
-			}
-		}
-		return $items;
 	}
 
 	public function getTotal ()
@@ -122,7 +110,7 @@ class AlbumModel extends MeedyaModel
 	protected function getListQuery ()
 	{
 		$aid = $this->getState('album.id') ? : 0;
-		$db = $this->getDbo();
+		$db = $this->getDatabase();
 		$query = $db->getQuery(true);
 		$query->select('*');
 		$query->from('albums');
@@ -135,7 +123,7 @@ class AlbumModel extends MeedyaModel
 		// Initialise variables.
 		$app = Factory::getApplication();
 		$params = ComponentHelper::getParams('com_meedya');
-		$input = $app->input;
+		$input = $app->getInput();
 
 		// album ID
 		$aid = $this->shraid ?: $input->get('aid', 0, 'INT');
@@ -154,7 +142,7 @@ class AlbumModel extends MeedyaModel
 		parent::populateState($ordering, $direction);
 	}
 
-	private function getAlbum ()
+	private function getAlbum (): void
 	{
 		if (!$this->_album) {
 			$items = parent::getItems();

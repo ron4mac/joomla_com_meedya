@@ -20,7 +20,7 @@ use Joomla\CMS\MVC\Controller\FormController;
  */
 class Mywalk_dateController extends FormController
 {
-	public function cancel($key = null) {
+	public function cancel($key = null): void {
 		$this->setRedirect('index.php?option=com_mywalks&view=mywalk_dates');
 	}
 }

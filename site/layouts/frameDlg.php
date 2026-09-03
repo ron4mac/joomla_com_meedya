@@ -40,11 +40,11 @@ $parent->add2btmscript($script);
 $smmdl = HTMLHelper::_(
 	'bootstrap.renderModal',
 	'frameDlg', // selector
-	array( // options
+	[ // options
 		'title'  => Text::_('COM_MEEDYA_FRAME_ALBUM_TITLE'),
 		'footer' => HtmlMeedya::modalButtons('COM_MEEDYA_FRAME_PUBLISH', 'invokeFrame()', 'pubb'),
 		//'modalWidth' => 20
-	),
+	],
 	'<div>'.Text::_('COM_MEEDYA_FRAME_DOMAIN').'<input type="text" id="framelink" onkeyup="validateFrame(this)" placeholder="picframe.local" autocomplete></div>'
 );
 

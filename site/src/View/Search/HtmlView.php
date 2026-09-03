@@ -1,11 +1,13 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022-2024 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2022-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.0
+* @since		1.6.0
 */
 namespace RJCreations\Component\Meedya\Site\View\Search;
+
+use RJCreations\Component\Meedya\Site\Model\SearchModel;
 
 defined('_JEXEC') or die;
 
@@ -17,18 +19,26 @@ use RJCreations\Component\Meedya\Site\View\MeedyaView;
 
 class HtmlView extends MeedyaView
 {
+	public $isSearch;
+	public $desc;
+	public $albums;
+	public $six;
+	public $title;
+	public $pathWay;
+	public $useFanCB;
 //	protected $user;
 //	protected $params;
-	protected $userPerms = null;
+	protected $userPerms;
 	public $aid;
 	public $sterm;
 
-	function display ($tpl=null)
+	public function display ($tpl=null): void
 	{
+		$m = $this->getModel();
 //		$this->user = Factory::getUser();
 //		$this->params = Factory::getApplication()->getParams();
 //		$this->userPerms = MeedyaHelper::getUserPermissions($this->user, $this->params);
-		$this->state = $this->get('State');	//echo'<xmp>';var_dump($this->state);echo'</xmp>';	//echo get_class($this->state);
+		$this->state = $m->getState();	//echo'<xmp>';var_dump($this->state);echo'</xmp>';	//echo get_class($this->state);
 
 		$this->isSearch = true;
 		$this->desc = '';
@@ -36,8 +46,6 @@ class HtmlView extends MeedyaView
 
 		$this->six = 0;
 		$this->title = 'Search Results';
-
-		$m = $this->getModel();
 
 		// build the bread crumbs
 		$pw = $this->app->getPathWay();

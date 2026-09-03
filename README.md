@@ -1,6 +1,4 @@
 # joomla-com-meedya
-A developing media gallery for Joomla!
-
 This component provides media (image/video) galleries at user, group or site levels. Menu instances can be created where every Joomla user can have their own gallery. Or an instance can belong to a user group. Or an instance can be a sitewide gallery.
 
 All gallery management for each gallery is done from the front-end.

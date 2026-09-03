@@ -30,10 +30,10 @@ class ImageProcessor extends ImageProc
 	}
 
 
-	public function createThumb ($dest, $ext, $maxW=120, $maxH=120, $sqr=true)
+	public function createThumb ($dest, $ext, $maxW=120, $maxH=120, $sqr=true): int|false
 	{
 		if (RJC_DBUG) { MeedyaHelper::log(print_r(['createThumb',$this->src,getimagesize($this->src)],true)); }
-		if (!isset($this->img_width)) return 0;
+		if ($this->img_width === null) return 0;
 		$dfil = $dest.$ext;
 		$w = $this->img_width;
 		$h = $this->img_height;
@@ -57,15 +57,15 @@ class ImageProcessor extends ImageProc
 	}
 
 
-	public function createMedium ($dest, $ext, $maxW=1200, $maxH=0)
+	public function createMedium ($dest, $ext, $maxW=1200, $maxH=0): int|false
 	{
 		if (RJC_DBUG) { MeedyaHelper::log(print_r(['createMedium',$this->src,getimagesize($this->src)],true)); }
-		if (!isset($this->img_width)) return 0;
+		if ($this->img_width === null) return 0;
 		$dfil = $dest.$ext;
 		$w = $this->img_width;
 		$h = $this->img_height;
 		if ($maxW && $maxH) {
-			list($w,$h) = $this->fitInRect($this->img_width, $this->img_height, $maxW, $maxH);
+			[$w, $h] = $this->fitInRect($this->img_width, $this->img_height, $maxW, $maxH);
 		} elseif ($maxH) {
 			$r = $w/$h;
 			$h = $maxH;
@@ -86,7 +86,7 @@ class ImageProcessor extends ImageProc
 	}
 
 
-	public function orientImage ($dest)
+	public function orientImage ($dest): int|false
 	{
 		$_s = escapeshellarg($this->src);
 		$_d = escapeshellarg($dest);

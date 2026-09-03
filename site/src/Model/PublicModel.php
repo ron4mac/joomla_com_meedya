@@ -1,9 +1,9 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2023-2024 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2023-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.0
+* @since		1.6.0
 */
 namespace RJCreations\Component\Meedya\Site\Model;
 
@@ -17,20 +17,21 @@ use RJCreations\Component\Meedya\Site\Helper\MeedyaHelper;
 
 class PublicModel extends ListModel
 {
+	protected $app;
 	protected $pubalbs = [];
 	protected $pubdbs = [];
 	protected $curAlbID = 0;
-	protected $_album = null;
-	protected $sdp = null;		// storage directory path
+	protected $_album;
+	protected string $sdp;		// storage directory path
 	protected $full_gallery;
 
 	public function __construct ($config = [], $factory = null)
 	{
 	//	$dbFile = '/meedya.db3';
-		$app = Factory::getApplication();
-		$result = $app->triggerEvent('onRjuserDatapath');
+		$this->app = Factory::getApplication();
+		$result = $this->app->triggerEvent('onRjuserDatapath');
 		$this->sdp = trim($result[0] ?? 'userstor');
-		$this->full_gallery = $app->getParams()->get('full_gallery', 0);
+		$this->full_gallery = $this->app->getParams()->get('full_gallery', 0);
 		$this->scanForDbs($this->sdp);
 	//	var_dump($this->pubalbs);
 		parent::__construct($config, $factory);
@@ -42,9 +43,8 @@ class PublicModel extends ListModel
 	{
 		if ($paid == 0) {
 			return $aid * 1000;
-		} else {
-			return $paid * 1000 + $aid;
 		}
+		return $paid * 1000 + $aid;
 	}
 	// an album's items and an item's albums are in PSV (pipe separated variable) fields
 	// this will determine if a speciific value is in the field
@@ -86,8 +86,8 @@ class PublicModel extends ListModel
 
 	public function getAlbums ()
 	{
-		list($gdir, $gsfx, $gaid) = explode('|', base64_decode($this->getState('pgid')));
-		$aid = $this->getState('album.id') ? : 0;
+		[$gdir, $gsfx, $gaid] = explode('|', base64_decode($this->getState('pgid')));
+		$this->getState('album.id') ? : 0;
 		$db = $this->getDb();
 		$db->setQuery('SELECT * FROM `albums` WHERE `paid`='.$gaid);
 		$albs = $db->loadObjectList();
@@ -97,7 +97,6 @@ class PublicModel extends ListModel
 		}
 		return $albs;
 	}
-
 
 
 	public function getItems ()
@@ -144,7 +143,7 @@ class PublicModel extends ListModel
 
 	public function _getCfg ($which)
 	{
-		$db = $this->getDbo();
+		$db = $this->getDatabase();
 		$db->setQuery('SELECT `vals` FROM `config` WHERE `type`='.$db->quote($which));
 		$r = $db->loadResult();
 		return json_decode($r, true);
@@ -158,7 +157,7 @@ class PublicModel extends ListModel
 		$r = $db->loadAssoc();
 		$db->disconnect();
 		//var_dump($r);
-		return $r['thumb'] ? $r['thumb'] : $r['file'];
+		return $r['thumb'] ?: $r['file'];
 	}
 
 	public function getItemThumbFilePlus ($iid)
@@ -167,24 +166,23 @@ class PublicModel extends ListModel
 		$db->setQuery('SELECT `file`,`mtype`,`thumb`,`title`,`desc` FROM `meedyaitems` WHERE `id`='.$iid);
 		$r = $db->loadAssoc();
 		$db->disconnect();
-		$thm = $r['thumb'] ? $r['thumb'] : $r['file'];
+		$thm = $r['thumb'] ?: $r['file'];
 		return [$thm, $r['title'], $r['desc'], $r['mtype']];
 	}
 
 	public function _getAlbumsList ()
 	{
-		$db = $this->getDbo();
+		$db = $this->getDatabase();
 		$db->setQuery('SELECT * FROM `albums`');
-		$r = $db->loadObjectList();
 		//var_dump($r);
-		return $r;
+		return $db->loadObjectList();
 	}
 
 	// returns an array of aid=>title to the specified album
 	public function getAlbumPath ()
 	{
 		$pgid = $this->getState('pgid');
-		list($gdir, $gsfx, $to) = explode('|', base64_decode($pgid));
+		[$gdir, $gsfx, $to] = explode('|', base64_decode($pgid));
 		$db = $this->getDb();
 		$albs = [];
 		$inpub = false;
@@ -203,20 +201,18 @@ class PublicModel extends ListModel
 	public function getGallpath ($paix=false)
 	{
 		if ($paix===false) {
-			list($gdir, $gsfx, $gaid) = explode('|', base64_decode($this->getState('pgid')));
-			$path = $this->sdp.'/'.$gdir.'/com_meedya'.$gsfx;
-			return $path;
-		} else {
-			return $this->pubalbs[$paix]['path'];
+			[$gdir, $gsfx, $gaid] = explode('|', base64_decode($this->getState('pgid')));
+			return $this->sdp.'/'.$gdir.'/com_meedya'.$gsfx;
 		}
+		return $this->pubalbs[$paix]['path'];
 	}
 
 	protected function _getListQuery ()
 	{
 		$albord = ['`tstamp` DESC','`tstamp` ASC','`title` DESC','`title` ASC'];
-		$params = Factory::getApplication()->getParams();
+		$params = $this->app->getParams();
 		$ordopt = (int)$params->get('album_order', 0);
-		$db = $this->getDbo();
+		$db = $this->getDatabase();
 		$query = $db->getQuery(true);
 		$query->select('*');
 		$query->from('albums');
@@ -230,7 +226,7 @@ class PublicModel extends ListModel
 	{
 		if ($this->_album) return $this->_album;
 		$aid = $aid ?: ($this->state->get('album.id') ?: 0);
-		$db = $this->getDbo();
+		$db = $this->getDatabase();
 		$db->setQuery('SELECT * FROM `albums` WHERE `aid`='.$aid);
 		$this->_album = $db->loadObject();
 		return $this->_album;
@@ -241,9 +237,8 @@ class PublicModel extends ListModel
 		if (!$iid) return false;
 		$db = $this->getDb();
 		$db->setQuery('SELECT * FROM `meedyaitems` WHERE `id`='.$iid);
-		$r = $db->loadAssoc();
 		//var_dump($r);
-		return $r;
+		return $db->loadAssoc();
 	}
 
 	public function getOwnerName ($own)
@@ -251,17 +246,17 @@ class PublicModel extends ListModel
 		$owner = '';
 		switch ($own[0]) {
 			case '@':
-				$user = Factory::getUser(substr($own,1));
+				$user = $this->app->getIdentity(substr($own,1));
 				$owner = $user->name;
 				break;
 			case '_':
 				$gid = substr($own,1);
-				if ($gid=='') $gid = 0;
+				if ($gid === '') $gid = 0;
 				if ($gid==0) {
 					$owner = 'Site';
 					break;
 				}
-				$db = Factory::getDbo();
+				$db = Factory::getDatabase();
 				$db->setQuery('SELECT title FROM #__usergroups WHERE id='.$gid);
 				$owner = $db->loadResult() ?: 'Group';
 			//$owner='?WTF?'.$own.'|'.$gid.'.';
@@ -281,12 +276,11 @@ class PublicModel extends ListModel
 	protected function populateState ($ordering = null, $direction = null)
 	{
 		// Initialize variables
-		$app = Factory::getApplication();
 		$params = ComponentHelper::getParams('com_meedya');
-		$input = $app->input;
+		$input = $this->app->input;
 
 		// menu params
-		$mparams = $app->getParams();
+		$mparams = $this->app->getParams();
 		$this->setState('maxUpload', (int)$mparams->get('maxUpload', 0));
 
 		// album ID
@@ -298,7 +292,7 @@ class PublicModel extends ListModel
 		$this->state->set('pgid', $pgid);
 
 		// List state information
-//		$limit = $app->getUserStateFromRequest('global.list.limit', 'limit', $app->getCfg('list_limit'));
+//		$limit = $this->app->getUserStateFromRequest('global.list.limit', 'limit', $this->app->getCfg('list_limit'));
 //		$this->setState('list.limit'.$pid, $limit);
 
 //		$limitstart = $input->getInt('limitstart', 0);
@@ -314,7 +308,7 @@ class PublicModel extends ListModel
 	private function getDb ($paix=false)
 	{
 		if ($paix===false) {
-			list($gdir, $gsfx, $gaid) = explode('|', base64_decode($this->getState('pgid')));
+			[$gdir, $gsfx, $gaid] = explode('|', base64_decode($this->getState('pgid')));
 			$path = $this->sdp.'/'.$gdir.'/com_meedya'.$gsfx;
 		} else {
 			$path = $this->pubalbs[$paix]['path'];
@@ -326,7 +320,7 @@ class PublicModel extends ListModel
 	}
 
 
-	private function scanForDbs ($path)
+	private function scanForDbs (string $path): void
 	{
 		// Check directory exists or not
 		if (file_exists($path) && is_dir($path)) {
@@ -336,22 +330,20 @@ class PublicModel extends ListModel
 			// Filter out the current (.) and parent (..) directories
 			$files = array_diff($result, ['.', '..']);
 
-			if (count($files) > 0) {
-				// Loop through retuned array
-				foreach ($files as $file) {
-					if (is_file("$path/$file")) {
-						// do nothing
-					} else if (is_dir("$path/$file")) {
-						if (substr($file,0,11)=='com_meedya_') $this->checkPublic("$path/$file");
-						else $this->scanForDbs("$path/$file");
-					}
+			// Loop through retuned array
+			foreach ($files as $file) {
+				if (is_file("$path/$file")) {
+					// do nothing
+				} else if (is_dir("$path/$file")) {
+					if (str_starts_with($file, 'com_meedya_')) $this->checkPublic("$path/$file");
+					else $this->scanForDbs("$path/$file");
 				}
 			}
 		}
 	}
 
 
-	private function checkPublic ($path)
+	private function checkPublic (string $path): void
 	{
 		if (!file_exists($path.'/meedya.db3')) return;
 		$own = basename(dirname($path));
@@ -374,7 +366,7 @@ class PublicModel extends ListModel
 	}
 
 
-	private function getAlbum ()
+	private function getAlbum (): void
 	{
 		if (!$this->_album) {
 			$gaid = explode('|', base64_decode($this->getState('pgid')))[2];

@@ -3,7 +3,7 @@
 * @package		com_meedya
 * @copyright	Copyright (C) 2022-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.3
+* @since		1.6.0
 */
 defined('_JEXEC') or die;
 
@@ -13,8 +13,7 @@ use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\HTML\Helpers\Sidebar;
 use Joomla\CMS\Toolbar\ToolbarHelper;
 use Joomla\CMS\MVC\View\HtmlView;
-
-require_once JPATH_BASE . '/components/com_meedya/src/Helper/meedya.php';
+use RJCreations\Component\Meedya\Administrator\Helper\MeedyaAdminHelper;
 
 /**
  * View class for a list of user schedules.
@@ -28,7 +27,7 @@ class MeedyaView extends HtmlView
 	/**
 	 * Display the view
 	 */
-	public function display ($tpl = null)
+	public function display ($tpl = null): void
 	{
 		HTMLHelper::stylesheet('administrator/components/com_meedya/static/meedya.css', ['version' => 'auto']);
 
@@ -56,7 +55,7 @@ class MeedyaView extends HtmlView
 	{
 		$canDo	= MeedyaAdminHelper::getActions();
 
-		ToolBarHelper::title(Text::_('COM_MEEDYA_MENU').': '.Text::_('COM_MEEDYA_MANAGER_'.strtoupper($this->relm)), 'stack meedya');
+		ToolBarHelper::title(Text::_('COM_MEEDYA_MENU').': '.Text::_('COM_MEEDYA_MANAGER_'.strtoupper($this->relm)), 'image meedya');
 
 		ToolBarHelper::deleteList(Text::_('COM_MEEDYA_MANAGER_DELETEOK'));
 		//JToolBarHelper::trash('usernotes.trash');

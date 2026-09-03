@@ -3,7 +3,7 @@
 * @package		com_meedya
 * @copyright	Copyright (C) 2022-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.8
+* @since		1.6.0
 */
 namespace RJCreations\Component\Meedya\Site\Controller;
 
@@ -21,13 +21,14 @@ class DisplayController extends BaseController
 {
 	protected $uid = 0;
 	protected $mnuItm;
-	protected $shrk = null;
-	protected $instObj = null;
+	protected $shrk;
+	protected $instObj;
 
 	public function __construct ($config = [], $factory = null, $app = null, $input = null)
 	{
 		parent::__construct($config, $factory, $app, $input);
-		$this->uid = Factory::getUser()->get('id');
+		if (!$app) $app = Factory::getApplication();
+		$this->uid = $app->getIdentity()->get('id');
 		$key = base64_decode($this->input->get->get('key', '', 'base64'));
 		if ($key) {
 			$data = MeedyaHelper::decodeKey($key);
@@ -53,7 +54,7 @@ class DisplayController extends BaseController
 		return parent::display($cachable, $urlparams);
 	}
 
-	public function begin ()
+	public function begin (): void
 	{
 		if (!$this->uid) return;
 		$htm = '<!DOCTYPE html><title></title>';
@@ -69,7 +70,7 @@ class DisplayController extends BaseController
 	}
 
 	// provide an instance object to the model when the request if from a shared album link						*** can probably use what was gathered in __construct above
-	public function getModel($name = '', $prefix = '', $config = array())
+	public function getModel($name = '', $prefix = '', $config = [])
 	{
 		if ($name == 'album') {
 			$key = base64_decode($this->input->get->get('key', '', 'base64'));

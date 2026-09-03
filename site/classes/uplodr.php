@@ -16,9 +16,9 @@ class Up_Load
 {
 	protected $target_dir;
 	protected $pvals;
-	protected $file = null;
+	protected $file;
 	protected $target_file;
-	protected $filup_cb = null;
+	protected $filup_cb;
 	// for chunking
 	protected $ckid;
 	protected $ckpath;
@@ -51,7 +51,7 @@ class Up_Load
 		}
 	}
 
-	public function placeFile ($dest)
+	public function placeFile ($dest): void
 	{
 		$this->upldLog(print_r($this->file, true).$dest."\n");
 
@@ -61,7 +61,7 @@ class Up_Load
 			// count all the parts of this file
 			$total_files = 0;
 			foreach(scandir($this->ckpath) as $filepart) {
-				if (strpos($filepart,'part') === 0) {
+				if (str_starts_with($filepart, 'part')) {
 					$total_files++;
 				}
 			}
@@ -87,7 +87,7 @@ class Up_Load
 
 	// a method to clean up when file can't be placed
 	// probably not necessary but shows good server citizenship
-	public function cancel_transfer ()
+	public function cancel_transfer (): void
 	{
 		if (empty($this->pvals->get('chunkact'))) {
 			@unlink($this->file['tmp_name']);
@@ -97,7 +97,7 @@ class Up_Load
 	}
 
 	// check uploaded file data for issues
-	private function vetUpload ($fec=true)
+	private function vetUpload (bool $fec=true): void
 	{
 		if (!$this->file) throw new Exception('Parameters error', 9);
 		switch ($this->file['error']) {
@@ -123,14 +123,14 @@ class Up_Load
 	}
 
 	// normal receipt of a single uploaded file
-	private function receiveFile ()
+	private function receiveFile (): void
 	{
 		$this->vetUpload();
 		if (!$this->aValidFile()) throw new Exception('The file is not acceptable.', 0);
 	}
 
 	// receive a file from multiple 'chunks'
-	private function processChunk ()
+	private function processChunk (): void
 	{
 		$this->ckid = $this->pvals->get('ident');
 		$this->tmpath = JPATH_SITE . '/tmp/';	//sys_get_temp_dir() . '/';
@@ -158,7 +158,7 @@ class Up_Load
 	}
 
 	// receive, process and place a 'chunk' of file data
-	private function addChunk ()
+	private function addChunk (): void
 	{
 		$chnkn = $this->pvals->get('chnkn');
 		if ($chnkn == 1) {
@@ -180,7 +180,7 @@ class Up_Load
 			// count all the parts of this file
 			$total_files = 0;
 			foreach(scandir($this->ckpath) as $filepart) {
-				if (strpos($filepart,'part') === 0) {
+				if (str_starts_with($filepart, 'part')) {
 					$total_files++;
 				}
 			}
@@ -189,27 +189,11 @@ class Up_Load
 			$this->chnkdone = true;
 
 			return;
-
-			// create the final destination file
-			$dest = $this->target_dir . $this->pvals->get('fname');
-			if (($fp = @fopen($dest, 'w')) !== false) {
-				for ($i=1; $i<=$totalchunks; $i++) {
-					fwrite($fp, file_get_contents($this->ckpath.'/part'.$i));
-				}
-				fclose($fp);
-			} else {
-				$this->upldLog('failed to open destination file: '.$dest);
-				die('failed to open destination file: '.$dest);
-			}
-	
-			$this->upldLog('combined chunks: '.$dest);
-			$this->cleanup();
-			if ($this->filup_cb) call_user_func($this->filup_cb, basename($dest));
 		}
 	}
 
 	// check that the file is actually a valid media file
-	private function aValidFile ()
+	private function aValidFile (): bool
 	{
 		$mime = mime_content_type($this->file['tmp_name']);
 		if (preg_match('#image\/|video\/#', $mime)) return true;
@@ -218,17 +202,17 @@ class Up_Load
 	}
 
 	// remove temporary storage that was used for chunks
-	private function cleanup ()
+	private function cleanup (): void
 	{
 		if ($this->ckid) $this->rrmdir($this->ckpath);
 		$this->upldLog('chunks cleared: '.$this->ckpath);
 	}
 
-	private function rrmdir ($dir) {
+	private function rrmdir ($dir): void {
 		if (is_dir($dir)) {
 			$objects = scandir($dir);
 			foreach ($objects as $object) {
-				if ($object != '.' && $object != '..') {
+				if ($object !== '.' && $object !== '..') {
 					if (filetype($dir . '/' . $object) == 'dir') {
 						$this->rrmdir($dir . '/' . $object); 
 					} else {
@@ -241,7 +225,7 @@ class Up_Load
 		}
 	}
 	
-	private function upldLog ($ntry)
+	private function upldLog (string $ntry): void
 	{
 		if (!defined('RJC_DBUG')) return;
 		file_put_contents('UPLOG.txt', $ntry."\n", FILE_APPEND);

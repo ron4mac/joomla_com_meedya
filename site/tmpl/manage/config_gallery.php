@@ -4,9 +4,13 @@
 * @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
 */
+/** @var \RJCreations\Component\Meedya\Site\View\Manage\HtmlView $this */
 defined('_JEXEC') or die;
 
-function buildTree(array $albums, &$html, $paid = 0) {
+/**
+ * @return mixed[]
+ */
+function buildTree(array $albums, &$html, $paid = 0): array {
 	$branch = [];
 	foreach ($albums as $alb) {
 		if ($alb['paid'] == $paid) {
@@ -16,7 +20,7 @@ function buildTree(array $albums, &$html, $paid = 0) {
 			$html[] = '<span class="icon-delete"> </span><span class="icon-edit"> </span>';
 			$html[] = '<big><b>'.$alb['title'].'</b></big> ( '.$alb['items'].' items )';
 			$children = buildTree($albums, $html, $alb['aid']);
-			if ($children) {
+			if ($children !== []) {
 				$alb['children'] = $children;
 			}
 			$branch[] = $alb;

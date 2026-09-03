@@ -1,9 +1,9 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022-2024 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2022-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.0
+* @since		1.6.0
 */
 defined('_JEXEC') or die;
 
@@ -15,14 +15,16 @@ class ImageProcessor extends ImageProc
 {
 	public $ipp = 'GD2';
 	protected $errs = [];
-	protected $res = null;
+	protected $res;
 
 	public function __construct ($src)
 	{
 		parent::__construct($src);
 
-		if (RJC_DBUG) { MeedyaHelper::log('GDimageProc->'.$src); }
-		if (RJC_DBUG) { MeedyaHelper::log($this->src); }
+		if (RJC_DBUG) {
+			MeedyaHelper::log('GDimageProc->'.$src);
+			MeedyaHelper::log($this->src);
+		}
 
 		switch ($this->img_type) {
 			case 1:
@@ -45,7 +47,7 @@ class ImageProcessor extends ImageProc
 		return $this->errs;
 	}
 
-	public function createThumb ($dest, $ext, $maxW=120, $maxH=120, $sqr=true)
+	public function createThumb ($dest, $ext, $maxW=120, $maxH=120, $sqr=true): int|false|null
 	{
 		if (RJC_DBUG) { MeedyaHelper::log('GDimageProc-createThumb'); }
 
@@ -82,7 +84,7 @@ class ImageProcessor extends ImageProc
 			$sharpenMatrix = [[-1, -1, -1],[-1, 16, -1],[-1, -1, -1]];
 
 			// calculate the sharpen divisor
-			$divisor = array_sum(array_map('array_sum', $sharpenMatrix));
+			$divisor = array_sum(array_map(array_sum(...), $sharpenMatrix));
 			$offset = 0;
 			// apply the matrix
 			imageconvolution($img, $sharpenMatrix, $divisor, $offset);
@@ -98,13 +100,14 @@ class ImageProcessor extends ImageProc
 		//	die('Error when creating a thumbnail: ' . $e->getMessage());
 			$this->errs[] = 'Error when creating thumbnail: ' . $e->getMessage();
 		}
+		return null;
 	}
 
-	public function createMedium ($dest, $ext, $maxW=1200, $maxH=-1)
+	public function createMedium ($dest, $ext, $maxW=1200, $maxH=-1): int|false|null
 	{
 		if (RJC_DBUG) { MeedyaHelper::log('GDimageProc-createMedium'.print_r([$dest, $ext, $maxW, $maxH],true)); }
 		if ($maxW && $maxH>0) {
-			list($maxW,$maxH) = $this->fitInRect($this->img_width, $this->img_height, $maxW, $maxH);
+			[$maxW, $maxH] = $this->fitInRect($this->img_width, $this->img_height, $maxW, $maxH);
 		}
 		try {
 //			$img = imagescale($this->res, $maxW, $maxH);
@@ -120,9 +123,10 @@ class ImageProcessor extends ImageProc
 		//	die('Error when creating medium image: ' . $e->getMessage());
 			$this->errs[] = 'Error when creating medium image: ' . $e->getMessage();
 		}
+		return null;
 	}
 
-	public function orientImage ($dest)
+	public function orientImage ($dest): int
 	{
 		if (RJC_DBUG) { MeedyaHelper::log('GDimageProc-orientImage'); }
 		$flp = 0; $rot = 0;
@@ -160,9 +164,9 @@ class ImageProcessor extends ImageProc
 		}
 		if (($flp + $rot) !== 0) {
 			try {
-				if ($flp==1) {
+				if ($flp === 1) {
 					$this->_flop();
-				} else if ($flp==2) {
+				} else if ($flp === 2) {
 					$this->_flip();
 				}
 				if ($rot!==0) {
@@ -193,17 +197,17 @@ class ImageProcessor extends ImageProc
 		return 0;
 	}
 
-	private function _flip ()
+	private function _flip (): void
 	{
 		$this->_mirror('v');
 	}
 
-	private function _flop ()
+	private function _flop (): void
 	{
 		$this->_mirror('h');
 	}
 
-	private function _mirror ($how)
+	private function _mirror (string $how): void
 	{
 		$width = imagesx($this->res);
 		$height = imagesy($this->res);

@@ -19,7 +19,7 @@ class MeedyaComponent extends MVCComponent implements BootableExtensionInterface
 {
 	use HTMLRegistryAwareTrait;
 
-	public function boot(ContainerInterface $container)
+	public function boot(ContainerInterface $container): void
 	{
 		$this->getRegistry()->register('mygrid', new Mygrid());
 	}

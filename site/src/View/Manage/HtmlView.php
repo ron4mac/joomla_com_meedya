@@ -3,7 +3,7 @@
 * @package		com_meedya
 * @copyright	Copyright (C) 2023-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.5
+* @since		1.6.0
 */
 namespace RJCreations\Component\Meedya\Site\View\Manage;
 
@@ -18,23 +18,40 @@ use RJCreations\Component\Meedya\Site\Helper\MeedyaHelper;
 
 class HtmlView extends MeedyaView
 {
+	public $mparams;
+	public $album;
+	public $albums;
+	public $action;
+	public $iids;
+	public $total;
+	public $filterForm;
+	public $activeFilters;
+	public $linkUrl;
+	public $aThum;
+	public $html5slideshowCfg;
+	public $galStruct;
+	public $galid;
+	public $uplodr;
+	public $acptmime;
+	public $mimatch;
+	public $maxUploadFS;
+	public $maxupld;
+	public $phpupld;
+	public $totStore;
 	public $aid = 0;
 	protected $_defaultModel = 'manage';
 	protected $manage = 1;
 
-	public function __construct ($config = [])
-	{
-	//	if (RJC_DBUG) MeedyaHelper::log('MeedyaViewManage');
-		parent::__construct($config);
-	}
-
-	public function display ($tpl=null)
+	public function display ($tpl=null): void
 	{
 		if (!$this->userPerms->canAdmin) {
 			$this->app->enqueueMessage(Text::_('JERROR_ALERTNOAUTHOR'), 'error');
 			return;
 		}
-		$this->state = $this->get('State');	//var_dump($this->state);
+
+		$m = $this->getModel();
+
+		$this->state = $m->getState();	//var_dump($this->state);
 //		$this->user = Factory::getUser();
 //		$this->items = $this->get('Items');
 
@@ -45,7 +62,7 @@ class HtmlView extends MeedyaView
 
 		if ($this->state && $this->state->get('album.id')/* ?: 0*/) {
 			$this->aid = $this->state->get('album.id');
-			$this->album = $this->get('Album');
+			$this->album = $m->getAlbum();
 //			$this->aid = $this->state->get('album.id');
 	//		$this->items = $this->get('AlbumItems');
 			$this->setLayout('albedit');
@@ -61,22 +78,22 @@ class HtmlView extends MeedyaView
 		switch ($this->getLayout()) {
 
 			case 'newalb':
-				$this->albums = $this->get('AlbumsList');
+				$this->albums = $m->getAlbumsList();
 				break;
 
 			case 'images':
-				$this->albums = $this->get('AlbumsList');
+				$this->albums = $m->getAlbumsList();
 				$this->action = 'Edit Images';
-				$this->iids = $this->get('Items');
+				$this->iids = $m->getItems();
 				$this->total = count($this->iids);
 		//		$this->items = $this->get('Items');
-				$this->filterForm = $this->get('FilterForm');	//echo'<xmp>';var_dump('FilterForm',$this->filterForm);echo'</xmp>';jexit();
+				$this->filterForm = $m->getFilterForm();	//echo'<xmp>';var_dump('FilterForm',$this->filterForm);echo'</xmp>';jexit();
 //				$this->filterForm->setFieldAttribute('limit', 'default', 50, 'list');
-				$albs = json_encode($this->get('AllAlbums'));
+				$albs = json_encode($m->getAllAlbums());
 				$r = $this->filterForm->setFieldAttribute('album', 'albums', $albs, 'filter');	//echo'<xmp>';var_dump('FilterForm',$r,$this->filterForm);jexit();
-				$this->activeFilters = $this->get('ActiveFilters');
+				$this->activeFilters = $m->getActiveFilters();
 
-				$this->pagination = $this->get('Pagination');
+				$this->pagination = $m->getPagination();
 
 				$this->linkUrl = 'index.php?option=com_meedya&task=manage.editImgs&Itemid='.$this->itemId;
 				break;
@@ -101,7 +118,7 @@ class HtmlView extends MeedyaView
 				if (!$this->html5slideshowCfg) {
 					$this->html5slideshowCfg = MeedyaHelper::$ssDefault;
 				}
-				$this->galStruct = MeedyaHelper::getGalStruct($this->get('AllAlbums'));
+				$this->galStruct = MeedyaHelper::getGalStruct($m->getAllAlbums());
 				break;
 
 			case 'upload':
@@ -129,9 +146,9 @@ class HtmlView extends MeedyaView
 
 			default:
 				$this->action = 'Edit Albums';
-				$this->albums = $this->get('AlbumsList');
-				$this->totStore = (int)$this->get('StorageTotal');
-				$this->galStruct = MeedyaHelper::getGalStruct($this->get('AllAlbums'));
+				$this->albums = $m->getAlbumsList();
+				$this->totStore = (int)$m->getStorageTotal();
+				$this->galStruct = MeedyaHelper::getGalStruct($m->getAllAlbums());
 				break;
 
 		}

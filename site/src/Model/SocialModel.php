@@ -1,9 +1,9 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022-2024 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2022-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.0
+* @since		1.6.0
 */
 namespace RJCreations\Component\Meedya\Site\Model;
 
@@ -19,7 +19,7 @@ class SocialModel extends MeedyaModel
 	public function rate ($iid, $val)
 	{
 		// add a new rating to an item's collective rating
-		$db = $this->getDbo();
+		$db = $this->getDatabase();
 		$db->transactionStart();
 		if ($val) {
 			$db->setQuery('SELECT ratecnt,ratetot FROM meedyaitems WHERE id='.$iid);
@@ -62,7 +62,7 @@ class SocialModel extends MeedyaModel
 	// returns false if there has been no recorded submission
 	public function rateChk ($iid)
 	{
-		$db = $this->getDbo();
+		$db = $this->getDatabase();
 		$uid = $this->userId;
 		if ($uid) {
 			$db->setQuery('SELECT rdate FROM uratings WHERE iid='.$iid.' AND uid='.$uid);
@@ -75,7 +75,7 @@ class SocialModel extends MeedyaModel
 	// get all the comments for and item
 	public function getComments ($iid)
 	{
-		$db = $this->getDbo();
+		$db = $this->getDatabase();
 		$db->setQuery('SELECT * FROM comments WHERE iid='.$iid.' ORDER BY `ctime`');
 		return $db->loadAssocList();
 	}
@@ -83,7 +83,7 @@ class SocialModel extends MeedyaModel
 	// add a new comment
 	public function addComment ($iid, $uid, $cmnt)
 	{
-		$db = $this->getDbo();
+		$db = $this->getDatabase();
 		$db->transactionStart();
 		$db->setQuery('INSERT INTO comments (iid,uid,ctime,cmnt) VALUES('.$iid.','.$uid.','.time().','.$db->quote($cmnt).')')->execute();
 		$db->setQuery('SELECT cmntcnt FROM meedyaitems WHERE id='.$iid);

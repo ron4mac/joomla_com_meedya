@@ -3,9 +3,11 @@
 * @package		com_meedya
 * @copyright	Copyright (C) 2023-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.8
+* @since		1.6.0
 */
 namespace RJCreations\Component\Meedya\Site\Helper;
+
+use ComMeedya\Encryption;
 
 defined('_JEXEC') or die;
 
@@ -16,11 +18,11 @@ use RJCreations\Library\RJUserCom;
 
 abstract class MeedyaHelper
 {
-	protected static $instanceObj = null;
-	protected static $instanceType = null;
-	protected static $ownerID = null;
-	protected static $udp = null;
-	protected static $jdoc = null;
+	protected static $instanceObj;
+	protected static $instanceType;
+	protected static $ownerID;
+	protected static $udp;
+	protected static $jdoc;
 
 	public static function oneScript ($str)
 	{
@@ -42,14 +44,12 @@ abstract class MeedyaHelper
 			'e' => 'com_meedya.echo',	//(lazy load)
 			's' => 'js/slides'
 		];
-		if (self::$jdoc === null) self::$jdoc = Factory::getDocument();
+		self::$jdoc ??= Factory::getDocument();
 		$wa = self::$jdoc->getWebAssetManager();
 		$codes = str_split('c'.$str);
 		foreach ($codes as $c) {
 			$wa->useScript($c2js[$c]);
 		}
-//		$s = (RJC_DBUG && Factory::getUser()->get('id') ? 'Dc' : 'c') . $str;
-//		self::$jdoc->addScript('components/com_meedya/js.php?c='.$s);
 	}
 
 	public static function oneStyle ($str)
@@ -67,7 +67,7 @@ abstract class MeedyaHelper
 			't' => 'com_meedya.css.tags',
 			's' => 'css/slides'
 		];
-		if (self::$jdoc === null) self::$jdoc = Factory::getDocument();
+		self::$jdoc ??= Factory::getDocument();
 		$wa = self::$jdoc->getWebAssetManager();
 		$codes = str_split($str);
 		foreach ($codes as $c) {
@@ -83,7 +83,7 @@ abstract class MeedyaHelper
 			$admgrps = $params->get('admin_group', null);
 			if (!is_array($admgrps)) $admgrps = [$admgrps];
 			if ($params->get('instance_type', 3) > 0) {
-				if ($admgrps) {
+				if ($admgrps !== []) {
 					$perms['canAdmin'] = !empty(array_intersect($user->groups, $admgrps));
 				} else {
 					$perms['canAdmin'] = in_array($params->get('owner_group', null), $user->groups);
@@ -91,7 +91,7 @@ abstract class MeedyaHelper
 			} else {
 				$perms['canAdmin'] = $user->id > 0;
 			}
-			if (!$perms['canAdmin']) $perms['canAdmin'] = Factory::getUser()->authorise('core.edit', 'com_meedya');
+			if (!$perms['canAdmin']) $perms['canAdmin'] = Factory::getApplication()->getIdentity()->authorise('core.edit', 'com_meedya');
 			$perms['canUpload'] = $perms['canAdmin'] || in_array($params->get('owner_group', null), $user->groups)
 								|| array_intersect($params->get('upload_group', []), $user->groups);
 		}
@@ -102,7 +102,7 @@ abstract class MeedyaHelper
 	{
 		foreach ($list as &$alb) {
 			$alb['isClone'] = false;
-			if (substr($alb['items']?:' ',0,1)=='*') {
+			if (str_starts_with($alb['items']?:' ', '*')) {
 				$alb['isClone'] = true;
 				$alb['oaid'] = (int) substr($alb['items'],1);
 			} else {
@@ -117,9 +117,8 @@ abstract class MeedyaHelper
 	{
 		$cupmax = $op ?: self::componentOption('maxUpload', 4194304);
 		$cupmax = $cupmax ?: 4194304;
-		$cupmax = self::instanceOption('maxUpload', $cupmax);
 		// using my chunking uploader so no need to account for PHP max
-		return $cupmax;
+		return self::instanceOption('maxUpload', $cupmax);
 	}
 
 	// get a resolved option value based on component and instance (same-named) values
@@ -134,14 +133,14 @@ abstract class MeedyaHelper
 	public static function getStoreQuota ($prms)
 	{
 		$isq = $prms->get('storQuota');
-		if (!$isq) $isq = self::componentOption('storQuota', 268435456);
+		if (!$isq) return self::componentOption('storQuota', 268435456);
 		return $isq;
 	}
 
 	public static function encodeKey ($parms)
 	{
 		require_once JPATH_SITE.'/components/com_meedya/classes/crypt.php';
-		$key = \ComMeedya\Encryption::simpleXor($parms, Factory::getApplication()->get('secret'));
+		$key = Encryption::simpleXor($parms, Factory::getApplication()->get('secret'));
 		return base64_encode($key);
 	}
 
@@ -150,11 +149,9 @@ abstract class MeedyaHelper
 		require_once JPATH_SITE.'/components/com_meedya/classes/crypt.php';
 		$secret = Factory::getApplication()->get('secret');
 		if (strlen($key)>99) {
-			$prms = \ComMeedya\Encryption::decrypt($key, $secret);
-		} else {
-			$prms = \ComMeedya\Encryption::simpleXor($key, $secret);
+			return Encryption::decrypt($key, $secret);
 		}
-		return $prms;
+		return Encryption::simpleXor($key, $secret);
 	}
 
 	public static function getImgProc ($imgf)
@@ -223,7 +220,7 @@ abstract class MeedyaHelper
 		$bytes = max($bytes, 0);
 		$pow = floor(($bytes ? log($bytes) : 0) / log(1024));
 		$pow = min($pow, count($units) - 1);
-		$bytes /= pow(1024, $pow);
+		$bytes /= 1024 ** $pow;
 		return round($bytes, $precision) . $units[$pow];
 	}
 
@@ -237,36 +234,6 @@ abstract class MeedyaHelper
 				$msg .= "\n".$wh.': '.print_r($dat, true);
 			}
 			Log::add($msg, Log::DEBUG, 'com_meedya');
-		}
-	}
-
-
-// PRIVATE METHODS
-	private static function xxgetTypeOwner ()
-	{
-		if (is_null(self::$instanceType)) {
-			$app = Factory::getApplication();
-			$id = $app->input->getBase64('mID', false);
-			if ($id) {
-				$ids = explode(':',base64_decode($id));
-				self::$instanceType = $ids[0];
-				self::$ownerID = $ids[1];
-			} else {
-				$params = $app->getParams();
-				self::$instanceType = $params->get('instance_type');
-				switch (self::$instanceType) {
-					case 0:
-						self::$ownerID = Factory::getUser()->get('id');
-						if (!self::$ownerID) self::$ownerID = -1;
-						break;
-					case 1:
-						self::$ownerID = $params->get('owner_group');
-						break;
-					case 2:
-						self::$ownerID = $params->get('site_auth');
-						break;
-				}
-			}
 		}
 	}
 

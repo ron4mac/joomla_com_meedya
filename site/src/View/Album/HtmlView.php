@@ -3,9 +3,11 @@
 * @package		com_meedya
 * @copyright	Copyright (C) 2023-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.0
+* @since		1.6.0
 */
 namespace RJCreations\Component\Meedya\Site\View\Album;
+
+use RJCreations\Component\Meedya\Site\Model\AlbumModel;
 
 defined('_JEXEC') or die;
 
@@ -20,6 +22,13 @@ use RJCreations\Component\Meedya\Site\Helper\MeedyaHelper;
 
 class HtmlView extends MeedyaView
 {
+	public $title;
+	public $desc;
+	public $albums;
+	public $isSearch;
+	public $six;
+	public $pathWay;
+	public $useFanCB;
 	protected $aid;
 	protected $fulv = true;
 
@@ -27,7 +36,7 @@ class HtmlView extends MeedyaView
 	{
 		if (RJC_DBUG) MeedyaHelper::log('MeedyaViewAlbum');
 		$app = Factory::getApplication();
-		$key = base64_decode($app->input->get->get('key', '', 'base64'));
+		$key = base64_decode($app->getInput()->get->get('key', '', 'base64'));
 		if ($key) {
 			$data = MeedyaHelper::decodeKey($key);
 			$prms = json_decode($data);
@@ -38,15 +47,15 @@ class HtmlView extends MeedyaView
 		parent::__construct($config);
 	}
 
-	function display ($tpl = null)
+	public function display ($tpl = null): void
 	{
-		$this->state = $this->get('State');	//echo'<xmp>';var_dump($this->state);echo'</xmp>';	//echo get_class($this->state);
-		$this->aid = $this->state->get('album.id');
-		$this->items = $this->get('Items');
-		$this->title = $this->get('Title');
-		$this->desc = $this->get('Desc');
-		$this->albums = $this->fulv ? $this->get('Albums') : [];
 		$m = $this->getModel();
+		$this->state = $m->getState();	//echo'<xmp>';var_dump($this->state);echo'</xmp>';	//echo get_class($this->state);
+		$this->aid = $this->state->get('album.id');
+		$this->items = $m->getItems();
+		$this->title = $m->getTitle();
+		$this->desc = $m->getDesc();
+		$this->albums = $this->fulv ? $m->getAlbums() : [];
 
 		$this->isSearch = false;
 		$this->six = 0;
@@ -65,7 +74,7 @@ class HtmlView extends MeedyaView
 		$this->pathWay = $pw->getPathway();
 
 		// probably unnecessary pagination 
-		$this->pagination = $this->get('Pagination');
+		$this->pagination = $m->getPagination();
 
 //		$this->app->setHeader('Access-Control-Allow-Origin','http://picframe.local/',true);
 //		$this->app->setHeader('Referrer-Policy','unsafe-url',true);
@@ -97,8 +106,7 @@ class HtmlView extends MeedyaView
 
 		$jparms = json_encode($parms);
 		$rout = Route::_('?option=com_meedya&view=album&key='.urlencode(MeedyaHelper::encodeKey($jparms)), false);
-		$key = Uri::root() . ltrim($rout, '/');
-		return $key;
+		return Uri::root() . ltrim($rout, '/');
 	}
 
 }

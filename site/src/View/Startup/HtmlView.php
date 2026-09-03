@@ -1,9 +1,9 @@
 <?php
 /**
 * @package		com_meedya
-* @copyright	Copyright (C) 2022-2024 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2022-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.0
+* @since		1.6.0
 */
 
 namespace RJCreations\Component\Meedya\Site\View\Startup;
@@ -18,14 +18,15 @@ class HtmlView extends BaseHtmlView
 {
 	protected $user;
 	protected $params;
-	protected $userPerms = null;
+	protected $userPerms;
 	protected $storQuota;
 	protected $maxUpload;
 
-	function display ($tpl=null)
+	public function display ($tpl=null): void
 	{
-		$this->user = Factory::getUser();
-		$this->params = Factory::getApplication()->getParams();
+		$app = Factory::getApplication();
+		$this->user = $app->getIdentity();
+		$this->params = $app->getParams();
 		$this->userPerms = MeedyaHelper::getUserPermissions($this->user, $this->params);
 		$this->storQuota = MeedyaHelper::formatBytes(MeedyaHelper::getResolvedOption('storQuota', 268435456));
 		$this->maxUpload = MeedyaHelper::formatBytes(MeedyaHelper::getResolvedOption('maxUpload', 4194304));

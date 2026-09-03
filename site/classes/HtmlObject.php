@@ -16,12 +16,12 @@ class HtmlElementObject
 		$cont = [],
 		$rcont = '',
 		$dcont = true,
-		$head = null,
-		$foot = null;
+		$head,
+		$foot;
 
 	public function __construct ($tagclas, $cont=null, $head=null, $foot=null)
 	{
-		list($tag, $clas) = array_pad(explode('.', $tagclas), 2, null);
+		[$tag, $clas] = array_pad(explode('.', $tagclas), 2, null);
 		$this->tag = $tag;
 		$this->stag = '<'.$tag;
 		if ($clas) $this->setAttr('class', $clas);
@@ -30,7 +30,7 @@ class HtmlElementObject
 		$this->foot = $foot;
 	}
 
-	public function setAttr ($attn, $attv=null)
+	public function setAttr ($attn, $attv=null): static
 	{
 		if (is_array($attn)) {
 			$this->atts = array_merge($this->atts, $attn);
@@ -48,33 +48,33 @@ class HtmlElementObject
 		return $this;	// for chaining
 	}
 
-	public function setCont ($contv)
+	public function setCont ($contv): static
 	{
 		$this->cont = [$contv];
 		$this->dcont = true;
 		return $this;	// for chaining
 	}
 
-	public function addCont ($contv)
+	public function addCont ($contv): static
 	{
 		$this->cont[] = $contv;
 		$this->dcont = true;
 		return $this;	// for chaining
 	}
 
-	public function sethead ($headv)
+	public function sethead ($headv): static
 	{
 		$this->head = $headv;
 		return $this;	// for chaining
 	}
 
-	public function setFoot ($footv)
+	public function setFoot ($footv): static
 	{
 		$this->foot = $footv;
 		return $this;	// for chaining
 	}
 
-	public function render ()
+	public function render (): string
 	{
 //		if ($this->datts) {
 		if ($this->atts) {

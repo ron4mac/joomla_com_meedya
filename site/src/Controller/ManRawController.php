@@ -36,7 +36,7 @@ class ManRawController extends BaseController
 	/*--------------------------------------------------------------------*/
 
 	// task to receive and store uploaded files
-	public function upfile ()
+	public function upfile (): void
 	{
 	//	if (RJC_DBUG) MeedyaHelper::log('upfile:', $this->input);
 		$this->_tokenCheck();
@@ -62,14 +62,14 @@ class ManRawController extends BaseController
 		if ($smsg) {
 			$resp['smsg'] = $smsg;
 		}
-		if ($resp) {
+		if ($resp !== []) {
 			echo json_encode($resp);
 		}
 		$this->app->close();
 	}
 
 	// task to get data for a particular album
-	public function getAlbum ()
+	public function getAlbum (): void
 	{
 		$aid = $this->input->post->get('aid', 0, 'int');
 		$m = $this->getModel('manage');
@@ -84,7 +84,7 @@ class ManRawController extends BaseController
 	}
 
 	// task to create a new album
-	public function newAlbum ()
+	public function newAlbum (): void
 	{
 		$this->_tokenCheck();
 		$a = $this->input->post->get('albnam', 'A NEW ALBUM', 'string');
@@ -104,7 +104,7 @@ class ManRawController extends BaseController
 	}
 
 	// task to clone an album
-	public function clnAlbum ()
+	public function clnAlbum (): void
 	{
 		$this->_tokenCheck();
 		$o = $this->input->post->get('oaid', 0, 'int');
@@ -125,7 +125,7 @@ class ManRawController extends BaseController
 	}
 
 	// task to clone an album
-	public function clnAlbSave ()
+	public function clnAlbSave (): void
 	{
 		$this->_tokenCheck();
 		$i = $this->input->post->get('aid', 0, 'int');
@@ -146,7 +146,7 @@ class ManRawController extends BaseController
 	}
 
 	// task to change the parent of an album
-	public function adjustAlbPaid ()
+	public function adjustAlbPaid (): void
 	{
 		$this->_tokenCheck();
 		$aid = $this->input->post->get('aid','','int');
@@ -157,46 +157,15 @@ class ManRawController extends BaseController
 	}
 
 	// get a select element to choose an album
-	public function getAlbumSelect ()
+	public function getAlbumSelect (): void
 	{
 		$xc = $this->input->post->get('exc', '', 'anum');
 		$exca = explode(',', $xc);
 		$m = $this->getModel('manage');
 		echo LayoutHelper::render('addtoalbum', ['albs'=>$m->getAlbumsList(), 'exca'=>$exca], JPATH_ROOT.'/components/com_meedya/layouts');
-		return;
-
-		$anp = $this->input->post->get('anp','a','word');
-		switch ($anp) {
-			case 'a':
-				$lbl = 'COM_MEEDYA_ALBUM';
-				$zo = '';
-				break;
-			case 'n':
-				break;
-			case 'p':
-				$lbl = 'COM_MEEDYA_ALBUM_PARENT';
-				$zo = '<option value="0">' . Text::_('COM_MEEDYA_H5U_NONE') . '</option>';
-				break;
-		}
-		$m = $this->getModel('manage');
-		$albs = $m->getAlbumsList();
-		$body = '<div class="nualbtop">
-		<dl>
-		<dt><label for="h5u_palbum">' . Text::_($lbl) . '</label></dt>
-		<dd>
-			<select class="form-select form-select-sm" id="h5u_palbum" name="h5u_palbum">
-				<!-- <option value="">' . Text::_('COM_MEEDYA_H5U_SELPAR') . '</option> -->
-				' .$zo.'
-				' . HtmlMeedya::albumsHierOptions($albs) . '
-			</select>
-		</dd>
-		</dl>
-		</div>';
-		echo $body;
-		$this->app->close();
 	}
 
-	public function impstps ()
+	public function impstps (): void
 	{
 		$fld = $this->input->get('fld','','STRING');
 		if ($fld) $this->impacts[] = ['act'=>'na','ttl'=>$fld];
@@ -205,7 +174,7 @@ class ManRawController extends BaseController
 		$this->app->close();
 	}
 
-	public function impact ()
+	public function impact (): void
 	{
 		$this->_log(print_r($this->input->post->getArray(), true));
 		$m = $this->getModel('manage');
@@ -231,7 +200,7 @@ class ManRawController extends BaseController
 		$this->app->close();
 	}
 
-	public function getZoomItem ()
+	public function getZoomItem (): void
 	{
 		$iid = $this->input->post->getInt('iid', 0);
 		if (!$iid) return;
@@ -257,7 +226,7 @@ class ManRawController extends BaseController
 		$this->app->close();
 	}
 
-	public function getItemInfo ()
+	public function getItemInfo (): void
 	{
 		$iid = $this->input->post->getInt('iid', 0);
 		if (!$iid) return;
@@ -294,7 +263,7 @@ class ManRawController extends BaseController
 		$this->app->close();
 	}
 
-	public function setVideoThumb ()
+	public function setVideoThumb (): void
 	{
 		$this->tokenCheck();
 		if (empty($_POST['imgBase64'])) $this->fail('Server received no image data');
@@ -316,7 +285,7 @@ class ManRawController extends BaseController
 	}
 
 
-	private function placeImageFiles ($fpath, $aid, $fast)
+	private function placeImageFiles ($fpath, $aid, $fast): void
 	{
 		$this->_log(print_r([$aid, $fpath], true));
 		$dir = JPATH_BASE . '/' . $this->gallPath;
@@ -330,14 +299,14 @@ class ManRawController extends BaseController
 		}
 		$fn = $pp['filename'].$u.'.'.$pp['extension'];
 		$fdst = $dst.$fn;
-		$this->_log(print_r([$src, $fdst]), true);
+		$this->_log(print_r([$src, $fdst]));
 		if (copy($src, $fdst)) {
 			$m = $this->getModel('manage');
 			$m->processFile($fdst, $fn, $aid, $fast ? $pp['filename'] : null);
 		}
 	}
 
-	private function buildImpActs ($dir='')
+	private function buildImpActs (string $dir=''): void
 	{
 		$aDir = $this->gallPath.$dir;
 		$dh = opendir(rtrim($aDir,'/'));
@@ -357,7 +326,7 @@ class ManRawController extends BaseController
 		closedir($dh);
 	}
 
-	private function validImageFile ($fpath)
+	private function validImageFile (string $fpath): bool
 	{
 		$mtype = '';
 		if (function_exists('finfo_open') && ($finf = finfo_open(FILEINFO_MIME_TYPE))) {
@@ -368,7 +337,7 @@ class ManRawController extends BaseController
 		return (is_array($mp) && $mp[0] == 'image');
 	}
 
-	private function _tokenCheck ()
+	private function _tokenCheck (): void
 	{
 		if (!Session::checkToken()) {
 			//header('HTTP/1.1 403 Not Allowed');
@@ -378,7 +347,7 @@ class ManRawController extends BaseController
 		}
 	}
 
-	private function fail ($msg)
+	private function fail (string $msg): void
 	{
 		//header('HTTP/1.1 400 Failure');
 		$this->app->setHeader('Status', 400, true);
@@ -386,7 +355,7 @@ class ManRawController extends BaseController
 		jexit($msg);
 	}
 
-	private function _log ($msg)
+	private function _log (string|bool $msg): void
 	{
 		if (RJC_DBUG) file_put_contents('ILOG.txt', $msg, FILE_APPEND);
 	}

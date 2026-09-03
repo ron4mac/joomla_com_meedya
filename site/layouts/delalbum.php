@@ -18,11 +18,11 @@ extract($displayData);	//itemId
 $mmdl = HTMLHelper::_(
 	'bootstrap.renderModal',
 	'delact', // selector
-	array( // options
+	[ // options
 		'title'  => Text::_('COM_MEEDYA_DELETE_ALBUM'),
 		'footer' => HtmlMeedya::modalButtons('COM_MEEDYA_DELETE_ALBUM','Meedya.deleteAlbum(this)', 'deliB', false, 'btn btn-warning'),
 		//'modalWidth' => 30
-	),
+	],
 	Text::_('COM_MEEDYA_DELETE_ALBUM_BLURB')
 	.'<br /><br /><form name="dalbform" action="'.Route::_('index.php?option=com_meedya&view=manage&Itemid='.$itemId, false).'" method="POST">'
 	.'<input type="checkbox" name="wipe" id="trashall" value="true" /><label for="trashall">'

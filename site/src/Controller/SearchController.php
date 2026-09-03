@@ -26,7 +26,7 @@ class SearchController extends BaseController
 		$this->mnuItm = $this->input->getInt('Itemid', 0);
 	}
 
-	public function search ()
+	public function search (): void
 	{
 		$sterm = $this->input->post->getString('sterm', '');
 		$sterm = str_replace('#','\#',$sterm);
