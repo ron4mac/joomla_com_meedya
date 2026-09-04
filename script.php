@@ -11,6 +11,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Log\Log;
 use Joomla\CMS\Language\Text;
 use Joomla\Database\DatabaseDriver;
+use Joomla\Database\DatabaseInterface;
 use Joomla\CMS\Installer\InstallerScript;
 use RJCreations\Library\RJUserCom;
 
@@ -43,7 +44,7 @@ class com_meedyaInstallerScript extends InstallerScript
 		'administrator/components/com_meedya/controller.php',
 		'administrator/components/com_meedya/meedya.php'];
 
-	public function install ($parent)
+	public function install ($parent): void
 	{
 		$parent->getParent()->setRedirectURL('index.php?option='.$this->com_name);
 	}
@@ -52,7 +53,7 @@ class com_meedyaInstallerScript extends InstallerScript
 	{
 	}
 
-	public function update ($parent)
+	public function update ($parent): void
 	{
 		Factory::getApplication()->enqueueMessage('<a href="index.php?option=com_meedya&view=groups">'.Text::_('COM_MEEDYA_UPDATE_MESSAGE').'</a>', 'warning');
 	}
@@ -86,9 +87,10 @@ class com_meedyaInstallerScript extends InstallerScript
 		} else {
 			$this->release = $parent->get('manifest')->version;
 		}
+		return null;
 	}
 
-	public function postflight ($type, $parent)
+	public function postflight ($type, $parent): void
 	{
 		$params['version'] = $this->release;
 		$this->mySetParams($params, true);
@@ -109,11 +111,11 @@ class com_meedyaInstallerScript extends InstallerScript
 		}
 	}
 
-	private function mySetParams ($param_array=[], $replace=false)
+	private function mySetParams (array $param_array=[], bool $replace=false): void
 	{
 		if (count($param_array) > 0) {
 			// read the existing component value(s)
-			$db = Factory::getDatabase();
+			$db = Factory::getContainer()->get(DatabaseInterface::class);
 			$db->setQuery('SELECT params FROM #__extensions WHERE name = "'.$this->com_name.'"');
 			$params = json_decode($db->loadResult(), true);
 			// add the new variable(s) to the existing one(s), replacing existing only if requested
