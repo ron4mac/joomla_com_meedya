@@ -104,26 +104,13 @@ class ManageController extends BaseController
 	}
 
 
-	// present a selected set of items to edit
-	public function imgsEdit (): void
-	{
-		if ($this->nope()) return;
-		$view = $this->getView('manage','html');
-		$view->setLayout('imgedit');
-		$m = $this->getModel('manage');
-		$itms = $this->input->post->get('slctimg',[],'array');
-		$view->iids = $m->getImages($itms);
-		$view->referer = $this->input->server->getRaw('HTTP_REFERER');
-		$view->display();
-	}
-
-
 	public function imgEdit (): void
 	{
 		if ($this->nope()) return;
 		$view = $this->getView('manage','html');
 		$view->setLayout('imgedit');
 		$m = $this->getModel('manage');
+		$view->setModel($m, true);
 		$itms = explode('|',$this->input->get('items','','string'));
 		if (!$itms[0]) $itms = $this->input->get('after','','string');
 		$view->iids = $m->getImages($itms);
